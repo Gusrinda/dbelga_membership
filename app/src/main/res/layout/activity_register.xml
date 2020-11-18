@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RegisterActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:id="@+id/logoBelga"
+            android:layout_marginTop="12dp"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:src="@drawable/dbelga" />
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/logoBelga"
+            android:id="@+id/judul"
+            android:textStyle="bold"
+            android:textColor="@color/darkBiruBelga"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MEMBERSHIP" />
+
+        <ScrollView
+            android:layout_marginTop="8sp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_below="@+id/judul"
+            android:layout_above="@id/layoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/namaPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_namaPelanggan"
+                        android:layout_marginTop="12dp"
+                        android:inputType="text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nama Pelanggan"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/nomorHandphonePelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_nomorHandphonePelanggan"
+                        android:layout_marginTop="12dp"
+                        android:inputType="number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nomor Handphone Pelanggan"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/emailPelanngan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_emailPelanggan"
+                        android:layout_marginTop="12dp"
+                        android:inputType="textEmailAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email Pelanggan"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/alamatPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:hintTextColor="@color/darkBiruBelga"
+                    app:counterMaxLength="255"
+                    app:counterEnabled="true">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_alamatPelanggan"
+                        android:layout_marginTop="12dp"
+                        android:inputType="textMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Alamat Pelanggan"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/layoutTanggalLahir"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/tanggalLahir"
+                        android:layout_weight="0.9"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:hintTextColor="@color/darkBiruBelga"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:focusableInTouchMode="false"
+                            android:textSize="14dp"
+                            android:id="@+id/txt_tanggalLahir"
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Tanggal Lahir"
+                            android:textColor="@color/darkBiruBelga" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:layout_weight="0.1"
+                        android:src="@drawable/ic_baseline_calendar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/passwordPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/darkBiruBelga"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_passwordPelanggan"
+                        android:inputType="textPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Password"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="8sp"
+                    android:id="@+id/passwordUlangPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/darkBiruBelga"
+                    app:hintAnimationEnabled="true"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:textSize="14dp"
+                        android:id="@+id/txt_passwordUlangPelanggan"
+                        android:inputType="textPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Tulis ulang password"
+                        android:textColor="@color/darkBiruBelga" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+
+
+        <LinearLayout
+            android:id="@+id/layoutButton"
+            android:layout_marginBottom="8sp"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:layout_marginTop="16dp"
+                android:text="Register"
+                android:background="@drawable/button_round_theme"
+                android:layout_marginHorizontal="72dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/btnLogin"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="12sp"
+                android:layout_marginHorizontal="86dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="12sp"
+                    android:textColor="@color/darkBiruBelga"
+                    android:text="Sudah punya akun ? Login"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

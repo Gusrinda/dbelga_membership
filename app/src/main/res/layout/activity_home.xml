@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:background="@drawable/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageView
+            android:src="@drawable/belanja"
+            android:alpha="0.1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:ignore="MissingConstraints" />
+
+        <ImageView
+            android:id="@+id/logoBelga"
+            android:layout_marginTop="16dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/dbelga"
+            android:layout_width="180dp"
+            android:layout_height="100dp"/>
+
+        <TextView
+            android:layout_below="@id/logoBelga"
+            android:textColor="@color/white"
+            android:layout_centerHorizontal="true"
+            android:textStyle="bold"
+            android:textSize="12sp"
+            android:text="MEMBERSHIP"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:layout_marginBottom="2dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/subJudul"
+            android:text="SEGERA !"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginBottom="12dp"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/btn_Login"
+            android:id="@+id/subJudul"
+            android:textSize="10sp"
+            android:textStyle="italic"
+            android:textColor="@color/white"
+            android:textAlignment="center"
+            android:text="Segera login atau daftarkan diri anda \ndan jadi member sekarang !!!"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal" />
+
+
+        <Button
+            android:layout_marginBottom="16dp"
+            android:paddingVertical="4dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_above="@id/btn_Daftar"
+            android:background="@drawable/button_round"
+            android:id="@+id/btn_Login"
+            android:text="LOGIN"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+
+        <Button
+            android:paddingVertical="4dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginBottom="48dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/button_transparent"
+            android:id="@+id/btn_Daftar"
+            android:text="DAFTAR SEKARANG"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

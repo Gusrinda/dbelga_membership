@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">memberhsip</string>
+
+    <string-array name="status_membership">
+        <item>Reguler</item>
+        <item>Gold</item>
+    </string-array>
+</resources>
