@@ -1,8 +1,94 @@
 <resources>
-    <string name="app_name">memberhsip</string>
+    <string name="app_name">Dbelga Membership</string>
+
+
+
+    <string-array name="sort_data">
+        <item>urutkan item</item>
+        <item>Harga terendah</item>
+        <item>Harga tertinggi</item>
+        <item>Stok terbanyak</item>
+    </string-array>
+
+    <string-array name="filter_data">
+        <item>pilih kategori</item>
+        <item>Kategori</item>
+        <item>Harga</item>
+    </string-array>
+
+    <string-array name="filter_Kategori">
+        <item>PEX</item>
+        <item>SABUN</item>
+        <item>OTOMOTIF</item>
+    </string-array>
+
+    <string-array name="filter_Harga">
+        <item> &lt; 100.000</item>
+        <item>Rp. 100000 - Rp. 500000</item>
+        <item> &gt; Rp. 500.000 </item>
+    </string-array>
+
 
     <string-array name="status_membership">
         <item>Reguler</item>
-        <item>Gold</item>
+        <item>Debet</item>
     </string-array>
+
+
+    <string-array name="tanggal_transaksi">
+        <item>Semua Tanggal</item>
+        <item>30 Hari Terakhir</item>
+        <item>90 Hari Terakhir</item>
+        <item>Pilih Tanggal</item>
+    </string-array>
+
+    <string-array name="status_transaksi">
+        <item>Semua Status</item>
+        <item>Lunas</item>
+        <item>Piutang</item>
+    </string-array>
+
+    <string-array name="voucher_tipe">
+        <item>Diskon</item>
+        <item>Gratis Ongkir</item>
+        <item>Cashback</item>
+    </string-array>
+
+    <string-array name="voucher_name">
+        <item>Potongan Belanja Belga</item>
+        <item>Gratis Pengiriman (s.d 15.000)</item>
+        <item>Cashback (s.d 20.000)</item>
+    </string-array>
+
+    <string-array name="voucher_deskripsi">
+        <item>Potongan Belanja Belga merupakan voucher belanja untuk xxx</item>
+        <item>Gratis Pengiriman (s.d 15.000) untuk wilayah sekitar berapa radius dari belga</item>
+        <item>Cashback (s.d 20.000) untuk pembelian item dan metode pembayaran tertentu</item>
+    </string-array>
+
+    <string-array name="jumlah_beli">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
+
+    <string-array name="detail_transaki">
+        <item>[1] Lorem Ipsum</item>
+        <item>[2] Lorem Ipsum</item>
+        <item>[3] Lorem Ipsum</item>
+        <item>[4] Lorem Ipsum</item>
+        <item>[5] Lorem Ipsum</item>
+        <item>[6] Lorem Ipsum</item>
+        <item>[7] Lorem Ipsum</item>
+        <item>[8] Lorem Ipsum</item>
+        <item>[9] Lorem Ipsum</item>
+    </string-array>
+
+
 </resources>

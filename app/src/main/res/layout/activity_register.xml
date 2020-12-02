@@ -70,6 +70,7 @@
                     app:hintTextColor="@color/darkBiruBelga">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:maxLength="14"
                         android:textSize="14dp"
                         android:id="@+id/txt_nomorHandphonePelanggan"
                         android:layout_marginTop="12dp"

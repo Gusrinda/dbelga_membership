@@ -6,7 +6,30 @@
         <item name="colorPrimary">@color/biruBelga</item>
         <item name="colorPrimaryDark">@color/darkBiruBelga</item>
         <item name="colorAccent">@color/darkBiruBelga</item>
+        <!-- For the resting Spinner style -->
+        <item name="android:spinnerItemStyle">
+            @style/spinnerItemStyle
+        </item>
+
+        <!-- For each individual Spinner list item once clicked on -->
+        <item name="android:spinnerDropDownItemStyle">
+            @style/spinnerDropDownItemStyle
+        </item>
+
     </style>
+
+    <style name="spinnerItemStyle">
+        <item name="android:padding">8sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorDark</item>
+    </style>
+
+    <style name="spinnerDropDownItemStyle">
+        <item name="android:padding">10sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/colorDark</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

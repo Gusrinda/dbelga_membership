@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/constraintLayout"
+    tools:context=".MembershipChoose">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/header"
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="60dp"
+                android:src="@drawable/dbelga" />
+
+            <TextView
+                android:textStyle="bold|italic"
+                android:text="Pilih membership yang cocok dengan anda"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginTop="12sp"
+            android:layout_below="@id/header"
+            android:layout_above="@id/btnPilihMembership"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Spinner
+                android:layout_marginHorizontal="32dp"
+                android:padding="8sp"
+                android:entries="@array/status_membership"
+                android:id="@+id/spinnerMembership"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.cardview.widget.CardView
+                app:cardCornerRadius="15dp"
+                android:visibility="visible"
+                android:id="@+id/cardMember"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="12sp"
+                android:layout_marginBottom="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="173dp">
+
+                <RelativeLayout
+                    android:padding="16dp"
+                    android:id="@+id/layoutCardMember"
+                    android:background="@drawable/member_premium"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:id="@+id/headerCard"
+                        android:weightSum="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:textSize="10sp"
+                                android:text="NAMA MEMBER"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/txtNamaMember"
+                                android:textColor="@color/black"
+                                android:textSize="18dp"
+                                android:text="Tn. Member"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:gravity="end"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:layout_width="60dp"
+                                android:layout_height="30dp"
+                                android:src="@drawable/dbelga" />
+
+                            <LinearLayout
+                                android:id="@+id/bintangPremium"
+                                android:visibility="visible"
+                                android:gravity="end"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:layout_marginHorizontal="4dp"
+                                    android:src="@drawable/star"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/bintangGold"
+                                android:visibility="gone"
+                                android:gravity="end"
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:layout_marginHorizontal="4dp"
+                                    android:src="@drawable/star"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp" />
+
+                                <ImageView
+                                    android:layout_marginHorizontal="4dp"
+                                    android:src="@drawable/star"
+                                    android:layout_width="15dp"
+                                    android:layout_height="15dp" />
+
+                            </LinearLayout>
+
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/headerCard"
+                        android:id="@+id/bodyCard"
+                        android:weightSum="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:textSize="10sp"
+                                android:text="NOMOR MEMBERSHIP"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/txtNomorMember"
+                                android:textColor="@color/black"
+                                android:textSize="18dp"
+                                android:text="1111-2222-3333-4444"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="8dp"
+                        android:layout_below="@id/bodyCard"
+                        android:id="@+id/footerCard"
+                        android:weightSum="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_weight="2"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:textSize="10sp"
+                                android:text="EXP DATE"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:id="@+id/txtExpDate"
+                                android:textColor="@color/black"
+                                android:textSize="18dp"
+                                android:text="12/2021"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:gravity="end"
+                            android:orientation="vertical"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:textSize="10sp"
+                                android:text="STATUS MEMBER"
+                                android:textStyle="bold"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+
+                            <TextView
+                                android:textAlignment="viewEnd"
+                                android:id="@+id/txtStatusMember"
+                                android:textColor="@color/black"
+                                android:textSize="18dp"
+                                android:text="PREMIUM"
+                                android:textStyle="bold"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <LinearLayout
+                    android:id="@+id/layoutMemberReguler"
+                    android:padding="16dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_marginHorizontal="8dp"
+                        android:id="@+id/cardA"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Diskon Member"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_marginHorizontal="8dp"
+                        android:id="@+id/cardB"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Poin Member"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardC"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Undian Member"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutMemberGold"
+                    android:padding="16dp"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_marginHorizontal="8dp"
+                        android:id="@+id/cardD"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Plafon Member"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_marginHorizontal="8dp"
+                        android:id="@+id/cardE"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Asuransi Member"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/cardF"
+                        android:layout_marginHorizontal="8dp"
+                        android:layout_width="108dp"
+                        android:layout_height="108dp"
+                        app:cardElevation="8dp"
+                        app:cardCornerRadius="8dp"
+                        >
+
+                        <LinearLayout
+                            android:background="@drawable/background_grad_hijau"
+                            android:padding="14dp"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:src="@drawable/user"
+                                android:layout_gravity="center_horizontal"
+                                android:layout_width="36dp"
+                                android:layout_height="36dp" />
+
+                            <TextView
+                                android:text="Gratis Ongkir"
+                                android:textAlignment="center"
+                                android:textColor="@android:color/black"
+                                android:textSize="12sp"
+                                android:textStyle="bold|italic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnPilihMembership"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_round_theme"
+            android:textColor="@color/white"
+            android:text="Pilih Membership"
+            android:layout_marginHorizontal="72dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

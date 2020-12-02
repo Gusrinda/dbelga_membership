@@ -18,7 +18,9 @@ public class SessionManager {
     public static final String KEY_NAME = "name";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_IMAGE = "urlImage";
     public static final String KEY_MEMBERSHIP = "membership";
+    public static final String KEY_EXPDATE = "expired";
     public static final String KEY_ROLE = "role";
     public static final String KEY_TOKEN_GCM = "token_gcm";
     private static final String KEY_ID_USER = "key";
@@ -57,6 +59,20 @@ public class SessionManager {
         Log.d(TAG, "User login session modified!");
     }
 
+    public void setRegister(boolean isLoggedIn, String pid, String name, String email, String membership, String expDate) {
+
+        editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
+        editor.putString(KEY_PID, pid);
+        editor.putString(KEY_NAME, name);
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_MEMBERSHIP, membership);
+        editor.putString(KEY_EXPDATE, expDate);
+        // commit changes
+        editor.apply();
+
+        Log.d(TAG, "User login session modified!");
+    }
+
     public void setLoginVendor(boolean isLoggedIn, String pid, String name, int memberoid) {
 
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
@@ -76,6 +92,23 @@ public class SessionManager {
 
     public void setToken(String token) {
         editor.putString(KEY_TOKEN_GCM, token);
+        editor.commit();
+    }
+
+
+    public void setMembership(String membership) {
+        editor.putString(KEY_MEMBERSHIP, membership);
+        editor.commit();
+    }
+
+    public void setExpiredDate(String expiredDate) {
+        editor.putString(KEY_EXPDATE, expiredDate);
+        editor.commit();
+    }
+
+
+    public void setImage(String image) {
+        editor.putString(KEY_IMAGE, image);
         editor.commit();
     }
 
@@ -100,6 +133,10 @@ public class SessionManager {
         return pref.getString(KEY_EMAIL, "null");
     }
 
+    public String getImage() {
+        return pref.getString(KEY_IMAGE, "null");
+    }
+
     public String getUsername() {
         return pref.getString(KEY_USERNAME, "null");
     }
@@ -116,6 +153,10 @@ public class SessionManager {
         return pref.getString(KEY_MEMBERSHIP, "null");
     }
 
+    public String getExpiredDate() {
+        return pref.getString(KEY_EXPDATE, "null");
+    }
+
     public String getKeyMemberid() {
         return pref.getString(KEY_MEMBERID, "null");
     }
@@ -129,7 +170,9 @@ public class SessionManager {
         editor.putString(MEMBERCODE, "");
         editor.putString(KEY_TOKEN_GCM, "");
         editor.putString(KEY_TOKEN, "");
+        editor.putString(KEY_IMAGE, "");
         editor.putString(KEY_MEMBERSHIP, "");
+        editor.putString(KEY_EXPDATE, "");
         editor.putString(KEY_USERID, "");
         editor.putString(KEY_BANNER, "true");
         editor.putString(KEY_MEMBERID, "");

@@ -144,10 +144,7 @@ public class RegisterActivity extends AppCompatActivity {
                 intent.putExtra("TANGGAL_MEMBER", TanggalLahir);
                 intent.putExtra("PASSWORD_MEMBER", PasswordPelanggan);
                 startActivity(intent);
-
-
             }
-
         }
 
     }

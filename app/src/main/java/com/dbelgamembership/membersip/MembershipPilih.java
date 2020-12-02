@@ -49,6 +49,7 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -66,8 +67,10 @@ public class MembershipPilih extends AppCompatActivity {
     Button pilihMember;
     String choosenMembership;
     public String url = Http.server, jsonResult, type, user;
-    String namaMember, alamatMember, nomorMember, tanggalMember, passwordMember, emailMember;
+    String namaMember, alamatMember, nomorMember, tanggalMember, deadlinePayment, passwordMember, emailMember;
     private String TAG = "";
+
+    SimpleDateFormat formatExp, formatter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +79,8 @@ public class MembershipPilih extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
-
+        formatExp = new SimpleDateFormat("MM/yyyy");
+        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         namaMember = getIntent().getStringExtra("NAMA_MEMBER");
         alamatMember = getIntent().getStringExtra("ALAMAT_MEMBER");
         nomorMember = getIntent().getStringExtra("NOMOR_MEMBER");
@@ -89,11 +93,10 @@ public class MembershipPilih extends AppCompatActivity {
         cardMember.setVisibility(View.GONE);
         layoutDetail.setVisibility(View.GONE);
 
-
         sp_Membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(MembershipPilih.this, "Membership dipilih : " + sp_Membership.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MembershipPilih.this, "Membership dipilih : " + sp_Membership.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
                 String yangDipilih = sp_Membership.getSelectedItem().toString();
                 Drawable image;
                 if (yangDipilih.equals("Reguler")) {
@@ -107,19 +110,19 @@ public class MembershipPilih extends AppCompatActivity {
                     memberRegular.setVisibility(View.VISIBLE);
                     memberGold.setVisibility(View.GONE);
                     text_namaMember.setText("MEMBER REGULAR");
-                    choosenMembership = "premium";
+                    choosenMembership = "REGULER";
                 } else {
                     cardMember.setVisibility(View.VISIBLE);
                     layoutDetail.setVisibility(View.VISIBLE);
                     image = getResources().getDrawable(R.drawable.member_gold);
                     bintangPremium.setVisibility(View.GONE);
                     bintangGold.setVisibility(View.VISIBLE);
-                    text_StatusMember.setText("GOLD");
+                    text_StatusMember.setText("DEBET");
                     layoutCardMember.setBackground(image);
                     memberRegular.setVisibility(View.GONE);
                     memberGold.setVisibility(View.VISIBLE);
-                    text_namaMember.setText("MEMBER GOLD");
-                    choosenMembership = "gold";
+                    text_namaMember.setText("MEMBER DEBET");
+                    choosenMembership = "DEBET";
                 }
             }
 
@@ -170,17 +173,27 @@ public class MembershipPilih extends AppCompatActivity {
                         dialog.dismiss();
                         if (isOnline()) {
                             url = Http.server;
-                            url = url + "member-daftar";
+                            url = url + "register-customer";
                             type = "post";
                             JSONObject postData = new JSONObject();
                             try {
                                 HashMap<String, String> map_order99 = new HashMap<String, String>();
-                                postData.put("nama_member", namaMember);
-                                postData.put("alamat_member", alamatMember);
-                                postData.put("nomor_member", nomorMember);
-                                postData.put("password_member", passwordMember);
-                                postData.put("tanggalLahir_member", tanggalMember);
+                                postData.put("name", namaMember);
+                                postData.put("main_address", alamatMember);
+                                postData.put("main_phone_1", nomorMember);
+                                postData.put("main_email", emailMember);
+                                postData.put("password", passwordMember);
+                                postData.put("date_birth", tanggalMember);
                                 postData.put("status_member", choosenMembership);
+
+                                final Calendar baru = Calendar.getInstance();
+                                baru.add(Calendar.DATE, 1);
+                                Date deadlineBayar = baru.getTime();
+                                String deadlen = formatter.format(deadlineBayar);
+
+                                deadlinePayment = deadlen;
+
+                                postData.put("pay_date", deadlinePayment);
                             } catch (Exception e) {
                                 e.getMessage();
                             }
@@ -194,6 +207,7 @@ public class MembershipPilih extends AppCompatActivity {
                         }
                     }
                 });
+
         builder1.setNegativeButton(
                 "Tidak",
                 new DialogInterface.OnClickListener() {
@@ -235,20 +249,46 @@ public class MembershipPilih extends AppCompatActivity {
                                 String responseX = String.valueOf(response);
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
                                 boolean success = root.get("success").getAsBoolean();
-                                final String jsonObjectTest = root.get("msgServer").getAsString();
                                 Log.e("", "Test : " + success);
-                                if (!success == true) {
-                                    Snack(jsonObjectTest);
+                                if (success == false) {
+                                    Snack(response.getJSONArray("msgServer").toString());
                                 } else {
-                                    JSONObject dataPengguna = response.getJSONObject("dataMember");
+                                    JSONObject dataPengguna = response.getJSONObject("msgServer");
                                     String id = dataPengguna.getString("id");
                                     String name = dataPengguna.getString("name");
-                                    String email = dataPengguna.getString("email");
-                                    String membership = dataPengguna.getString("status");
-                                    sessionManager.setLogin(true, id, name, email, membership);
-                                    Intent intent = new Intent(MembershipPilih.this, MainActivity.class);
-                                    startActivity(intent);
-                                    Toast.makeText(MembershipPilih.this, "Selamat bergabung menjadi member Dbelga !", Toast.LENGTH_LONG).show();
+                                    String email = dataPengguna.getString("main_email");
+                                    String membership = dataPengguna.getString("status_member");
+                                    String createdDate = dataPengguna.getString("created_at");
+                                    String deadlinePay = dataPengguna.getString("pay_date");
+
+
+                                    Date created = formatter.parse(createdDate);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(created);
+                                    Log.e(TAG, "Today : " + cal.getTime());
+                                    cal.add(Calendar.YEAR, 1);
+                                    Log.e(TAG, "Next year expired : " + cal.getTime());
+                                    Date nextYear = cal.getTime();
+                                    String expDate = formatExp.format(nextYear);
+
+                                    Log.e("", "id User: " + id);
+                                    Log.e("", "nama User: " + name);
+                                    Log.e("", "email User: " + email);
+                                    Log.e("", "membership: " + membership);
+                                    Log.e("", "expired: " + deadlinePay);
+
+                                    Log.e("", "deadline: " + deadlinePay);
+                                    sessionManager.setRegister(true, id, name, email, membership, expDate);
+                                    if (membership.equals("REGULER")) {
+                                        Intent intent = new Intent(MembershipPilih.this, MainActivity.class);
+                                        startActivity(intent);
+                                        Toast.makeText(MembershipPilih.this, "Selamat bergabung menjadi member Dbelga !", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Intent intent = new Intent(MembershipPilih.this, KonfirmasiMembership.class);
+                                        Log.e(TAG, "onResponse: " + deadlinePayment);
+                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
+                                        startActivity(intent);
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -330,10 +370,9 @@ public class MembershipPilih extends AppCompatActivity {
     }
 
     private void Snack(String string) {
-        Snackbar snackbar = Snackbar.make(pilihMember, string, Snackbar.LENGTH_LONG)
-                .setAction("Action", null);
+        Snackbar snackbar = Snackbar.make(pilihMember, string, Snackbar.LENGTH_LONG).setAction("Action", null);
         View snackBarView = snackbar.getView();
-        snackBarView.setBackgroundColor(getResources().getColor(R.color.merahBelga));
+        snackBarView.setBackgroundColor(getResources().getColor(R.color.darkBiruBelga));
         snackbar.show();
     }
 }

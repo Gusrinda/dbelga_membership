@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/relativeLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -61,55 +63,44 @@
         android:layout_height="match_parent">
 
 
-        <LinearLayout
-            android:layout_above="@+id/bbb"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_centerInParent="true"
+            android:id="@+id/LoginPhoneNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:hintTextColor="@color/darkBiruBelga"
+            android:layout_marginBottom="4dp">
 
-            <ImageView
-                android:layout_width="27dp"
-                android:layout_height="47dp"
-                app:srcCompat="@drawable/ic_username"
-                tools:ignore="VectorDrawableCompat" />
-
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/usernameInput"
+                android:layout_marginTop="12dp"
+                android:inputType="textEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="Email pengguna"
                 android:textColor="@color/darkBiruBelga"
-                android:inputType="textEmailSubject"
-                android:textColorHint="@color/darkBiruBelga"
-                android:backgroundTint="@color/darkBiruBelga"/>
+                />
 
-        </LinearLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <LinearLayout
-            android:id="@+id/bbb"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="200dp"
-            android:layout_above="@id/btn_Login"
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_below="@id/LoginPhoneNumber"
+            android:id="@+id/LoginPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/darkBiruBelga"
+            app:hintTextColor="@color/darkBiruBelga">
 
-            <ImageView
-                android:layout_width="27dp"
-                android:layout_height="47dp"
-                app:srcCompat="@drawable/ic_lock"
-                tools:ignore="VectorDrawableCompat" />
-
-            <EditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordInput"
+                android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Password"
-                android:textColor="@color/darkBiruBelga"
-                android:inputType="textPassword"
-                android:textColorHint="@color/darkBiruBelga"
-                android:backgroundTint="@color/darkBiruBelga"/>
-        </LinearLayout>
+                android:textColor="@color/darkBiruBelga"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
 
 
         <Button
@@ -148,4 +139,4 @@
 
 
 
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

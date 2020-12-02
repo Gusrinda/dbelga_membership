@@ -11,21 +11,62 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_marginTop="16dp"
-            android:id="@+id/logoBelga"
-            android:src="@drawable/dbelga"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"/>
+        <RelativeLayout
+            android:background="@drawable/background_grad_header"
+            android:layout_width="match_parent"
+            android:layout_height="256dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ppUser"
+                android:layout_marginTop="32dp"
+                android:layout_marginLeft="32dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_width="56dp"
+                android:layout_height="56dp"/>
+
+            <TextView
+                android:textSize="14sp"
+                android:id="@+id/namaUser"
+                android:layout_marginLeft="8sp"
+                android:layout_marginTop="42dp"
+                android:layout_toRightOf="@id/ppUser"
+                android:textColor="@color/white"
+                android:text="Nama Pengguna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_below="@+id/namaUser"
+                android:textSize="12sp"
+                android:id="@+id/emailUser"
+                android:layout_marginLeft="8sp"
+                android:layout_toRightOf="@id/ppUser"
+                android:textColor="@color/white"
+                android:text="Email Pengguna"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <ImageView
+                android:layout_marginRight="32dp"
+                android:layout_marginTop="32dp"
+                android:id="@+id/logoBelga"
+                android:src="@drawable/dbelga"
+                android:layout_width="100dp"
+                android:layout_height="48dp"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+
+
 
 
         <androidx.cardview.widget.CardView
             app:cardCornerRadius="15dp"
             android:id="@+id/cardMember"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="116dp"
             android:layout_marginBottom="4dp"
-            android:layout_below="@id/logoBelga"
             android:layout_width="match_parent"
             android:layout_height="173dp">
 
@@ -183,7 +224,7 @@
                             android:id="@+id/txtExpDate"
                             android:textColor="@color/black"
                             android:textSize="18dp"
-                            android:text="12/2021"
+                            android:text="11/2021"
                             android:textStyle="bold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
@@ -240,6 +281,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:elevation="16dp"
                     android:id="@+id/akunSaya"
                     android:padding="8dp"
                     android:layout_weight="1"
@@ -253,7 +295,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:background="#A8D9EF"
+                            android:background="@drawable/background_grad_biru"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="32dp"
                             android:orientation="vertical"
@@ -283,7 +325,7 @@
                 </RelativeLayout>
 
                 <RelativeLayout
-                    android:id="@+id/informasiMember"
+                    android:id="@+id/belanjaMember"
                     android:padding="8dp"
                     android:layout_weight="1"
                     android:layout_width="0dp"
@@ -291,12 +333,12 @@
 
                     <androidx.cardview.widget.CardView
                         app:cardCornerRadius="10sp"
-                        android:elevation="8dp"
+                        android:elevation="16dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:background="#AFDD78"
+                            android:background="@drawable/background_grad_biru"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="32dp"
                             android:orientation="vertical"
@@ -305,7 +347,7 @@
                             android:gravity="center">
 
                             <ImageView
-                                android:src="@drawable/information"
+                                android:src="@drawable/ic_baseline_shopping_cart_24"
                                 android:layout_marginBottom="12dp"
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"/>
@@ -313,8 +355,8 @@
                             <TextView
                                 android:textStyle="bold"
                                 android:textAlignment="center"
-                                android:textColor="@color/white"
-                                android:text="INFO MEMBER"
+                                android:textColor="@color/darkBiruBelga"
+                                android:text="BELANJA"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center_horizontal" />
@@ -335,6 +377,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:elevation="16dp"
                     android:id="@+id/transaksiSaya"
                     android:padding="8dp"
                     android:layout_weight="2"
@@ -348,7 +391,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:background="#F4EFC3"
+                            android:background="@drawable/background_grad_biru"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="32dp"
                             android:orientation="vertical"
@@ -377,50 +420,6 @@
 
                 </RelativeLayout>
 
-<!--                <RelativeLayout-->
-<!--                    android:id="@+id/informasiDiskon"-->
-<!--                    android:padding="8dp"-->
-<!--                    android:layout_weight="1"-->
-<!--                    android:layout_width="0dp"-->
-<!--                    android:layout_height="wrap_content">-->
-
-<!--                    <androidx.cardview.widget.CardView-->
-<!--                        app:cardCornerRadius="10sp"-->
-<!--                        android:elevation="8dp"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content">-->
-
-<!--                        <LinearLayout-->
-<!--                            android:background="#AFDD78"-->
-<!--                            android:paddingHorizontal="16dp"-->
-<!--                            android:paddingVertical="32dp"-->
-<!--                            android:orientation="vertical"-->
-<!--                            android:layout_width="match_parent"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:gravity="center">-->
-
-<!--                            <ImageView-->
-<!--                                android:src="@drawable/discount"-->
-<!--                                android:layout_marginBottom="12dp"-->
-<!--                                android:layout_width="24dp"-->
-<!--                                android:layout_height="24dp"/>-->
-
-<!--                            <TextView-->
-<!--                                android:textStyle="bold"-->
-<!--                                android:textColor="@color/white"-->
-<!--                                android:textAlignment="center"-->
-<!--                                android:text="INFORMASI DISKON"-->
-<!--                                android:layout_width="match_parent"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:gravity="center_horizontal" />-->
-
-<!--                        </LinearLayout>-->
-
-<!--                    </androidx.cardview.widget.CardView>-->
-
-<!--                </RelativeLayout>-->
-
-
             </LinearLayout>
 
             <LinearLayout
@@ -430,6 +429,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:elevation="16dp"
                     android:id="@+id/logoutAkun"
                     android:padding="8dp"
                     android:layout_weight="2"
@@ -443,7 +443,7 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:background="@color/merahBelga"
+                            android:background="@drawable/background_grad_biru"
                             android:paddingHorizontal="16dp"
                             android:paddingVertical="32dp"
                             android:orientation="vertical"
@@ -459,7 +459,7 @@
 
                             <TextView
                                 android:textStyle="bold"
-                                android:textColor="@color/white"
+                                android:textColor="@color/darkBiruBelga"
                                 android:textAlignment="center"
                                 android:text="KELUAR"
                                 android:layout_width="match_parent"
