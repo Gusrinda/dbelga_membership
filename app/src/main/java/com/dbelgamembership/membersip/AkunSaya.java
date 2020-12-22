@@ -53,18 +53,19 @@ public class AkunSaya extends AppCompatActivity {
     String name[], date[], detail[], typeX[];
 
 
-    TextView namaSaya, statusSaya, textCreditLimit, textSisaLimit, textPiutangBelanja;
+    TextView namaSaya, statusSaya, textCreditLimit, textSisaLimit, textPiutangBelanja, textTotalPoin, textTotalTransaksi;
     RelativeLayout kartuSaya;
     SessionManager sessionManager;
     public String url = Http.server, jsonResult, type, user, pass;
     RecyclerView rvVoucher;
     CircleImageView imageUser;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
-    LinearLayout plafonDebet, plafonReguler;
+    LinearLayout plafonDebet, plafonReguler, layoutTotalTransaksi, layoutTotalPoin, layoutDetailTransaksi;
 
     String limitPlafon, sisaPlafon, piutangBelanja;
     Button btnUpgrade;
     private String TAG = "";
+    private String totalPoin, totalTransaksi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,17 @@ public class AkunSaya extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         findID();
+        namaSaya.setFocusable(true);
+        layoutTotalTransaksi.setVisibility(View.GONE);
+        layoutTotalPoin.setVisibility(View.GONE);
+        layoutDetailTransaksi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AkunSaya.this, ListTransaksi.class);
+                startActivity(intent);
+            }
+        });
+
         accessDataUser();
         getDataUser();
         btnUpgrade.setOnClickListener(new View.OnClickListener() {
@@ -129,9 +141,9 @@ public class AkunSaya extends AppCompatActivity {
                                 Log.e(TAG, "sisa plafon: Rp. " + nf.format(Long.parseLong(sisaPlafon)));
                                 Log.e(TAG, "piutang belanja: Rp. " + nf.format(Long.parseLong(piutangBelanja)));
 
-                                textCreditLimit.setText("Rp." + nf.format(Long.parseLong(limitPlafon)));
-                                textSisaLimit.setText("Rp." + nf.format(Long.parseLong(sisaPlafon)));
-                                textPiutangBelanja.setText("Rp." + nf.format(Long.parseLong(piutangBelanja)));
+                                textCreditLimit.setText("Rp. " + nf.format(Long.parseLong(limitPlafon)));
+                                textSisaLimit.setText("Rp. " + nf.format(Long.parseLong(sisaPlafon)));
+                                textPiutangBelanja.setText("Rp. " + nf.format(Long.parseLong(piutangBelanja)));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -161,6 +173,7 @@ public class AkunSaya extends AppCompatActivity {
         namaSaya.setText(sessionManager.getName());
         statusSaya.setText(sessionManager.getMembership());
         Log.e(TAG, "getDataUser: " + sessionManager.getImage());
+
         if (sessionManager.getImage() != "" && sessionManager.getImage() != null) {
             Glide.with(this).asBitmap().load(sessionManager.getImage()).centerCrop().into(imageUser);
         }
@@ -180,6 +193,19 @@ public class AkunSaya extends AppCompatActivity {
             plafonReguler.setVisibility(View.VISIBLE);
         }
 
+        totalPoin = sessionManager.getKeyPoinbelanja();
+        totalTransaksi = sessionManager.getKeyTotaltransaksi();
+
+        Log.e(TAG, "getDataUser Total Transaksi : " + totalTransaksi );
+        Log.e(TAG, "getDataUser Total Poin : " + totalPoin );
+
+        if (totalPoin != null && totalTransaksi != null && !totalPoin.isEmpty() && !totalTransaksi.isEmpty()) {
+            layoutTotalPoin.setVisibility(View.VISIBLE);
+            layoutTotalTransaksi.setVisibility(View.VISIBLE);
+            textTotalTransaksi.setText(totalTransaksi + " Transaksi");
+            textTotalPoin.setText(totalPoin + " Poin");
+        }
+
         getdataVoucher();
 
     }
@@ -195,7 +221,6 @@ public class AkunSaya extends AppCompatActivity {
         rvVoucher.setLayoutManager(new LinearLayoutManager(this));
     }
 
-
     private void findID() {
         plafonDebet = findViewById(R.id.plafonDebet);
         plafonReguler = findViewById(R.id.plafonReguler);
@@ -208,5 +233,10 @@ public class AkunSaya extends AppCompatActivity {
         statusSaya = findViewById(R.id.statusMembership);
         kartuSaya = findViewById(R.id.drawMember);
         rvVoucher = findViewById(R.id.rv_Voucher);
+        layoutDetailTransaksi = findViewById(R.id.view_DetailTransaksi);
+        layoutTotalPoin = findViewById(R.id.view_TotalPoinBelanja);
+        layoutTotalTransaksi = findViewById(R.id.view_TotalTransaksi);
+        textTotalPoin = findViewById(R.id.txt_TotalPoin);
+        textTotalTransaksi = findViewById(R.id.txt_TotalTransaksi);
     }
 }

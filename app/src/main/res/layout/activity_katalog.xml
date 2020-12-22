@@ -30,30 +30,33 @@
             android:layout_height="wrap_content" />
 
         <RelativeLayout
+            android:id="@+id/layout_wishlist"
             android:layout_marginRight="32dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_width="24dp"
+            android:layout_width="28dp"
             android:layout_height="24dp">
 
             <ImageView
-                android:src="@drawable/ic_baseline_shopping_cart_24"
+                android:src="@drawable/ic_like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <RelativeLayout
+                android:id="@+id/layout_totalWish"
                 android:layout_alignParentRight="true"
                 android:background="@drawable/cart_item"
-                android:layout_width="12dp"
-                android:layout_height="12dp">
+                android:layout_width="16dp"
+                android:layout_height="16dp">
 
                 <TextView
-                    android:textSize="8sp"
-                    android:textColor="@color/white"
-                    android:text="2"
-                    android:layout_centerInParent="true"
+                    android:id="@+id/text_totalWishlist"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="99"
+                    android:textColor="@color/white"
+                    android:textSize="6dp" />
 
             </RelativeLayout>
 

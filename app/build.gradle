@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.dbelgamembership.membersip"
-        minSdkVersion 17
+        minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -39,6 +39,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.iwgang:CountdownView:1.2'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.+'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -46,6 +47,15 @@ dependencies {
 
     implementation 'com.jakewharton:butterknife:10.2.3'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
+    implementation 'me.dm7.barcodescanner:zxing:1.9.8'
+    implementation 'com.github.mazenrashed:Printooth:1.2.1'
+
+
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+    implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
+
+    implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:2.0.6'
+
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
 //    implementation files('libs/httpclient-4.5.jar')

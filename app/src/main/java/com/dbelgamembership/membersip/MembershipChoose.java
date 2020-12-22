@@ -72,8 +72,8 @@ public class MembershipChoose extends AppCompatActivity {
     CardView cardA, cardB, cardC, cardD, cardE, cardF;
     int idCard = 0;
     private String TAG = "";
-    String paydate;
-    SimpleDateFormat formatExp, formatter;
+    String paydate, expdate;
+    SimpleDateFormat formatExp, formatter, formatExpDate;
 
 
     @Override
@@ -85,6 +85,7 @@ public class MembershipChoose extends AppCompatActivity {
 
         formatExp = new SimpleDateFormat("MM/yyyy");
         formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
 
         findID();
         snackClicker();
@@ -131,9 +132,14 @@ public class MembershipChoose extends AppCompatActivity {
         pilihMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                url = Http.server;
-                url = url+"update-status/" + sessionManager.getPID();
-                updateDataUser();
+
+                if (sessionManager.getMembership().equals(choosenMembership)) {
+                    Snack("Anda telah menjadi member dengan status yang dipilih !");
+                } else {
+                    url = Http.server;
+                    url = url+"update-status/" + sessionManager.getPID();
+                    updateDataUser();
+                }
             }
         });
 
@@ -158,19 +164,27 @@ public class MembershipChoose extends AppCompatActivity {
                             Log.e(TAG, "choosenMember : " + choosenMembership );
 
                             final Calendar baru = Calendar.getInstance();
+                            final Calendar expired = Calendar.getInstance();
                             baru.add(Calendar.DATE, 1);
                             Date deadlineBayar = baru.getTime();
                             String deadlen = formatter.format(deadlineBayar);
 
+                            expired.add(Calendar.YEAR, 1);
+                            Date expiredMembership = expired.getTime();
+                            String expiredMber = formatExpDate.format(expiredMembership);
+
                             if (choosenMembership.equals("DEBET")) {
                                 paydate = deadlen;
+                                expdate = expiredMber;
                             } else {
                                 paydate = "";
+                                expdate = "";
                             }
 
                             try {
                                 postData.put("status_member", choosenMembership);
                                 postData.put("pay_date", paydate);
+//                                postData.put("date_member", expdate);
                             } catch (Exception e) {
                                 e.getMessage();
                             }

@@ -10,6 +10,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
         <LinearLayout
+            android:id="@+id/lnContent"
             android:padding="4dp"
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -35,12 +36,14 @@
                     android:layout_height="wrap_content">
 
                     <TextView
+                        android:id="@+id/txt_kodeBelanja"
                         android:text="Transaksi Belanja"
                         android:textStyle="bold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/txt_tanggalBelanja"
                         android:text="12-12-2012"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -48,6 +51,7 @@
                 </LinearLayout>
 
                 <TextView
+                    android:id="@+id/txt_statusBelanja"
                     android:gravity="center"
                     android:padding="4dp"
                     android:textSize="12sp"
@@ -68,43 +72,6 @@
                 android:layout_marginVertical="4dp"
                 android:background="#6E6E6E" />
 
-            <LinearLayout
-                android:layout_marginTop="8sp"
-                android:weightSum="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_weight="0.1"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_width="56dp"
-                    android:layout_height="46dp"/>
-
-                <LinearLayout
-                    android:layout_weight="0.8"
-                    android:layout_marginLeft="12sp"
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/detailTransaksi"
-                        android:text="Contoh nama barang yang ipsum apakah akan kebahwa jawaban iya ?"
-                        android:textStyle="bold"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/jumlahBeli"
-                        android:text="Jumlah dibeli"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_marginVertical="4dp"
@@ -116,7 +83,7 @@
 
 
                 <LinearLayout
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.35"
                     android:layout_marginLeft="12sp"
                     android:orientation="vertical"
                     android:layout_width="0dp"
@@ -130,6 +97,7 @@
                         android:layout_height="wrap_content"/>
 
                     <TextView
+                        android:id="@+id/txt_totalBelanja"
                         android:textSize="12sp"
                         android:text="Rp. 100.000"
                         android:layout_width="wrap_content"
@@ -137,13 +105,37 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:layout_weight="0.35"
+                    android:layout_marginLeft="12sp"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txt_poin"
+                        android:textSize="10sp"
+                        android:text="Poin Belanja"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:id="@+id/txt_poinBelanja"
+                        android:textSize="12sp"
+                        android:text="0 Poin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
                 <TextView
+                    android:id="@+id/txt_lihatDetail"
                     android:gravity="center"
                     android:padding="4dp"
-                    android:textSize="12sp"
+                    android:textSize="8sp"
                     android:textColor="@color/darkBiruBelga"
-                    android:text="Beli Lagi"
-                    android:background="#BDEC88"
+                    android:text="klik untuk\nlihat detail"
                     android:layout_weight="0.3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"/>

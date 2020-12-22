@@ -1,0 +1,81 @@
+
+package com.dbelgamembership.membersip.Model.ModelListWishlist;
+
+import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class Status implements Serializable, Parcelable
+{
+
+    @SerializedName("code")
+    @Expose
+    private int code;
+    @SerializedName("description")
+    @Expose
+    private String description;
+    public final static Parcelable.Creator<Status> CREATOR = new Creator<Status>() {
+
+
+        @SuppressWarnings({
+            "unchecked"
+        })
+        public Status createFromParcel(Parcel in) {
+            return new Status(in);
+        }
+
+        public Status[] newArray(int size) {
+            return (new Status[size]);
+        }
+
+    }
+    ;
+    private final static long serialVersionUID = 178203579953925850L;
+
+    protected Status(Parcel in) {
+        this.code = ((int) in.readValue((int.class.getClassLoader())));
+        this.description = ((String) in.readValue((String.class.getClassLoader())));
+    }
+
+    public Status() {
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public Status withCode(int code) {
+        this.code = code;
+        return this;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Status withDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(code);
+        dest.writeValue(description);
+    }
+
+    public int describeContents() {
+        return  0;
+    }
+
+}

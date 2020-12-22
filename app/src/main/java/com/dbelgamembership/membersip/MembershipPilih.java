@@ -67,10 +67,10 @@ public class MembershipPilih extends AppCompatActivity {
     Button pilihMember;
     String choosenMembership;
     public String url = Http.server, jsonResult, type, user;
-    String namaMember, alamatMember, nomorMember, tanggalMember, deadlinePayment, passwordMember, emailMember;
+    String namaMember, alamatMember, nomorMember, tanggalMember, deadlinePayment, passwordMember, emailMember, expiredMembership;
     private String TAG = "";
 
-    SimpleDateFormat formatExp, formatter;
+    SimpleDateFormat formatExp, formatter, formatExpDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +81,7 @@ public class MembershipPilih extends AppCompatActivity {
 
         formatExp = new SimpleDateFormat("MM/yyyy");
         formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
         namaMember = getIntent().getStringExtra("NAMA_MEMBER");
         alamatMember = getIntent().getStringExtra("ALAMAT_MEMBER");
         nomorMember = getIntent().getStringExtra("NOMOR_MEMBER");
@@ -191,9 +192,16 @@ public class MembershipPilih extends AppCompatActivity {
                                 Date deadlineBayar = baru.getTime();
                                 String deadlen = formatter.format(deadlineBayar);
 
+                                final Calendar expired = Calendar.getInstance();
+                                expired.add(Calendar.YEAR, 1);
+                                Date expiredDate = expired.getTime();
+                                String expDate = formatExpDate.format(expiredDate);
+
                                 deadlinePayment = deadlen;
+                                expiredMembership = expDate;
 
                                 postData.put("pay_date", deadlinePayment);
+//                                postData.put("date_member", expiredMembership);
                             } catch (Exception e) {
                                 e.getMessage();
                             }

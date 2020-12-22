@@ -107,7 +107,6 @@ public class LoginActivity extends AppCompatActivity {
     private void loginUser() {
         String usernamePelanggan = usernameInput.getText().toString();
         String passwordPelanggan = passwordInput.getText().toString();
-
         if (TextUtils.isEmpty(usernamePelanggan)) {
             Toast.makeText(this, "Tolong isi username anda . . . ", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(passwordPelanggan)) {
@@ -175,6 +174,10 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                         getSession();
                                     } else {
+                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                        if (jsonObject.getString("image_customer") != null) {
+                                            sessionManager.setImage("http://54.254.194.122/upload/customer-photo/"+jsonObject.getString("image_customer"));
+                                        }
                                         String deadlinePay = jsonObject.getString("pay_date");
                                         formatExp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                         final Calendar baru = Calendar.getInstance();

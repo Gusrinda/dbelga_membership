@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/popup_round"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/produk_kategori"
+        android:layout_centerHorizontal="true"
+        android:text="KATEGORI"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/produk_close"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <ImageView
+        android:id="@+id/produk_image"
+        android:src="@drawable/not_found"
+        android:layout_marginTop="32dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_width="match_parent"
+        android:layout_height="240dp" />
+
+    <TextView
+        android:layout_below="@id/produk_image"
+        android:id="@+id/produk_name"
+        android:layout_marginLeft="16sp"
+        android:text="Nama Produk"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="4dp"
+        android:layout_below="@id/produk_name"
+        android:id="@+id/produk_deskripsi"
+        android:layout_marginLeft="16sp"
+        android:text="Lorem Ipsum hahahahahaha hihihihihihi huhuhuhuhuhuhu heheheheheeh hohohohohohohooho"
+        android:maxLines="3"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@id/produk_deskripsi"
+        android:orientation="horizontal"
+        android:id="@+id/layout_harga"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:background="@drawable/strike_through"
+            android:id="@+id/produk_price1"
+            android:layout_marginLeft="16sp"
+            android:text="Rp. 80.000"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:textColor="@color/colorRose"
+            android:id="@+id/produk_price2"
+            android:layout_marginLeft="4dp"
+            android:text="Rp. 78.000"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout_Stok"
+        android:layout_below="@id/layout_harga"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:layout_marginLeft="16sp"
+            android:text="Stok Produk :"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:id="@+id/produk_stok"
+            android:layout_marginLeft="4dp"
+            android:text="0 Produk"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/layout_Stok"
+        android:background="@drawable/button_round_voucher"
+        android:paddingVertical="12sp"
+        android:gravity="center"
+        android:id="@+id/layout_button"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:src="@drawable/ic_like"
+            android:layout_width="18dp"
+            android:layout_height="18dp"/>
+
+        <TextView
+            android:textColor="@color/white"
+            android:layout_marginLeft="4dp"
+            android:textStyle="bold"
+            android:text="Tambahkan ke wishlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>

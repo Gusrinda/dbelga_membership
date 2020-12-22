@@ -42,6 +42,7 @@ import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -68,12 +69,13 @@ public class KonfirmasiMembership extends AppCompatActivity {
     public String url = Http.server, jsonResult, type, user, pass;
 
     TextView judul, nomorWA;
-    LinearLayout infoTransfer, infoBukti, infoHubungi, uploadFoto;
+    LinearLayout infoTransfer, infoBukti, infoHubungi, uploadFoto, infoReferral;
+    TextInputEditText textKodeReferral;
     ImageView fotoProduk;
     private static final int GalleryPick = 1;
     private Uri ImageUri;
     String tanggalDeadline, tanggalSekarang;
-    Button btnKonfirmasi, btnBatal, btnUploadFoto, btnHubungi;
+    Button btnKonfirmasi, btnBatal, btnUploadFoto, btnHubungi, btnKodeRef;
     private static final String FILE_NAME = "example.txt";
     String x, choosenMembership, paydate;
 
@@ -122,11 +124,30 @@ public class KonfirmasiMembership extends AppCompatActivity {
         btnKonfirmasi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Log.e(TAG, "checkImage belum kode : " + checkImage);
+
+                if (!textKodeReferral.getText().toString().isEmpty() && textKodeReferral.getText().toString() != null) {
+                    checkImage = true;
+                }
+
+                Log.e(TAG, "checkImage setelah kode : " + checkImage);
+
                 if (checkImage == false) {
+                    Log.e(TAG, "onClick: " + sessionManager.getPID());
                     Toast.makeText(KonfirmasiMembership.this, "Pastikan anda memilih foto bukti transaksi terlebih dahulu !", Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.e(TAG, "onClick: " + sessionManager.getPID());
                     accessWebService();
                 }
+            }
+        });
+
+        btnKodeRef.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                infoTransfer.setVisibility(View.GONE);
+                infoReferral.setVisibility(View.VISIBLE);
             }
         });
 
@@ -152,7 +173,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 url = Http.server;
-                url = url+"update-status/" + sessionManager.getPID();
+                url = url + "update-status/" + sessionManager.getPID();
                 updateDataUser();
             }
         });
@@ -435,6 +456,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
         judul = findViewById(R.id.judul);
         nomorWA = findViewById(R.id.text_NomorWA);
         uploadFoto = findViewById(R.id.layout_UploadFoto);
+        infoReferral = findViewById(R.id.layout_kodeReferral);
+        btnKodeRef = findViewById(R.id.btn_KodeRef);
+        textKodeReferral = findViewById(R.id.txt_kodeRefMember);
 
     }
 
@@ -470,8 +494,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
             checkImage = true;
         } else {
             Toast.makeText(this, "ERROR : Try Again !", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(KonfirmasiMembership.this, EditAkun.class));
-            finish();
+//            finish();
+//            startActivity(new Intent(KonfirmasiMembership.this, KonfirmasiMembership.class));
+
         }
 
 //        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
@@ -489,15 +514,15 @@ public class KonfirmasiMembership extends AppCompatActivity {
     }
 
     private void accessWebService() {
-        x = imageToString(bitmap);
-        int maxLogStringSize = x.length();
-        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
-            int start = i * maxLogStringSize;
-            int end = (i + 1) * maxLogStringSize;
-            end = end > x.length() ? x.length() : end;
-            Log.e(TAG, x.substring(start, end));
-        }
-        save();
+//        x = imageToString(bitmap);
+//        int maxLogStringSize = x.length();
+//        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
+//            int start = i * maxLogStringSize;
+//            int end = (i + 1) * maxLogStringSize;
+//            end = end > x.length() ? x.length() : end;
+//            Log.e(TAG, x.substring(start, end));
+//        }
+//        save();
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(KonfirmasiMembership.this);
         builder1.setTitle("Konfirmasi");
@@ -514,8 +539,26 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             url = url + "upload-payment/" + sessionManager.getPID();
                             type = "post";
                             JSONObject postData = new JSONObject();
+
+
+                            String gambarPayment;
+                            String kodeReferal;
+
+                            if (bitmap == null) {
+                                gambarPayment = "";
+                            } else {
+                                gambarPayment = imageToString(bitmap);
+                            }
+
+                            if (textKodeReferral.getText().toString() == null || textKodeReferral.getText().toString().isEmpty()) {
+                                kodeReferal = "";
+                            } else {
+                                kodeReferal = textKodeReferral.getText().toString();
+                            }
+
                             try {
-                                postData.put("image_pay", imageToString(bitmap));
+                                postData.put("image_pay", gambarPayment);
+                                postData.put("code_refferal", kodeReferal);
                             } catch (Exception e) {
                                 e.getMessage();
                             }
@@ -578,8 +621,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
         dialog1.setCanceledOnTouchOutside(false);
         dialog1.setMessage("Harap Menunggu...");
         dialog1.show();
+        Log.e(TAG, "check PostData : " + postData);
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, null,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -602,25 +646,34 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                     String email = dataPengguna.getString("main_email");
                                     String membership = dataPengguna.getString("status_member");
                                     String image_pay = dataPengguna.getString("image_pay");
+                                    String statusPAY = dataPengguna.getString("status_payment");
                                     Log.e("", "id User: " + id);
                                     Log.e("", "nama User: " + name);
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
-                                    if (!image_pay.equals(null)) {
-                                        judul.setText("Menunggu Konfirmasi Pembayaran");
-                                        btnKonfirmasi.setVisibility(View.GONE);
-                                        uploadFoto.setVisibility(View.GONE);
-                                        btnHubungi.setVisibility(View.VISIBLE);
-                                        infoBukti.setVisibility(View.GONE);
-                                        infoHubungi.setVisibility(View.VISIBLE);
+                                    Log.e(TAG, "status payment: " + statusPAY);
+                                    if (statusPAY.equals("TRUE") ) {
+                                        Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        if (!image_pay.equals(null)) {
+                                            judul.setText("Menunggu Konfirmasi Pembayaran");
+                                            btnKonfirmasi.setVisibility(View.GONE);
+                                            uploadFoto.setVisibility(View.GONE);
+                                            btnHubungi.setVisibility(View.VISIBLE);
+                                            infoBukti.setVisibility(View.GONE);
+                                            infoReferral.setVisibility(View.GONE);
+                                            infoHubungi.setVisibility(View.VISIBLE);
+                                        }
                                     }
+
                                 }
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
                             Snack(e.getMessage());
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override

@@ -18,6 +18,8 @@ public class SessionManager {
     public static final String KEY_NAME = "name";
     public static final String KEY_EMAIL = "email";
     public static final String KEY_USERNAME = "username";
+    public static final String KEY_POINBELANJA = "poinBelanja";
+    public static final String KEY_TOTALTRANSAKSI = "transaksiBelanja";
     public static final String KEY_IMAGE = "urlImage";
     public static final String KEY_MEMBERSHIP = "membership";
     public static final String KEY_EXPDATE = "expired";
@@ -112,6 +114,18 @@ public class SessionManager {
         editor.commit();
     }
 
+    public void setKeyPoinbelanja(String poinbelanja) {
+        editor.putString(KEY_POINBELANJA, poinbelanja);
+        editor.commit();
+    }
+
+
+    public void setKeyTotaltransaksi(String totaltransaksi) {
+        editor.putString(KEY_TOTALTRANSAKSI, totaltransaksi);
+        editor.commit();
+    }
+
+
 
     public boolean isLoggedIn() {
         return pref.getBoolean(IS_LOGGEDIN, false);
@@ -145,6 +159,14 @@ public class SessionManager {
         return pref.getString(KEY_ROLE, "null");
     }
 
+    public  String getKeyPoinbelanja() {
+        return pref.getString(KEY_POINBELANJA, "null");
+    }
+
+    public  String getKeyTotaltransaksi() {
+        return pref.getString(KEY_TOTALTRANSAKSI, "null");
+    }
+
     public String getBanner() {
         return pref.getString(KEY_BANNER, "true");
     }
@@ -171,6 +193,8 @@ public class SessionManager {
         editor.putString(KEY_TOKEN_GCM, "");
         editor.putString(KEY_TOKEN, "");
         editor.putString(KEY_IMAGE, "");
+        editor.putString(KEY_POINBELANJA, "");
+        editor.putString(KEY_TOTALTRANSAKSI, "");
         editor.putString(KEY_MEMBERSHIP, "");
         editor.putString(KEY_EXPDATE, "");
         editor.putString(KEY_USERID, "");

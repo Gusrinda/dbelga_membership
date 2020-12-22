@@ -55,7 +55,6 @@ public class AdapterListBarang extends
         try {
             final ModelKatalog item = list.get(position);
             Drawable image;
-//            Log.e(TAG, "onBindViewHolder: " + item.getImages() );
             if (!item.getImages().equals("http://54.254.194.122/upload/barang/")) {
                 Glide.with(context)
                         .asBitmap()
@@ -88,12 +87,17 @@ public class AdapterListBarang extends
 
             int cekStok = Integer.parseInt(item.getStok());
 
-            if (cekStok > 0) {
-                holder.tvStokOutlet.setText(item.getStok());
+            if (cekStok > 0 && cekStok < 10) {
+                holder.tvStokOutlet.setText(" < 10");
+            } else if (cekStok >= 10 && cekStok < 25) {
+                holder.tvStokOutlet.setText(" < 25");
+            } else if (cekStok >= 25 && cekStok < 50) {
+                holder.tvStokOutlet.setText(" < 50");
+            } else if (cekStok > 50) {
+                holder.tvStokOutlet.setText(" > 50");
             } else {
                 holder.tvStokOutlet.setText("KOSONG");
             }
-
 
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
@@ -112,7 +116,6 @@ public class AdapterListBarang extends
             Log.e(TAG, "onBindViewHolder: error" + e.getMessage());
         }
     }
-
 
     @Override
     public int getItemCount() {

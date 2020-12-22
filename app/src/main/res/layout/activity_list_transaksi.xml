@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DaftarTransaksi">
+
+    <RelativeLayout
+        android:elevation="8sp"
+        android:gravity="center_vertical"
+        android:background="@color/biruBelga"
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            android:id="@+id/judulAppbar"
+            android:layout_marginLeft="32dp"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="Transaksi Saya"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_below="@id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_belumLunas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Belum Dibayar" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/tab_sudahLunas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sudah Dibayar" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:layout_below="@id/tabLayout"
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+</RelativeLayout>

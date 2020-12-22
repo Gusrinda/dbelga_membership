@@ -14,9 +14,17 @@ public class ModelKatalog implements Parcelable {
         this.harga_promo = harga_promo;
     }
 
-    String id, nama_barang, merk_barang, kategori_barang, harga_diskon, harga_barang,harga_promo, kode_barang, stok, barcode, images  ;
+    String id, nama_barang, merk_barang, kategori_barang, harga_diskon, harga_barang,harga_promo, kode_barang, stok, barcode, images, deskripsi  ;
 
     public ModelKatalog() {
+    }
+
+    public String getDeskripsi() {
+        return deskripsi;
+    }
+
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
     }
 
     public String getId() {
@@ -117,6 +125,7 @@ public class ModelKatalog implements Parcelable {
         dest.writeString(this.stok);
         dest.writeString(this.barcode);
         dest.writeString(this.images);
+        dest.writeString(this.deskripsi);
     }
 
     protected ModelKatalog(Parcel in) {
@@ -131,6 +140,7 @@ public class ModelKatalog implements Parcelable {
         this.stok = in.readString();
         this.barcode = in.readString();
         this.images = in.readString();
+        this.deskripsi = in.readString();
     }
 
     public static final Creator<ModelKatalog> CREATOR = new Creator<ModelKatalog>() {

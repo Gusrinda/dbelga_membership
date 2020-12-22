@@ -145,6 +145,9 @@ public class EditAkun extends AppCompatActivity {
         layoutBatalAkun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!urlImage.equals("")) {
+                    Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
+                }
                 namaPengguna.setEnabled(false);
                 emailPengguna.setEnabled(false);
                 nomorPengguna.setEnabled(false);
@@ -298,14 +301,14 @@ public class EditAkun extends AppCompatActivity {
     }
 
     private void updateAkunUser() {
-        x = imageToString(bitmap);
-        int maxLogStringSize = x.length();
-        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
-            int start = i * maxLogStringSize;
-            int end = (i + 1) * maxLogStringSize;
-            end = end > x.length() ? x.length() : end;
-            Log.e(TAG, x.substring(start, end));
-        }
+//        x = imageToString(bitmap);
+//        int maxLogStringSize = x.length();
+//        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
+//            int start = i * maxLogStringSize;
+//            int end = (i + 1) * maxLogStringSize;
+//            end = end > x.length() ? x.length() : end;
+//            Log.e(TAG, x.substring(start, end));
+//        }
 
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(EditAkun.this);
@@ -323,6 +326,16 @@ public class EditAkun extends AppCompatActivity {
                             url = url + "edit-customer/" + sessionManager.getPID();
                             type = "post";
                             JSONObject postData = new JSONObject();
+                            String gambarPayment;
+                            String kodeReferal;
+
+                            if (bitmap == null) {
+                                gambarPayment = "";
+                            } else {
+                                gambarPayment = imageToString(bitmap);
+                            }
+
+
                             try {
                                 postData.put("name", name);
                                 postData.put("main_phone_1", phone);
@@ -330,20 +343,12 @@ public class EditAkun extends AppCompatActivity {
                                 postData.put("main_address", address);
                                 postData.put("date_birth", dateBirth);
                                 postData.put("password", password);
-                                postData.put("image_customer", x);
+                                postData.put("image_customer", gambarPayment);
                                 Log.e(TAG, "imageToString: \n" + x);
                             } catch (Exception e) {
                                 e.getMessage();
                             }
                             if (isOnline()) {
-                                try {
-                                    backslash = postData.getString("image_customer");
-                                    Log.e(TAG, "backslash: " + backslash);
-                                    save();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                save();
                                 Log.e(TAG, "onClickSubmit: " + postData.toString());
                                 simpanAkun(postData);
                             }
