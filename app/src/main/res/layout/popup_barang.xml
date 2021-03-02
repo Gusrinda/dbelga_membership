@@ -62,7 +62,6 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:background="@drawable/strike_through"
             android:id="@+id/produk_price1"
             android:layout_marginLeft="16sp"
             android:text="Rp. 80.000"
@@ -113,6 +112,54 @@
     <LinearLayout
         android:layout_marginTop="16dp"
         android:layout_below="@id/layout_Stok"
+        android:paddingVertical="12sp"
+        android:gravity="center"
+        android:id="@+id/layout_pesanStok"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/order_btnMinQty"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@color/prangeBelha"
+            android:text="-"
+            android:textColor="#FFF"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/order_qtyOrder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="number"
+            android:maxLength="4"
+            android:text="" />
+
+        <Button
+            android:id="@+id/order_btnPlusQty"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_weight="1"
+            android:background="@color/prangeBelha"
+            android:text="+"
+            android:textColor="#FFF"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/layout_pesanStok"
         android:background="@drawable/button_round_voucher"
         android:paddingVertical="12sp"
         android:gravity="center"

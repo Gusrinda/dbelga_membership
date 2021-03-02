@@ -78,12 +78,13 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.HelperPrintUniversal.AsyncBluetoothEscPosPrint;
 import com.dbelgamembership.membersip.HelperPrintUniversal.AsyncEscPosPrinter;
-import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
-import com.dbelgamembership.membersip.Model.ModelPayment.Item;
 import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
-import com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail;
-import com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail;
 
+import com.dbelgamembership.membersip.Model.modelListFaktur.Datum;
+import com.dbelgamembership.membersip.Model.modelListFaktur.Item;
+import com.dbelgamembership.membersip.Model.modelListFaktur.ModelListFaktur;
+import com.dbelgamembership.membersip.Model.modelListFaktur.OrderDetail;
+import com.dbelgamembership.membersip.Model.modelListFaktur.PaymentDetail;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -200,6 +201,8 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     LinearLayout linearBelanja;
     @BindView(R.id.txt_Belanja)
     TextView txtBelanja;
+    @BindView(R.id.tvCatatan)
+    TextView txtCatatan;
     @BindView(R.id.viewGarisTotal)
     View viewGarisTotal;
 
@@ -468,6 +471,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
 
     /**
      * Asynchronous printing
+     *
      * @return
      */
     @SuppressLint("SimpleDateFormat")
@@ -582,7 +586,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     //AkhirNewPrint
 
 
-
     private void setupFaktur(String dataprint) {
         Log.e(TAG, "setupFaktur: " + dataprint);
         bb.setVisibility(View.VISIBLE);
@@ -601,21 +604,40 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                     public void onResponse(JSONObject response) {
                         try {
                             Gson gson = new Gson();
-                            ModelPayment modelListFaktur = gson.fromJson(String.valueOf(response), ModelPayment.class);
-                             Datum b = modelListFaktur.getData().get(0);
+                            ModelListFaktur modelListFaktur = gson.fromJson(String.valueOf(response), ModelListFaktur.class);
+                            Datum b = modelListFaktur.getData().get(0);
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = (b.getTotalPaymentPaid() - b.getChange());
                             String cok1 = String.valueOf(b.getTotalPaymentPaid());
                             String cok2 = String.valueOf(b.getChange());
 
-//                            GTCOKCOKCOKCOCKCOK = (Integer.parseInt(cok1)-Integer.parseInt(cok2));
                             Log.e(TAG, "cok1 : " + cok1 + "cok2 : " + cok2);
                             soCode = b.getPembayaranCode();
                             Log.e(TAG, "onCreate: " + soCode);
                             sales = String.valueOf(b.getCreateuser());
                             tvdate.setText(b.getDateTransaction() + "");
                             tvSO.setText(b.getPembayaranCode());
-                            tvStatus.setText(b.getStatus() + "");
+
+                            String status = "";
+
+                            Log.e(TAG, "Data : " + b.getStatusPengiriman());
+                            if (b.getStatusPengiriman() == null) {
+                                status = "Belum Dikirim";
+
+                            } else {
+                                status = b.getStatusPengiriman();
+                            }
+
+                            tvStatus.setText(status);
+
+                            String catatanPesanan = "";
+                            if (b.getCatatanPengiriman() == null) {
+                                catatanPesanan = "Tidak ada catatan khusus";
+                            } else {
+                                catatanPesanan = b.getCatatanPengiriman();
+                            }
+
+                            txtCatatan.setText(catatanPesanan);
 
                             tvOngkosKirim.setText("Rp. " + nf.format(b.getOngkosKirim()));
                             ONGKIR_COK = b.getOngkosKirim();
@@ -658,7 +680,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             });
 
                             grandTotal = 0;
-                            for (PaymentDetail payment : b.getPaymentDetail()) {
+                            for (com.dbelgamembership.membersip.Model.modelListFaktur.PaymentDetail payment : b.getPaymentDetail()) {
                                 Log.e(TAG, "onCreate: PAYMENT" + payment.getTotal());
                                 Double dnum = Double.parseDouble(payment.getTotal());
                                 grandTotal += dnum.intValue();
@@ -689,9 +711,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                 }
                             }
                             for (OrderDetail barangCheckout : b.getOrderDetail()) {
-                                List<Item> itemss = barangCheckout.getItems();
+                                List<com.dbelgamembership.membersip.Model.modelListFaktur.Item> itemss = barangCheckout.getItems();
                                 for (int i = 0; i < itemss.size(); i++) {
-                                   Item barang = itemss.get(i);
+                                    com.dbelgamembership.membersip.Model.modelListFaktur.Item barang = itemss.get(i);
                                     HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
                                     hashMap.put("namaBrg", barang.getName());
                                     int Qty = Integer.parseInt(barang.getQtyOutlet()) + Integer.parseInt(barang.getQtyStore()) + barang.getIndentValue();

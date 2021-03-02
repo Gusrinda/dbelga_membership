@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -20,6 +21,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -82,6 +84,8 @@ public class EditAkun extends AppCompatActivity {
     private String TAG = "";
     String name, address, phone, mail, urlImage, password, dateBirth;
 
+    ImageView backArrow;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,21 +146,66 @@ public class EditAkun extends AppCompatActivity {
             }
         });
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         layoutBatalAkun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!urlImage.equals("")) {
-                    Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
-                }
-                namaPengguna.setEnabled(false);
-                emailPengguna.setEnabled(false);
-                nomorPengguna.setEnabled(false);
-                alamatPengguna.setEnabled(false);
-                btnGantiFoto.setVisibility(View.GONE);
-                layoutUbahAkun.setVisibility(View.VISIBLE);
-                layoutGantiPassword.setVisibility(View.VISIBLE);
-                layoutSimpanAkun.setVisibility(View.GONE);
-                layoutBatalAkun.setVisibility(View.GONE);
+                android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(EditAkun.this);
+                builder1.setTitle("Konfirmasi");
+                builder1.setMessage("Batalkan ubah akun ?");
+                builder1.setCancelable(false);
+                builder1.setPositiveButton(
+                        "Ya",
+                        new DialogInterface.OnClickListener() {
+                            @SuppressLint("NewApi")
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                Drawable image;
+                                if (!urlImage.equals("")) {
+                                    Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
+                                } else {
+                                    image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+                                    imagePengguna.setImageDrawable(image);
+                                }
+
+                                namaPengguna.setEnabled(false);
+                                emailPengguna.setEnabled(false);
+                                nomorPengguna.setEnabled(false);
+                                alamatPengguna.setEnabled(false);
+                                namaPengguna.setText(name);
+                                alamatPengguna.setText(address);
+                                nomorPengguna.setText(phone);
+                                emailPengguna.setText(mail);
+                                btnGantiFoto.setVisibility(View.GONE);
+                                layoutUbahAkun.setVisibility(View.VISIBLE);
+                                layoutGantiPassword.setVisibility(View.VISIBLE);
+                                layoutSimpanAkun.setVisibility(View.GONE);
+                                layoutBatalAkun.setVisibility(View.GONE);
+                            }
+                        });
+                builder1.setNegativeButton(
+                        "Tidak",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                            }
+                        });
+
+                final android.app.AlertDialog alert11 = builder1.create();
+                alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        alert11.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                        alert11.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    }
+                });
+                alert11.show();
             }
         });
 
@@ -171,12 +220,10 @@ public class EditAkun extends AppCompatActivity {
         btnGantiFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 CropImage.activity(ImageUri)
                         .setAspectRatio(1, 1)
                         .start(EditAkun.this);
 
-//                OpenGallery();
             }
         });
     }
@@ -207,17 +254,6 @@ public class EditAkun extends AppCompatActivity {
             startActivity(new Intent(EditAkun.this, EditAkun.class));
             finish();
         }
-
-//        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
-//            ImageUri = data.getData();
-//            try {
-//                checkUbah = true;
-//                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
-//                imagePengguna.setImageURI(ImageUri);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     private void getDataUser() {
@@ -294,22 +330,17 @@ public class EditAkun extends AppCompatActivity {
         alamatPengguna.setText(address);
         nomorPengguna.setText(phone);
         emailPengguna.setText(mail);
+        Drawable image;
         if (!urlImage.equals("")) {
-            Glide.with(this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
+            Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
+        } else {
+            image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+            imagePengguna.setImageDrawable(image);
         }
 
     }
 
     private void updateAkunUser() {
-//        x = imageToString(bitmap);
-//        int maxLogStringSize = x.length();
-//        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
-//            int start = i * maxLogStringSize;
-//            int end = (i + 1) * maxLogStringSize;
-//            end = end > x.length() ? x.length() : end;
-//            Log.e(TAG, x.substring(start, end));
-//        }
-
 
         AlertDialog.Builder builder1 = new AlertDialog.Builder(EditAkun.this);
         builder1.setTitle("Konfirmasi");
@@ -334,7 +365,6 @@ public class EditAkun extends AppCompatActivity {
                             } else {
                                 gambarPayment = imageToString(bitmap);
                             }
-
 
                             try {
                                 postData.put("name", name);
@@ -506,6 +536,8 @@ public class EditAkun extends AppCompatActivity {
         layoutGantiPassword = findViewById(R.id.layoutUbahPassword);
         layoutBatalAkun = findViewById(R.id.layoutBatalSimpan);
         mainLayout = findViewById(R.id.mainLayout);
+
+        backArrow = findViewById(R.id.backArrow);
     }
 
     private String imageToString(Bitmap bitmap) {

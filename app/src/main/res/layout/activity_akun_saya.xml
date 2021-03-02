@@ -7,54 +7,30 @@
     android:focusableInTouchMode="true"
     tools:context=".AkunSaya">
 
-    <RelativeLayout
-        android:elevation="8sp"
-        android:gravity="center_vertical"
-        android:background="@color/biruBelga"
-        android:id="@+id/appBar"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
         tools:ignore="MissingConstraints">
 
-        <TextView
-            android:id="@+id/judulAppbar"
-            android:layout_marginLeft="32dp"
-            android:textSize="18dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:text="Akun Saya"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/biruBelga"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:title="Akun Saya"
+            tools:ignore="HardcodedText">
 
-        <LinearLayout
-            android:layout_marginRight="18dp"
-            android:gravity="center_vertical"
-            android:layout_alignParentEnd="true"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true">
+        </androidx.appcompat.widget.Toolbar>
 
-            <ImageView
-                android:id="@+id/iconMessage"
-                android:layout_marginHorizontal="4dp"
-                android:src="@drawable/ic_baseline_mail_24"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-            <ImageView
-                android:id="@+id/iconNotification"
-                android:layout_marginHorizontal="4dp"
-                android:src="@drawable/ic_baseline_notifications_active_24"
-                android:layout_width="20dp"
-                android:layout_height="20dp" />
 
-        </LinearLayout>
-
-    </RelativeLayout>
 
     <LinearLayout
-        android:layout_below="@id/appBar"
+        android:layout_below="@id/appbar"
         android:id="@+id/layoutAAA"
         android:paddingHorizontal="32dp"
         android:paddingVertical="8sp"
@@ -435,7 +411,7 @@
                         android:background="#F2F6ED"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="fill_parent">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:layout_marginBottom="8sp"
@@ -486,7 +462,7 @@
                             </LinearLayout>
 
                             <LinearLayout
-                                android:visibility="gone"
+                                android:visibility="visible"
                                 android:id="@+id/view_TotalPoinBelanja"
                                 android:layout_marginHorizontal="16dp"
                                 android:gravity="center"
@@ -554,19 +530,86 @@
                         </LinearLayout>
 
                         <TextView
-                            android:layout_marginTop="8sp"
+                            android:layout_marginTop="12sp"
                             android:textColor="@color/darkBiruBelga"
                             android:textStyle="italic"
-                            android:text="Tukar Voucher"
+                            android:text="Voucher Anda"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
 
-                        <androidx.recyclerview.widget.RecyclerView
-                            tools:listitem="@layout/adapter_list_voucher"
-                            android:id="@+id/rv_Voucher"
+                        <LinearLayout
+                            android:gravity="center_horizontal"
+                            android:layout_marginTop="4dp"
+                            android:orientation="horizontal"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp" />
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:id="@+id/ln_voucherMember"
+                                android:layout_marginHorizontal="16dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:src="@drawable/ic_baseline_voucher_a"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <TextView
+                                    android:id="@+id/text_jumlahVoucherMember"
+                                    android:textColor="@color/darkBiruBelga"
+                                    android:text="0"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <TextView
+                                    android:textSize="12sp"
+                                    android:textColor="#7F302E2E"
+                                    android:text="Voucher Anda"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ln_voucherKlaim"
+                                android:layout_marginHorizontal="16dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+
+                                <ImageView
+                                    android:src="@drawable/ic_baseline_voucher"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <TextView
+                                    android:id="@+id/text_jumlahVoucherKlaim"
+                                    android:textColor="@color/darkBiruBelga"
+                                    android:text="0"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                                <TextView
+                                    android:textSize="12sp"
+                                    android:textColor="#7F302E2E"
+                                    android:text="Voucher Yang Dapat Diklaim"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+<!--                        <androidx.recyclerview.widget.RecyclerView-->
+<!--                            tools:listitem="@layout/adapter_list_voucher"-->
+<!--                            android:id="@+id/rv_Voucher"-->
+<!--                            android:layout_width="match_parent"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="16dp" />-->
 
                     </LinearLayout>
 

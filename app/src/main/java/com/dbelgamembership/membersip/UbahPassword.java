@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.Image;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -53,6 +55,8 @@ public class UbahPassword extends AppCompatActivity {
     Button btnSimpanPassword, btnKembali;
     private String TAG = "";
 
+    ImageView backArrow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +67,12 @@ public class UbahPassword extends AppCompatActivity {
         findID();
         getDataUser();
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         btnKembali.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -290,6 +300,7 @@ public class UbahPassword extends AppCompatActivity {
         btnSimpanPassword = findViewById(R.id.btnSimpanPassword);
         btnKembali = findViewById(R.id.btnKembali);
         mainLayout = findViewById(R.id.mainLayout);
+        backArrow = findViewById(R.id.backArrow);
     }
 
     private void Snack(String string) {

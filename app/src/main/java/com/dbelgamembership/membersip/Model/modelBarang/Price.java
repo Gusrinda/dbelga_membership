@@ -13,7 +13,13 @@ public class Price implements Serializable, Parcelable
 
     @SerializedName("harga")
     @Expose
-    private Integer harga;
+    private int harga;
+    @SerializedName("harga_dua")
+    @Expose
+    private int hargaDua;
+    @SerializedName("harga_tiga")
+    @Expose
+    private int hargaTiga;
     public final static Parcelable.Creator<Price> CREATOR = new Creator<Price>() {
 
 
@@ -30,30 +36,60 @@ public class Price implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -5759932736221394038L;
+    private final static long serialVersionUID = -640980402789663665L;
 
     protected Price(Parcel in) {
-        this.harga = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.harga = ((int) in.readValue((int.class.getClassLoader())));
+        this.hargaDua = ((int) in.readValue((int.class.getClassLoader())));
+        this.hargaTiga = ((int) in.readValue((int.class.getClassLoader())));
     }
 
     public Price() {
     }
 
-    public Integer getHarga() {
+    public int getHarga() {
         return harga;
     }
 
-    public void setHarga(Integer harga) {
+    public void setHarga(int harga) {
         this.harga = harga;
     }
 
-    public Price withHarga(Integer harga) {
+    public Price withHarga(int harga) {
         this.harga = harga;
+        return this;
+    }
+
+    public int getHargaDua() {
+        return hargaDua;
+    }
+
+    public void setHargaDua(int hargaDua) {
+        this.hargaDua = hargaDua;
+    }
+
+    public Price withHargaDua(int hargaDua) {
+        this.hargaDua = hargaDua;
+        return this;
+    }
+
+    public int getHargaTiga() {
+        return hargaTiga;
+    }
+
+    public void setHargaTiga(int hargaTiga) {
+        this.hargaTiga = hargaTiga;
+    }
+
+    public Price withHargaTiga(int hargaTiga) {
+        this.hargaTiga = hargaTiga;
         return this;
     }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(harga);
+        dest.writeValue(hargaDua);
+        dest.writeValue(hargaTiga);
     }
 
     public int describeContents() {

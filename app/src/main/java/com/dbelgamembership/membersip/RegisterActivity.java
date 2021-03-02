@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -37,6 +38,8 @@ public class RegisterActivity extends AppCompatActivity {
     String tanggal = "";
     public String url = Http.server, jsonResult, type, user;
 
+    ImageView backArrow;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +57,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         findID();
 
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         layoutTanggalLahir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,6 +169,7 @@ public class RegisterActivity extends AppCompatActivity {
         layoutTanggalLahir = findViewById(R.id.layoutTanggalLahir);
         btnLogin = findViewById(R.id.btnLogin);
         txt_emailPelanggan = findViewById(R.id.txt_emailPelanggan);
+        backArrow = findViewById(R.id.backArrow);
     }
 
 

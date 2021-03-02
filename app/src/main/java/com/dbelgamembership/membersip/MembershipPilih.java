@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -61,7 +62,7 @@ public class MembershipPilih extends AppCompatActivity {
     Spinner sp_Membership;
     CardView cardMember;
     RelativeLayout layoutCardMember;
-    TextView text_StatusMember, text_namaMember, infoLanjut;
+    TextView text_StatusMember, text_namaMember, infoLanjut, text_expiredMember;
     LinearLayout bintangPremium, bintangGold, layoutDetail;
     ScrollView memberRegular, memberGold;
     Button pilihMember;
@@ -70,6 +71,7 @@ public class MembershipPilih extends AppCompatActivity {
     String namaMember, alamatMember, nomorMember, tanggalMember, deadlinePayment, passwordMember, emailMember, expiredMembership;
     private String TAG = "";
 
+    ImageView backArrow;
     SimpleDateFormat formatExp, formatter, formatExpDate;
 
     @Override
@@ -91,8 +93,22 @@ public class MembershipPilih extends AppCompatActivity {
 
         findID();
 
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         cardMember.setVisibility(View.GONE);
         layoutDetail.setVisibility(View.GONE);
+
+        final Calendar tanggal1 = Calendar.getInstance();
+        tanggal1.add(Calendar.YEAR, 1);
+        Date tanggalTahun = tanggal1.getTime();
+        String deadlen = formatExp.format(tanggalTahun);
+        Log.e(TAG, "Tanggal Tahun : " + deadlen );
 
         sp_Membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -106,10 +122,11 @@ public class MembershipPilih extends AppCompatActivity {
                     image = getResources().getDrawable(R.drawable.member_premium);
                     bintangPremium.setVisibility(View.VISIBLE);
                     bintangGold.setVisibility(View.GONE);
-                    text_StatusMember.setText("PREMIUM");
+                    text_StatusMember.setText("REGULER");
                     layoutCardMember.setBackground(image);
                     memberRegular.setVisibility(View.VISIBLE);
                     memberGold.setVisibility(View.GONE);
+                    text_expiredMember.setText("TIDAK ADA EXPIRED");
                     text_namaMember.setText("MEMBER REGULAR");
                     choosenMembership = "REGULER";
                 } else {
@@ -120,6 +137,7 @@ public class MembershipPilih extends AppCompatActivity {
                     bintangGold.setVisibility(View.VISIBLE);
                     text_StatusMember.setText("DEBET");
                     layoutCardMember.setBackground(image);
+                    text_expiredMember.setText(deadlen);
                     memberRegular.setVisibility(View.GONE);
                     memberGold.setVisibility(View.VISIBLE);
                     text_namaMember.setText("MEMBER DEBET");
@@ -193,15 +211,21 @@ public class MembershipPilih extends AppCompatActivity {
                                 String deadlen = formatter.format(deadlineBayar);
 
                                 final Calendar expired = Calendar.getInstance();
-                                expired.add(Calendar.YEAR, 1);
+                                if (choosenMembership.equals("REGULER")) {
+                                    expired.add(Calendar.YEAR, 100);
+                                } else {
+                                    expired.add(Calendar.YEAR, 1);
+                                }
+
                                 Date expiredDate = expired.getTime();
                                 String expDate = formatExpDate.format(expiredDate);
 
                                 deadlinePayment = deadlen;
                                 expiredMembership = expDate;
 
+                                postData.put("expired_date", expiredMembership);
                                 postData.put("pay_date", deadlinePayment);
-//                                postData.put("date_member", expiredMembership);
+
                             } catch (Exception e) {
                                 e.getMessage();
                             }
@@ -266,24 +290,22 @@ public class MembershipPilih extends AppCompatActivity {
                                     String name = dataPengguna.getString("name");
                                     String email = dataPengguna.getString("main_email");
                                     String membership = dataPengguna.getString("status_member");
-                                    String createdDate = dataPengguna.getString("created_at");
+//                                    String createdDate = dataPengguna.getString("created_at");
                                     String deadlinePay = dataPengguna.getString("pay_date");
+                                    String dateExpired = dataPengguna.getString("expired_date");
 
-
-                                    Date created = formatter.parse(createdDate);
+                                    Date created = formatExpDate.parse(dateExpired);
                                     Calendar cal = Calendar.getInstance();
                                     cal.setTime(created);
-                                    Log.e(TAG, "Today : " + cal.getTime());
-                                    cal.add(Calendar.YEAR, 1);
-                                    Log.e(TAG, "Next year expired : " + cal.getTime());
-                                    Date nextYear = cal.getTime();
-                                    String expDate = formatExp.format(nextYear);
+                                    Log.e(TAG, "Expired member : " + cal.getTime());
+                                    Date expiredMember = cal.getTime();
+                                    String expDate = formatExp.format(expiredMember);
 
                                     Log.e("", "id User: " + id);
                                     Log.e("", "nama User: " + name);
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
-                                    Log.e("", "expired: " + deadlinePay);
+                                    Log.e("", "expired: " + expDate);
 
                                     Log.e("", "deadline: " + deadlinePay);
                                     sessionManager.setRegister(true, id, name, email, membership, expDate);
@@ -365,6 +387,8 @@ public class MembershipPilih extends AppCompatActivity {
         memberRegular = findViewById(R.id.infoMemberReguler);
         memberGold = findViewById(R.id.infoMemberGold);
         pilihMember = findViewById(R.id.btnPilihMembership);
+        text_expiredMember = findViewById(R.id.txtExpDate);
+        backArrow = findViewById(R.id.backArrow);
 
     }
 

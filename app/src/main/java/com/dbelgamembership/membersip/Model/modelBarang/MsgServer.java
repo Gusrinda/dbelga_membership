@@ -13,7 +13,7 @@ public class MsgServer implements Serializable, Parcelable
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private int id;
     @SerializedName("company_code")
     @Expose
     private String companyCode;
@@ -25,13 +25,13 @@ public class MsgServer implements Serializable, Parcelable
     private String name;
     @SerializedName("kategori")
     @Expose
-    private Integer kategori;
+    private int kategori;
     @SerializedName("sub_kategori")
     @Expose
-    private Integer subKategori;
+    private int subKategori;
     @SerializedName("merek")
     @Expose
-    private Integer merek;
+    private int merek;
     @SerializedName("lebar")
     @Expose
     private String lebar;
@@ -49,22 +49,22 @@ public class MsgServer implements Serializable, Parcelable
     private String berat;
     @SerializedName("stok_minimal")
     @Expose
-    private Integer stokMinimal;
+    private int stokMinimal;
     @SerializedName("satuan_dipakai")
     @Expose
     private String satuanDipakai;
     @SerializedName("satuan_terkecil")
     @Expose
-    private Integer satuanTerkecil;
+    private int satuanTerkecil;
     @SerializedName("nilai_konversi_satuan_terkecil")
     @Expose
-    private Integer nilaiKonversiSatuanTerkecil;
+    private int nilaiKonversiSatuanTerkecil;
     @SerializedName("satuan_terbesar")
     @Expose
-    private Integer satuanTerbesar;
+    private int satuanTerbesar;
     @SerializedName("nilai_konversi_satuan_terbesar")
     @Expose
-    private Integer nilaiKonversiSatuanTerbesar;
+    private int nilaiKonversiSatuanTerbesar;
     @SerializedName("type_asset")
     @Expose
     private String typeAsset;
@@ -97,16 +97,22 @@ public class MsgServer implements Serializable, Parcelable
     private String statusProduct;
     @SerializedName("satuan_tengah")
     @Expose
-    private Integer satuanTengah;
+    private int satuanTengah;
     @SerializedName("nilai_konversi_satuan_tengah")
     @Expose
-    private Integer nilaiKonversiSatuanTengah;
+    private int nilaiKonversiSatuanTengah;
     @SerializedName("images")
     @Expose
     private String images;
     @SerializedName("nama_kategori")
     @Expose
     private String namaKategori;
+    @SerializedName("merek_produk")
+    @Expose
+    private String merekProduk;
+    @SerializedName("stok")
+    @Expose
+    private int stok;
     @SerializedName("price")
     @Expose
     private Price price;
@@ -126,27 +132,27 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -3165648970883061238L;
+    private final static long serialVersionUID = 6677352058098636840L;
 
     protected MsgServer(Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.kategori = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.subKategori = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.merek = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.kategori = ((int) in.readValue((int.class.getClassLoader())));
+        this.subKategori = ((int) in.readValue((int.class.getClassLoader())));
+        this.merek = ((int) in.readValue((int.class.getClassLoader())));
         this.lebar = ((String) in.readValue((String.class.getClassLoader())));
         this.panjang = ((String) in.readValue((String.class.getClassLoader())));
         this.tinggi = ((String) in.readValue((String.class.getClassLoader())));
         this.diameter = ((String) in.readValue((String.class.getClassLoader())));
         this.berat = ((String) in.readValue((String.class.getClassLoader())));
-        this.stokMinimal = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.stokMinimal = ((int) in.readValue((int.class.getClassLoader())));
         this.satuanDipakai = ((String) in.readValue((String.class.getClassLoader())));
-        this.satuanTerkecil = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.nilaiKonversiSatuanTerkecil = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.satuanTerbesar = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.nilaiKonversiSatuanTerbesar = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.satuanTerkecil = ((int) in.readValue((int.class.getClassLoader())));
+        this.nilaiKonversiSatuanTerkecil = ((int) in.readValue((int.class.getClassLoader())));
+        this.satuanTerbesar = ((int) in.readValue((int.class.getClassLoader())));
+        this.nilaiKonversiSatuanTerbesar = ((int) in.readValue((int.class.getClassLoader())));
         this.typeAsset = ((String) in.readValue((String.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
         this.barcode = ((String) in.readValue((String.class.getClassLoader())));
@@ -157,25 +163,27 @@ public class MsgServer implements Serializable, Parcelable
         this.typeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.varianProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.statusProduct = ((String) in.readValue((String.class.getClassLoader())));
-        this.satuanTengah = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.nilaiKonversiSatuanTengah = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.satuanTengah = ((int) in.readValue((int.class.getClassLoader())));
+        this.nilaiKonversiSatuanTengah = ((int) in.readValue((int.class.getClassLoader())));
         this.images = ((String) in.readValue((String.class.getClassLoader())));
         this.namaKategori = ((String) in.readValue((String.class.getClassLoader())));
+        this.merekProduk = ((String) in.readValue((String.class.getClassLoader())));
+        this.stok = ((int) in.readValue((int.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public MsgServer withId(Integer id) {
+    public MsgServer withId(int id) {
         this.id = id;
         return this;
     }
@@ -219,41 +227,41 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public Integer getKategori() {
+    public int getKategori() {
         return kategori;
     }
 
-    public void setKategori(Integer kategori) {
+    public void setKategori(int kategori) {
         this.kategori = kategori;
     }
 
-    public MsgServer withKategori(Integer kategori) {
+    public MsgServer withKategori(int kategori) {
         this.kategori = kategori;
         return this;
     }
 
-    public Integer getSubKategori() {
+    public int getSubKategori() {
         return subKategori;
     }
 
-    public void setSubKategori(Integer subKategori) {
+    public void setSubKategori(int subKategori) {
         this.subKategori = subKategori;
     }
 
-    public MsgServer withSubKategori(Integer subKategori) {
+    public MsgServer withSubKategori(int subKategori) {
         this.subKategori = subKategori;
         return this;
     }
 
-    public Integer getMerek() {
+    public int getMerek() {
         return merek;
     }
 
-    public void setMerek(Integer merek) {
+    public void setMerek(int merek) {
         this.merek = merek;
     }
 
-    public MsgServer withMerek(Integer merek) {
+    public MsgServer withMerek(int merek) {
         this.merek = merek;
         return this;
     }
@@ -323,15 +331,15 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public Integer getStokMinimal() {
+    public int getStokMinimal() {
         return stokMinimal;
     }
 
-    public void setStokMinimal(Integer stokMinimal) {
+    public void setStokMinimal(int stokMinimal) {
         this.stokMinimal = stokMinimal;
     }
 
-    public MsgServer withStokMinimal(Integer stokMinimal) {
+    public MsgServer withStokMinimal(int stokMinimal) {
         this.stokMinimal = stokMinimal;
         return this;
     }
@@ -349,54 +357,54 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public Integer getSatuanTerkecil() {
+    public int getSatuanTerkecil() {
         return satuanTerkecil;
     }
 
-    public void setSatuanTerkecil(Integer satuanTerkecil) {
+    public void setSatuanTerkecil(int satuanTerkecil) {
         this.satuanTerkecil = satuanTerkecil;
     }
 
-    public MsgServer withSatuanTerkecil(Integer satuanTerkecil) {
+    public MsgServer withSatuanTerkecil(int satuanTerkecil) {
         this.satuanTerkecil = satuanTerkecil;
         return this;
     }
 
-    public Integer getNilaiKonversiSatuanTerkecil() {
+    public int getNilaiKonversiSatuanTerkecil() {
         return nilaiKonversiSatuanTerkecil;
     }
 
-    public void setNilaiKonversiSatuanTerkecil(Integer nilaiKonversiSatuanTerkecil) {
+    public void setNilaiKonversiSatuanTerkecil(int nilaiKonversiSatuanTerkecil) {
         this.nilaiKonversiSatuanTerkecil = nilaiKonversiSatuanTerkecil;
     }
 
-    public MsgServer withNilaiKonversiSatuanTerkecil(Integer nilaiKonversiSatuanTerkecil) {
+    public MsgServer withNilaiKonversiSatuanTerkecil(int nilaiKonversiSatuanTerkecil) {
         this.nilaiKonversiSatuanTerkecil = nilaiKonversiSatuanTerkecil;
         return this;
     }
 
-    public Integer getSatuanTerbesar() {
+    public int getSatuanTerbesar() {
         return satuanTerbesar;
     }
 
-    public void setSatuanTerbesar(Integer satuanTerbesar) {
+    public void setSatuanTerbesar(int satuanTerbesar) {
         this.satuanTerbesar = satuanTerbesar;
     }
 
-    public MsgServer withSatuanTerbesar(Integer satuanTerbesar) {
+    public MsgServer withSatuanTerbesar(int satuanTerbesar) {
         this.satuanTerbesar = satuanTerbesar;
         return this;
     }
 
-    public Integer getNilaiKonversiSatuanTerbesar() {
+    public int getNilaiKonversiSatuanTerbesar() {
         return nilaiKonversiSatuanTerbesar;
     }
 
-    public void setNilaiKonversiSatuanTerbesar(Integer nilaiKonversiSatuanTerbesar) {
+    public void setNilaiKonversiSatuanTerbesar(int nilaiKonversiSatuanTerbesar) {
         this.nilaiKonversiSatuanTerbesar = nilaiKonversiSatuanTerbesar;
     }
 
-    public MsgServer withNilaiKonversiSatuanTerbesar(Integer nilaiKonversiSatuanTerbesar) {
+    public MsgServer withNilaiKonversiSatuanTerbesar(int nilaiKonversiSatuanTerbesar) {
         this.nilaiKonversiSatuanTerbesar = nilaiKonversiSatuanTerbesar;
         return this;
     }
@@ -531,28 +539,28 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public Integer getSatuanTengah() {
+    public int getSatuanTengah() {
         return satuanTengah;
     }
 
-    public void setSatuanTengah(Integer satuanTengah) {
+    public void setSatuanTengah(int satuanTengah) {
         this.satuanTengah = satuanTengah;
     }
 
-    public MsgServer withSatuanTengah(Integer satuanTengah) {
+    public MsgServer withSatuanTengah(int satuanTengah) {
         this.satuanTengah = satuanTengah;
         return this;
     }
 
-    public Integer getNilaiKonversiSatuanTengah() {
+    public int getNilaiKonversiSatuanTengah() {
         return nilaiKonversiSatuanTengah;
     }
 
-    public void setNilaiKonversiSatuanTengah(Integer nilaiKonversiSatuanTengah) {
+    public void setNilaiKonversiSatuanTengah(int nilaiKonversiSatuanTengah) {
         this.nilaiKonversiSatuanTengah = nilaiKonversiSatuanTengah;
     }
 
-    public MsgServer withNilaiKonversiSatuanTengah(Integer nilaiKonversiSatuanTengah) {
+    public MsgServer withNilaiKonversiSatuanTengah(int nilaiKonversiSatuanTengah) {
         this.nilaiKonversiSatuanTengah = nilaiKonversiSatuanTengah;
         return this;
     }
@@ -580,6 +588,32 @@ public class MsgServer implements Serializable, Parcelable
 
     public MsgServer withNamaKategori(String namaKategori) {
         this.namaKategori = namaKategori;
+        return this;
+    }
+
+    public String getMerekProduk() {
+        return merekProduk;
+    }
+
+    public void setMerekProduk(String merekProduk) {
+        this.merekProduk = merekProduk;
+    }
+
+    public MsgServer withMerekProduk(String merekProduk) {
+        this.merekProduk = merekProduk;
+        return this;
+    }
+
+    public int getStok() {
+        return stok;
+    }
+
+    public void setStok(int stok) {
+        this.stok = stok;
+    }
+
+    public MsgServer withStok(int stok) {
+        this.stok = stok;
         return this;
     }
 
@@ -629,6 +663,8 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(nilaiKonversiSatuanTengah);
         dest.writeValue(images);
         dest.writeValue(namaKategori);
+        dest.writeValue(merekProduk);
+        dest.writeValue(stok);
         dest.writeValue(price);
     }
 

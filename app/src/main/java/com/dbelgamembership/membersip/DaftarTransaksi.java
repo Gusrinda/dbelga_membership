@@ -2,6 +2,7 @@ package com.dbelgamembership.membersip;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +28,6 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Adapter.AdapterListTransaksi;
-import com.dbelgamembership.membersip.Adapter.AdapterListVoucher;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.Datum;
@@ -53,6 +53,8 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
     private AdapterListTransaksi adapterListTransaksi;
     private LinearLayoutManager layoutManager;
 
+    Toolbar toolbar;
+
     //TestData
     String idUser;
     EditText txt_CariTransaksi;
@@ -65,6 +67,17 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
         setContentView(R.layout.activity_daftar_transaksi);
         sessionManager = new SessionManager(this);
         findID();
+
+
+
+        toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
 
         layoutManager = new LinearLayoutManager(this);
         rvTransaksi.setLayoutManager(layoutManager);
@@ -212,6 +225,8 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
         rvTransaksi = findViewById(R.id.rv_Transaksi);
 
         txt_CariTransaksi.setFocusable(false);
+
+        toolbar = findViewById(R.id.toolbar);
     }
 
 

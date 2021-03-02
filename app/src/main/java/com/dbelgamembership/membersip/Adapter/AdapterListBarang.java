@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.KatalogActivity;
 import com.dbelgamembership.membersip.Model.ModelKatalog;
 import com.dbelgamembership.membersip.R;
@@ -30,6 +32,8 @@ public class AdapterListBarang extends
 
     private static final String TAG = AdapterListBarang.class.getSimpleName();
 
+    SessionManager sessionManager;
+    String member;
 
     private Context context;
     private List<ModelKatalog> list;
@@ -45,6 +49,9 @@ public class AdapterListBarang extends
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        sessionManager = new SessionManager(context);
+        member = sessionManager.getMembership();
+        Log.e(TAG, "Status Membership : " + member );
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_barang,
                 parent, false);
         return new ViewHolder(view);
@@ -93,18 +100,52 @@ public class AdapterListBarang extends
                 holder.tvStokOutlet.setText(" < 25");
             } else if (cekStok >= 25 && cekStok < 50) {
                 holder.tvStokOutlet.setText(" < 50");
-            } else if (cekStok > 50) {
+            } else if (cekStok >= 50) {
                 holder.tvStokOutlet.setText(" > 50");
-            } else {
+            } else if (cekStok == 0 || cekStok < 0){
                 holder.tvStokOutlet.setText("KOSONG");
             }
 
+            Log.e(TAG, "NAMA BARANG : " + item.getNama_barang() );
+            Log.e(TAG, "STOK : " + cekStok );
+
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
-            String testHarga = "Rp. " + nf.format(Long.parseLong(item.getHarga_barang()));
-//            Log.e(TAG, "hargaBarang: " + testHarga );
-            holder.hargaBarang.setText(testHarga);
+            if (holder.tvStokOutlet.getText().toString().equals("KOSONG")) {
+                holder.hargaBarang.setText("? (Harga Belum Diketahui)");
+            } else {
+                String hargaBarang = "";
+                String hargaCoret = "";
+                long hargaBarang2 = 0;
+                long hargaCoret2 = 0;
 
+                if (member.equals("REGULER")) {
+                    Log.e(TAG, "harga 1" );
+                    hargaBarang = item.getHarga_barang();
+                } else if (member.equals("DEBET")) {
+                    Log.e(TAG, "harga 2" );
+                    holder.hargaDiskonBarang.setVisibility(View.VISIBLE);
+                    hargaCoret = item.getHarga_barang();
+                    hargaBarang = item.getHarga_2();
+                }
+
+                if (hargaBarang == "") {
+                    hargaBarang2 = 0;
+                } else {
+                    hargaBarang2 = Long.parseLong(hargaBarang);
+                }
+
+                if (hargaCoret == "") {
+                    hargaCoret2 = 0;
+                } else {
+                    hargaCoret2 = Long.parseLong(hargaCoret);
+                }
+
+                String testHarga = "Rp. " + nf.format(hargaBarang2);
+                String testHargaCoret = "Rp. " + nf.format(hargaCoret2);
+                holder.hargaDiskonBarang.setText(testHargaCoret);
+                holder.hargaBarang.setText(testHarga);
+            }
 
             holder.barangItem.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -112,6 +153,7 @@ public class AdapterListBarang extends
                     mAdapterCallback.AdapterListBarangClicked(item);
                 }
             });
+
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder: error" + e.getMessage());
         }
@@ -130,17 +172,6 @@ public class AdapterListBarang extends
         }
     }
 
-//    public void clear() {
-//        int size = this.list.size();
-//        this.list.clear();
-//        notifyItemRangeRemoved(0, size);
-//    }
-
-//    public void addItems(List<ModelKatalog> items) {
-//        this.list.addAll(this.list.size(), items);
-//        notifyDataSetChanged();
-//    }
-
 
     public interface AdapterListBarangCallback {
         void AdapterListBarangClicked(ModelKatalog position);
@@ -150,7 +181,7 @@ public class AdapterListBarang extends
         @BindView(R.id.imageBarang)
         ImageView imageBarang;
         @BindView(R.id.barangItem)
-        LinearLayout barangItem;
+        CardView barangItem;
         @BindView(R.id.namaBarang)
         TextView namaBarang;
         @BindView(R.id.kategoriBarang)

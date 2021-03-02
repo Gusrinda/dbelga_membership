@@ -36,6 +36,7 @@ import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.MainActivity;
 import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
 import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
+import com.dbelgamembership.membersip.Model.modelListFaktur.ModelListFaktur;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaksi;
 import com.dbelgamembership.membersip.PrintActivity;
 import com.dbelgamembership.membersip.PrintFakturActivity;
@@ -68,7 +69,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
     String idUser;
     EditText txt_CariTransaksi;
     RecyclerView rvTransaksi;
-    private List<com.dbelgamembership.membersip.Model.ModelPayment.Datum> itemlist = new ArrayList<>();
+    private List<com.dbelgamembership.membersip.Model.modelListFaktur.Datum> itemlist = new ArrayList<>();
 
 
     private String mParam1;
@@ -101,13 +102,13 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
 
     private void getDataUser() {
         idUser = sessionManager.getPID();
-        Log.e(TAG, "ID USER SEARCH : " + idUser );
+        Log.e(TAG, "ID USER SEARCH : " + idUser);
         url = url + "payment/list/";
         getDataTransaksi();
     }
 
     private void getDataTransaksi() {
-        Log.e(TAG, "URL : " + url );
+        Log.e(TAG, "URL : " + url);
         final ProgressDialog dialog1 = new ProgressDialog(FakturFragment.this.getContext());
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -124,7 +125,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                             itemlist.clear();
                             if (response != null) {
                                 Gson gson = new Gson();
-                                ModelPayment modelListTransaction = gson.fromJson(String.valueOf(response), ModelPayment.class);
+                                ModelListFaktur modelListTransaction = gson.fromJson(String.valueOf(response), ModelListFaktur.class);
                                 itemlist = modelListTransaction.getData();
                                 if (itemlist.size() > 0) {
 
@@ -135,17 +136,16 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                                         }
                                     }
 
-                                    Collections.sort(itemlist, new Comparator<com.dbelgamembership.membersip.Model.ModelPayment.Datum>() {
+                                    Collections.sort(itemlist, new Comparator<com.dbelgamembership.membersip.Model.modelListFaktur.Datum>() {
                                         @Override
-                                        public int compare(com.dbelgamembership.membersip.Model.ModelPayment.Datum datum, Datum t1) {
+                                        public int compare(com.dbelgamembership.membersip.Model.modelListFaktur.Datum datum, com.dbelgamembership.membersip.Model.modelListFaktur.Datum t1) {
                                             return t1.getDateTransaction().compareToIgnoreCase(datum.getDateTransaction());
                                         }
-
                                     });
 
-                                    Log.e(TAG, "Hasil " + itemlist.toString() );
+                                    Log.e(TAG, "Hasil " + itemlist.toString());
 
-                                    adapterListTransaksi = new AdapterListTransaksiPayment(getContext(), -1, itemlist,  FakturFragment.this::onRowAdapterListTransactionClicked);
+                                    adapterListTransaksi = new AdapterListTransaksiPayment(getContext(), -1, itemlist, FakturFragment.this::onRowAdapterListTransactionClicked);
                                     rvTransaksi.setAdapter(adapterListTransaksi);
                                 } else {
                                     Snack("Data Tidak Ditemukan 1");
@@ -245,7 +245,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
     public void onRowAdapterListTransactionClicked(int position) {
         Intent intent = new Intent(getContext(), PrintFakturActivity.class);
         String DataOOS = itemlist.get(position).getPembayaranCode();
-        Log.e(TAG, "onRowAdapterListTransactionClicked: "+DataOOS );
+        Log.e(TAG, "onRowAdapterListTransactionClicked: " + DataOOS);
         intent.putExtra("DATAPRINT", DataOOS);
         intent.putExtra("FAKTUR", true);
         startActivity(intent);

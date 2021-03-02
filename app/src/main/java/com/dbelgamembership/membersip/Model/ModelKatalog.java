@@ -14,17 +14,9 @@ public class ModelKatalog implements Parcelable {
         this.harga_promo = harga_promo;
     }
 
-    String id, nama_barang, merk_barang, kategori_barang, harga_diskon, harga_barang,harga_promo, kode_barang, stok, barcode, images, deskripsi  ;
+    String id, nama_barang, merk_barang, kategori_barang, harga_diskon, harga_barang,harga_promo, kode_barang, stok, barcode, images, deskripsi, harga_2, harga_3  ;
 
     public ModelKatalog() {
-    }
-
-    public String getDeskripsi() {
-        return deskripsi;
-    }
-
-    public void setDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
     }
 
     public String getId() {
@@ -107,6 +99,30 @@ public class ModelKatalog implements Parcelable {
         this.kategori_barang = kategori_barang;
     }
 
+    public String getDeskripsi() {
+        return deskripsi;
+    }
+
+    public void setDeskripsi(String deskripsi) {
+        this.deskripsi = deskripsi;
+    }
+
+    public String getHarga_2() {
+        return harga_2;
+    }
+
+    public void setHarga_2(String harga_2) {
+        this.harga_2 = harga_2;
+    }
+
+    public String getHarga_3() {
+        return harga_3;
+    }
+
+    public void setHarga_3(String harga_3) {
+        this.harga_3 = harga_3;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -126,6 +142,8 @@ public class ModelKatalog implements Parcelable {
         dest.writeString(this.barcode);
         dest.writeString(this.images);
         dest.writeString(this.deskripsi);
+        dest.writeString(this.harga_2);
+        dest.writeString(this.harga_3);
     }
 
     protected ModelKatalog(Parcel in) {
@@ -141,6 +159,8 @@ public class ModelKatalog implements Parcelable {
         this.barcode = in.readString();
         this.images = in.readString();
         this.deskripsi = in.readString();
+        this.harga_2 = in.readString();
+        this.harga_3 = in.readString();
     }
 
     public static final Creator<ModelKatalog> CREATOR = new Creator<ModelKatalog>() {

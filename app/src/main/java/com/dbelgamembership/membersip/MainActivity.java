@@ -1,5 +1,6 @@
 package com.dbelgamembership.membersip;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
@@ -9,7 +10,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -23,32 +26,47 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
+import com.dbelgamembership.membersip.Model.ModelWish.Price;
+import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -60,17 +78,27 @@ public class MainActivity extends AppCompatActivity {
     RelativeLayout btnAkunSaya, btnBelanja, btnTransaksiSaya, btnKeluar;
     SessionManager sessionManager;
 
+    private int barangStok, barangIndent;
+
     CircleImageView profilUser;
     RelativeLayout layoutCardMember;
-    LinearLayout bintangPremium, bintangGold;
+    LinearLayout bintangPremium, bintangGold, layoutExpired;
     private String TAG = "";
-    SimpleDateFormat formatExp;
+    SimpleDateFormat formatExp, formatExpDate, formatter;
     String urlImage;
     String birthMember;
 
-    String todayString, birthday;
+    String idCustomer;
+
+    String todayString, todayBirthday, birthday;
 
     ImageSlider imageSlider;
+
+
+    AdapterListWishlist adapterListSearchBarang;
+    ArrayList<WishlistDetail> arrayBarang = new ArrayList<WishlistDetail>();
+    List<String> arrayKategori = new ArrayList<String>();
+    List<WishlistDetail> listDetail = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +107,13 @@ public class MainActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         formatExp = new SimpleDateFormat("dd-MM-yyyy");
+        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
 
 //        formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
         findID();
-        getDataUser();
+        getDateServer();
+//        getDataUser();
 
         btnAkunSaya.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +156,67 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void getDateServer() {
+        url = Http.server;
+        url = url + "get-date";
+
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Log.e("", "onResponse: " + response);
+                            try {
+                                String responseX = String.valueOf(response);
+                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                Log.e("", "Test Tanggal : " + success);
+                                if (success == false) {
+                                    Toast.makeText(MainActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
+                                } else {
+//                                    JSONObject jsonObject = response.getJSONObject("msgServer");
+                                    String tanggalServer = root.get("msgServer").getAsString();
+                                    Log.e(TAG, "tanggal server : " + tanggalServer );
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    Date tanggal = formatter.parse(tanggalServer);
+
+                                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                                    String strDate = dateFormat.format(tanggal);
+
+                                    todayString = strDate;
+
+                                    Log.e(TAG, "Tanggal sekarang fix sudah diformat : " + todayString );
+
+
+                                    getDataUser();
+
+                                }
+                            } catch (JSONException | ParseException e ) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            Toast.makeText(MainActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+                        Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
+
+    }
+
     private void getDataUser() {
         url = Http.server;
         url = url + "search-customer/" + sessionManager.getPID();
@@ -152,29 +244,32 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     JSONObject jsonObject = response.getJSONObject("msgServer");
                                     String status_member = jsonObject.getString("status_member");
-                                    String updated_at = jsonObject.getString("updated_at");
+//                                    String updated_at = jsonObject.getString("updated_at");
+                                    String expiredMember = jsonObject.getString("expired_date");
                                     String ulangTahun = jsonObject.getString("date_birth");
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     SimpleDateFormat formatEXP = new SimpleDateFormat("yyyy-MM-dd");
+                                    SimpleDateFormat formatHariIni = new SimpleDateFormat("dd-MM-yyyy");
 
 
                                     Date birth = formatEXP.parse(ulangTahun);
-                                    Date todayDate = Calendar.getInstance().getTime();
+                                    Date todayDate = formatHariIni.parse(todayString);
                                     SimpleDateFormat formatToday = new SimpleDateFormat("MM-dd");
-                                    todayString = formatToday.format(todayDate);
+
+                                    todayBirthday = formatToday.format(todayDate);
                                     birthday = formatToday.format(birth);
 
-                                    Date created = formatter.parse(updated_at);
+                                    Date created = formatter.parse(expiredMember);
                                     Calendar cal = Calendar.getInstance();
 
-                                    Log.e(TAG, "Today : " + todayString);
+                                    Log.e(TAG, "Today : " + todayBirthday);
                                     Log.e(TAG, "Birthday : " + birthday);
                                     cal.setTime(created);
 //                                    Log.e(TAG, "Today : " + cal.getTime());
-                                    cal.add(Calendar.YEAR, 1);
-                                    Log.e(TAG, "Next year expired : " + cal.getTime());
-                                    Date nextYear = cal.getTime();
-                                    String expDate = formatExp.format(nextYear);
+//                                    cal.add(Calendar.YEAR, 1);
+//                                    Log.e(TAG, "Next year expired : " + cal.getTime());
+                                    Date expired = cal.getTime();
+                                    String expDate = formatExp.format(expired);
                                     Log.e("", "status member: " + status_member);
                                     Log.e("", "expired date: " + expDate);
                                     urlImage = jsonObject.getString("image_customer");
@@ -192,6 +287,7 @@ public class MainActivity extends AppCompatActivity {
                                     sessionManager.setExpiredDate(expDate);
                                     statusMember = sessionManager.getMembership();
                                     cekMember();
+                                    getDataWishlist();
                                 }
                             } catch (JSONException | ParseException e) {
                                 e.printStackTrace();
@@ -217,6 +313,161 @@ public class MainActivity extends AppCompatActivity {
 
         mQueue.add(jsonObjectRequest);
     }
+
+    private void getDataWishlist() {
+        idCustomer = sessionManager.getPID();
+        url = Http.server + "wishlist-daftar";
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest arrReq = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            if (response.length() > 1) {
+                                Gson gson = new Gson();
+                                ModelWish modelListItem = gson.fromJson(response, ModelWish.class);
+                                List<com.dbelgamembership.membersip.Model.ModelWish.MsgServer> modelItem = modelListItem.getMsgServer();
+
+                                Log.e(TAG, "Nama Set : " + idCustomer );
+
+                                Log.e(TAG, "SIZE 1 : " + modelItem.size() );
+
+                                for (int i = modelItem.size() - 1; i >= 0; i--) {
+                                    if (modelItem.get(i).getWishlistDetail().size() == 0) {
+                                        modelItem.remove(i);
+                                    }
+                                }
+
+                                Log.e(TAG, "SIZE 2 : " + modelItem.size() );
+
+                                for (int i = modelItem.size() - 1; i >= 0; i--) {
+                                    if (modelItem.get(i).getIdCustomer() != Integer.parseInt(idCustomer)) {
+                                        Log.e(TAG, "Yang dihapus : " + modelItem.get(i).getIdCustomer());
+                                        modelItem.remove(i);
+                                    } else {
+                                        Log.e(TAG, "Ini user sama : " + modelItem.get(i).getIdCustomer() );
+                                        listDetail = modelItem.get(i).getWishlistDetail();
+                                    }
+                                }
+
+                                Log.e(TAG, "list size : "+ listDetail.size()  );
+
+                                int stokBarang;
+
+                                if (listDetail.size() > 0) {
+                                    arrayBarang.clear();
+                                    for (WishlistDetail itemData : listDetail) {
+                                        stokBarang = 0;
+                                        WishlistDetail pm = new WishlistDetail();
+                                        pm.setIdProduct((itemData.getIdProduct()));
+                                        pm.setName(itemData.getName());
+                                        pm.setGambar(itemData.getGambar());
+                                        pm.setCodeProduct(String.valueOf(itemData.getCodeProduct()));
+                                        pm.setQtyStok(itemData.getQtyStok());
+                                        Price hargaBarang = itemData.getPrice();
+                                        pm.setPrice(hargaBarang);
+
+                                        stokBarang = itemData.getQtyStok();
+                                        Log.e(TAG, "Stok barang : " + stokBarang );
+
+                                        if (stokBarang == 0 ) {
+                                            barangIndent++;
+                                        } else if (stokBarang > 0 ) {
+                                            barangStok++;
+                                        }
+
+                                        Log.e(TAG, "barang stok wishlist: " + barangStok );
+                                        Log.e(TAG, "barang stok indent : " + barangIndent );
+
+                                        arrayBarang.add(pm);
+                                    }
+                                } else {
+//                                    Toast.makeText(MainActivity.this, "Tidak ada wishlist !", Toast.LENGTH_SHORT).show();
+                                    Snack("Wishlist Kosong");
+                                }
+                                Log.e(TAG, "Array barang size : " + arrayBarang.size() );
+                                if (barangStok > 0) {
+                                    notifikasiStokWishlist();
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "onResponse: Error " + e);
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mSwipeRefreshLayout.setRefreshing(false);
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                if (error instanceof AuthFailureError) {
+                    sessionManager.destroySession();
+                    Intent intent = new Intent(getApplicationContext(), KatalogActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+
+                } else if (error instanceof NetworkError) {
+                    Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    Snack(error.getMessage());
+                    Toast.makeText(MainActivity.this, "error : lod" + error.getMessage(), Toast.LENGTH_LONG).show();
+                    androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
+                    builder1.setTitle("Peringatan");
+                    builder1.setMessage("Terjadi Kesalahan\nIngin memuat ulang?");
+                    builder1.setCancelable(false);
+                    builder1.setPositiveButton(
+                            "Ya",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    getDataWishlist();
+                                }
+                            });
+                    builder1.setNegativeButton(
+                            "Tidak",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    finish();
+                                }
+                            });
+                    final androidx.appcompat.app.AlertDialog alert11 = builder1.create();
+                    alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                        }
+                    });
+                    alert11.show();
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
+                return params;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(arrReq);
+    }
+
+
 
     @Override
     public void onBackPressed() {
@@ -267,7 +518,10 @@ public class MainActivity extends AppCompatActivity {
         namaMember.setText(namaPendek.toUpperCase());
 
         if (!urlImage.equals("")) {
-            Glide.with(this).asBitmap().load(urlImage).centerCrop().into(profilUser);
+            Glide.with(MainActivity.this).asBitmap().load(urlImage).centerCrop().into(profilUser);
+        } else {
+            image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+            profilUser.setImageDrawable(image);
         }
 
         if (statusMember.equals("REGULER")) {
@@ -276,12 +530,14 @@ public class MainActivity extends AppCompatActivity {
             bintangGold.setVisibility(View.GONE);
 //            statusMembership.setText("REGULER");
             layoutCardMember.setBackground(image);
+            layoutExpired.setVisibility(View.GONE);
         } else if (statusMember.equals("DEBET")) {
             image = getResources().getDrawable(R.drawable.card_debet);
             bintangPremium.setVisibility(View.GONE);
             bintangGold.setVisibility(View.VISIBLE);
 //            statusMembership.setText("DEBET");
             layoutCardMember.setBackground(image);
+            layoutExpired.setVisibility(View.VISIBLE);
         }
 
         //SetupSlider
@@ -292,7 +548,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupSlider() {
         List<SlideModel> models = new ArrayList<>();
 
-        if (todayString.equals(birthday)) {
+        if (todayBirthday.equals(birthday)) {
             models.add(new SlideModel("https://www.tokodapur.com/wp-content/uploads/2017/08/Banner-TD-Ultah-page.jpg", ScaleTypes.FIT)); // Banner ulang tahun
             notificationBirthDay();
         }
@@ -334,17 +590,49 @@ public class MainActivity extends AppCompatActivity {
         mNotificationManager.notify(0, mBuilder.build());
     }
 
-    private void cekNotificationExpired() {
-        final Calendar today = Calendar.getInstance();
-        Date tanggalSekarang = today.getTime();
-        String tanggalNow = formatExp.format(tanggalSekarang);
+    private void notifikasiStokWishlist() {
+        NotificationManager mNotificationManager;
+        String pesanExpired = barangStok + " Barang di Wishlist anda sudah ready stok !\nSegera buat pesanan dengan menghubungi sales terdekat !";
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(MainActivity.this, "notify_001");
+        Intent ii = new Intent(MainActivity.this, WishlishActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii, 0);
 
-        Log.e(TAG, "Tanggal Sekarang : " + tanggalNow);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setSmallIcon(R.drawable.ic_baseline_shopping_cart_24);
+        mBuilder.setContentTitle("Barangmu sudah ada !");
+        mBuilder.setContentText(pesanExpired);
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(pesanExpired));
+
+        mNotificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // === Removed some obsoletes
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "Your_channel_id";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(channel);
+            mBuilder.setChannelId(channelId);
+        }
+
+        mNotificationManager.notify(0, mBuilder.build());
+    }
+
+    private void cekNotificationExpired() {
+//        final Calendar today = Calendar.getInstance();
+//        Date tanggalSekarang = today.getTime();
+//        String tanggalNow = formatExp.format(tanggalSekarang);
+
+        Log.e(TAG, "Tanggal Sekarang : " + todayString);
         Log.e(TAG, "Tanggal Expired : " + sessionManager.getExpiredDate());
 
 
         try {
-            Date sekarangDate = formatExp.parse(tanggalNow);
+            Date sekarangDate = formatExp.parse(todayString);
             Date expiredDate = formatExp.parse(sessionManager.getExpiredDate());
 
             long millisecondsDateNow = sekarangDate.getTime();
@@ -356,9 +644,8 @@ public class MainActivity extends AppCompatActivity {
 
             int days = (int) (count / (1000 * 60 * 60 * 24));
 
-            if (count <= 604800000) {
+            if (count <= 604800000 && count > 0) {
                 String pesanExpired = "Akun anda " + days + " hari menuju expired !\nLakukan pendaftaran akun member anda kembali pada halaman 'Akun Saya'";
-
 
                 NotificationManager mNotificationManager;
 
@@ -389,18 +676,75 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 mNotificationManager.notify(0, mBuilder.build());
+                Log.e(TAG, "cekNotificationExpired 7 hari");
+            } else if (count <= 0) {
+                String pesanExpired = "Akun anda telah expired !\nAnda akan diberikan waktu tenggang selama 3 hari untuk perpanjangan dan pelunasan";
 
+                NotificationManager mNotificationManager;
 
-//                Intent intent = new Intent(MainActivity.this, AkunSaya.class);
-//                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//
-//                PendingIntent pendingIntent = PendingIntent.getActivity(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//                builder.setContentIntent(pendingIntent);
-//
-//                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//                notificationManager.notify(0, builder.build());
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(MainActivity.this, "notify_001");
+                Intent ii = new Intent(MainActivity.this, AkunSaya.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii, 0);
 
-                Log.e(TAG, "cekNotificationExpired");
+                mBuilder.setContentIntent(pendingIntent);
+                mBuilder.setSmallIcon(R.drawable.ic_baseline_notifications_active_24);
+                mBuilder.setContentTitle("Reminder Expired");
+                mBuilder.setContentText(pesanExpired);
+                mBuilder.setPriority(Notification.PRIORITY_MAX);
+                mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(pesanExpired));
+
+                mNotificationManager =
+                        (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                // === Removed some obsoletes
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    String channelId = "Your_channel_id";
+                    NotificationChannel channel = new NotificationChannel(
+                            channelId,
+                            "Channel human readable title",
+                            NotificationManager.IMPORTANCE_HIGH);
+                    mNotificationManager.createNotificationChannel(channel);
+                    mBuilder.setChannelId(channelId);
+                }
+
+                mNotificationManager.notify(0, mBuilder.build());
+                Log.e(TAG, "cekNotificationExpired 3 hari tenggang");
+            } else if (count < (-259200000) ) {
+                String pesanExpired = "Akun anda telah expired dan tidak melakukan perpanjangan!\nAnda diubah status menjadi member reguler";
+
+                NotificationManager mNotificationManager;
+
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(MainActivity.this, "notify_001");
+                Intent ii = new Intent(MainActivity.this, AkunSaya.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, ii, 0);
+
+                mBuilder.setContentIntent(pendingIntent);
+                mBuilder.setSmallIcon(R.drawable.ic_baseline_notifications_active_24);
+                mBuilder.setContentTitle("Reminder Expired");
+                mBuilder.setContentText(pesanExpired);
+                mBuilder.setPriority(Notification.PRIORITY_MAX);
+                mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(pesanExpired));
+
+                mNotificationManager =
+                        (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                // === Removed some obsoletes
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    String channelId = "Your_channel_id";
+                    NotificationChannel channel = new NotificationChannel(
+                            channelId,
+                            "Channel human readable title",
+                            NotificationManager.IMPORTANCE_HIGH);
+                    mNotificationManager.createNotificationChannel(channel);
+                    mBuilder.setChannelId(channelId);
+                }
+
+                mNotificationManager.notify(0, mBuilder.build());
+                Log.e(TAG, "cekNotificationExpired EXPIRED");
+
+                ubahReguler();
             }
 
         } catch (ParseException e) {
@@ -408,6 +752,134 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+    }
+
+    private void ubahReguler() {
+        url = Http.server;
+        url = url+"update-status/" + sessionManager.getPID();
+        updateDataUser();
+    }
+
+    private void updateDataUser() {
+        JSONObject postData = new JSONObject();
+        final Calendar expired = Calendar.getInstance();
+        expired.add(Calendar.YEAR, 100);
+        Date expiredDate = expired.getTime();
+        String expDate = formatExpDate.format(expiredDate);
+
+        final Calendar paydate = Calendar.getInstance();
+        paydate.add(Calendar.DATE, 1);
+        Date paymentDate = paydate.getTime();
+        String paymentExpired = formatter.format(paymentDate);
+
+        try {
+            postData.put("status_member", "REGULER");
+            postData.put("expired_date", expDate);
+            postData.put("pay_date", paymentExpired);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        if (isOnline()) {
+            Log.e(TAG, "URL : " + url);
+            SimpanPost(postData);
+        }
+
+    }
+
+    private void SimpanPost(JSONObject postData) {
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response != null) {
+                                Log.e(TAG, "URL " + url);
+                                Log.e(TAG, "onResponseSimpan: " + response);
+                                String responseX = String.valueOf(response);
+                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                Log.e("", "Test : " + success);
+                                if (success == false) {
+                                    Snack(response.getJSONArray("msgServer").toString());
+                                } else {
+                                    JSONObject dataPengguna = response.getJSONObject("msgServer");
+                                    String id = dataPengguna.getString("id");
+                                    String name = dataPengguna.getString("name");
+                                    String email = dataPengguna.getString("main_email");
+                                    String membership = dataPengguna.getString("status_member");
+                                    String statusPayment = dataPengguna.getString("status_payment");
+                                    String deadlinePay = dataPengguna.getString("pay_date");
+                                    String dateExpired = dataPengguna.getString("expired_date");
+                                    Log.e("", "id User: " + id);
+                                    Log.e("", "nama User: " + name);
+                                    Log.e("", "email User: " + email);
+                                    Log.e("", "membership: " + membership);
+                                    Log.e("", "statusPayment: " + statusPayment);
+                                    Log.e("", "expired membership: " + dateExpired);
+                                    sessionManager.setMembership(membership);
+                                    if (statusPayment.equals("TRUE")) {
+                                        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(MainActivity.this, KonfirmasiMembership.class);
+                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "onResponse: " + e.getMessage());
+                            Snack(e.getMessage());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onResponse", error.getMessage(), error);
+                if (error instanceof AuthFailureError) {
+                    sessionManager.destroySession();
+                    Intent intent = new Intent(getApplicationContext(), MembershipPilih.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else if (error instanceof ServerError) {
+                    Snack("Terjadi Kesalahan.");
+                } else if (error instanceof NetworkError) {
+                    Snack("Tidak Ada Koneksi Internet");
+                } else if (error instanceof ParseError) {
+                    Snack(error.getMessage());
+                } else {
+                    Snack(error.getMessage());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+//                params.put("type", "create");
+                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
+                return params;
+            }
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
     }
 
     private void findID() {
@@ -427,6 +899,7 @@ public class MainActivity extends AppCompatActivity {
         bintangGold = findViewById(R.id.bintangGold);
         profilUser = findViewById(R.id.ppUser);
         imageSlider = findViewById(R.id.image_slider);
+        layoutExpired = findViewById(R.id.layoutExpired);
 
     }
 

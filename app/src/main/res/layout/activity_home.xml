@@ -18,9 +18,10 @@
 
         <ImageView
             android:src="@drawable/belanja"
+            android:scaleType="fitXY"
             android:alpha="0.1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             tools:ignore="MissingConstraints" />
 
         <ImageView

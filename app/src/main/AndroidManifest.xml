@@ -31,7 +31,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ListTransaksi"></activity>
+        <activity android:name=".VoucherMember"></activity>
+        <activity android:name=".ListVoucher" />
+        <activity android:name=".ListTransaksi" />
         <activity android:name=".UbahPassword" />
         <activity android:name=".EditAkun" />
         <activity android:name=".KonfirmasiMembership" />
@@ -58,6 +60,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

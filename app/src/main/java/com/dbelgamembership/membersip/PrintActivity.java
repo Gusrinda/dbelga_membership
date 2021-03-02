@@ -434,7 +434,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 }
                             });
 
-
                             tvGrandtotal.setText("Rp. " + nf.format(grandTotal));
                             total = grandTotal;
                             dateNow = b.getDate();

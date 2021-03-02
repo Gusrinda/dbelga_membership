@@ -15,7 +15,7 @@ public class ModelBarang implements Serializable, Parcelable
 
     @SerializedName("success")
     @Expose
-    private Boolean success;
+    private boolean success;
     @SerializedName("msgServer")
     @Expose
     private List<MsgServer> msgServer = new ArrayList<MsgServer>();
@@ -35,25 +35,25 @@ public class ModelBarang implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -6228607090926737075L;
+    private final static long serialVersionUID = 7205872809509709101L;
 
     protected ModelBarang(Parcel in) {
-        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
         in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.modelBarang.MsgServer.class.getClassLoader()));
     }
 
     public ModelBarang() {
     }
 
-    public Boolean getSuccess() {
+    public boolean isSuccess() {
         return success;
     }
 
-    public void setSuccess(Boolean success) {
+    public void setSuccess(boolean success) {
         this.success = success;
     }
 
-    public ModelBarang withSuccess(Boolean success) {
+    public ModelBarang withSuccess(boolean success) {
         this.success = success;
         return this;
     }

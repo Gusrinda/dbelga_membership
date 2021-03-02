@@ -1,65 +1,115 @@
 package com.dbelgamembership.membersip.Adapter;
 
 import android.content.Context;
-import android.text.Layout;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.KatalogActivity;
+import com.dbelgamembership.membersip.ListVoucher;
+import com.dbelgamembership.membersip.Model.ModelKatalog;
+import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
 import com.dbelgamembership.membersip.R;
 
-public class AdapterListVoucher extends RecyclerView.Adapter<AdapterListVoucher.ViewHolder> {
+import java.text.NumberFormat;
+import java.util.List;
+import java.util.Locale;
 
-    String name[], date, detail[], type[];
-    Context context;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-    public AdapterListVoucher(Context ct, String[] namaVoucher, String tanggalVoucher, String[] detailVoucher, String[] tipe) {
+public class AdapterListVoucher extends
+        RecyclerView.Adapter<AdapterListVoucher.ViewHolder> {
 
-        name = namaVoucher;
-        date = tanggalVoucher;
-        detail = detailVoucher;
-        type = tipe;
-        context = ct;
+    private static final String TAG = AdapterListVoucher.class.getSimpleName();
+
+    private Context context;
+    private List<MsgServer> list;
+    private ListVoucher mAdapterCallback;
+    private int result = -1;
+    NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+
+    public AdapterListVoucher(Context context, List<MsgServer> list, ListVoucher adapterCallback) {
+        this.context = context;
+        this.list = list;
+        this.mAdapterCallback = adapterCallback;
     }
 
-    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.adapter_list_voucher, parent, false);
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_list_voucher,
+                parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.namaVoucher.setText(name[position]);
-        holder.detailVoucher.setText(detail[position]);
-        holder.tipeVoucher.setText(type[position]);
-        holder.tanggalVoucher.setText("Expired : " + date);
+    public void onBindViewHolder(ViewHolder holder, final int position) {
+        try {
+            final MsgServer item = list.get(position);
 
+            holder.tvNamaVoucher.setText(item.getName());
+            holder.tvDeskripsiVoucher.setText(item.getDeskripsi());
+            holder.tvExpiredVoucher.setText("Expired : " + item.getExpired() + " hari");
+            holder.tvTipeVoucher.setText(item.getTipe());
+
+            holder.btnKlaimVoucher.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+
+                    mAdapterCallback.AdapterListBarangClicked(item);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.e(TAG, "onBindViewHolder: error" + e.getMessage());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return name.length;
+        if (list.size() == 0) {
+            return 0;
+        } else {
+            if (result >= 1) {
+                return Math.min(list.size(), result);
+            } else {
+                return list.size();
+            }
+        }
+    }
+
+
+    public interface AdapterListBarangCallback {
+        void AdapterListBarangClicked(MsgServer position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.namaVoucher)
+        TextView tvNamaVoucher;
+        @BindView(R.id.tanggalVoucher)
+        TextView tvExpiredVoucher;
+        @BindView(R.id.typeVoucher)
+        TextView tvTipeVoucher;
+        @BindView(R.id.detailVoucher)
+        TextView tvDeskripsiVoucher;
+        @BindView(R.id.btn_AmbilVoucher)
+        Button btnKlaimVoucher;
 
-        TextView namaVoucher, tanggalVoucher, detailVoucher;
-        Button tipeVoucher;
-
-        public ViewHolder(@NonNull View itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
-            namaVoucher = itemView.findViewById(R.id.namaVoucher);
-            tanggalVoucher = itemView.findViewById(R.id.tanggalVoucher);
-            detailVoucher = itemView.findViewById(R.id.detailVoucher);
-            tipeVoucher = itemView.findViewById(R.id.typeVoucher);
+            ButterKnife.bind(this, itemView);
         }
     }
 }

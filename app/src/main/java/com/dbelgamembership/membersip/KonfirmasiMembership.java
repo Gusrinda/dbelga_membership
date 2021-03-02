@@ -726,7 +726,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         byte[] imgBytes = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(imgBytes, Base64.NO_WRAP);
-
     }
 
     private void Snack(String string) {
