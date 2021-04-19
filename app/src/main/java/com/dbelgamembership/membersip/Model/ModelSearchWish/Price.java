@@ -1,5 +1,5 @@
 
-package com.dbelgamembership.membersip.Model.modelBarang;
+package com.dbelgamembership.membersip.Model.ModelSearchWish;
 
 import java.io.Serializable;
 import android.os.Parcel;
@@ -13,13 +13,13 @@ public class Price implements Serializable, Parcelable
 
     @SerializedName("harga")
     @Expose
-    private int harga;
+    private String harga;
     @SerializedName("harga_dua")
     @Expose
-    private int hargaDua;
+    private String hargaDua;
     @SerializedName("harga_tiga")
     @Expose
-    private int hargaTiga;
+    private String hargaTiga;
     public final static Parcelable.Creator<Price> CREATOR = new Creator<Price>() {
 
 
@@ -36,52 +36,52 @@ public class Price implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -640980402789663665L;
+    private final static long serialVersionUID = -224352059732339484L;
 
     protected Price(Parcel in) {
-        this.harga = ((int) in.readValue((int.class.getClassLoader())));
-        this.hargaDua = ((int) in.readValue((int.class.getClassLoader())));
-        this.hargaTiga = ((int) in.readValue((int.class.getClassLoader())));
+        this.harga = ((String) in.readValue((String.class.getClassLoader())));
+        this.hargaDua = ((String) in.readValue((String.class.getClassLoader())));
+        this.hargaTiga = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Price() {
     }
 
-    public int getHarga() {
+    public String getHarga() {
         return harga;
     }
 
-    public void setHarga(int harga) {
+    public void setHarga(String harga) {
         this.harga = harga;
     }
 
-    public Price withHarga(int harga) {
+    public Price withHarga(String harga) {
         this.harga = harga;
         return this;
     }
 
-    public int getHargaDua() {
+    public String getHargaDua() {
         return hargaDua;
     }
 
-    public void setHargaDua(int hargaDua) {
+    public void setHargaDua(String hargaDua) {
         this.hargaDua = hargaDua;
     }
 
-    public Price withHargaDua(int hargaDua) {
+    public Price withHargaDua(String hargaDua) {
         this.hargaDua = hargaDua;
         return this;
     }
 
-    public int getHargaTiga() {
+    public String getHargaTiga() {
         return hargaTiga;
     }
 
-    public void setHargaTiga(int hargaTiga) {
+    public void setHargaTiga(String hargaTiga) {
         this.hargaTiga = hargaTiga;
     }
 
-    public Price withHargaTiga(int hargaTiga) {
+    public Price withHargaTiga(String hargaTiga) {
         this.hargaTiga = hargaTiga;
         return this;
     }

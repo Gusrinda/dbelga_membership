@@ -152,8 +152,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     @BindView(R.id.viewGarisTotal)
     View viewGarisTotal;
 
-
-
     int totalQty = 0;
     @BindView(R.id.btnQR)
     RelativeLayout btnQR;
@@ -219,7 +217,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     @BindView(R.id.container)
     CoordinatorLayout container;
 
-
     private RelativeLayout mScan, mPrint;
     private float total = 0;
     private UUID applicationUUID = UUID
@@ -240,7 +237,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     private List<Detail> listBarang = new ArrayList<>();
     private String dataSO;
     private Boolean takeorder = false;
-
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
@@ -270,7 +266,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 //        Paper.init(this);
 
 //        BD_ADDRESS = "BT:" + Paper.book().read(Address.bluetoothAddress);
-
 
         arrayDetailOrder.clear();
         arrayDetail.clear();
@@ -314,7 +309,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                 }
             }.start();
             dialog1.dismiss();
-
 
         } else {
             finish();
@@ -403,7 +397,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             tanggalKirim = b.getTanggalKirim();
 
                             ongkosKirimText = String.valueOf(ongkosKirim);
-
 
                             if (ongkosKirimText.equals("0")) {
                                 linearOngkir.setVisibility(View.GONE);
@@ -505,7 +498,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -521,7 +513,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -707,7 +698,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 
             if (!discount.equals("0")) {
                 dataBarang.append("[L]<font size='small'>Diskon. " + discount + "</font>\n");
-
             }
 
             totalDiskon += Long.parseLong(discount);

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -74,7 +75,6 @@ public class EditAkun extends AppCompatActivity {
     String x;
     String backslash;
 
-
     Boolean checkUbah;
     Bitmap bitmap;
     TextInputEditText namaPengguna, alamatPengguna, nomorPengguna, emailPengguna;
@@ -85,7 +85,6 @@ public class EditAkun extends AppCompatActivity {
     String name, address, phone, mail, urlImage, password, dateBirth;
 
     ImageView backArrow;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,6 +244,7 @@ public class EditAkun extends AppCompatActivity {
             ImageUri = result.getUri();
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
+                Log.e(TAG, "onActivityResult: " + bitmap );
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -265,7 +265,6 @@ public class EditAkun extends AppCompatActivity {
         dialog1.setMessage("Harap Menunggu...");
         dialog1.show();
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -274,18 +273,12 @@ public class EditAkun extends AppCompatActivity {
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
                             try {
-//                                String responseX = String.valueOf(response);
-//                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-//                                boolean success = root.get("success").getAsBoolean();
-//                                Log.e("", "Test : " + success);
-
                                 JSONObject jsonObject = response.getJSONObject("msgServer");
                                 name = jsonObject.getString("name");
                                 address = jsonObject.getString("main_address");
                                 phone = jsonObject.getString("main_phone_1");
                                 mail = jsonObject.getString("main_email");
                                 urlImage = jsonObject.getString("image_customer");
-
                                 password = jsonObject.getString("password");
                                 dateBirth = jsonObject.getString("date_birth");
 
@@ -341,7 +334,6 @@ public class EditAkun extends AppCompatActivity {
     }
 
     private void updateAkunUser() {
-
         AlertDialog.Builder builder1 = new AlertDialog.Builder(EditAkun.this);
         builder1.setTitle("Konfirmasi");
         builder1.setMessage("Simpan perubahan akun anda ?");
@@ -360,6 +352,8 @@ public class EditAkun extends AppCompatActivity {
                             String gambarPayment;
                             String kodeReferal;
 
+                            bitmap = ((BitmapDrawable)imagePengguna.getDrawable()).getBitmap();
+
                             if (bitmap == null) {
                                 gambarPayment = "";
                             } else {
@@ -374,7 +368,7 @@ public class EditAkun extends AppCompatActivity {
                                 postData.put("date_birth", dateBirth);
                                 postData.put("password", password);
                                 postData.put("image_customer", gambarPayment);
-                                Log.e(TAG, "imageToString: \n" + x);
+                                Log.e(TAG, "imageToString: \n" + gambarPayment);
                             } catch (Exception e) {
                                 e.getMessage();
                             }
@@ -536,7 +530,6 @@ public class EditAkun extends AppCompatActivity {
         layoutGantiPassword = findViewById(R.id.layoutUbahPassword);
         layoutBatalAkun = findViewById(R.id.layoutBatalSimpan);
         mainLayout = findViewById(R.id.mainLayout);
-
         backArrow = findViewById(R.id.backArrow);
     }
 

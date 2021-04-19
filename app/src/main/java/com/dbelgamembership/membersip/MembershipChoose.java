@@ -77,7 +77,6 @@ public class MembershipChoose extends AppCompatActivity {
     SimpleDateFormat formatExp, formatter, formatExpDate;
     ImageView backArrow;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -204,10 +203,8 @@ public class MembershipChoose extends AppCompatActivity {
                                 expiredMember.add(Calendar.YEAR, 1);
                             }
 
-
                             Date expiredDate = expiredMember.getTime();
                             String expDate = formatExpDate.format(expiredDate);
-
 
                             try {
                                 postData.put("status_member", choosenMembership);

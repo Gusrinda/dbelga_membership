@@ -172,6 +172,41 @@
             <!--                android:textStyle="bold" />-->
 
             <LinearLayout
+                android:id="@+id/layoutStokWishlist"
+                android:weightSum="2"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:textAlignment="viewStart"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textSize="10sp"
+                        android:text="STOK BUTUH : "
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/textStokWishlist"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:id="@+id/layoutStok"
                 android:weightSum="2"
                 android:orientation="horizontal"
@@ -228,6 +263,8 @@
                 </LinearLayout>
 
             </LinearLayout>
+
+
 
             <!--            <TextView-->
             <!--                android:id="@+id/hargaBarang"-->

@@ -122,20 +122,33 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
 //                        Log.e(TAG, "onResponse: "+response);
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
+                            Log.e(TAG, "masuk 1");
                             itemlist.clear();
+                            Log.e(TAG, "masuk 2");
                             if (response != null) {
+                                Log.e(TAG, "masuk 3");
                                 Gson gson = new Gson();
                                 ModelListFaktur modelListTransaction = gson.fromJson(String.valueOf(response), ModelListFaktur.class);
+                                Log.e(TAG, "masuk 4");
                                 itemlist = modelListTransaction.getData();
                                 if (itemlist.size() > 0) {
-
+                                    Log.e(TAG, "masuk 5");
                                     for (int i = itemlist.size() - 1; i >= 0; i--) {
                                         Log.e(TAG, i + " Nomor ID User : " + itemlist.get(i).getIdentitasCustomer());
-                                        if (!itemlist.get(i).getIdentitasCustomer().equals(idUser)) {
+
+                                        String idCustom = "";
+
+                                        if ( itemlist.get(i).getIdentitasCustomer() == null) {
+                                            idCustom = "";
+                                        } else {
+                                            idCustom = itemlist.get(i).getIdentitasCustomer();
+                                        }
+
+                                        if (!idCustom.equals(idUser)) {
                                             itemlist.remove(i);
                                         }
                                     }
-
+                                    Log.e(TAG, "masuk 6");
                                     Collections.sort(itemlist, new Comparator<com.dbelgamembership.membersip.Model.modelListFaktur.Datum>() {
                                         @Override
                                         public int compare(com.dbelgamembership.membersip.Model.modelListFaktur.Datum datum, com.dbelgamembership.membersip.Model.modelListFaktur.Datum t1) {
@@ -256,7 +269,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_faktur, container, false);
-        txt_CariTransaksi = view.findViewById(R.id.edt_cariTransaksi);
+//        txt_CariTransaksi = view.findViewById(R.id.edt_cariTransaksi);
         rvTransaksi = view.findViewById(R.id.rv_Transaksi);
         rvTransaksi.setLayoutManager(layoutManager);
         rvTransaksi.setHasFixedSize(false);

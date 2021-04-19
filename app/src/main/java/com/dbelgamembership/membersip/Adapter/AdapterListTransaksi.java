@@ -73,12 +73,15 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
         if (status.equals("approved")) {
             status = "Belum Dibayar";
             holder.statusBelanja.setBackgroundResource(R.drawable.button_round_cancel);
+        } else if (status.equals("cancel")) {
+            status = "SO Dicancel";
+            holder.statusBelanja.setBackgroundResource(R.drawable.button_round_dead);
         } else {
             status = "Sudah Dibayar";
             holder.statusBelanja.setBackgroundResource(R.drawable.button_round_confirm);
         }
 
-        Log.e("TAG", "status: " + status );
+        Log.e("TAG", "status: " + status);
         holder.statusBelanja.setText(status);
         holder.totalBelanja.setText("Rp. " + nf.format(item.getGrandtotal()));
         int totalBelanja = item.getGrandtotal();

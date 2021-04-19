@@ -87,7 +87,6 @@ public class HomeActivity extends AppCompatActivity {
         url = url + "search-customer/" + sessionManager.getPID();
         Log.e(TAG, "URL : " + url);
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override

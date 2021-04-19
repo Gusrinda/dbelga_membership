@@ -18,7 +18,7 @@ public class ResponseWishlist implements Serializable, Parcelable
     private boolean success;
     @SerializedName("msgServer")
     @Expose
-    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
+    private List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> msgServer = new ArrayList<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer>();
     @SerializedName("code")
     @Expose
     private int code;
@@ -66,15 +66,15 @@ public class ResponseWishlist implements Serializable, Parcelable
         return this;
     }
 
-    public List<MsgServer> getMsgServer() {
+    public List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> getMsgServer() {
         return msgServer;
     }
 
-    public void setMsgServer(List<MsgServer> msgServer) {
+    public void setMsgServer(List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> msgServer) {
         this.msgServer = msgServer;
     }
 
-    public ResponseWishlist withMsgServer(List<MsgServer> msgServer) {
+    public ResponseWishlist withMsgServer(List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> msgServer) {
         this.msgServer = msgServer;
         return this;
     }

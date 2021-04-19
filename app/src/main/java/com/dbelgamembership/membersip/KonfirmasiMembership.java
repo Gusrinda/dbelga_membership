@@ -75,7 +75,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
     private static final int GalleryPick = 1;
     private Uri ImageUri;
     String tanggalDeadline, tanggalSekarang;
-    Button btnKonfirmasi, btnBatal, btnUploadFoto, btnHubungi, btnKodeRef;
+    Button btnKonfirmasi, btnBatal, btnUploadFoto, btnHubungi, btnKodeRef, btnShowUpload;
     private static final String FILE_NAME = "example.txt";
     String x, choosenMembership, paydate;
 
@@ -92,7 +92,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_konfirmasi_membership);
-
 
         sessionManager = new SessionManager(this);
         choosenMembership = sessionManager.getMembership();
@@ -143,9 +142,19 @@ public class KonfirmasiMembership extends AppCompatActivity {
             }
         });
 
+        btnShowUpload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btnUploadFoto.setVisibility(View.VISIBLE);
+                infoTransfer.setVisibility(View.VISIBLE);
+                infoReferral.setVisibility(View.GONE);
+            }
+        });
+
         btnKodeRef.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnUploadFoto.setVisibility(View.GONE);
                 infoTransfer.setVisibility(View.GONE);
                 infoReferral.setVisibility(View.VISIBLE);
             }
@@ -189,7 +198,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
         dialog1.setMessage("Harap Menunggu...");
         dialog1.show();
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
                     @Override
@@ -214,8 +222,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
-
                         } else {
                             Toast.makeText(KonfirmasiMembership.this, "Tidak ada response", Toast.LENGTH_LONG).show();
                         }
@@ -435,8 +441,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
 //            else {
 //
 //            }
-
-
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -459,6 +463,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
         infoReferral = findViewById(R.id.layout_kodeReferral);
         btnKodeRef = findViewById(R.id.btn_KodeRef);
         textKodeReferral = findViewById(R.id.txt_kodeRefMember);
+        btnShowUpload = findViewById(R.id.btn_showUpload);
 
     }
 
@@ -467,8 +472,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
 //        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
 //        galleryIntent.setType("image/*");
 //        startActivityForResult(galleryIntent, GalleryPick);
-
-
         CropImage.activity(ImageUri)
                 .setAspectRatio(1, 1)
                 .start(KonfirmasiMembership.this);
@@ -496,7 +499,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
             Toast.makeText(this, "ERROR : Try Again !", Toast.LENGTH_SHORT).show();
 //            finish();
 //            startActivity(new Intent(KonfirmasiMembership.this, KonfirmasiMembership.class));
-
         }
 
 //        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
@@ -523,7 +525,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
 //            Log.e(TAG, x.substring(start, end));
 //        }
 //        save();
-
         AlertDialog.Builder builder1 = new AlertDialog.Builder(KonfirmasiMembership.this);
         builder1.setTitle("Konfirmasi");
         builder1.setMessage("Kirim bukti konfirmasi pembayaran ?");
@@ -632,7 +633,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             if (response != null) {
                                 Log.e(TAG, "URL " + url);
                                 Log.e(TAG, "onResponseSimpan: " + response);
-
                                 String responseX = String.valueOf(response);
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
                                 boolean success = root.get("success").getAsBoolean();

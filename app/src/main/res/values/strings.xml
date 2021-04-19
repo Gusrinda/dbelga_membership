@@ -2,6 +2,13 @@
     <string name="app_name">Dbelga Membership</string>
 
 
+    <string-array name="stringUrutkan">
+        <item>Stok Terbanyak</item>
+        <item>Stok Sedikit</item>
+        <item>Harga Tertinggi</item>
+        <item>Harga Terendah</item>
+    </string-array>
+
     <string-array name="sort_data">
         <item>urutkan item</item>
         <item>Harga terendah</item>
@@ -10,9 +17,7 @@
     </string-array>
 
     <string-array name="filter_data">
-        <item>pilih kategori</item>
         <item>Kategori</item>
-        <item>Harga</item>
     </string-array>
 
     <string-array name="filter_Kategori">
@@ -22,9 +27,11 @@
     </string-array>
 
     <string-array name="filter_Harga">
-        <item> &lt; 100.000</item>
-        <item>Rp. 100000 - Rp. 500000</item>
-        <item> &gt; Rp. 500.000 </item>
+        <item>FILTER HARGA</item>
+        <item> &lt; Rp. 50.000</item>
+        <item> &lt; Rp. 100.000</item>
+        <item> &lt; Rp. 500.000</item>
+        <item> SEMUA HARGA </item>
     </string-array>
 
 

@@ -37,19 +37,13 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.dbelgamembership.membersip.Adapter.AdapterListBarang;
 import com.dbelgamembership.membersip.Adapter.AdapterListVoucher;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
-import com.dbelgamembership.membersip.Model.ModelKatalog;
 import com.dbelgamembership.membersip.Model.ModelSearchVoucher.ModelSearchVoucher;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelUser.MsgServer;
-import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
 import com.dbelgamembership.membersip.Model.ResponseClaim.ResponseClaim;
-import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
-import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
-import com.dbelgamembership.membersip.Model.modelBarang.Price;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
@@ -58,7 +52,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -79,7 +72,6 @@ public class ListVoucher extends AppCompatActivity implements AdapterListVoucher
     RelativeLayout badgeMember;
 
     Toolbar toolbar;
-
 
     //Data Voucher
     private GridLayoutManager layoutManager;

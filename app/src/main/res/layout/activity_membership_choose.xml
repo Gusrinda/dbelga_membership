@@ -98,7 +98,7 @@
                                 android:id="@+id/txtNamaMember"
                                 android:textColor="@color/black"
                                 android:textSize="18dp"
-                                android:text="Tn. Member"
+                                android:text="Nama Member"
                                 android:textStyle="bold"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
@@ -186,7 +186,7 @@
                                 android:id="@+id/txtNomorMember"
                                 android:textColor="@color/black"
                                 android:textSize="18dp"
-                                android:text="1111-2222-3333-4444"
+                                android:text="1234"
                                 android:textStyle="bold"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
@@ -520,11 +520,11 @@
         <Button
             android:id="@+id/btnPilihMembership"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="32dp"
             android:background="@drawable/button_round_theme"
             android:textColor="@color/white"
             android:text="Pilih Membership"
-            android:layout_marginHorizontal="72dp"
+            android:layout_marginHorizontal="36dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

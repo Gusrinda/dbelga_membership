@@ -222,7 +222,7 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:textAlignment="center"
-                android:text="+6289634765662"
+                android:text="+6281559584297"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal" />
@@ -392,36 +392,60 @@
             android:visibility="visible"
             android:layout_above="@id/btn_Konfirmasi"
             android:id="@+id/layout_UploadFoto"
-            android:weightSum="1"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="32dp"
             android:layout_marginBottom="16dp"
             android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:orientation="horizontal"
+                android:weightSum="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <Button
+                    android:layout_margin="8sp"
+                    android:background="@drawable/button_round_theme"
+                    android:id="@+id/btn_showUpload"
+                    android:layout_weight="0.5"
+                    android:textSize="10sp"
+                    android:textColor="@color/white"
+                    android:padding="8sp"
+                    android:text="Pakai Transfer"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+                <Button
+                    android:layout_margin="8sp"
+                    android:padding="8sp"
+                    android:background="@drawable/button_round_upload"
+                    android:id="@+id/btn_KodeRef"
+                    android:layout_weight="0.5"
+                    android:textSize="10sp"
+                    android:textColor="@color/black"
+                    android:text="Pakai Kode Referral"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+
             <Button
+                android:visibility="visible"
                 android:layout_margin="8sp"
                 android:background="@drawable/button_round_voucher"
                 android:id="@+id/btn_UploadFoto"
-                android:layout_weight="0.5"
                 android:textSize="10sp"
                 android:textColor="@color/white"
                 android:padding="8sp"
-                android:text="Pilih Foto Bukti Pembayaran"
-                android:layout_width="0dp"
+                android:text="Upload Foto Bukti Pembayaran"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <Button
-                android:layout_margin="8sp"
-                android:padding="8sp"
-                android:background="@drawable/button_round_upload"
-                android:id="@+id/btn_KodeRef"
-                android:layout_weight="0.5"
-                android:textSize="10sp"
-                android:textColor="@color/black"
-                android:text="Pakai Kode Referral"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
+
 
 
         </LinearLayout>

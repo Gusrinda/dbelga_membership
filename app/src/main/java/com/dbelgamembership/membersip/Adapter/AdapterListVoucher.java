@@ -62,12 +62,10 @@ public class AdapterListVoucher extends
             holder.tvDeskripsiVoucher.setText(item.getDeskripsi());
             holder.tvExpiredVoucher.setText("Expired : " + item.getExpired() + " hari");
             holder.tvTipeVoucher.setText(item.getTipe());
-
+            holder.btnKlaimVoucher.setText("KLAIM VOUCHER [ " + item.getKlaim() +" poin ]");
             holder.btnKlaimVoucher.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
-
                     mAdapterCallback.AdapterListBarangClicked(item);
                 }
             });

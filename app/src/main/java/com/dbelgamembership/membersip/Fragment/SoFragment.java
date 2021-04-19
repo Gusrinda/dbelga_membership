@@ -51,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class SoFragment extends Fragment implements AdapterListTransaksi.AdapterListTransactionCallback{
+public class SoFragment extends Fragment implements AdapterListTransaksi.AdapterListTransactionCallback {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -101,13 +101,13 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
 
     private void getDataUser() {
         idUser = sessionManager.getPID();
-        Log.e(TAG, "ID USER SEARCH : " + idUser );
-        url = url + "transaction/list?status=approved";
+        Log.e(TAG, "ID USER SEARCH : " + idUser);
+        url = url + "transaction/list?";
         getDataTransaksi();
     }
 
     private void getDataTransaksi() {
-        Log.e(TAG, "URL : " + url );
+        Log.e(TAG, "URL : " + url);
         final ProgressDialog dialog1 = new ProgressDialog(SoFragment.this.getContext());
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -121,31 +121,63 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
 //                        Log.e(TAG, "onResponse: "+response);
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
+                            Log.e(TAG, "masuk 1");
                             itemlist.clear();
+                            Log.e(TAG, "masuk 2");
                             if (response != null) {
+                                Log.e(TAG, "masuk 3");
                                 Gson gson = new Gson();
                                 ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
+                                Log.e(TAG, "masuk 4");
                                 itemlist = modelListTransaction.getData();
                                 if (itemlist.size() > 0) {
 
+                                    Log.e(TAG, "masuk 5");
+
                                     for (int i = itemlist.size() - 1; i >= 0; i--) {
-                                        Log.e(TAG, i + " Nomor ID User : " + itemlist.get(i).getIdentitasCustomer());
-                                        if (!itemlist.get(i).getIdentitasCustomer().equals(idUser)) {
+                                        Log.e(TAG, "onResponse: Cek" + i);
+
+                                        Log.e(TAG, "onResponse CEK: " + i + " - " + itemlist.get(i).getIdentitasCustomer());
+                                        Log.e(TAG, "onResponse CEK: " + i + " - " + idUser);
+
+                                        String idCustom = "";
+
+                                        if (itemlist.get(i).getIdentitasCustomer() == null) {
+                                            idCustom = "";
+                                        } else {
+                                            idCustom = itemlist.get(i).getIdentitasCustomer();
+                                        }
+
+
+                                        if (!idCustom.equals(idUser)) {
                                             itemlist.remove(i);
+                                        }
+
+                                    }
+
+                                    for (int j = itemlist.size() - 1; j >= 0; j--) {
+                                        if (itemlist.get(j).getStatus().equals("closed")) {
+                                            itemlist.remove(j);
                                         }
                                     }
 
-                                    Collections.sort(itemlist, new Comparator<Datum>() {
-                                        @Override
-                                        public int compare(Datum datum, Datum t1) {
-                                            return t1.getCreatedAt().compareToIgnoreCase(datum.getCreatedAt());
-                                        }
 
-                                    });
+                                    Log.e(TAG, "masuk 6");
 
-                                    Log.e(TAG, "Hasil " + itemlist.toString() );
+                                    if (itemlist.size() != 0) {
+                                        Collections.sort(itemlist, new Comparator<Datum>() {
+                                            @Override
+                                            public int compare(Datum datum, Datum t1) {
+                                                return t1.getCreatedAt().compareToIgnoreCase(datum.getCreatedAt());
+                                            }
 
-                                    adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist,  SoFragment.this::onRowAdapterListTransactionClicked);
+                                        });
+                                    }
+
+
+                                    Log.e(TAG, "Hasil " + itemlist.toString());
+
+                                    adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
                                     rvTransaksi.setAdapter(adapterListTransaksi);
                                 } else {
                                     Snack("Data Tidak Ditemukan 1");
@@ -245,7 +277,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     public void onRowAdapterListTransactionClicked(int position) {
         Intent intent = new Intent(getContext(), PrintActivity.class);
         String DataOOS = itemlist.get(position).getCode();
-        Log.e(TAG, "onRowAdapterListTransactionClicked: "+DataOOS );
+        Log.e(TAG, "onRowAdapterListTransactionClicked: " + DataOOS);
         intent.putExtra("DATAPRINT", DataOOS);
         startActivity(intent);
     }
@@ -256,11 +288,11 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_so, container, false);
 
-        txt_CariTransaksi = view.findViewById(R.id.edt_cariTransaksi);
+//        txt_CariTransaksi = view.findViewById(R.id.edt_cariTransaksi);
         rvTransaksi = view.findViewById(R.id.rv_Transaksi);
         rvTransaksi.setLayoutManager(layoutManager);
         rvTransaksi.setHasFixedSize(false);
- 
+
         return view;
     }
 

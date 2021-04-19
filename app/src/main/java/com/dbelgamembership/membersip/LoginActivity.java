@@ -92,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 
     private void findId() {
@@ -199,7 +198,6 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                 }, new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // TODO: Handle error

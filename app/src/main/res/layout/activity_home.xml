@@ -26,21 +26,21 @@
 
         <ImageView
             android:id="@+id/logoBelga"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="48dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/dbelga"
-            android:layout_width="180dp"
-            android:layout_height="100dp"/>
+            android:layout_width="250dp"
+            android:layout_height="125dp"/>
 
-        <TextView
-            android:layout_below="@id/logoBelga"
-            android:textColor="@color/white"
-            android:layout_centerHorizontal="true"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:text="MEMBERSHIP"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+<!--        <TextView-->
+<!--            android:layout_below="@id/logoBelga"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="12sp"-->
+<!--            android:text="MEMBERSHIP"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"/>-->
 
 
         <TextView
@@ -58,12 +58,13 @@
             android:layout_centerHorizontal="true"
             android:layout_above="@id/btn_Login"
             android:id="@+id/subJudul"
-            android:textSize="10sp"
+            android:textSize="14sp"
             android:textStyle="italic"
             android:textColor="@color/white"
+            android:layout_marginHorizontal="32dp"
             android:textAlignment="center"
-            android:text="Segera login atau daftarkan diri anda \ndan jadi member sekarang !!!"
-            android:layout_width="wrap_content"
+            android:text="Segera login atau daftarkan diri anda dan jadi member sekarang !!!"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal" />
 
@@ -84,7 +85,7 @@
         <Button
             android:paddingVertical="4dp"
             android:layout_marginHorizontal="32dp"
-            android:layout_marginBottom="48dp"
+            android:layout_marginBottom="96dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/button_transparent"
             android:id="@+id/btn_Daftar"

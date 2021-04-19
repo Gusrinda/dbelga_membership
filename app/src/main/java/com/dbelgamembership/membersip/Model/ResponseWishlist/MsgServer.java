@@ -26,6 +26,9 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("qty_stok")
     @Expose
     private int qtyStok;
+    @SerializedName("qty")
+    @Expose
+    private int qty;
     @SerializedName("price")
     @Expose
     private Price price;
@@ -45,7 +48,7 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -6968597518488911789L;
+    private final static long serialVersionUID = 3674765621048004265L;
 
     protected MsgServer(Parcel in) {
         this.idProduk = ((int) in.readValue((int.class.getClassLoader())));
@@ -53,6 +56,7 @@ public class MsgServer implements Serializable, Parcelable
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
+        this.qty = ((int) in.readValue((int.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
@@ -124,6 +128,19 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public MsgServer withQty(int qty) {
+        this.qty = qty;
+        return this;
+    }
+
     public Price getPrice() {
         return price;
     }
@@ -143,6 +160,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(name);
         dest.writeValue(codeProduct);
         dest.writeValue(qtyStok);
+        dest.writeValue(qty);
         dest.writeValue(price);
     }
 

@@ -257,22 +257,68 @@
 
         </LinearLayout>
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:layout_marginTop="16dp"
-            android:id="@+id/swipeBarangOrder"
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="16sp"
+            android:layout_marginHorizontal="21dp"
+            android:id="@+id/gridview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginHorizontal="21dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            tools:listitem="@layout/item_wishlist" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/gridview"
+<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:id="@+id/swipeBarangOrder"-->
+<!--            android:visibility="visible"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_marginHorizontal="21dp">-->
+
+
+
+<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
+
+        <RelativeLayout
+            android:id="@+id/layoutWishlistKosong"
+            android:padding="16dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginHorizontal="32dp"
+            android:background="@drawable/button_round"
+            android:layout_width="match_parent"
+            android:layout_height="300dp">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                tools:listitem="@layout/item_wishlist" />
+                android:layout_height="match_parent">
 
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                <TextView
+                    android:layout_alignParentTop="true"
+                    android:textAlignment="center"
+                    android:text="PERINGATAN !"
+                    android:textColor="@color/merahBelga"
+                    android:textStyle="bold"
+                    android:textSize="16dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+
+                <ImageView
+                    android:layout_centerInParent="true"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"
+                    android:src="@drawable/empty_wish" />
+
+                <TextView
+                    android:layout_alignParentBottom="true"
+                    android:textAlignment="center"
+                    android:text="Wishlist anda kosong ! Tambahkan wishlist anda dengan menekan tombol 'Tambah wishlist' di halaman katalog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

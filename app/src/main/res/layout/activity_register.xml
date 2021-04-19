@@ -35,7 +35,7 @@
             android:textColor="@color/darkBiruBelga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="MEMBERSHIP" />
+            android:text="REGISTRASI MEMBERSHIP" />
 
         <ScrollView
             android:layout_marginTop="8sp"
@@ -46,6 +46,7 @@
             android:layout_height="match_parent">
 
             <LinearLayout
+                android:layout_marginTop="8dp"
                 android:orientation="vertical"
                 android:gravity="center_horizontal"
                 android:layout_width="match_parent"
@@ -221,18 +222,19 @@
 
         <LinearLayout
             android:id="@+id/layoutButton"
-            android:layout_marginBottom="8sp"
+            android:layout_marginBottom="32dp"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <Button
+                android:layout_marginBottom="8dp"
                 android:id="@+id/btnRegister"
                 android:layout_marginTop="16dp"
                 android:text="Register"
                 android:background="@drawable/button_round_theme"
-                android:layout_marginHorizontal="72dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="@color/white" />
@@ -241,14 +243,22 @@
                 android:id="@+id/btnLogin"
                 android:gravity="center_horizontal"
                 android:layout_marginTop="12sp"
-                android:layout_marginHorizontal="86dp"
+                android:layout_marginHorizontal="32dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textSize="12sp"
+                    android:textSize="14sp"
                     android:textColor="@color/darkBiruBelga"
-                    android:text="Sudah punya akun ? Login"
+                    android:text="Sudah punya akun ?"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/darkBiruBelga"
+                    android:text=" Login"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

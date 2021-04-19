@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -70,6 +71,8 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static com.dbelgamembership.membersip.SplashActivity.listGambarSlider;
+
 public class MainActivity extends AppCompatActivity {
 
     public String url = Http.server, jsonResult, type, user, pass;
@@ -93,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
     String todayString, todayBirthday, birthday;
 
     ImageSlider imageSlider;
-
 
     AdapterListWishlist adapterListSearchBarang;
     ArrayList<WishlistDetail> arrayBarang = new ArrayList<WishlistDetail>();
@@ -180,14 +182,12 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e(TAG, "tanggal server : " + tanggalServer );
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     Date tanggal = formatter.parse(tanggalServer);
-
                                     DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
                                     String strDate = dateFormat.format(tanggal);
 
                                     todayString = strDate;
 
                                     Log.e(TAG, "Tanggal sekarang fix sudah diformat : " + todayString );
-
 
                                     getDataUser();
 
@@ -250,12 +250,9 @@ public class MainActivity extends AppCompatActivity {
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     SimpleDateFormat formatEXP = new SimpleDateFormat("yyyy-MM-dd");
                                     SimpleDateFormat formatHariIni = new SimpleDateFormat("dd-MM-yyyy");
-
-
                                     Date birth = formatEXP.parse(ulangTahun);
                                     Date todayDate = formatHariIni.parse(todayString);
                                     SimpleDateFormat formatToday = new SimpleDateFormat("MM-dd");
-
                                     todayBirthday = formatToday.format(todayDate);
                                     birthday = formatToday.format(birth);
 
@@ -476,11 +473,44 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-        finish();
-        Snack("Log Out Berhasil");
-        sessionManager.destroySession();
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
+                builder1.setTitle("Konfirmasi");
+                builder1.setMessage("Logout ?");
+                builder1.setCancelable(false);
+                builder1.setPositiveButton(
+                        "Ya",
+                        new DialogInterface.OnClickListener() {
+                            @SuppressLint("NewApi")
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.dismiss();
+                                finish();
+                                Snack("Log Out Berhasil");
+                                sessionManager.destroySession();
+                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+
+                builder1.setNegativeButton(
+                        "Tidak",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                final AlertDialog alert11 = builder1.create();
+                alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                        alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    }
+                });
+                alert11.show();
+
+
+
     }
 
     private boolean isOnline() {
@@ -552,9 +582,14 @@ public class MainActivity extends AppCompatActivity {
             models.add(new SlideModel("https://www.tokodapur.com/wp-content/uploads/2017/08/Banner-TD-Ultah-page.jpg", ScaleTypes.FIT)); // Banner ulang tahun
             notificationBirthDay();
         }
-        models.add(new SlideModel("https://image.shutterstock.com/image-vector/brush-sale-banner-promotion-ribbon-260nw-1182942766.jpg", ScaleTypes.FIT)); // Banner promo 1
-        models.add(new SlideModel("https://www.jagoanhosting.com/wp-content/uploads/2019/08/Banner-Promo-Extra-19.jpg", ScaleTypes.FIT)); // Banner promo 2
-        models.add(new SlideModel("https://www.jagoanhosting.com/wp-content/uploads/2019/07/Banner-promo-epic-77.png", ScaleTypes.FIT)); // Banner promo 3
+
+        if (listGambarSlider.length > 0 ) {
+            for (int i = 0; i < listGambarSlider.length; i++) {
+                models.add(new SlideModel(listGambarSlider[i], ScaleTypes.FIT)); // Banner promo 3
+            }
+        }
+
+        
         imageSlider.setImageList(models, ScaleTypes.FIT);
     }
 
@@ -623,13 +658,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cekNotificationExpired() {
-//        final Calendar today = Calendar.getInstance();
-//        Date tanggalSekarang = today.getTime();
-//        String tanggalNow = formatExp.format(tanggalSekarang);
-
         Log.e(TAG, "Tanggal Sekarang : " + todayString);
         Log.e(TAG, "Tanggal Expired : " + sessionManager.getExpiredDate());
-
 
         try {
             Date sekarangDate = formatExp.parse(todayString);

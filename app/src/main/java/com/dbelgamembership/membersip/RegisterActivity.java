@@ -2,6 +2,7 @@ package com.dbelgamembership.membersip;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -9,9 +10,12 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -45,12 +49,10 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-
         Date c = new Date();
         SimpleDateFormat af = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
-
 
         tanggal = af.format(cal.getTime());
         LoadingDialog = new ProgressDialog(this);
@@ -63,9 +65,26 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        txt_tanggalLahir.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                int inType = txt_tanggalLahir.getInputType(); // backup the input type
+                txt_tanggalLahir.setInputType(InputType.TYPE_NULL); // disable soft input
+                txt_tanggalLahir.onTouchEvent(motionEvent); // call native handler
+                txt_tanggalLahir.setInputType(inType); // restore input type
+                return true; // consume touch even
+            }
+        });
+
         layoutTanggalLahir.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                txt_tanggalLahir.setFocusable(false);
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
                 final Calendar c = Calendar.getInstance();
                 int mYear = c.get(Calendar.YEAR);
                 int mMonth = c.get(Calendar.MONTH);
@@ -114,6 +133,13 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -144,7 +170,6 @@ public class RegisterActivity extends AppCompatActivity {
             if (!PasswordPelanggan.equals(PasswordUlangPelanggan)) {
                 Toast.makeText(this, "Password tidak sama !", Toast.LENGTH_SHORT).show();
             } else {
-
                 Intent intent = new Intent(RegisterActivity.this, MembershipPilih.class);
                 intent.putExtra("NAMA_MEMBER", NamaPelanggan);
                 intent.putExtra("NOMOR_MEMBER", NomorPelanggan);

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,8 +37,11 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelSearchVoucher.ModelSearchVoucher;
 import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
 import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
+import com.dbelgamembership.membersip.Model.modelListTransaksi.Datum;
+import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaksi;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
@@ -65,11 +69,17 @@ public class AkunSaya extends AppCompatActivity {
 
     String limitPlafon, sisaPlafon, piutangBelanja;
     int poinMember;
+    ImageView btnSetting;
     Button btnUpgrade;
     private String TAG = "";
     private String totalPoin, totalTransaksi;
 
     Toolbar toolbar;
+
+    //Menghitung limit plafon member
+    private long limitAwal = 0;
+    private long totalPenggunaanLimit = 0;
+    private long limitSisa = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +95,14 @@ public class AkunSaya extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+            }
+        });
+
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AkunSaya.this, EditAkun.class);
+                startActivity(intent);
             }
         });
 
@@ -157,6 +175,15 @@ public class AkunSaya extends AppCompatActivity {
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
                             try {
+                                Gson gson = new Gson();
+                                ModelUser modelListTransaction = gson.fromJson(String.valueOf(response), ModelUser.class);
+                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListTransaction.getMsgServer();
+
+                                if (dataUser.getCreditLimit() == null || dataUser.getCreditLimit().equals("0")) {
+                                    limitAwal = 0;
+                                } else {
+                                    limitAwal = Long.parseLong(dataUser.getCreditLimit());
+                                }
                                 JSONObject jsonObject = response.getJSONObject("msgServer");
                                 limitPlafon = jsonObject.getString("credit_limit").replace("null", "");
                                 sisaPlafon = jsonObject.getString("credit_limit_remain").replace("null", "");
@@ -185,6 +212,9 @@ public class AkunSaya extends AppCompatActivity {
                                 textTotalPoin.setText(poinMember + " Poin");
 
 
+
+                                getSisaPlafonMember(sessionManager.getPID());
+
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -208,6 +238,73 @@ public class AkunSaya extends AppCompatActivity {
 
         mQueue.add(jsonObjectRequest);
     }
+
+    private void getSisaPlafonMember(String idMember) {
+        url = Http.server;
+        url = url + "transaction/list?customer=" + idMember;
+        Log.e(TAG, "URL Ambil Plafon : " + url);
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Log.e("", "onResponse: " + response);
+                            try {
+                                if (response != null) {
+                                    Gson gson = new Gson();
+                                    ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
+                                    List<Datum> itemlist = modelListTransaction.getData();
+                                    if (itemlist.size() > 0) {
+                                        Log.e(TAG, "Nilai plafon awal :" + limitAwal);
+
+                                        Log.e(TAG, "Item transaksi awal :" + itemlist.size());
+                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
+                                            if (!itemlist.get(i).getStatus().equalsIgnoreCase("approved")) {
+                                                itemlist.remove(i);
+                                            }
+                                        }
+                                        Log.e(TAG, "Item transaksi setelah filter :" + itemlist.size());
+
+                                        Log.e(TAG, "Nilai penggunaan plafon awal :  " + totalPenggunaanLimit);
+                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
+                                            totalPenggunaanLimit += itemlist.get(i).getGrandtotal();
+                                        }
+                                        Log.e(TAG, "Nilai penggunaan plafon akhir :  " + totalPenggunaanLimit);
+
+                                        limitSisa = limitAwal - totalPenggunaanLimit;
+
+                                        Log.e(TAG, "Sisa penggunaan plafon :  " + limitSisa);
+                                    } else {
+                                        limitSisa = limitAwal;
+                                    }
+
+                                    textCreditLimit.setText("Rp. " + nf.format(limitAwal));
+                                    textSisaLimit.setText("Rp. " + nf.format(limitSisa));
+
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "onResponse: " + e.getMessage());
+                            }
+                        } else {
+//                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+//                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
+    }
+
 
     private void getDataUser() {
         namaSaya.setText(sessionManager.getName());
@@ -470,6 +567,8 @@ public class AkunSaya extends AppCompatActivity {
         jumlahVoucherKlaim = findViewById(R.id.text_jumlahVoucherKlaim);
         layoutVoucherMember = findViewById(R.id.ln_voucherMember);
         layoutVoucherKlaim = findViewById(R.id.ln_voucherKlaim);
+
+        btnSetting = findViewById(R.id.btnSettingAccount);
 
         toolbar = findViewById(R.id.toolbar);
     }

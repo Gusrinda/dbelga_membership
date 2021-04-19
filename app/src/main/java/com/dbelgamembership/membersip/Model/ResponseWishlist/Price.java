@@ -14,6 +14,12 @@ public class Price implements Serializable, Parcelable
     @SerializedName("harga")
     @Expose
     private int harga;
+    @SerializedName("harga_dua")
+    @Expose
+    private int hargaDua;
+    @SerializedName("harga_tiga")
+    @Expose
+    private int hargaTiga;
     public final static Parcelable.Creator<Price> CREATOR = new Creator<Price>() {
 
 
@@ -30,10 +36,12 @@ public class Price implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 3518822173728563278L;
+    private final static long serialVersionUID = -3219075186995057519L;
 
     protected Price(Parcel in) {
         this.harga = ((int) in.readValue((int.class.getClassLoader())));
+        this.hargaDua = ((int) in.readValue((int.class.getClassLoader())));
+        this.hargaTiga = ((int) in.readValue((int.class.getClassLoader())));
     }
 
     public Price() {
@@ -52,8 +60,36 @@ public class Price implements Serializable, Parcelable
         return this;
     }
 
+    public int getHargaDua() {
+        return hargaDua;
+    }
+
+    public void setHargaDua(int hargaDua) {
+        this.hargaDua = hargaDua;
+    }
+
+    public Price withHargaDua(int hargaDua) {
+        this.hargaDua = hargaDua;
+        return this;
+    }
+
+    public int getHargaTiga() {
+        return hargaTiga;
+    }
+
+    public void setHargaTiga(int hargaTiga) {
+        this.hargaTiga = hargaTiga;
+    }
+
+    public Price withHargaTiga(int hargaTiga) {
+        this.hargaTiga = hargaTiga;
+        return this;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(harga);
+        dest.writeValue(hargaDua);
+        dest.writeValue(hargaTiga);
     }
 
     public int describeContents() {

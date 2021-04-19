@@ -20,7 +20,7 @@
                 android:id="@+id/ppUser"
                 android:layout_marginTop="32dp"
                 android:layout_marginLeft="32dp"
-                android:src="@mipmap/ic_launcher"
+                app:srcCompat="@mipmap/ic_launcher"
                 android:layout_width="56dp"
                 android:layout_height="56dp"/>
 

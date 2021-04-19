@@ -17,7 +17,8 @@ import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.KatalogActivity;
 import com.dbelgamembership.membersip.Model.ModelKatalog;
-import com.dbelgamembership.membersip.Model.ModelWish.Price;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.Price;
 import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.WishlishActivity;
@@ -39,12 +40,12 @@ public class AdapterListWishlist extends
     String member;
 
     private Context context;
-    private List<WishlistDetail> list;
+    private List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> list;
     private WishlishActivity mAdapterCallback;
     private int result = -1;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 
-    public AdapterListWishlist(Context context, List<WishlistDetail> list, WishlishActivity adapterCallback) {
+    public AdapterListWishlist(Context context, List<MsgServer> list, WishlishActivity adapterCallback) {
         this.context = context;
         this.list = list;
         this.mAdapterCallback = adapterCallback;
@@ -63,7 +64,7 @@ public class AdapterListWishlist extends
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         try {
-            final WishlistDetail item = list.get(position);
+            final MsgServer item = list.get(position);
             Drawable image;
             if (!item.getGambar().equals("http://54.254.194.122/upload/barang/")) {
                 Glide.with(context)
@@ -84,6 +85,9 @@ public class AdapterListWishlist extends
             } else {
                 holder.kodeBarang.setVisibility(View.GONE);
             }
+
+            //Stok yang diinginkan
+            holder.stokWishlist.setText(String.valueOf(item.getQty()));
 
             Log.e(TAG, "MASUK 1");
             Price harga = item.getPrice();
@@ -121,10 +125,10 @@ public class AdapterListWishlist extends
                 long hargaBarang = 0;
                 if (member.equals("REGULER")) {
                     Log.e(TAG, "harga 1" );
-                    hargaBarang = harga.getHarga();
+                    hargaBarang = (long) Double.parseDouble(harga.getHarga());
                 } else if (member.equals("DEBET")) {
                     Log.e(TAG, "harga 2" );
-                    hargaBarang = harga.getHargaDua();
+                    hargaBarang = (long) Double.parseDouble(harga.getHargaDua());
                 }
                 String testHarga = "Rp. " + nf.format(hargaBarang);
                 holder.hargaBarang.setText(testHarga);
@@ -149,7 +153,6 @@ public class AdapterListWishlist extends
             Log.e(TAG, "onBindViewHolder: error" + e.getMessage());
         }
     }
-
     @Override
     public int getItemCount() {
         if (list.size() == 0) {
@@ -165,11 +168,11 @@ public class AdapterListWishlist extends
 
 
     public interface AdapterListWishlistCallback {
-        void AdapterListWishlistClicked(WishlistDetail position);
+        void AdapterListWishlistClicked(MsgServer position);
     }
 
     public interface AdapterListWishlistCallbackDelete {
-        void AdapterListDelete(WishlistDetail position);
+        void AdapterListDelete(MsgServer position);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -185,6 +188,9 @@ public class AdapterListWishlist extends
         TextView hargaBarang;
         @BindView(R.id.textStokOutlet)
         TextView stokOutlet;
+        @BindView(R.id.textStokWishlist)
+        TextView stokWishlist;
+
         @BindView(R.id.hapusItemWishlist)
         RelativeLayout hapusWishlist;
 

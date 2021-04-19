@@ -1,5 +1,6 @@
 package com.dbelgamembership.membersip;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -48,24 +49,22 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Adapter.AdapterListBarang;
-import com.dbelgamembership.membersip.Adapter.AdapterListWishlist;
+import com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragment;
+import com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragmentUrutkan;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 
 import com.dbelgamembership.membersip.Model.ModelKatalog;
 
-import com.dbelgamembership.membersip.Model.ModelListWishlist.Datum;
-import com.dbelgamembership.membersip.Model.ModelListWishlist.ModelListWishlist;
-import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
-import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.ModelSearchWish;
 import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
+import com.dbelgamembership.membersip.Model.modelBarang.Datum;
 import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
-import com.dbelgamembership.membersip.Model.modelBarang.MsgServer;
-import com.dbelgamembership.membersip.Model.modelBarang.Price;
-import com.dbelgamembership.membersip.Model.modelFilter.ModelFilter;
-import com.dbelgamembership.membersip.app.AppController;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,23 +72,19 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.NumberFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragment.filter;
+
 
 public class KatalogActivity extends AppCompatActivity implements AdapterListBarang.AdapterListBarangCallback {
 
@@ -98,7 +93,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
     //popupkostumer
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog alertDialog;
-    private TextView kategoriProduk, namaProduk, deskripsiProduk, stokProduk, harga1Produk, harga2Produk, textTotalWishlist;
+    private TextView kategoriProduk, namaProduk, deskripsiProduk, stokProduk, harga1Produk, harga2Produk, textTotalWishlist, textAdaBarang;
     private Button btnTambahQTY, btnKurangQTY;
     private EditText jumlahQTY;
     private ImageView closeButton, gambarProduk;
@@ -106,32 +101,62 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
     private int totalWish;
     private int IdKostumer;
     private RelativeLayout getLayoutTotalWishlist;
-    private int jumlahWishlistAwal = 0;
+    public static int jumlahWishlistAwal = 0;
 
     Toolbar toolbar;
 
     public String url = Http.server, jsonResult, type, user, pass;
     private String TAG = "";
     String cariBarang;
-    LinearLayout mainLayout, btnSortFilter, layoutSpinner, layoutContentFilter, btnHapusFilter;
+    LinearLayout mainLayout, btnSortFilter, btnUrutkanData;
     TextView judulAppBar, totalWishlist;
     EditText textCariBarang;
     ImageView btnCari;
     RecyclerView rvBarang;
+
+    //PAGENATION
     SwipeRefreshLayout swipeRefreshLayout;
     private GridLayoutManager layoutManager;
+    private int pastVisisbleItems, visibleItemsCount, totalItemsCount, previous_totals = 0;
+    private Boolean isLoading = true;
+    private int view_threshold = 9;
+    private int page_number = 1;
+    private String urlNextPage = "";
+    int page = 0;
+    int total;
+    int allData = 0;
+    int current_index = 0;
+    //PAGENATION
+
     int checker = 0;
-    Spinner spinnerSort, spinnerFilter, spinnerContent;
-    String sortData, filterData;
+    Spinner spinnerSort, spinnerFilter, spinnerContent, spinnerHarga;
+    String sortData, filterData, filterHarga;
     Boolean filter;
     RelativeLayout layoutWishList, layoutTotalWishlist;
 
     AdapterListBarang adapterListSearchBarang;
     ArrayList<ModelKatalog> arrayBarang = new ArrayList<ModelKatalog>();
     List<String> arrayKategori = new ArrayList<String>();
-    List<WishlistDetail> listDetail = new ArrayList<>();
+    List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> listDetail = new ArrayList<>();
     public static String[] stockArr;
-    private List<com.dbelgamembership.membersip.Model.ResponseWishlist.MsgServer> listBarang = new ArrayList<>();
+    private List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> listBarang = new ArrayList<>();
+
+    public static String filterString = "";
+    private static boolean isFilter = false;
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Log.e(TAG, "onPostResume: " + jumlahWishlistAwal);
+
+        String jumlahNih = "";
+        if (jumlahWishlistAwal == 0) {
+            jumlahNih = "";
+        } else {
+            jumlahNih = String.valueOf(jumlahWishlistAwal);
+        }
+        totalWishlist.setText(jumlahNih);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,128 +203,80 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
             @Override
             public void afterTextChanged(Editable editable) {
-                timer.cancel();
-                timer = new Timer();
-                timer.schedule(
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        cariBarang = textCariBarang.getText().toString();
-                                        if (isOnline()) {
+
+                if (!isFilter) {
+                    timer.cancel();
+                    timer = new Timer();
+                    timer.schedule(
+                            new TimerTask() {
+                                @Override
+                                public void run() {
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            isFilter = false;
+                                            pastVisisbleItems = 0;
+                                            visibleItemsCount = 0;
+                                            totalItemsCount = 0;
+                                            previous_totals = 0;
+                                            page_number = 1;
+                                            page = 0;
+                                            urlNextPage = "";
+                                            arrayBarang.clear();
+                                            cariBarang = textCariBarang.getText().toString();
+                                            if (isOnline()) {
 //                                            swipeBarang.setRefreshing(true);
-                                            SearchingBarang(cariBarang);
-                                        } else {
-                                            Snack("Tidak ada koneksi internet");
+                                                SearchingBarang(cariBarang);
+                                            } else {
+                                                Snack("Tidak ada koneksi internet");
+                                            }
                                         }
-                                    }
-                                });
-                            }
-                        },
-                        DELAY
-                );
+                                    });
+                                }
+                            },
+                            DELAY
+                    );
+                }
 
             }
+
+
         });
 
+        btnCari.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                isFilter = false;
+                pastVisisbleItems = 0;
+                visibleItemsCount = 0;
+                totalItemsCount = 0;
+                previous_totals = 0;
+                page_number = 1;
+                page = 0;
+                urlNextPage = "";
+                arrayBarang.clear();
+                cariBarang = textCariBarang.getText().toString();
+                if (isOnline()) {
+                    SearchingBarang(cariBarang);
+                } else {
+                    Snack("Tidak ada koneksi internet");
+                }
+            }
+        });
 
         btnSortFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                checker++;
-                if ((checker % 2) == 0) {
-                    // number is even
-                    layoutSpinner.setVisibility(View.GONE);
-                } else {
-                    // number is odd
-                    layoutSpinner.setVisibility(View.VISIBLE);
-                }
+                BottomSheetFilterFragment bottomSheetFragment = new BottomSheetFilterFragment();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
             }
         });
 
-        btnHapusFilter.setOnClickListener(new View.OnClickListener() {
+        btnUrutkanData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                layoutContentFilter.setVisibility(View.GONE);
-                filter = false;
-                spinnerFilter.setSelection(0);
-                spinnerSort.setSelection(0);
-                textCariBarang.setText("");
-                SearchingBarang("");
-            }
-        });
-
-        spinnerSort.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int iCurrentSelection = spinnerSort.getSelectedItemPosition();
-                switch (iCurrentSelection) {
-                    case 1:
-                        sortData = "priceDown";
-                        sortBarang();
-                        break;
-                    case 2:
-                        sortData = "priceUp";
-                        sortBarang();
-                        break;
-                    case 3:
-                        sortData = "stokUp";
-                        sortBarang();
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerFilter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                int iCurrentSelection = spinnerFilter.getSelectedItemPosition();
-                switch (iCurrentSelection) {
-                    case 1:
-                        layoutContentFilter.setVisibility(View.VISIBLE);
-                        textCariBarang.setFocusable(false);
-                        textCariBarang.setText("");
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, stockArr);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        spinnerContent.setAdapter(adapter);
-                        break;
-                    case 2:
-//                        Log.e(TAG, "onItemSelected: " + spinnerFilter.getSelectedItemPosition());
-//                        Toast.makeText(KatalogActivity.this, spinnerFilter.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
-                        layoutContentFilter.setVisibility(View.VISIBLE);
-                        textCariBarang.setFocusable(false);
-                        textCariBarang.setText("");
-                        ArrayAdapter<CharSequence> adapterX = ArrayAdapter.createFromResource(getApplicationContext(),
-                                R.array.filter_Harga, android.R.layout.simple_spinner_item);
-                        spinnerContent.setAdapter(adapterX);
-                        break;
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-        spinnerContent.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                filterData = spinnerContent.getSelectedItem().toString();
-                filter = true;
-                SearchingBarang("");
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+                BottomSheetFilterFragmentUrutkan bottomSheetFragment = new BottomSheetFilterFragmentUrutkan();
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
             }
         });
 
@@ -317,11 +294,53 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                 String cari = textCariBarang.getText().toString();
                 if (isOnline()) {
 //                    ceksearch = true;
+                    isFilter = false;
+                    pastVisisbleItems = 0;
+                    visibleItemsCount = 0;
+                    totalItemsCount = 0;
+                    previous_totals = 0;
+                    page_number = 1;
+                    page = 0;
+                    urlNextPage = "";
                     arrayBarang.clear();
                     SearchingBarang(cari);
                 } else {
                     Snack("Tidak ada koneksi internet");
                     swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
+
+        rvBarang.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                visibleItemsCount = layoutManager.getChildCount();
+                totalItemsCount = layoutManager.getItemCount();
+                pastVisisbleItems = layoutManager.findFirstVisibleItemPosition();
+
+                if (isLoading) {
+                    if (totalItemsCount > previous_totals) {
+                        isLoading = false;
+                        previous_totals = totalItemsCount;
+                    }
+                }
+                if (!isLoading && (totalItemsCount - visibleItemsCount)
+                        <= (pastVisisbleItems + view_threshold)) {
+                    // End has been reached
+
+                    Log.i("Yaeye!", "end called");
+
+                    page_number++;
+                    Log.e(TAG, "onScrolled: page terakhir " + page);
+                    Log.e(TAG, "onScrolled: urlNext " + urlNextPage);
+                    Log.e(TAG, "onScrolled: page dituju " + page_number);
+                    if (page_number >= page && !urlNextPage.equals("null")) {
+                        pagenation();
+                    } else {
+                        Snack("Semua Barang Sudah Tampil");
+                    }
+                    isLoading = true;
                 }
             }
         });
@@ -335,7 +354,8 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
     }
 
     private void SearchingWishlist() {
-        url = Http.server + "wishlist-daftar";
+        String pid = sessionManager.getPID();
+        url = Http.server + "wishlist-search?customer=" + pid;
         Log.e("url", url);
         getDataWishlist();
     }
@@ -354,44 +374,33 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                         dialog1.dismiss();
                         try {
                             if (response.length() > 1) {
-                                Gson gson = new Gson();
-                                ModelWish modelListItem = gson.fromJson(response, ModelWish.class);
-                                List<com.dbelgamembership.membersip.Model.ModelWish.MsgServer> modelItem = modelListItem.getMsgServer();
 
-                                Log.e(TAG, "Nama Set : " + IdKostumer);
+                                JsonObject root = new JsonParser().parse(response).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                if (success) {
+                                    Gson gson = new Gson();
+                                    ModelSearchWish modelListItem = gson.fromJson(response, ModelSearchWish.class);
 
-                                Log.e(TAG, "SIZE 1 : " + modelItem.size());
+                                    listDetail = modelListItem.getMsgServer();
 
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getWishlistDetail().size() == 0) {
-                                        modelItem.remove(i);
-                                    }
-                                }
+                                    String jumlahWish = "";
+                                    if (listDetail.size() > 0) {
+                                        jumlahWish = String.valueOf(listDetail.size());
+                                        layoutTotalWishlist.setVisibility(View.VISIBLE);
 
-                                Log.e(TAG, "SIZE 2 : " + modelItem.size());
-
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getIdCustomer() != IdKostumer) {
-                                        Log.e(TAG, "Yang dihapus : " + modelItem.get(i).getIdCustomer());
-                                        modelItem.remove(i);
-                                    } else {
-                                        Log.e(TAG, "Ini user sama : " + modelItem.get(i).getIdCustomer());
-                                        listDetail = modelItem.get(i).getWishlistDetail();
-                                    }
-                                }
-
-                                Log.e(TAG, "list size : " + listDetail.size());
-
-                                if (listDetail.size() > 0) {
-                                    String jumlahWish = String.valueOf(listDetail.size());
-                                    layoutTotalWishlist.setVisibility(View.VISIBLE);
-                                    totalWishlist.setText(jumlahWish);
-                                    jumlahWishlistAwal = listDetail.size();
 //                                    Toast.makeText(KatalogActivity.this, "Wishlist user : " + namaKustomer + "\n" + modelItem.size() + " Wishlist item", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        layoutTotalWishlist.setVisibility(View.GONE);
+                                    }
+                                    jumlahWishlistAwal = Integer.parseInt(jumlahWish);
+                                    Log.e(TAG, "on GET WISH : JumlahWishlist : " + jumlahWishlistAwal);
+                                    totalWishlist.setText(jumlahWish);
                                 } else {
-                                    layoutTotalWishlist.setVisibility(View.GONE);
+                                    totalWishlist.setText("0");
                                 }
                             }
+
+
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: Error " + e);
                         }
@@ -516,47 +525,185 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         rvBarang = findViewById(R.id.gridview);
         swipeRefreshLayout = findViewById(R.id.swipeBarangOrder);
         btnSortFilter = findViewById(R.id.layoutFilter);
-        layoutSpinner = findViewById(R.id.spinner);
+        btnUrutkanData = findViewById(R.id.layoutSort);
+
         judulAppBar.setText("Katalog Produk");
-        spinnerSort = findViewById(R.id.sortSpinner);
-        spinnerFilter = findViewById(R.id.filterSpinner);
-        spinnerContent = findViewById(R.id.filterContent);
-        layoutContentFilter = findViewById(R.id.layoutContentFilter);
-        btnHapusFilter = findViewById(R.id.btnDeleteFilter);
+
         totalWishlist = findViewById(R.id.text_totalWishlist);
         layoutWishList = findViewById(R.id.layout_wishlist);
-
         toolbar = findViewById(R.id.toolbar);
         layoutTotalWishlist = findViewById(R.id.layout_totalWish);
     }
 
     private void SearchingBarang(String cari) {
-        Log.e(TAG, "filter : " + filter);
-        Log.e(TAG, "SearchingBarang: " + cariBarang);
+        page = 1;
+        current_index = 0;
         url = Http.server;
         swipeRefreshLayout.setRefreshing(false);
-        if (filter != true) {
-            if (cariBarang.length() > 0) {
-                try {
-                    url = url + "search-katalog?name=" + URLEncoder.encode(cari.trim(), "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                url = url + "search-katalog?name=";
+
+
+        if (isFilter) {
+
+            try {
+                url = url + "search-katalog?name=" + URLEncoder.encode(cari.trim(), "UTF-8") + filterString;
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            getDataKatalogAwal();
         } else {
-            if (!filterData.equals("")) {
-                url = url + "search-katalog?kategori=" + filterData;
+
+            try {
+                url = url + "search-katalog?name=" + URLEncoder.encode(cari.trim(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             }
-            filterDataKatalog();
         }
+
+
+        getDataKatalogAwal();
 
         Log.e("url", url);
     }
 
+    private void pagenation() {
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        StringRequest arrReq = new StringRequest(Request.Method.GET, urlNextPage, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    List<ModelKatalog> arrayBarangAdd = new ArrayList<>();
+                    Gson gson = new Gson();
+                    ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
+                    List<Datum> modelItem = modelListItem.getMsgServer().getData();
+                    if (modelListItem.getMsgServer().getCurrentPage() <= modelListItem.getMsgServer().getLastPage()) {
+//                        urlNextPage = String.valueOf(modelListItem.getMsgServer().getNextPageUrl());
+                        if (modelListItem.getMsgServer().getNextPageUrl() != null) {
+                            if (isFilter) {
+                                urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8")
+                                        + filterString;
+                            } else {
+                                urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8");
+
+                            }
+
+                        } else {
+                            urlNextPage = String.valueOf(modelListItem.getMsgServer().getNextPageUrl());
+                        }
+                        page = modelListItem.getMsgServer().getCurrentPage();
+                        Log.e(TAG, "onResponse: " + urlNextPage);
+                    }
+                    if (modelItem.size() > 0) {
+                        arrayBarangAdd.clear();
+                        for (Datum itemData : modelItem) {
+                            ModelKatalog pm = new ModelKatalog();
+                            pm.setId(String.valueOf(itemData.getId()));
+                            pm.setNama_barang(itemData.getName());
+
+                            String deskripsi = "";
+                            if (itemData.getDeskripsi() == null || itemData.getDeskripsi().isEmpty()) {
+                                deskripsi = "Deskripsi Kosong";
+                            } else {
+                                deskripsi = itemData.getDeskripsi();
+                            }
+                            pm.setDeskripsi(deskripsi);
+                            pm.setMerk_barang(String.valueOf(itemData.getMerekProduk()));
+                            pm.setKategori_barang(itemData.getNamaKategori());
+                            pm.setKode_barang(itemData.getCode());
+                            pm.setStok(String.valueOf(itemData.getStok()));
+
+                            String satuan = "";
+                            if (itemData.getSatuanKemasan() != null) {
+                                satuan = itemData.getSatuanKemasan();
+                            } else {
+                                satuan = "unit";
+                            }
+                            pm.setSatuan_kemasan(satuan);
+                            pm.setBarcode(itemData.getCode());
+                            pm.setImages(itemData.getImages());
+                            pm.setHarga_barang(itemData.getPrice());
+                            pm.setHarga_2(itemData.getPriceDua());
+                            pm.setHarga_3(itemData.getPriceTiga());
+                            arrayBarang.add(pm);
+                        }
+                        adapterListSearchBarang.addItems(arrayBarangAdd);
+                    }
+                } catch (Exception e) {
+                    Snack("Barang Sudah Tampil Semua");
+                    Log.e(TAG, "onResponse: Exception pagenation " + e.getMessage());
+                }
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //mSwipeRefreshLayout.setRefreshing(false);
+                Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                if (error instanceof AuthFailureError) {
+                    sessionManager.destroySession();
+                    Intent intent = new Intent(getApplicationContext(), KatalogActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else if (error instanceof NetworkError) {
+                    Log.e(TAG, "onErrorResponse: " + error.getMessage());
+                    VolleyLog.d(TAG, "Error: " + error.getMessage());
+                    Snack(error.getMessage());
+                    Toast.makeText(KatalogActivity.this, "error : lod" + error.getMessage(), Toast.LENGTH_LONG).show();
+                    androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(KatalogActivity.this);
+                    builder1.setTitle("Peringatan");
+                    builder1.setMessage("Terjadi Kesalahan\nIngin memuat ulang?");
+                    builder1.setCancelable(false);
+                    builder1.setPositiveButton(
+                            "Ya",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    pagenation();
+                                }
+                            });
+                    builder1.setNegativeButton(
+                            "Tidak",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                    finish();
+                                }
+                            });
+                    final androidx.appcompat.app.AlertDialog alert11 = builder1.create();
+                    alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                        }
+                    });
+                    alert11.show();
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
+                return params;
+            }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(arrReq);
+    }
+
     private void getDataKatalogAwal() {
+        Log.e(TAG, "getDataKatalogAwal: ISFILTER : " + isFilter);
         final ProgressDialog dialog1 = new ProgressDialog(KatalogActivity.this);
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -570,52 +717,87 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                         Log.e(TAG, "onResponse: " + response);
                         dialog1.dismiss();
                         try {
-                            if (response.length() > 1) {
+                            if (response != null) {
                                 Gson gson = new Gson();
                                 swipeRefreshLayout.setRefreshing(false);
-                                ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
-                                List<MsgServer> modelItem = modelListItem.getMsgServer();
-                                if (modelItem.size() > 0) {
-                                    arrayBarang.clear();
-                                    rvBarang.setAdapter(null);
-                                    for (MsgServer itemData : modelItem) {
-                                        ModelKatalog pm = new ModelKatalog();
-                                        pm.setId(String.valueOf(itemData.getId()));
-                                        pm.setNama_barang(itemData.getName());
+                                arrayKategori.clear();
+//                                arrayKategori.add("FILTER KATEGORI");
+                                JsonObject root = new JsonParser().parse(response).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                if (!success) {
+                                    Snack("Barang tidak ada !");
+                                } else {
 
-                                        String deskripsi = "";
-                                        if (itemData.getDeskripsi() == null || itemData.getDeskripsi().isEmpty()) {
-                                            deskripsi = "Deskripsi Kosong";
+                                    ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
+                                    List<Datum> modelItem = modelListItem.getMsgServer().getData();
+                                    if (modelListItem.getMsgServer().getCurrentPage() <= modelListItem.getMsgServer().getLastPage()) {
+//                                        urlNextPage = String.valueOf(modelListItem.getMsgServer().getNextPageUrl() == null ? "" : modelListItem.getMsgServer().getNextPageUrl());
+                                        if (modelListItem.getMsgServer().getNextPageUrl() != null) {
+                                            if (isFilter) {
+                                                urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8")
+                                                        + filterString;
+                                            } else {
+                                                urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8");
+                                            }
+//                                            urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8") + filterString;
                                         } else {
-                                            deskripsi = itemData.getDeskripsi();
+                                            urlNextPage = String.valueOf(modelListItem.getMsgServer().getNextPageUrl());
                                         }
-
-                                        pm.setDeskripsi(deskripsi);
-                                        pm.setMerk_barang(String.valueOf(itemData.getMerekProduk()));
-                                        pm.setKategori_barang(itemData.getNamaKategori());
-                                        pm.setKode_barang(itemData.getCode());
-                                        pm.setStok(String.valueOf(itemData.getStok()));
-                                        pm.setBarcode(itemData.getCode());
-                                        pm.setImages(itemData.getImages());
-                                        Price hargaBarang = itemData.getPrice();
-                                        pm.setHarga_barang(String.valueOf(hargaBarang.getHarga()));
-                                        pm.setHarga_2(String.valueOf(hargaBarang.getHargaDua()));
-                                        pm.setHarga_3(String.valueOf(hargaBarang.getHargaTiga()));
-                                        arrayKategori.add(itemData.getNamaKategori());
-                                        arrayBarang.add(pm);
+                                        page = modelListItem.getMsgServer().getCurrentPage();
+                                        Log.e(TAG, "onResponse: " + urlNextPage);
                                     }
-                                    stockArr = new ArrayList<String>(new LinkedHashSet<String>(arrayKategori)).toArray(new String[0]);
-                                    adapterListSearchBarang = new AdapterListBarang(KatalogActivity.this, arrayBarang, KatalogActivity.this);
-                                    rvBarang.setAdapter(null);
-                                    rvBarang.setAdapter(adapterListSearchBarang);
 
-                                } else {
-                                    Snack("Item Kosong");
+                                    if (modelItem.size() > 0) {
+                                        arrayBarang.clear();
+                                        rvBarang.setAdapter(null);
+                                        for (Datum itemData : modelItem) {
+                                            ModelKatalog pm = new ModelKatalog();
+                                            pm.setId(String.valueOf(itemData.getId()));
+                                            pm.setNama_barang(itemData.getName());
+
+                                            String deskripsi = "";
+                                            if (itemData.getDeskripsi() == null || itemData.getDeskripsi().isEmpty()) {
+                                                deskripsi = "Deskripsi Kosong";
+                                            } else {
+                                                deskripsi = itemData.getDeskripsi();
+                                            }
+
+                                            pm.setDeskripsi(deskripsi);
+                                            pm.setMerk_barang(String.valueOf(itemData.getMerekProduk()));
+                                            pm.setKategori_barang(itemData.getNamaKategori());
+                                            pm.setKode_barang(itemData.getCode());
+                                            pm.setStok(String.valueOf(itemData.getStok()));
+
+                                            String satuan = "";
+                                            if (itemData.getSatuanKemasan() != null) {
+                                                satuan = itemData.getSatuanKemasan();
+                                            } else {
+                                                satuan = "unit";
+                                            }
+                                            pm.setSatuan_kemasan(satuan);
+
+                                            pm.setBarcode(itemData.getCode());
+                                            pm.setImages(itemData.getImages());
+                                            pm.setHarga_barang(itemData.getPrice());
+                                            pm.setHarga_2(itemData.getPriceDua());
+                                            pm.setHarga_3(itemData.getPriceTiga());
+//                                            arrayKategori.add(itemData.getNamaKategori());
+                                            arrayBarang.add(pm);
+                                        }
+//                                        stockArr = new ArrayList<String>(new LinkedHashSet<String>(arrayKategori)).toArray(new String[0]);
+                                        adapterListSearchBarang = new AdapterListBarang(KatalogActivity.this, arrayBarang, KatalogActivity.this);
+                                        rvBarang.setAdapter(null);
+                                        rvBarang.setAdapter(adapterListSearchBarang);
+
+                                    }
+
                                 }
+                            } else {
+                                Snack("Item Kosong");
                             }
-                            Snack("Barang sudah tampil semua !");
+//                            Snack("Barang sudah tampil semua !");
                         } catch (Exception e) {
-                            Log.e(TAG, "onResponse: Error " + e);
+                            Log.e(TAG, "onResponse: Error haha" + e);
                         }
 
                     }
@@ -632,7 +814,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -723,164 +904,9 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
     }
 
-    private void filterDataKatalog() {
-        final ProgressDialog dialog1 = new ProgressDialog(KatalogActivity.this);
-        dialog1.setCancelable(false);
-        dialog1.setCanceledOnTouchOutside(false);
-        dialog1.setMessage("Harap Menunggu...");
-        dialog1.show();
-        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+    public void sortBarang(String urutkanData) {
 
-        StringRequest arrReq = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        dialog1.dismiss();
-                        try {
-                            if (response.length() > 1) {
-                                Gson gson = new Gson();
-                                swipeRefreshLayout.setRefreshing(false);
-                                ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
-                                List<MsgServer> modelItem = modelListItem.getMsgServer();
-                                if (modelItem.size() > 0) {
-                                    arrayBarang.clear();
-                                    rvBarang.setAdapter(null);
-                                    for (MsgServer itemData : modelItem) {
-                                        ModelKatalog pm = new ModelKatalog();
-                                        pm.setId(String.valueOf(itemData.getId()));
-                                        pm.setNama_barang(itemData.getName());
-                                        pm.setMerk_barang(String.valueOf(itemData.getMerek()));
-                                        pm.setKategori_barang(itemData.getNamaKategori());
-                                        pm.setKode_barang(itemData.getCode());
-                                        pm.setStok(String.valueOf(itemData.getStokMinimal()));
-                                        pm.setBarcode(itemData.getCode());
-                                        pm.setImages(itemData.getImages());
-                                        Price hargaBarang = itemData.getPrice();
-                                        pm.setHarga_barang(String.valueOf(hargaBarang.getHarga()));
-//                                        arrayKategori.add(itemData.getNamaKategori());
-                                        arrayBarang.add(pm);
-                                    }
-                                    adapterListSearchBarang = new AdapterListBarang(KatalogActivity.this, arrayBarang, KatalogActivity.this);
-                                    rvBarang.setAdapter(null);
-                                    rvBarang.setAdapter(adapterListSearchBarang);
-
-                                } else {
-                                    Snack("Item Kosong");
-                                }
-                            }
-                            Snack("Barang telah difilter !");
-                        } catch (Exception e) {
-                            Log.e(TAG, "onResponse: Error " + e);
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //mSwipeRefreshLayout.setRefreshing(false);
-                Log.e(TAG, "onErrorResponse: " + error.getMessage());
-                if (error instanceof AuthFailureError) {
-                    sessionManager.destroySession();
-                    Intent intent = new Intent(getApplicationContext(), KatalogActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-
-                } else if (error instanceof NetworkError) {
-                    Log.e(TAG, "onErrorResponse: " + error.getMessage());
-                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-                    Snack(error.getMessage());
-                    Toast.makeText(KatalogActivity.this, "error : lod" + error.getMessage(), Toast.LENGTH_LONG).show();
-                    androidx.appcompat.app.AlertDialog.Builder builder1 = new androidx.appcompat.app.AlertDialog.Builder(KatalogActivity.this);
-                    builder1.setTitle("Peringatan");
-                    builder1.setMessage("Terjadi Kesalahan\nIngin memuat ulang?");
-                    builder1.setCancelable(false);
-                    builder1.setPositiveButton(
-                            "Ya",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    getDataKatalogAwal();
-                                }
-                            });
-                    builder1.setNegativeButton(
-                            "Tidak",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    finish();
-                                }
-                            });
-                    final androidx.appcompat.app.AlertDialog alert11 = builder1.create();
-                    alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface dialogInterface) {
-                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-                        }
-                    });
-                    alert11.show();
-                } else if (error.networkResponse == null) {
-                    dialog1.dismiss();
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(KatalogActivity.this);
-                    builder1.setTitle("Peringatan");
-                    builder1.setMessage("Server not responding!\nTry again ?");
-                    builder1.setCancelable(false);
-                    builder1.setPositiveButton(
-                            "Ya",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    finish();
-                                    startActivity(getIntent());
-                                }
-                            });
-                    builder1.setNegativeButton(
-                            "Tidak",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                    finish();
-                                }
-                            });
-                    final AlertDialog alert11 = builder1.create();
-                    alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-                        @Override
-                        public void onShow(DialogInterface dialogInterface) {
-                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-                        }
-                    });
-                    alert11.show();
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json");
-                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
-                return params;
-            }
-
-            @Override
-            protected Response<String> parseNetworkResponse(NetworkResponse response) {
-                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
-                return super.parseNetworkResponse(response);
-            }
-        };
-
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        mQueue.add(arrReq);
-
-    }
-
-    private void sortBarang() {
-
-        if (sortData.equals("priceDown")) {
+        if (urutkanData.equals("priceDown")) {
             Collections.sort(arrayBarang, new Comparator<ModelKatalog>() {
                 @Override
                 public int compare(ModelKatalog modelKatalog, ModelKatalog t1) {
@@ -890,33 +916,41 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                 }
             });
             Snack("Barang diurutkan harga terendah !");
-        } else if (sortData.equals("priceUp")) {
+        } else if (urutkanData.equals("priceUp")) {
             Collections.sort(arrayBarang, new Comparator<ModelKatalog>() {
                 @Override
                 public int compare(ModelKatalog modelKatalog, ModelKatalog t1) {
-                    int a = Integer.parseInt(modelKatalog.getHarga_barang());
-                    int b = Integer.parseInt(t1.getHarga_barang());
+                    int a = (int) Double.parseDouble(modelKatalog.getHarga_barang());
+                    int b = (int) Double.parseDouble(t1.getHarga_barang());
                     return b - a;
                 }
             });
             Snack("Barang diurutkan harga tertinggi !");
-        } else if (sortData.equals("stokUp")) {
+        } else if (urutkanData.equals("stokUp")) {
+            Collections.sort(arrayBarang, new Comparator<ModelKatalog>() {
+                @Override
+                public int compare(ModelKatalog modelKatalog, ModelKatalog t1) {
+                    int a = (int) Double.parseDouble(modelKatalog.getStok());
+                    int b = (int) Double.parseDouble(t1.getStok());
+                    return b - a;
+                }
+            });
+            Snack("Barang diurutkan stok tertinggi !");
+        } else if (urutkanData.equals("stokDown")) {
             Collections.sort(arrayBarang, new Comparator<ModelKatalog>() {
                 @Override
                 public int compare(ModelKatalog modelKatalog, ModelKatalog t1) {
                     int a = Integer.parseInt(modelKatalog.getStok());
                     int b = Integer.parseInt(t1.getStok());
-                    return b - a;
+                    return a - b;
                 }
             });
-            Snack("Barang diurutkan stok tertinggi !");
+            Snack("Barang diurutkan stok terendah !");
         }
 
         adapterListSearchBarang = new AdapterListBarang(KatalogActivity.this, arrayBarang, KatalogActivity.this);
         rvBarang.setAdapter(null);
         rvBarang.setAdapter(adapterListSearchBarang);
-//        dialog1.dismiss();
-
     }
 
     private boolean isOnline() {
@@ -946,14 +980,11 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         alertDialog = dialogBuilder.create();
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
-
         String StatusMber = "";
-
         StatusMber = sessionManager.getMembership();
         Log.e(TAG, "STATUS MBER: " + StatusMber);
-
-
         kategoriProduk = (TextView) kostumerPopUp.findViewById(R.id.produk_kategori);
+        textAdaBarang = (TextView) kostumerPopUp.findViewById(R.id.peringatanText);
         namaProduk = (TextView) kostumerPopUp.findViewById(R.id.produk_name);
         deskripsiProduk = (TextView) kostumerPopUp.findViewById(R.id.produk_deskripsi);
         harga1Produk = (TextView) kostumerPopUp.findViewById(R.id.produk_price1);
@@ -965,8 +996,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         btnTambahQTY = (Button) kostumerPopUp.findViewById(R.id.order_btnPlusQty);
         btnKurangQTY = (Button) kostumerPopUp.findViewById(R.id.order_btnMinQty);
         jumlahQTY = (EditText) kostumerPopUp.findViewById(R.id.order_qtyOrder);
-
-
         kategoriProduk.setText(position.getKategori_barang());
         namaProduk.setText(position.getNama_barang());
 
@@ -985,7 +1014,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         } else {
             harga2Produk.setVisibility(View.GONE);
         }
-
 
         int cekStok = Integer.parseInt(position.getStok());
 
@@ -1009,18 +1037,17 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             long hargaBarang2 = 0;
             if (StatusMber.equals("REGULER")) {
                 Log.e(TAG, "harga 1");
-                hargaBarang = Integer.parseInt(position.getHarga_barang());
+                hargaBarang = (long) Double.parseDouble(position.getHarga_barang());
             } else if (StatusMber.equals("DEBET")) {
                 Log.e(TAG, "harga 2");
-                hargaBarang = Integer.parseInt(position.getHarga_barang());
-                hargaBarang2 = Integer.parseInt(position.getHarga_2());
+                hargaBarang = (long) Double.parseDouble(position.getHarga_barang());
+                hargaBarang2 = (long) Double.parseDouble(position.getHarga_2());
             }
 
             harga1Produk.setText("Rp. " + nf.format(hargaBarang));
             harga2Produk.setText("Rp. " + nf.format(hargaBarang2));
 
         }
-
 
         Drawable image;
         if (!position.getImages().equals("http://54.254.194.122/upload/barang/")) {
@@ -1039,7 +1066,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                 alertDialog.dismiss();
             }
         });
-
 
         btnTambahQTY.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1080,6 +1106,34 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
         });
 
+        for (int i = 0; i < jumlahWishlistAwal; i++) {
+            String haha = "";
+            String jumlahQTQTQTY = "0";
+            if (listDetail.size() == 0) {
+                haha = "";
+            } else {
+                haha = String.valueOf(listDetail.get(i).getIdProduk());
+                jumlahQTQTQTY = String.valueOf(listDetail.get(i).getQty());
+            }
+
+            String hehe = "";
+            if (listBarang.size() == 0) {
+                hehe = "";
+            } else {
+                hehe = String.valueOf(listBarang.get(i).getIdProduk());
+            }
+
+            Log.e(TAG, "AdapterListBarangClicked HAHA: " + haha);
+            Log.e(TAG, "AdapterListBarangClicked HEHE: " + hehe);
+            Log.e(TAG, "AdapterListBarangClicked POSITION: " + position.getId());
+
+            if (position.getId().equals(haha) || position.getId().equals(hehe)) {
+                textAdaBarang.setVisibility(View.VISIBLE);
+                jumlahQTY.setText(jumlahQTQTQTY);
+            }
+
+        }
+
         btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1095,12 +1149,11 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                 } else {
                     tambahItemWishlist(position.getId(), jumlahStokWish);
                 }
-
             }
 
             private void tambahItemWishlist(String kode_barang, int stokBarang) {
                 Log.e(TAG, "Size awal : " + listBarang.size());
-                Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang );
+                Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang);
                 String code = kode_barang;
                 Log.e(TAG, "ID Member : " + sessionManager.getPID());
                 Log.e(TAG, "ID Barang : " + code);
@@ -1120,6 +1173,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                                     JSONObject postData = new JSONObject();
                                     try {
                                         postData.put("produk", code);
+                                        postData.put("qty", stokBarang);
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
@@ -1134,7 +1188,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                                 }
                             }
                         });
-                         builder1.setNegativeButton(
+                builder1.setNegativeButton(
                         "Tidak",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
@@ -1156,7 +1210,22 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
         });
 
+    }
 
+    public void dismissDialog(String filterData) {
+        isFilter = true;
+        filterString = filterData;
+        pastVisisbleItems = 0;
+        visibleItemsCount = 0;
+        totalItemsCount = 0;
+        previous_totals = 0;
+        page_number = 1;
+        page = 0;
+        urlNextPage = "";
+        arrayBarang.clear();
+        Log.e("TAG", "dismissDialog: " + filterString);
+        textCariBarang.setText("");
+        SearchingBarang("");
     }
 
     private void SimpanPost(JSONObject postData) {
@@ -1177,10 +1246,26 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                             Gson gson = new Gson();
                             ResponseWishlist responseWishlist = gson.fromJson(String.valueOf(response), ResponseWishlist.class);
                             listBarang = responseWishlist.getMsgServer();
-                            Toast.makeText(KatalogActivity.this, "Barang ditambahkan ke wishlist !", Toast.LENGTH_SHORT).show();
-                            finish();
-                            startActivity(getIntent());
-                            Log.e(TAG, "Size ditambah : " + listBarang.size());
+
+                            boolean responseBool = responseWishlist.isSuccess();
+
+                            if (responseWishlist.isSuccess()) {
+                                Log.e(TAG, "onResponse: " + responseBool);
+                                Snack("Berhasil menambahkan barang di Wishlist");
+                            } else {
+                                Log.e(TAG, "onResponse: " + responseBool);
+                                String string = "error : " + responseWishlist.getDescription();
+                                Snackbar snackbar = Snackbar.make(mainLayout, string, Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null);
+                                View snackBarView = snackbar.getView();
+                                snackBarView.setBackgroundColor(getResources().getColor(R.color.merahBelga));
+                                snackbar.show();
+                            }
+
+                            listDetail = listBarang;
+                            jumlahWishlistAwal = listBarang.size();
+                            Log.e(TAG, "on Tambah : JumlahWishlist : " + jumlahWishlistAwal);
+                            totalWishlist.setText(String.valueOf(listBarang.size()));
 
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
@@ -1233,4 +1318,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
         mQueue.add(jsonObjectRequest);
     }
+
+
 }

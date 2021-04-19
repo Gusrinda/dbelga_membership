@@ -61,6 +61,7 @@ public class AdapterListBarang extends
     public void onBindViewHolder(ViewHolder holder, final int position) {
         try {
             final ModelKatalog item = list.get(position);
+
             Drawable image;
             if (!item.getImages().equals("http://54.254.194.122/upload/barang/")) {
                 Glide.with(context)
@@ -94,17 +95,19 @@ public class AdapterListBarang extends
 
             int cekStok = Integer.parseInt(item.getStok());
 
+
             if (cekStok > 0 && cekStok < 10) {
-                holder.tvStokOutlet.setText(" < 10");
+                holder.tvStokOutlet.setText(" < 10 " + item.getSatuan_kemasan());
             } else if (cekStok >= 10 && cekStok < 25) {
-                holder.tvStokOutlet.setText(" < 25");
+                holder.tvStokOutlet.setText(" < 25 " + item.getSatuan_kemasan());
             } else if (cekStok >= 25 && cekStok < 50) {
-                holder.tvStokOutlet.setText(" < 50");
+                holder.tvStokOutlet.setText(" < 50 "+ item.getSatuan_kemasan());
             } else if (cekStok >= 50) {
-                holder.tvStokOutlet.setText(" > 50");
+                holder.tvStokOutlet.setText(" > 50 "+ item.getSatuan_kemasan());
             } else if (cekStok == 0 || cekStok < 0){
                 holder.tvStokOutlet.setText("KOSONG");
             }
+
 
             Log.e(TAG, "NAMA BARANG : " + item.getNama_barang() );
             Log.e(TAG, "STOK : " + cekStok );
@@ -112,12 +115,19 @@ public class AdapterListBarang extends
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
             if (holder.tvStokOutlet.getText().toString().equals("KOSONG")) {
-                holder.hargaBarang.setText("? (Harga Belum Diketahui)");
+
+                if (member.equals("REGULER")) {
+                    holder.hargaBarang.setText("? (Harga Stok Akhir : " + nf.format(Double.parseDouble(item.getHarga_barang())) +" )");
+                } else {
+                    holder.hargaBarang.setText("? (Harga Stok Akhir : " +  nf.format(Double.parseDouble(item.getHarga_2()))  +" )");
+                }
+
+
             } else {
                 String hargaBarang = "";
                 String hargaCoret = "";
-                long hargaBarang2 = 0;
-                long hargaCoret2 = 0;
+                double hargaBarang2 = 0;
+                double hargaCoret2 = 0;
 
                 if (member.equals("REGULER")) {
                     Log.e(TAG, "harga 1" );
@@ -132,13 +142,13 @@ public class AdapterListBarang extends
                 if (hargaBarang == "") {
                     hargaBarang2 = 0;
                 } else {
-                    hargaBarang2 = Long.parseLong(hargaBarang);
+                    hargaBarang2 = Double.parseDouble(hargaBarang);
                 }
 
                 if (hargaCoret == "") {
                     hargaCoret2 = 0;
                 } else {
-                    hargaCoret2 = Long.parseLong(hargaCoret);
+                    hargaCoret2 = Double.parseDouble(hargaCoret);
                 }
 
                 String testHarga = "Rp. " + nf.format(hargaBarang2);
@@ -172,6 +182,10 @@ public class AdapterListBarang extends
         }
     }
 
+    public void addItems(List<ModelKatalog> items) {
+        this.list.addAll(this.list.size(), items);
+        notifyDataSetChanged();
+    }
 
     public interface AdapterListBarangCallback {
         void AdapterListBarangClicked(ModelKatalog position);

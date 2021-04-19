@@ -35,7 +35,6 @@ public class ListTransaksi extends AppCompatActivity {
 
         findID();
 
-
         toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,14 +59,10 @@ public class ListTransaksi extends AppCompatActivity {
 
         viewPager2.setAdapter(pagerAdapter);
 
-
-
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager2.setCurrentItem(tab.getPosition());
-//                tabLayout.setScrollPosition(tab.getPosition(),0f,true);
-//                tabLayout.getTabAt(tab.getPosition()).select();
             }
 
             @Override

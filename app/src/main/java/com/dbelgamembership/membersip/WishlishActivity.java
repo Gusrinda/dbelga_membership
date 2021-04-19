@@ -40,32 +40,26 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.dbelgamembership.membersip.Adapter.AdapterListBarang;
-import com.dbelgamembership.membersip.Adapter.AdapterListTransaksi;
 import com.dbelgamembership.membersip.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
-import com.dbelgamembership.membersip.Model.ModelKatalog;
-import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
-import com.dbelgamembership.membersip.Model.ModelWish.Price;
-import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
-import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
-import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.ModelSearchWish;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.Price;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-public class WishlishActivity extends AppCompatActivity implements AdapterListWishlist.AdapterListWishlistCallback, AdapterListWishlist.AdapterListWishlistCallbackDelete{
+public class WishlishActivity extends AppCompatActivity implements AdapterListWishlist.AdapterListWishlistCallback, AdapterListWishlist.AdapterListWishlistCallbackDelete {
 
     SessionManager sessionManager;
     public String url = Http.server, jsonResult, type, user, pass;
@@ -76,7 +70,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
     EditText textCariBarang;
     ImageView btnCari;
     RecyclerView rvBarang;
-    SwipeRefreshLayout swipeRefreshLayout;
+//    SwipeRefreshLayout swipeRefreshLayout;
     private GridLayoutManager layoutManager;
     int checker = 0;
     Spinner spinnerSort, spinnerFilter, spinnerContent;
@@ -86,11 +80,13 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
     int namaKustomer;
 
     AdapterListWishlist adapterListSearchBarang;
-    ArrayList<WishlistDetail> arrayBarang = new ArrayList<WishlistDetail>();
+    ArrayList<MsgServer> arrayBarang = new ArrayList<MsgServer>();
     List<String> arrayKategori = new ArrayList<String>();
-    List<WishlistDetail> listDetail = new ArrayList<>();
+    List<MsgServer> listDetail = new ArrayList<>();
     public static String[] stockArr;
 
+    RelativeLayout layoutKosong;
+    SwipeRefreshLayout layoutSwipe;
 
     Toolbar toolbar;
 
@@ -106,6 +102,8 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
             @Override
             public void onClick(View view) {
                 finish();
+                KatalogActivity.jumlahWishlistAwal = listDetail.size();
+                Log.e(TAG, "onClick: jumlah wish nih : " + KatalogActivity.jumlahWishlistAwal);
             }
         });
         rvBarang.setHasFixedSize(false);
@@ -120,22 +118,23 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
     public void onBackPressed() {
         super.onBackPressed();
         finish();
+        KatalogActivity.jumlahWishlistAwal = listDetail.size();
+        Log.e(TAG, "onClick: jumlah wish nih : " + KatalogActivity.jumlahWishlistAwal);
 //        Intent intent = new Intent(WishlishActivity.this, KatalogActivity.class);
 //        startActivity(intent);
     }
 
     private void getDataUser() {
         namaKustomer = Integer.parseInt(sessionManager.getPID());
-        Log.e(TAG, "getDataUser: " + namaKustomer );
-        SearchingWishlist();
+        Log.e(TAG, "getDataUser: " + namaKustomer);
+        SearchingWishlist(String.valueOf(namaKustomer));
     }
 
-    private void SearchingWishlist() {
-        url = Http.server + "wishlist-daftar";
+    private void SearchingWishlist(String idUser) {
+        url = Http.server + "wishlist-search?customer=" + idUser;
         Log.e("url", url);
         getDataWishlist();
     }
-
 
     private void getDataWishlist() {
         final ProgressDialog dialog1 = new ProgressDialog(WishlishActivity.this);
@@ -150,44 +149,33 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                     public void onResponse(String response) {
                         dialog1.dismiss();
                         try {
-                            if (response.length() > 1) {
+                            Log.e(TAG, "onResponse: " + response);
+
+                            String responseX = String.valueOf(response);
+                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                            boolean success = root.get("success").getAsBoolean();
+                            Log.e("", "Test : " + success);
+
+                            if (!success) {
+                                layoutKosong.setVisibility(View.VISIBLE);
+                                rvBarang.setVisibility(View.GONE);
+                                Snack("Item Kosong");
+                            } else {
+                                layoutKosong.setVisibility(View.GONE);
+                                rvBarang.setVisibility(View.VISIBLE);
                                 Gson gson = new Gson();
-                                ModelWish modelListItem = gson.fromJson(response, ModelWish.class);
-                                List<com.dbelgamembership.membersip.Model.ModelWish.MsgServer> modelItem = modelListItem.getMsgServer();
-
-                                Log.e(TAG, "Nama Set : " + namaKustomer );
-
-                                Log.e(TAG, "SIZE 1 : " + modelItem.size() );
-
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getWishlistDetail().size() == 0) {
-                                        modelItem.remove(i);
-                                    }
-                                }
-
-                                Log.e(TAG, "SIZE 2 : " + modelItem.size() );
-
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getIdCustomer() != namaKustomer) {
-                                        Log.e(TAG, "Yang dihapus : " + modelItem.get(i).getIdCustomer());
-                                        modelItem.remove(i);
-                                    } else {
-                                        Log.e(TAG, "Ini user sama : " + modelItem.get(i).getIdCustomer() );
-                                        listDetail = modelItem.get(i).getWishlistDetail();
-                                    }
-                                }
-
-                                Log.e(TAG, "list size : "+ listDetail.size()  );
-
+                                ModelSearchWish modelListItem = gson.fromJson(response, ModelSearchWish.class);
+                                listDetail = modelListItem.getMsgServer();
                                 if (listDetail.size() > 0) {
                                     arrayBarang.clear();
                                     rvBarang.setAdapter(null);
-                                    for (WishlistDetail itemData : listDetail) {
-                                        WishlistDetail pm = new WishlistDetail();
-                                        pm.setIdProduct((itemData.getIdProduct()));
+                                    for (MsgServer itemData : listDetail) {
+                                        MsgServer pm = new MsgServer();
+                                        pm.setIdProduk((itemData.getIdProduk()));
                                         pm.setName(itemData.getName());
                                         pm.setGambar(itemData.getGambar());
                                         pm.setCodeProduct(String.valueOf(itemData.getCodeProduct()));
+                                        pm.setQty(itemData.getQty());
                                         pm.setQtyStok(itemData.getQtyStok());
                                         Price hargaBarang = itemData.getPrice();
                                         pm.setPrice(hargaBarang);
@@ -201,7 +189,9 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                                 } else {
                                     Snack("Item Kosong");
                                 }
+
                             }
+
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: Error " + e);
                         }
@@ -234,7 +224,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                             "Ya",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                   getDataWishlist();
+                                    getDataWishlist();
                                 }
                             });
                     builder1.setNegativeButton(
@@ -280,14 +270,13 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
 
     }
 
-
     private void findID() {
-
+        mainLayout = findViewById(R.id.mainLayout);
         rvBarang = findViewById(R.id.gridview);
         toolbar = findViewById(R.id.toolbar);
-
+        layoutKosong = findViewById(R.id.layoutWishlistKosong);
+//        layoutSwipe = findViewById(R.id.swipeBarangOrder);
     }
-
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -307,13 +296,13 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
     }
 
     @Override
-    public void AdapterListWishlistClicked(WishlistDetail position) {
+    public void AdapterListWishlistClicked(MsgServer position) {
 
     }
 
     @Override
-    public void AdapterListDelete(WishlistDetail position) {
-        deleteItemWishlist(position.getIdProduct());
+    public void AdapterListDelete(MsgServer position) {
+        deleteItemWishlist(position.getIdProduk());
     }
 
     private void deleteItemWishlist(int idProduk) {

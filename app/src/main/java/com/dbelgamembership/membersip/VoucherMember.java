@@ -2,6 +2,7 @@ package com.dbelgamembership.membersip;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +20,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -73,7 +73,6 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
 
     Toolbar toolbar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +102,6 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
         super.onBackPressed();
         finish();
     }
-
 
     private void getDataUser() {
         url = Http.server;
@@ -149,7 +147,6 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -231,13 +228,14 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
 
                             listVoucher = mVoucher.getDaftarVoucher();
 
+                            jumlahVoucherMember.setText(String.valueOf(listVoucher.size()));
+
                             adapterVoucherMember = new AdapterVoucherMember(VoucherMember.this, listVoucher, VoucherMember.this);
                             rvVoucher.setAdapter(adapterVoucherMember);
 
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: Error " + e);
                         }
-
                     }
                 }, new Response.ErrorListener() {
 
@@ -252,7 +250,6 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -303,7 +300,6 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
                 return super.parseNetworkResponse(response);
             }
         };
-
         arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
