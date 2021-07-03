@@ -78,19 +78,21 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.HelperPrintUniversal.AsyncBluetoothEscPosPrint;
 import com.dbelgamembership.membersip.HelperPrintUniversal.AsyncEscPosPrinter;
+import com.dbelgamembership.membersip.Model.ModelPayment.AddItem;
+import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
+import com.dbelgamembership.membersip.Model.ModelPayment.Item;
 import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
 
-import com.dbelgamembership.membersip.Model.modelListFaktur.Datum;
-import com.dbelgamembership.membersip.Model.modelListFaktur.Item;
+import com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail;
+import com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail;
 import com.dbelgamembership.membersip.Model.modelListFaktur.ModelListFaktur;
-import com.dbelgamembership.membersip.Model.modelListFaktur.OrderDetail;
-import com.dbelgamembership.membersip.Model.modelListFaktur.PaymentDetail;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 
 import org.json.JSONObject;
+import org.simpleframework.xml.Order;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -99,6 +101,7 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -109,7 +112,6 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
 
 public class PrintFakturActivity extends AppCompatActivity implements Runnable, AdapterDetailbarangFak.AdapterDetailbarangCallback {
 
@@ -272,6 +274,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     private String tipeMetode = null;
     private ProgressDialog mBluetoothConnectProgressDialog;
     private BluetoothSocket mBluetoothSocket;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -279,9 +282,11 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
             Toast.makeText(PrintFakturActivity.this, "DeviceConnected", Toast.LENGTH_SHORT).show();
         }
     };
+
     private NumberFormat numberFormat = NumberFormat.getInstance(Locale.GERMAN);
     private RecyclerView.LayoutManager layoutManager;
     private List<Item> listBarang = new ArrayList<>();
+    private List<AddItem> listBarangTambah = new ArrayList<>();
     private SessionManager sessionManager;
     private String url = "";
     private String printBayar, printKembalian, printTotal;
@@ -298,16 +303,10 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
         llcontent.setVisibility(View.GONE);
         linearCharge.setVisibility(View.GONE);
         sessionManager = new SessionManager(this);
-
-//        Paper.init(this);
-
-//        BD_ADDRESS = "BT:" + Paper.book().read(Address.bluetoothAddress);
-
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         imgBarcode = findViewById(R.id.image_qrCode);
-
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -338,30 +337,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
             finish();
         }
 
-
-//        mScan = findViewById(R.id.scanbutton);
-//        mScan.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View mView) {
-//                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-//                if (mBluetoothAdapter == null) {
-//                    Toast.makeText(PrintActivity.this, "Message1", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    if (!mBluetoothAdapter.isEnabled()) {
-//                        Intent enableBtIntent = new Intent(
-//                                BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                        startActivityForResult(enableBtIntent,
-//                                REQUEST_ENABLE_BT);
-//                    } else {
-//                        ListPairedDevices();
-//                        Intent connectIntent = new Intent(PrintActivity.this,
-//                                DeviceListActivity.class);
-//                        startActivityForResult(connectIntent,
-//                                REQUEST_CONNECT_DEVICE);
-//                    }
-//                }
-//            }
-//        });
-
         mPrint = findViewById(R.id.cetakbutton);
         mPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View mView) {
@@ -370,7 +345,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
         });
 
     }
-
 
 //BatasNewPrint
 
@@ -403,7 +377,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     /*==============================================================================================
     ===================================ESC/POS PRINTER PART=========================================
     ==============================================================================================*/
-
 
     /**
      * Synchronous printing
@@ -535,56 +508,36 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
             dataTotalBelanja.append("[L]TUNAI[R]Rp. " + nf.format(pembayaranTunai) + "\n" + dataBayarLain.toString() + "[L]KEMBALIAN[R]Rp. " + nf.format(Integer.parseInt(printKembalian)) + "\n" + "[L]GRAND TOTAL[R]Rp. " + nf.format((pembayaranTunai + amountAnotherPayment + amountCharge)) + "\n");
 //                        amountAnotherPayment
 //                amountCharge
-
         }
 
         return printer.setTextToPrint(
-//               PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
                 "[L]\n" +
-//                        "[C]<u><font size='big'>FAKTUR BELANJA</font></u>\n" +
-                        "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.dbelga, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
-//                        "[C]<font size='small'>Pameran Belanja PGP</font>\n" +
-//                        "[C]<font size='small'>SURABAYA</font>\n" +
-//                        "[C]" + soCode + "\n" +
-//                        "[L]\n" +
-//                        "[C]================================\n" +
-//                        "[L]\n" +
+                    "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.dbelga, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
                         "[C]<b>_______________________________</b>\n" +
                         "[L]<font size='small'>Nama Kasir     : " + sales + "</font>\n" +
                         "[L]<font size='small'>Nomor Order    : " + soCode + "</font>\n" +
                         "[L]<font size='small'>Tgl Pembayaran : " + dateNow.substring(0, 10) + "</font>\n" +
                         "[L]<font size='small'>Nama Cust.     : " + NAMA_CUSTOMER + "</font>\n" +
                         alamatKirim.toString() + "\n" +
-//                        "[L]\n" +
-//                        "[C]<b>_______________________________</b>\n" +
-//                        "[L]<font size='small'>Nama Kustomer  : " + "Kustomer" + "</font>\n" +
-//                        "[L]<font size='small'>Nomor Telepon  : " + soCode + "</font>\n" +
-//                        "[L]\n" +
-                        "[C]================================\n" +
+                       "[C]================================\n" +
                         "[L]Item[R][R]Total\n" +
                         "[C]================================\n" +
                         dataBarang.toString() +
                         "[L]\n" +
                         "[C]================================\n" +
-//                        "[L]PROMO DISKON[R]Rp. " + "-" + "\n" +
-                        "[L]BIAYA KIRIM[R]Rp. " + nf.format(ONGKIR_COK) + "\n" + //KURANGONGKIR
+                       "[L]BIAYA KIRIM[R]Rp. " + nf.format(ONGKIR_COK) + "\n" + //KURANGONGKIR
                         "[L]TOTAL BELANJA[R]Rp. " + nf.format(GTCOKCOKCOKCOCKCOK) + "\n" +
                         "[C]________________________________\n" +
-//                        "[C]<font size='medium'>PEMBAYARAN</font>\n" +
                         "[C]________________________________\n" +
                         dataTotalBelanja.toString() +
                         "[C]================================\n" +
                         "[L]\n" +
-//                        "<qrcode size='20'>" + soCode + "</qrcode>\n" +
-
                         "[C]TERIMAKASIH TELAH BERBELANJA\n"
 
         );
     }
 
-
     //AkhirNewPrint
-
 
     private void setupFaktur(String dataprint) {
         Log.e(TAG, "setupFaktur: " + dataprint);
@@ -604,8 +557,8 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                     public void onResponse(JSONObject response) {
                         try {
                             Gson gson = new Gson();
-                            ModelListFaktur modelListFaktur = gson.fromJson(String.valueOf(response), ModelListFaktur.class);
-                            Datum b = modelListFaktur.getData().get(0);
+                            ModelPayment modelListFaktur = gson.fromJson(String.valueOf(response), ModelPayment.class);
+                            Datum b = modelListFaktur.getData().getData().get(0);
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = (b.getTotalPaymentPaid() - b.getChange());
                             String cok1 = String.valueOf(b.getTotalPaymentPaid());
@@ -680,7 +633,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             });
 
                             grandTotal = 0;
-                            for (com.dbelgamembership.membersip.Model.modelListFaktur.PaymentDetail payment : b.getPaymentDetail()) {
+                            for (com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail payment : b.getPaymentDetail()) {
                                 Log.e(TAG, "onCreate: PAYMENT" + payment.getTotal());
                                 Double dnum = Double.parseDouble(payment.getTotal());
                                 grandTotal += dnum.intValue();
@@ -711,9 +664,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                 }
                             }
                             for (OrderDetail barangCheckout : b.getOrderDetail()) {
-                                List<com.dbelgamembership.membersip.Model.modelListFaktur.Item> itemss = barangCheckout.getItems();
+                                List<com.dbelgamembership.membersip.Model.ModelPayment.Item> itemss = barangCheckout.getItems();
                                 for (int i = 0; i < itemss.size(); i++) {
-                                    com.dbelgamembership.membersip.Model.modelListFaktur.Item barang = itemss.get(i);
+                                    com.dbelgamembership.membersip.Model.ModelPayment.Item barang = itemss.get(i);
                                     HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
                                     hashMap.put("namaBrg", barang.getName());
                                     int Qty = Integer.parseInt(barang.getQtyOutlet()) + Integer.parseInt(barang.getQtyStore()) + barang.getIndentValue();
@@ -723,12 +676,70 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                     hashMap.put("Code", barang.getCodeProduct() + "");
                                     hashMap.put("total", Integer.parseInt(barang.getTotal()) - Integer.parseInt(barang.getTotalDiskon()) + "");
                                     hashMap.put("nominal_diskon", barang.getTotalDiskon() + "");
-                                    arrayDetail.add(hashMap);
+//                                    arrayDetail.add(hashMap);
                                     listBarang.add(barang);
                                     total += (Integer.parseInt(barang.getTotal()) - Integer.parseInt(barang.getTotalDiskon()));
                                     GTCOKCOKCOKCOCKCOK += (Integer.parseInt(barang.getTotal()) - Integer.parseInt(barang.getTotalDiskon()));
                                 }
                             }
+
+                            for (AddItem barangAdd : b.getAddItem()) {
+                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
+                                hashMap.put("namaBrg", barangAdd.getName());
+                                int Qty = barangAdd.getQty();
+                                Double tots = Double.parseDouble(barangAdd.getCustomerPrice());
+                                hashMap.put("qtyUnit", Qty + " Unit");
+                                hashMap.put("qty", String.valueOf(Qty));
+                                hashMap.put("harga", tots + "");
+                                hashMap.put("Code", barangAdd.getCodeProduct() + "");
+                                hashMap.put("total", Qty * tots + "");
+                                hashMap.put("nominal_diskon", barangAdd.getDiskonPotongan() + "");
+//                                arrayDetail.add(hashMap);
+                                listBarangTambah.add(barangAdd);
+                                total += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
+                                GTCOKCOKCOKCOCKCOK += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
+                            }
+
+                            for (int i = 0; i < listBarang.size(); i++) {
+                                for (int j = 0; j < listBarangTambah.size(); j++) {
+                                    if (listBarang.get(i).getCodeProduct().equals(listBarangTambah.get(j).getCodeProduct())
+                                            && listBarang.get(i).getQtyOutlet().equals(String.valueOf(listBarangTambah.get(j).getQty()))) {
+                                        total -= Integer.parseInt(listBarang.get(i).getTotal());
+                                        listBarang.remove(i);
+                                    }
+                                }
+                            }
+
+                            for (int i = 0; i < listBarang.size(); i++) {
+                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
+                                hashMap.put("namaBrg", listBarang.get(i).getName());
+                                int Qty = Integer.parseInt(listBarang.get(i).getQtyOutlet());
+                                Double tots = Double.parseDouble(listBarang.get(i).getRealPrice());
+                                hashMap.put("qtyUnit", Qty + " Unit");
+                                hashMap.put("qty", String.valueOf(Qty));
+                                hashMap.put("harga", tots + "");
+                                hashMap.put("Code", listBarang.get(i).getCodeProduct() + "");
+                                hashMap.put("total", Qty * tots + "");
+                                hashMap.put("nominal_diskon", listBarang.get(i).getTotalDiskon() + "");
+                                hashMap.put("keterangan", "Order");
+                                arrayDetail.add(hashMap);
+                            }
+
+                            for (int i = 0; i < listBarangTambah.size(); i++) {
+                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
+                                hashMap.put("namaBrg", listBarangTambah.get(i).getName());
+                                int Qty = listBarangTambah.get(i).getQty();
+                                Double tots = Double.parseDouble(listBarangTambah.get(i).getCustomerPrice());
+                                hashMap.put("qtyUnit", Qty + " Unit");
+                                hashMap.put("qty", String.valueOf(Qty));
+                                hashMap.put("harga", tots + "");
+                                hashMap.put("Code", listBarangTambah.get(i).getCodeProduct() + "");
+                                hashMap.put("total", Qty * tots + "");
+                                hashMap.put("nominal_diskon", listBarangTambah.get(i).getDiskonPotongan() + "");
+                                hashMap.put("keterangan", "Beli Langsung");
+                                arrayDetail.add(hashMap);
+                            }
+
                             Log.e(TAG, "onCreate: " + arrayDetail.size());
                             grandTOTAL = b.getTotalPaymentPaid() - b.getChange();
                             float grandCOK = total + b.getOngkosKirim() + amountCharge;
@@ -736,7 +747,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             Log.e("arrayDetailOrder: ", String.valueOf(arrayDetailOrder));
                             if (!arrayDetail.isEmpty()) {
                                 lvListView1.setVisibility(View.VISIBLE);
-                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, listBarang, PrintFakturActivity.this);
+                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, arrayDetail, PrintFakturActivity.this);
                                 lvListView1.setAdapter(adapterDetailbarang);
                             }
                             llcontent.setVisibility(View.VISIBLE);
@@ -766,8 +777,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
-//                    Snack(error.getMessage());
-//                    Toast.makeText(DaftarOrderActivity.this, "error : lod" + error.getMessage(), Toast.LENGTH_LONG).show();
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(PrintFakturActivity.this);
                     builder1.setTitle("Peringatan");
                     builder1.setMessage("Terjadi Kesalahan\nIngin memuat ulang?");
@@ -819,7 +828,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
         mQueue.add(jsonObjectRequest);
         dialog1.dismiss();
 
-
     }
 
     private void Snack(String string) {
@@ -863,15 +871,5 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     public void run() {
 
     }
-
-
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//            Log.v(TAG, "Permission: " + permissions[0] + "was " + grantResults[0]);
-//            //resume tasks needing this permission
-//        }
-//    }
 
 }

@@ -22,12 +22,37 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.ServerError;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
+import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
+import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
+import com.developer.kalert.KAlertDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -43,14 +68,21 @@ public class RegisterActivity extends AppCompatActivity {
     public String url = Http.server, jsonResult, type, user;
 
     ImageView backArrow;
+    SimpleDateFormat formatExp, formatter, formatExpDate;
+    SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        sessionManager = new SessionManager(this);
+
         Date c = new Date();
         SimpleDateFormat af = new SimpleDateFormat("yyyy-MM-dd");
+        formatExp = new SimpleDateFormat("MM/yyyy");
+        formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
         Calendar cal = Calendar.getInstance(); // creates calendar
         cal.setTime(new Date()); // sets calendar time/date
 
@@ -170,14 +202,91 @@ public class RegisterActivity extends AppCompatActivity {
             if (!PasswordPelanggan.equals(PasswordUlangPelanggan)) {
                 Toast.makeText(this, "Password tidak sama !", Toast.LENGTH_SHORT).show();
             } else {
-                Intent intent = new Intent(RegisterActivity.this, MembershipPilih.class);
-                intent.putExtra("NAMA_MEMBER", NamaPelanggan);
-                intent.putExtra("NOMOR_MEMBER", NomorPelanggan);
-                intent.putExtra("EMAIL_MEMBER", EmailPelanggan);
-                intent.putExtra("ALAMAT_MEMBER", AlamatPelanggan);
-                intent.putExtra("TANGGAL_MEMBER", TanggalLahir);
-                intent.putExtra("PASSWORD_MEMBER", PasswordPelanggan);
-                startActivity(intent);
+//                Intent intent = new Intent(RegisterActivity.this, MembershipPilih.class);
+//                intent.putExtra("NAMA_MEMBER", NamaPelanggan);
+//                intent.putExtra("NOMOR_MEMBER", NomorPelanggan);
+//                intent.putExtra("EMAIL_MEMBER", EmailPelanggan);
+//                intent.putExtra("ALAMAT_MEMBER", AlamatPelanggan);
+//                intent.putExtra("TANGGAL_MEMBER", TanggalLahir);
+//                intent.putExtra("PASSWORD_MEMBER", PasswordPelanggan);
+//                startActivity(intent);
+
+
+                int randomPin = (int) (Math.random() * 9000) + 1000;
+                String otp = String.valueOf(randomPin);
+
+                new KAlertDialog(RegisterActivity.this, KAlertDialog.WARNING_TYPE)
+                        .setTitleText("Konfirmasi")
+                        .setContentText("Register akun anda ?")
+                        .setConfirmText("Ya")
+                        .confirmButtonColor(R.color.biruBelga, RegisterActivity.this)
+                        .cancelButtonColor(R.color.grey_font, RegisterActivity.this)
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                if (isOnline()) {
+                                    url = Http.server;
+                                    url = url + "register-customer";
+                                    type = "post";
+                                    JSONObject postData = new JSONObject();
+                                    try {
+                                        HashMap<String, String> map_order99 = new HashMap<String, String>();
+                                        postData.put("name", NamaPelanggan);
+                                        postData.put("main_address", AlamatPelanggan);
+                                        postData.put("main_phone_1", NomorPelanggan);
+                                        postData.put("main_email", EmailPelanggan);
+                                        postData.put("password", PasswordPelanggan);
+                                        postData.put("date_birth", TanggalLahir);
+                                        postData.put("status_member", "REGULER");
+
+
+                                        final Calendar baru = Calendar.getInstance();
+                                        final Calendar expOTP = Calendar.getInstance();
+                                        expOTP.add(Calendar.MINUTE, 15);
+                                        baru.add(Calendar.DATE, 1);
+                                        Date deadlineBayar = baru.getTime();
+                                        Date deadlineOTP = expOTP.getTime();
+                                        String deadlen = formatter.format(deadlineBayar);
+                                        String deadlenOTP = formatter.format(deadlineOTP);
+
+                                        final Calendar expired = Calendar.getInstance();
+                                        expired.add(Calendar.YEAR, 100);
+
+                                        Date expiredDate = expired.getTime();
+                                        String expDate = formatExpDate.format(expiredDate);
+
+//                                        String deadlinePayment = deadlen;
+//                                        String expiredMembership = expDate;
+
+                                        postData.put("expired_date", expDate);
+                                        postData.put("pay_date", deadlen);
+
+                                        postData.put("otp", otp);
+                                        postData.put("exp_otp", deadlenOTP);
+
+                                    } catch (Exception e) {
+                                        e.getMessage();
+                                    }
+                                    if (isOnline()) {
+                                        Log.e(TAG, "URL : " + url);
+                                        Log.e(TAG, "onClickSubmit: " + postData);
+                                        SimpanPost(postData);
+                                    }
+                                } else {
+                                    Snack("Cek Koneksi Internet Anda");
+                                }
+                            }
+                        })
+                        .setCancelText("Tidak")
+                        .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+
             }
         }
 
@@ -198,4 +307,124 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
+    private void SimpanPost(JSONObject postData) {
+        final ProgressDialog dialog1 = new ProgressDialog(RegisterActivity.this);
+        dialog1.setCancelable(false);
+        dialog1.setCanceledOnTouchOutside(false);
+        dialog1.setMessage("Harap Menunggu...");
+        dialog1.show();
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        Log.e(TAG, "postData: " + postData);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            dialog1.dismiss();
+                            if (response != null) {
+                                Log.e(TAG, "URL " + url);
+                                Log.e(TAG, "onResponseSimpan: " + response);
+                                String responseX = String.valueOf(response);
+                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                Log.e("", "Test : " + success);
+                                if (!success) {
+                                    Snack(response.getJSONArray("msgServer").toString());
+                                } else {
+                                    Gson gson = new Gson();
+                                    ResponseUser modelUser = gson.fromJson(String.valueOf(response), ResponseUser.class);
+                                    String id = String.valueOf(modelUser.getMsgServer().getId());
+                                    String name = modelUser.getMsgServer().getName();
+                                    String email = modelUser.getMsgServer().getMainEmail();
+                                    String membership = modelUser.getMsgServer().getStatusMember();
+                                    String deadlinePay = modelUser.getMsgServer().getPayDate();
+                                    String dateExpired = modelUser.getMsgServer().getExpiredDate();
+
+                                    String count = modelUser.getMsgServer().getExpOtp();
+
+                                    Date created = formatExpDate.parse(dateExpired);
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(created);
+                                    Log.e(TAG, "Expired member : " + cal.getTime());
+                                    Date expiredMember = cal.getTime();
+                                    String expDate = formatExp.format(expiredMember);
+
+                                    sessionManager.setRegister(true, id, name, email, membership, expDate);
+                                    sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
+
+                                    Intent intent = new Intent(RegisterActivity.this, VerificationActivity.class);
+                                    //                intent.putExtra("NAMA_MEMBER", NamaPelanggan);
+                                    intent.putExtra("EXPIRED_OTP", count);
+                                    startActivity(intent);
+
+
+                                }
+                            }
+                        } catch (Exception e) {
+                            Log.e(TAG, "onResponse: " + e.getMessage());
+                            Snack(e.getMessage());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onResponse", error.getMessage(), error);
+                dialog1.dismiss();
+                if (error instanceof AuthFailureError) {
+                    sessionManager.destroySession();
+                    Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else if (error instanceof ServerError) {
+                    Snack("Terjadi Kesalahan.");
+                } else if (error instanceof NetworkError) {
+                    Snack("Tidak Ada Koneksi Internet");
+                } else if (error instanceof ParseError) {
+                    Snack(error.getMessage());
+                } else {
+                    Snack(error.getMessage());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+//                params.put("type", "create");
+                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
+                return params;
+            }
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnectedOrConnecting()) {
+            return true;
+        }
+        return false;
+    }
+
+    private void Snack(String string) {
+        Snackbar snackbar = Snackbar.make(btnRegister, string, Snackbar.LENGTH_LONG).setAction("Action", null);
+        View snackBarView = snackbar.getView();
+        snackBarView.setBackgroundColor(getResources().getColor(R.color.darkBiruBelga));
+        snackbar.show();
+    }
 }

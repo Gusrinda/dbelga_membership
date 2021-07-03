@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".VerificationActivity">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:background="#00000000"
+        android:elevation="4dp"
+        app:elevation="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:textAlignment="center"
+            android:id="@+id/toolbar"
+            android:backgroundTint="@color/black"
+            android:foregroundTint="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_marginHorizontal="16dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:paddingTop="86dp"
+            android:layout_above="@id/btn_submitOTP"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_marginVertical="8dp"
+                android:src="@drawable/dbelga"
+                android:layout_width="128dp"
+                android:layout_height="64dp"/>
+
+
+            <TextView
+                android:textStyle="bold"
+                android:fontFamily="@font/hammer"
+                android:textSize="20dp"
+                android:text="Halaman Verifikasi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/hammer"
+                android:textSize="14sp"
+                android:text="masukkan kode OTP (One-time password) yang telah dikirim pada alamat email registrasi anda (pastikan cek inbox dan spam inbox)"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_alamatEmail"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="6dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:fontFamily="@font/hammer"
+                android:textSize="16dp"
+                android:text="dbelga@dbelga.com"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:weightSum="4"
+                android:gravity="center"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="32dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="120dp">
+
+                <EditText
+                    android:selectAllOnFocus="true"
+                    android:gravity="center"
+                    android:textSize="48dp"
+                    android:text=""
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/background_number_otp"
+                    android:fontFamily="@font/hammer"
+                    android:inputType="number"
+                    android:id="@+id/ed_kode1"
+                    android:maxLength="1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="86dp"/>
+
+                <EditText
+                    android:selectAllOnFocus="true"
+                    android:gravity="center"
+                    android:textSize="48dp"
+                    android:text=""
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/background_number_otp"
+                    android:fontFamily="@font/hammer"
+                    android:inputType="number"
+                    android:id="@+id/ed_kode2"
+                    android:maxLength="1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="86dp"/>
+
+                <EditText
+                    android:selectAllOnFocus="true"
+                    android:gravity="center"
+                    android:textSize="48dp"
+                    android:text=""
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/background_number_otp"
+                    android:fontFamily="@font/hammer"
+                    android:inputType="number"
+                    android:id="@+id/ed_kode3"
+                    android:maxLength="1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="86dp"/>
+
+                <EditText
+                    android:selectAllOnFocus="true"
+                    android:gravity="center"
+                    android:textSize="48dp"
+                    android:text=""
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/background_number_otp"
+                    android:fontFamily="@font/hammer"
+                    android:inputType="number"
+                    android:id="@+id/ed_kode4"
+                    android:maxLength="1"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="86dp"/>
+
+            </LinearLayout>
+
+            <cn.iwgang.countdownview.CountdownView
+
+                android:id="@+id/countdown"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:isHideTimeBackground="true"
+                app:suffixGravity="bottom"
+                app:suffixMinute=" : "
+                app:isShowMinute="true"
+                app:isShowSecond="true"
+                app:timeTextSize="16dp"
+                app:isTimeTextBold="true"/>
+
+            <LinearLayout
+                android:visibility="invisible"
+                android:padding="8dp"
+                android:id="@+id/btn_kirimUlang"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="12dp"
+                    android:text="Kirim ulang kode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_refresh_24"
+                    android:layout_width="16dp"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <Button
+            android:background="@drawable/button_round_theme"
+            android:paddingVertical="20dp"
+            android:layout_marginBottom="18dp"
+            android:id="@+id/btn_submitOTP"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            android:layout_alignParentBottom="true"
+            android:fontFamily="@font/hammer"
+            android:text="SUBMIT"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

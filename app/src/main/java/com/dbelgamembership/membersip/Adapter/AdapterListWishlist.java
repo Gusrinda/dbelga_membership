@@ -19,7 +19,7 @@ import com.dbelgamembership.membersip.KatalogActivity;
 import com.dbelgamembership.membersip.Model.ModelKatalog;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.Price;
-import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
+
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.WishlishActivity;
 

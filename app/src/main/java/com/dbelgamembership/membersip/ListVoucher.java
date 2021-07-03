@@ -125,7 +125,7 @@ public class ListVoucher extends AppCompatActivity implements AdapterListVoucher
                             if (response.length() > 1) {
                                 Gson gson = new Gson();
                                 ModelUser modelMember = gson.fromJson(response, ModelUser.class);
-                                MsgServer dataMember = modelMember.getMsgServer();
+                                MsgServer dataMember = modelMember.getMsgServer().get(0);
                                 getNamaMember = dataMember.getName();
                                 getStatusMember = dataMember.getStatusMember();
                                 getPoinMember = dataMember.getPoin();
@@ -214,8 +214,12 @@ public class ListVoucher extends AppCompatActivity implements AdapterListVoucher
         namaMember.setText(getNamaMember);
         poinMember.setText(String.valueOf(getPoinMember));
 
+        Drawable imageX;
         if (sessionManager.getImage() != "" && sessionManager.getImage() != null) {
-            Glide.with(this).asBitmap().load(sessionManager.getImage()).centerCrop().into(imageMember);
+            Glide.with(getApplicationContext()).asBitmap().load(sessionManager.getImage()).centerCrop().into(imageMember);
+        } else {
+            imageX = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+            imageMember.setImageDrawable(imageX);
         }
 
         Drawable image;

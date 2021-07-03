@@ -1,22 +1,21 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ModelPayment implements Serializable, Parcelable
 {
 
     @SerializedName("data")
     @Expose
-    private List<Datum> data = new ArrayList<Datum>();
+    private Data data;
     @SerializedName("status")
     @Expose
     private Status status;
@@ -26,7 +25,7 @@ public class ModelPayment implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelPayment createFromParcel(Parcel in) {
+        public ModelPayment createFromParcel(android.os.Parcel in) {
             return new ModelPayment(in);
         }
 
@@ -36,25 +35,25 @@ public class ModelPayment implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 6606358864376337644L;
+    private final static long serialVersionUID = 8272352843937347629L;
 
-    protected ModelPayment(Parcel in) {
-        in.readList(this.data, (com.dbelgamembership.membersip.Model.ModelPayment.Datum.class.getClassLoader()));
+    protected ModelPayment(android.os.Parcel in) {
+        this.data = ((Data) in.readValue((Data.class.getClassLoader())));
         this.status = ((Status) in.readValue((Status.class.getClassLoader())));
     }
 
     public ModelPayment() {
     }
 
-    public List<Datum> getData() {
+    public Data getData() {
         return data;
     }
 
-    public void setData(List<Datum> data) {
+    public void setData(Data data) {
         this.data = data;
     }
 
-    public ModelPayment withData(List<Datum> data) {
+    public ModelPayment withData(Data data) {
         this.data = data;
         return this;
     }
@@ -72,8 +71,8 @@ public class ModelPayment implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(data);
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeValue(data);
         dest.writeValue(status);
     }
 

@@ -1,12 +1,14 @@
 
-package com.dbelgamembership.membersip.Model.ModelWish;
+package com.dbelgamembership.membersip.Model.ModelListWishlist;
 
 import java.io.Serializable;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class WishlistDetail implements Serializable, Parcelable
 {
@@ -17,25 +19,31 @@ public class WishlistDetail implements Serializable, Parcelable
     @SerializedName("code_product")
     @Expose
     private String codeProduct;
+    @SerializedName("barcode_product")
+    @Expose
+    private String barcodeProduct;
     @SerializedName("name")
     @Expose
     private String name;
     @SerializedName("gambar")
     @Expose
     private String gambar;
+    @SerializedName("qty")
+    @Expose
+    private int qty;
     @SerializedName("qty_stok")
     @Expose
     private int qtyStok;
     @SerializedName("price")
     @Expose
     private Price price;
-    public final static Parcelable.Creator<WishlistDetail> CREATOR = new Creator<WishlistDetail>() {
+    public final static Creator<WishlistDetail> CREATOR = new Creator<WishlistDetail>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public WishlistDetail createFromParcel(Parcel in) {
+        public WishlistDetail createFromParcel(android.os.Parcel in) {
             return new WishlistDetail(in);
         }
 
@@ -45,13 +53,15 @@ public class WishlistDetail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 9135666169962624873L;
+    private final static long serialVersionUID = 5094516736035094022L;
 
-    protected WishlistDetail(Parcel in) {
+    protected WishlistDetail(android.os.Parcel in) {
         this.idProduct = ((int) in.readValue((int.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
+        this.barcodeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.gambar = ((String) in.readValue((String.class.getClassLoader())));
+        this.qty = ((int) in.readValue((int.class.getClassLoader())));
         this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
@@ -85,6 +95,19 @@ public class WishlistDetail implements Serializable, Parcelable
         return this;
     }
 
+    public String getBarcodeProduct() {
+        return barcodeProduct;
+    }
+
+    public void setBarcodeProduct(String barcodeProduct) {
+        this.barcodeProduct = barcodeProduct;
+    }
+
+    public WishlistDetail withBarcodeProduct(String barcodeProduct) {
+        this.barcodeProduct = barcodeProduct;
+        return this;
+    }
+
     public String getName() {
         return name;
     }
@@ -108,6 +131,19 @@ public class WishlistDetail implements Serializable, Parcelable
 
     public WishlistDetail withGambar(String gambar) {
         this.gambar = gambar;
+        return this;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public WishlistDetail withQty(int qty) {
+        this.qty = qty;
         return this;
     }
 
@@ -137,11 +173,13 @@ public class WishlistDetail implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(idProduct);
         dest.writeValue(codeProduct);
+        dest.writeValue(barcodeProduct);
         dest.writeValue(name);
         dest.writeValue(gambar);
+        dest.writeValue(qty);
         dest.writeValue(qtyStok);
         dest.writeValue(price);
     }

@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class Datum implements Serializable, Parcelable
 {
@@ -22,7 +23,7 @@ public class Datum implements Serializable, Parcelable
     private String pembayaranCode;
     @SerializedName("createuser")
     @Expose
-    private int createuser;
+    private String createuser;
     @SerializedName("customer")
     @Expose
     private String customer;
@@ -56,22 +57,49 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("flag_dp")
     @Expose
     private boolean flagDp;
+    @SerializedName("alamat_customer_pos")
+    @Expose
+    private String alamatCustomerPos;
     @SerializedName("alamat_pengiriman")
     @Expose
     private String alamatPengiriman;
+    @SerializedName("status_pengiriman")
+    @Expose
+    private String statusPengiriman;
+    @SerializedName("catatan_pengiriman")
+    @Expose
+    private String catatanPengiriman;
+    @SerializedName("nama_penerima")
+    @Expose
+    private String namaPenerima;
+    @SerializedName("tanggal_diterima")
+    @Expose
+    private String tanggalDiterima;
+    @SerializedName("flag_kirim")
+    @Expose
+    private boolean flagKirim;
+    @SerializedName("total_belanja")
+    @Expose
+    private String totalBelanja;
+    @SerializedName("updated_at")
+    @Expose
+    private String updatedAt;
     @SerializedName("order_detail")
     @Expose
     private List<OrderDetail> orderDetail = new ArrayList<OrderDetail>();
     @SerializedName("payment_detail")
     @Expose
     private List<PaymentDetail> paymentDetail = new ArrayList<PaymentDetail>();
+    @SerializedName("add_item")
+    @Expose
+    private List<AddItem> addItem = new ArrayList<AddItem>();
     public final static Creator<Datum> CREATOR = new Creator<Datum>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Datum createFromParcel(Parcel in) {
+        public Datum createFromParcel(android.os.Parcel in) {
             return new Datum(in);
         }
 
@@ -81,12 +109,12 @@ public class Datum implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -756761436366348250L;
+    private final static long serialVersionUID = -844642462847828297L;
 
-    protected Datum(Parcel in) {
+    protected Datum(android.os.Parcel in) {
         this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
-        this.createuser = ((int) in.readValue((int.class.getClassLoader())));
+        this.createuser = ((String) in.readValue((String.class.getClassLoader())));
         this.customer = ((String) in.readValue((String.class.getClassLoader())));
         this.totalPaymentPaid = ((int) in.readValue((int.class.getClassLoader())));
         this.change = ((int) in.readValue((int.class.getClassLoader())));
@@ -98,9 +126,18 @@ public class Datum implements Serializable, Parcelable
         this.ongkosKirim = ((int) in.readValue((int.class.getClassLoader())));
         this.tanggalKirim = ((String) in.readValue((String.class.getClassLoader())));
         this.flagDp = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.alamatCustomerPos = ((String) in.readValue((String.class.getClassLoader())));
         this.alamatPengiriman = ((String) in.readValue((String.class.getClassLoader())));
+        this.statusPengiriman = ((String) in.readValue((String.class.getClassLoader())));
+        this.catatanPengiriman = ((String) in.readValue((String.class.getClassLoader())));
+        this.namaPenerima = ((String) in.readValue((String.class.getClassLoader())));
+        this.tanggalDiterima = ((String) in.readValue((String.class.getClassLoader())));
+        this.flagKirim = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.totalBelanja = ((String) in.readValue((String.class.getClassLoader())));
+        this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.orderDetail, (com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail.class.getClassLoader()));
         in.readList(this.paymentDetail, (com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail.class.getClassLoader()));
+        in.readList(this.addItem, (com.dbelgamembership.membersip.Model.ModelPayment.AddItem.class.getClassLoader()));
     }
 
     public Datum() {
@@ -132,15 +169,15 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
-    public int getCreateuser() {
+    public String getCreateuser() {
         return createuser;
     }
 
-    public void setCreateuser(int createuser) {
+    public void setCreateuser(String createuser) {
         this.createuser = createuser;
     }
 
-    public Datum withCreateuser(int createuser) {
+    public Datum withCreateuser(String createuser) {
         this.createuser = createuser;
         return this;
     }
@@ -288,6 +325,19 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
+    public String getAlamatCustomerPos() {
+        return alamatCustomerPos;
+    }
+
+    public void setAlamatCustomerPos(String alamatCustomerPos) {
+        this.alamatCustomerPos = alamatCustomerPos;
+    }
+
+    public Datum withAlamatCustomerPos(String alamatCustomerPos) {
+        this.alamatCustomerPos = alamatCustomerPos;
+        return this;
+    }
+
     public String getAlamatPengiriman() {
         return alamatPengiriman;
     }
@@ -298,6 +348,97 @@ public class Datum implements Serializable, Parcelable
 
     public Datum withAlamatPengiriman(String alamatPengiriman) {
         this.alamatPengiriman = alamatPengiriman;
+        return this;
+    }
+
+    public String getStatusPengiriman() {
+        return statusPengiriman;
+    }
+
+    public void setStatusPengiriman(String statusPengiriman) {
+        this.statusPengiriman = statusPengiriman;
+    }
+
+    public Datum withStatusPengiriman(String statusPengiriman) {
+        this.statusPengiriman = statusPengiriman;
+        return this;
+    }
+
+    public String getCatatanPengiriman() {
+        return catatanPengiriman;
+    }
+
+    public void setCatatanPengiriman(String catatanPengiriman) {
+        this.catatanPengiriman = catatanPengiriman;
+    }
+
+    public Datum withCatatanPengiriman(String catatanPengiriman) {
+        this.catatanPengiriman = catatanPengiriman;
+        return this;
+    }
+
+    public String getNamaPenerima() {
+        return namaPenerima;
+    }
+
+    public void setNamaPenerima(String namaPenerima) {
+        this.namaPenerima = namaPenerima;
+    }
+
+    public Datum withNamaPenerima(String namaPenerima) {
+        this.namaPenerima = namaPenerima;
+        return this;
+    }
+
+    public String getTanggalDiterima() {
+        return tanggalDiterima;
+    }
+
+    public void setTanggalDiterima(String tanggalDiterima) {
+        this.tanggalDiterima = tanggalDiterima;
+    }
+
+    public Datum withTanggalDiterima(String tanggalDiterima) {
+        this.tanggalDiterima = tanggalDiterima;
+        return this;
+    }
+
+    public boolean isFlagKirim() {
+        return flagKirim;
+    }
+
+    public void setFlagKirim(boolean flagKirim) {
+        this.flagKirim = flagKirim;
+    }
+
+    public Datum withFlagKirim(boolean flagKirim) {
+        this.flagKirim = flagKirim;
+        return this;
+    }
+
+    public String getTotalBelanja() {
+        return totalBelanja;
+    }
+
+    public void setTotalBelanja(String totalBelanja) {
+        this.totalBelanja = totalBelanja;
+    }
+
+    public Datum withTotalBelanja(String totalBelanja) {
+        this.totalBelanja = totalBelanja;
+        return this;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Datum withUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
         return this;
     }
 
@@ -327,7 +468,20 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public List<AddItem> getAddItem() {
+        return addItem;
+    }
+
+    public void setAddItem(List<AddItem> addItem) {
+        this.addItem = addItem;
+    }
+
+    public Datum withAddItem(List<AddItem> addItem) {
+        this.addItem = addItem;
+        return this;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
         dest.writeValue(createuser);
@@ -342,9 +496,18 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(ongkosKirim);
         dest.writeValue(tanggalKirim);
         dest.writeValue(flagDp);
+        dest.writeValue(alamatCustomerPos);
         dest.writeValue(alamatPengiriman);
+        dest.writeValue(statusPengiriman);
+        dest.writeValue(catatanPengiriman);
+        dest.writeValue(namaPenerima);
+        dest.writeValue(tanggalDiterima);
+        dest.writeValue(flagKirim);
+        dest.writeValue(totalBelanja);
+        dest.writeValue(updatedAt);
         dest.writeList(orderDetail);
         dest.writeList(paymentDetail);
+        dest.writeList(addItem);
     }
 
     public int describeContents() {

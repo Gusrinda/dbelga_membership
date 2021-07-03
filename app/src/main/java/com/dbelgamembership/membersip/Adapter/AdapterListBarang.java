@@ -62,16 +62,13 @@ public class AdapterListBarang extends
         try {
             final ModelKatalog item = list.get(position);
 
-            Drawable image;
-            if (!item.getImages().equals("http://54.254.194.122/upload/barang/")) {
-                Glide.with(context)
-                        .asBitmap()
-                        .load(item.getImages())
-                        .into(holder.imageBarang);
-            } else {
-                image = context.getResources().getDrawable(R.drawable.not_found);
-                holder.imageBarang.setImageDrawable(image);
-            }
+            Log.e(TAG, "onBindViewHolder ADAPTER IMAGE : " + item.getImages() );
+
+
+            Glide.with(context)
+                    .asBitmap()
+                    .load(item.getImages())
+                    .into(holder.imageBarang);
 
             if (item.getNama_barang().length() > 0) {
                 holder.namaBarang.setText(item.getNama_barang());

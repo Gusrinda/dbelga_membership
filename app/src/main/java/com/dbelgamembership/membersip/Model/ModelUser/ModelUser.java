@@ -2,11 +2,15 @@
 package com.dbelgamembership.membersip.Model.ModelUser;
 
 import java.io.Serializable;
-import android.os.Parcel;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class ModelUser implements Serializable, Parcelable
 {
@@ -16,14 +20,14 @@ public class ModelUser implements Serializable, Parcelable
     private boolean success;
     @SerializedName("msgServer")
     @Expose
-    private MsgServer msgServer;
-    public final static Parcelable.Creator<ModelUser> CREATOR = new Creator<ModelUser>() {
+    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
+    public final static Creator<ModelUser> CREATOR = new Creator<ModelUser>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelUser createFromParcel(Parcel in) {
+        public ModelUser createFromParcel(android.os.Parcel in) {
             return new ModelUser(in);
         }
 
@@ -33,11 +37,11 @@ public class ModelUser implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -7795380076446181738L;
+    private final static long serialVersionUID = 7181067616153652402L;
 
-    protected ModelUser(Parcel in) {
+    protected ModelUser(android.os.Parcel in) {
         this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.msgServer = ((MsgServer) in.readValue((MsgServer.class.getClassLoader())));
+        in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.ModelUser.MsgServer.class.getClassLoader()));
     }
 
     public ModelUser() {
@@ -56,22 +60,22 @@ public class ModelUser implements Serializable, Parcelable
         return this;
     }
 
-    public MsgServer getMsgServer() {
+    public List<MsgServer> getMsgServer() {
         return msgServer;
     }
 
-    public void setMsgServer(MsgServer msgServer) {
+    public void setMsgServer(List<MsgServer> msgServer) {
         this.msgServer = msgServer;
     }
 
-    public ModelUser withMsgServer(MsgServer msgServer) {
+    public ModelUser withMsgServer(List<MsgServer> msgServer) {
         this.msgServer = msgServer;
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(success);
-        dest.writeValue(msgServer);
+        dest.writeList(msgServer);
     }
 
     public int describeContents() {

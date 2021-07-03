@@ -112,9 +112,8 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
                             if (response != null) {
                                 Gson gson = new Gson();
                                 ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
-                                itemlist = modelListTransaction.getData();
+                                itemlist = modelListTransaction.getData().getData();
                                 if (itemlist.size() > 0) {
-
                                     for (int i = itemlist.size() - 1; i >= 0; i--) {
                                         Log.e(TAG, i + " Nomor ID User : " + itemlist.get(i).getIdentitasCustomer());
                                         if (!itemlist.get(i).getIdentitasCustomer().equals(idUser)) {
@@ -239,9 +238,9 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
     }
 
     @Override
-    public void onRowAdapterListTransactionClicked(int position) {
+    public void onRowAdapterListTransactionClicked(Datum position) {
         Intent intent = new Intent(DaftarTransaksi.this, PrintActivity.class);
-        String DataOOS = itemlist.get(position).getCode();
+        String DataOOS = position.getCode();
         Log.e(TAG, "onRowAdapterListTransactionClicked: "+DataOOS );
         intent.putExtra("DATAPRINT", DataOOS);
         startActivity(intent);

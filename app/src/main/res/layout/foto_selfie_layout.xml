@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_marginBottom="48dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UselessLeaf">
+
+        <TextView
+            android:textStyle="bold"
+            android:textColor="@color/guide"
+            android:textSize="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:fontFamily="@font/hammer"
+            android:text="Lakukan selfie dengan kartu identitas dibawah wajah seperti petunjuk !"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <RelativeLayout
+            android:id="@+id/wajah"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="32dp"
+            android:background="@drawable/guide_wajah"
+            android:layout_width="200dp"
+            android:layout_height="256dp"/>
+
+        <RelativeLayout
+            android:layout_marginTop="32dp"
+            android:layout_below="@id/wajah"
+            android:id="@+id/kartu"
+            android:layout_centerInParent="true"
+            android:layout_marginHorizontal="32dp"
+            android:background="@drawable/guide_identitas"
+            android:layout_width="148dp"
+            android:layout_height="100dp">
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

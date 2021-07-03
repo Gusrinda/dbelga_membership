@@ -45,12 +45,16 @@ import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
+import com.dbelgamembership.membersip.Model.ModelWish.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelWish.Price;
-import com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail;
+
+import com.dbelgamembership.membersip.databinding.ActivityMainBinding;
 import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
+import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -98,14 +102,18 @@ public class MainActivity extends AppCompatActivity {
     ImageSlider imageSlider;
 
     AdapterListWishlist adapterListSearchBarang;
-    ArrayList<WishlistDetail> arrayBarang = new ArrayList<WishlistDetail>();
     List<String> arrayKategori = new ArrayList<String>();
-    List<WishlistDetail> listDetail = new ArrayList<>();
+
+    private ActivityMainBinding mainBinding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        mainBinding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = mainBinding.getRoot();
+        setContentView(view);
 
         sessionManager = new SessionManager(this);
         formatExp = new SimpleDateFormat("dd-MM-yyyy");
@@ -141,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnKeluar.setOnClickListener(new View.OnClickListener() {
+        mainBinding.btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 logout();
@@ -168,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Log.e("", "onResponse: " + response);
+                            Log.e("", "onResponse: DATEDATE " + response);
                             try {
                                 String responseX = String.valueOf(response);
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
@@ -233,20 +241,23 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         dialog1.dismiss();
                         if (response != null) {
-                            Log.e("", "onResponse: " + response);
+                            Log.e("", "onResponse: GETDATAUSER " + response);
                             try {
                                 String responseX = String.valueOf(response);
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
                                 boolean success = root.get("success").getAsBoolean();
                                 Log.e("", "Test : " + success);
-                                if (success == false) {
+                                if (!success) {
                                     Toast.makeText(MainActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    JSONObject jsonObject = response.getJSONObject("msgServer");
-                                    String status_member = jsonObject.getString("status_member");
+                                    Gson gson = new Gson();
+                                    ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
+                                    com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
+
+                                    String status_member = dataMember.getStatusMember();
 //                                    String updated_at = jsonObject.getString("updated_at");
-                                    String expiredMember = jsonObject.getString("expired_date");
-                                    String ulangTahun = jsonObject.getString("date_birth");
+                                    String expiredMember = dataMember.getExpiredDate();
+                                    String ulangTahun = dataMember.getDateBirth();
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     SimpleDateFormat formatEXP = new SimpleDateFormat("yyyy-MM-dd");
                                     SimpleDateFormat formatHariIni = new SimpleDateFormat("dd-MM-yyyy");
@@ -262,19 +273,17 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e(TAG, "Today : " + todayBirthday);
                                     Log.e(TAG, "Birthday : " + birthday);
                                     cal.setTime(created);
-//                                    Log.e(TAG, "Today : " + cal.getTime());
-//                                    cal.add(Calendar.YEAR, 1);
-//                                    Log.e(TAG, "Next year expired : " + cal.getTime());
+
                                     Date expired = cal.getTime();
                                     String expDate = formatExp.format(expired);
                                     Log.e("", "status member: " + status_member);
                                     Log.e("", "expired date: " + expDate);
-                                    urlImage = jsonObject.getString("image_customer");
+                                    urlImage = dataMember.getImageCustomer();
 
-                                    if (urlImage.equals("http://54.254.194.122/upload/customer-photo/")) {
+                                    if (urlImage.equals("http://13.229.51.227/upload/customer-photo/")) {
                                         urlImage = "";
                                     } else {
-                                        urlImage = jsonObject.getString("image_customer");
+                                        urlImage = dataMember.getImageCustomer();
                                     }
 
                                     Log.e(TAG, "url Image: " + urlImage);
@@ -313,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void getDataWishlist() {
         idCustomer = sessionManager.getPID();
-        url = Http.server + "wishlist-daftar";
+        url = Http.server + "wishlist-search?customer=" + sessionManager.getPID();
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest arrReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -325,47 +334,11 @@ public class MainActivity extends AppCompatActivity {
                                 ModelWish modelListItem = gson.fromJson(response, ModelWish.class);
                                 List<com.dbelgamembership.membersip.Model.ModelWish.MsgServer> modelItem = modelListItem.getMsgServer();
 
-                                Log.e(TAG, "Nama Set : " + idCustomer );
-
-                                Log.e(TAG, "SIZE 1 : " + modelItem.size() );
-
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getWishlistDetail().size() == 0) {
-                                        modelItem.remove(i);
-                                    }
-                                }
-
-                                Log.e(TAG, "SIZE 2 : " + modelItem.size() );
-
-                                for (int i = modelItem.size() - 1; i >= 0; i--) {
-                                    if (modelItem.get(i).getIdCustomer() != Integer.parseInt(idCustomer)) {
-                                        Log.e(TAG, "Yang dihapus : " + modelItem.get(i).getIdCustomer());
-                                        modelItem.remove(i);
-                                    } else {
-                                        Log.e(TAG, "Ini user sama : " + modelItem.get(i).getIdCustomer() );
-                                        listDetail = modelItem.get(i).getWishlistDetail();
-                                    }
-                                }
-
-                                Log.e(TAG, "list size : "+ listDetail.size()  );
-
                                 int stokBarang;
 
-                                if (listDetail.size() > 0) {
-                                    arrayBarang.clear();
-                                    for (WishlistDetail itemData : listDetail) {
-                                        stokBarang = 0;
-                                        WishlistDetail pm = new WishlistDetail();
-                                        pm.setIdProduct((itemData.getIdProduct()));
-                                        pm.setName(itemData.getName());
-                                        pm.setGambar(itemData.getGambar());
-                                        pm.setCodeProduct(String.valueOf(itemData.getCodeProduct()));
-                                        pm.setQtyStok(itemData.getQtyStok());
-                                        Price hargaBarang = itemData.getPrice();
-                                        pm.setPrice(hargaBarang);
-
+                                if (modelItem.size() > 0) {
+                                    for (MsgServer itemData : modelItem) {
                                         stokBarang = itemData.getQtyStok();
-                                        Log.e(TAG, "Stok barang : " + stokBarang );
 
                                         if (stokBarang == 0 ) {
                                             barangIndent++;
@@ -373,22 +346,18 @@ public class MainActivity extends AppCompatActivity {
                                             barangStok++;
                                         }
 
-                                        Log.e(TAG, "barang stok wishlist: " + barangStok );
-                                        Log.e(TAG, "barang stok indent : " + barangIndent );
-
-                                        arrayBarang.add(pm);
                                     }
-                                } else {
-//                                    Toast.makeText(MainActivity.this, "Tidak ada wishlist !", Toast.LENGTH_SHORT).show();
-                                    Snack("Wishlist Kosong");
                                 }
-                                Log.e(TAG, "Array barang size : " + arrayBarang.size() );
+//                                else {
+//                                    Snack("Wishlist Kosong");
+//                                }
+
                                 if (barangStok > 0) {
                                     notifikasiStokWishlist();
                                 }
                             }
                         } catch (Exception e) {
-                            Log.e(TAG, "onResponse: Error " + e);
+                            Log.e(TAG, "onResponse: WISHLIST " + e);
                         }
 
                     }
@@ -464,8 +433,6 @@ public class MainActivity extends AppCompatActivity {
         mQueue.add(arrReq);
     }
 
-
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -473,44 +440,31 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void logout() {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(MainActivity.this);
-                builder1.setTitle("Konfirmasi");
-                builder1.setMessage("Logout ?");
-                builder1.setCancelable(false);
-                builder1.setPositiveButton(
-                        "Ya",
-                        new DialogInterface.OnClickListener() {
-                            @SuppressLint("NewApi")
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                                finish();
-                                Snack("Log Out Berhasil");
-                                sessionManager.destroySession();
-                                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(intent);
-                            }
-                        });
 
-                builder1.setNegativeButton(
-                        "Tidak",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-                final AlertDialog alert11 = builder1.create();
-                alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+        new KAlertDialog(MainActivity.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Logout")
+                .setContentText("Anda akan keluar dari sesi aplikasi")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.biruBelga, MainActivity.this)
+                .cancelButtonColor(R.color.grey_font, MainActivity.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
                     @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                        alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    public void onClick(KAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        finish();
+                        sessionManager.destroySession();
+                        Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+                        startActivity(intent);
                     }
-                });
-                alert11.show();
-
-
-
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     private boolean isOnline() {
@@ -658,11 +612,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void cekNotificationExpired() {
-        Log.e(TAG, "Tanggal Sekarang : " + todayString);
+
+        final Calendar checkHari = Calendar.getInstance();
+        Date checkHariTime = checkHari.getTime();
+        String paymentExpired = formatExp.format(checkHariTime);
+
+
+        Log.e(TAG, "Tanggal Sekarang : " + paymentExpired);
+//        Log.e(TAG, "Tanggal Sekarang : " + todayString);
         Log.e(TAG, "Tanggal Expired : " + sessionManager.getExpiredDate());
 
         try {
-            Date sekarangDate = formatExp.parse(todayString);
+            Date sekarangDate = formatExp.parse(paymentExpired);
+//            Date sekarangDate = formatExp.parse(todayString);
             Date expiredDate = formatExp.parse(sessionManager.getExpiredDate());
 
             long millisecondsDateNow = sekarangDate.getTime();
@@ -707,8 +669,13 @@ public class MainActivity extends AppCompatActivity {
 
                 mNotificationManager.notify(0, mBuilder.build());
                 Log.e(TAG, "cekNotificationExpired 7 hari");
-            } else if (count <= 0) {
-                String pesanExpired = "Akun anda telah expired !\nAnda akan diberikan waktu tenggang selama 3 hari untuk perpanjangan dan pelunasan";
+            } else if (count <= 0 && count > (-259200000)) {
+
+                int lamaTenggang = (int) (259200000 - (Math.abs(count)));
+
+                int sisaHari = (int) (lamaTenggang / (1000 * 60 * 60 * 24));
+
+                String pesanExpired = "Akun anda telah expired !\nSisa waktu untuk perpanjang dan pelunasan adalah " + sisaHari + " hari !";
 
                 NotificationManager mNotificationManager;
 
@@ -801,6 +768,7 @@ public class MainActivity extends AppCompatActivity {
         paydate.add(Calendar.DATE, 1);
         Date paymentDate = paydate.getTime();
         String paymentExpired = formatter.format(paymentDate);
+        Log.e(TAG, "URL : " + url);
 
         try {
             postData.put("status_member", "REGULER");
@@ -811,7 +779,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (isOnline()) {
-            Log.e(TAG, "URL : " + url);
+
             SimpanPost(postData);
         }
 
@@ -862,7 +830,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
                         } catch (Exception e) {
-                            Log.e(TAG, "onResponse: " + e.getMessage());
+                            Log.e(TAG, "onResponse: ERROROROOR" + e.getMessage());
                             Snack(e.getMessage());
                         }
 
@@ -923,7 +891,6 @@ public class MainActivity extends AppCompatActivity {
         btnBelanja = findViewById(R.id.belanjaMember);
         btnTransaksiSaya = findViewById(R.id.transaksiSaya);
 //        btnInfoDiskon = findViewById(R.id.informasiDiskon);
-        btnKeluar = findViewById(R.id.logoutAkun);
         layoutCardMember = findViewById(R.id.layoutCardMember);
         bintangPremium = findViewById(R.id.bintangPremium);
         bintangGold = findViewById(R.id.bintangGold);

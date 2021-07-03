@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MembershipFoto">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:background="#00000000"
+        android:elevation="4dp"
+        app:elevation="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        tools:ignore="MissingConstraints">
+
+        <androidx.appcompat.widget.Toolbar
+            android:textAlignment="center"
+            android:id="@+id/toolbar"
+            android:backgroundTint="@color/black"
+            android:foregroundTint="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ScrollView
+            android:layout_above="@id/btn_Kirim_Identitas"
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:ignore="UselessLeaf">
+
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageView
+                    android:layout_marginVertical="8dp"
+                    android:src="@drawable/dbelga"
+                    android:layout_width="72dp"
+                    android:layout_height="36dp"/>
+
+
+                <TextView
+                    android:textStyle="bold"
+                    android:fontFamily="@font/hammer"
+                    android:textColor="@color/black"
+                    android:textSize="18dp"
+                    android:text="Verifikasi Identitas"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+                <LinearLayout
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:fontFamily="@font/hammer"
+                        android:text="1. Foto Identitas"
+                        android:textSize="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:visibility="invisible"
+                        android:id="@+id/img_check_fotoIdentitas"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/ic_baseline_check_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/material_green_900" />
+
+                    <RelativeLayout
+                        android:id="@+id/btn_UploadFotoIdentitas"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="48dp"
+                            android:src="@drawable/ic_baseline_drive_folder_upload_24"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/img_fotoIdentitas"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"/>
+
+                <LinearLayout
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:fontFamily="@font/hammer"
+                        android:text="2. Foto Wajah"
+                        android:textSize="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:visibility="invisible"
+                        android:id="@+id/img_check_fotoWajah"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/ic_baseline_check_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/material_green_900" />
+
+                    <RelativeLayout
+                        android:id="@+id/btn_UploadFotoWajah"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="48dp"
+                            android:src="@drawable/ic_baseline_drive_folder_upload_24"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/img_fotoWajah"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"/>
+
+                <LinearLayout
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:fontFamily="@font/hammer"
+                        android:text="3. Foto Wajah dan Identitas"
+                        android:textSize="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:visibility="invisible"
+                        android:id="@+id/img_check_fotoSelfie"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/ic_baseline_check_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/material_green_900" />
+
+                    <RelativeLayout
+                        android:id="@+id/btn_UploadFotoSelfie"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="48dp"
+                            android:src="@drawable/ic_baseline_drive_folder_upload_24"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/img_fotoSelfie"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"/>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+        <Button
+            android:enabled="false"
+            android:background="@drawable/button_round_theme"
+            android:layout_marginBottom="16dp"
+            android:layout_alignParentBottom="true"
+            android:textColor="@color/white"
+            android:fontFamily="@font/hammer"
+            android:id="@+id/btn_Kirim_Identitas"
+            android:textAllCaps="false"
+            android:text="Kirim Identitas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

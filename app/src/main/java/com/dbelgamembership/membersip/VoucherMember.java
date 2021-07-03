@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,22 +111,30 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
         StringRequest arrReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
+                    @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
                     public void onResponse(String response) {
                         try {
                             if (response.length() > 1) {
                                 Gson gson = new Gson();
                                 ModelUser modelMember = gson.fromJson(response, ModelUser.class);
-                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer();
+                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
                                 getNamaMember = dataMember.getName();
                                 getImageURL = dataMember.getImageCustomer();
                             }
 
                             namaMember.setText(getNamaMember);
 
+                            Log.e(TAG, "getDataUser: " + sessionManager.getImage());
+
+                            Drawable image;
                             if (sessionManager.getImage() != "" && sessionManager.getImage() != null) {
                                 Glide.with(getApplicationContext()).asBitmap().load(sessionManager.getImage()).centerCrop().into(imageMember);
+                            } else {
+                                image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+                                imageMember.setImageDrawable(image);
                             }
+
 
                             getdataVoucher();
 

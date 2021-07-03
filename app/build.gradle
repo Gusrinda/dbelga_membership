@@ -29,9 +29,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-//    packagingOptions {
-//        exclude 'META-INF/DEPENDENCIES'
-//    }
 }
 
 dependencies {
@@ -75,10 +72,17 @@ dependencies {
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
     implementation 'com.github.denzcoskun:ImageSlideshow:0.1.0'
 
+    implementation 'com.github.AppIntro:AppIntro:6.1.0'
+
     implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:2.0.6'
 
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    implementation 'com.github.TutorialsAndroid:KAlertDialog:v14.0.19'
+
+
+    implementation 'com.github.dhaval2404:imagepicker:1.8'
+
 //    implementation files('libs/httpclient-4.5.jar')
 //    implementation files('libs/httpcore-4.4.1.jar')
 //    implementation files('libs/httpmime-4.5.jar')

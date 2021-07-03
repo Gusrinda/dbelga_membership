@@ -1,13 +1,14 @@
 
 package com.dbelgamembership.membersip.Model.modelListFaktur;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 
 public class Status implements Serializable, Parcelable
 {
@@ -24,7 +25,7 @@ public class Status implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public Status createFromParcel(Parcel in) {
+        public Status createFromParcel(android.os.Parcel in) {
             return new Status(in);
         }
 
@@ -34,9 +35,9 @@ public class Status implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -7830094404525037537L;
+    private final static long serialVersionUID = 3910591537459047316L;
 
-    protected Status(Parcel in) {
+    protected Status(android.os.Parcel in) {
         this.code = ((int) in.readValue((int.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
     }
@@ -70,7 +71,7 @@ public class Status implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(code);
         dest.writeValue(description);
     }

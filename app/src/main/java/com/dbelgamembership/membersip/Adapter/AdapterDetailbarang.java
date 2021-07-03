@@ -61,7 +61,7 @@ public class AdapterDetailbarang extends
         } else {
             holder.tvQty.setText(qty +" (STOK)");
         }
-
+        holder.tvKeterangan.setVisibility(View.GONE);
         holder.tvHarga.setText("Rp. " + nf.format(Integer.parseInt(item.getRealPrice())));
 
         if (item.getTotalDiskon().equals("0")) {
@@ -109,6 +109,8 @@ public class AdapterDetailbarang extends
         TextView tvCode;
         @BindView(R.id.tvQty)
         TextView tvQty;
+        @BindView(R.id.tvKeterangan)
+        TextView tvKeterangan;
         @BindView(R.id.tvTotal)
         TextView tvTotal;
         @BindView(R.id.tvHarga)

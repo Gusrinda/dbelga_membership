@@ -1,13 +1,14 @@
 
 package com.dbelgamembership.membersip.Model.modelListFaktur;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 
 public class PaymentDetail implements Serializable, Parcelable
 {
@@ -42,13 +43,16 @@ public class PaymentDetail implements Serializable, Parcelable
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("card_holder")
+    @Expose
+    private String cardHolder;
     public final static Creator<PaymentDetail> CREATOR = new Creator<PaymentDetail>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public PaymentDetail createFromParcel(Parcel in) {
+        public PaymentDetail createFromParcel(android.os.Parcel in) {
             return new PaymentDetail(in);
         }
 
@@ -58,9 +62,9 @@ public class PaymentDetail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 9219331553601502429L;
+    private final static long serialVersionUID = -7152472338376610236L;
 
-    protected PaymentDetail(Parcel in) {
+    protected PaymentDetail(android.os.Parcel in) {
         this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.paymentType = ((String) in.readValue((String.class.getClassLoader())));
@@ -71,6 +75,7 @@ public class PaymentDetail implements Serializable, Parcelable
         this.total = ((String) in.readValue((String.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
+        this.cardHolder = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public PaymentDetail() {
@@ -206,7 +211,20 @@ public class PaymentDetail implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public String getCardHolder() {
+        return cardHolder;
+    }
+
+    public void setCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
+    }
+
+    public PaymentDetail withCardHolder(String cardHolder) {
+        this.cardHolder = cardHolder;
+        return this;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
         dest.writeValue(paymentType);
@@ -217,6 +235,7 @@ public class PaymentDetail implements Serializable, Parcelable
         dest.writeValue(total);
         dest.writeValue(createdAt);
         dest.writeValue(updatedAt);
+        dest.writeValue(cardHolder);
     }
 
     public int describeContents() {

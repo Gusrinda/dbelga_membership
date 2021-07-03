@@ -1,13 +1,14 @@
 
 package com.dbelgamembership.membersip.Model.modelListTransaksi;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import java.io.Serializable;
 
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 
 public class Detail implements Serializable, Parcelable
 {
@@ -21,6 +22,9 @@ public class Detail implements Serializable, Parcelable
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("images")
+    @Expose
+    private String images;
     @SerializedName("price")
     @Expose
     private String price;
@@ -47,7 +51,7 @@ public class Detail implements Serializable, Parcelable
     private String qtyStore;
     @SerializedName("indent")
     @Expose
-    private boolean indent;
+    private String indent;
     @SerializedName("indent_value")
     @Expose
     private int indentValue;
@@ -60,7 +64,7 @@ public class Detail implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public Detail createFromParcel(Parcel in) {
+        public Detail createFromParcel(android.os.Parcel in) {
             return new Detail(in);
         }
 
@@ -70,12 +74,13 @@ public class Detail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 5051318594757606367L;
+    private final static long serialVersionUID = -4802241172845882753L;
 
-    protected Detail(Parcel in) {
+    protected Detail(android.os.Parcel in) {
         this.orderId = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
+        this.images = ((String) in.readValue((String.class.getClassLoader())));
         this.price = ((String) in.readValue((String.class.getClassLoader())));
         this.realPrice = ((String) in.readValue((String.class.getClassLoader())));
         this.persentaseDiskon = ((String) in.readValue((String.class.getClassLoader())));
@@ -84,7 +89,7 @@ public class Detail implements Serializable, Parcelable
         this.totalSetelahDiskon = ((int) in.readValue((int.class.getClassLoader())));
         this.qtyOutlet = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyStore = ((String) in.readValue((String.class.getClassLoader())));
-        this.indent = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.indent = ((String) in.readValue((String.class.getClassLoader())));
         this.indentValue = ((int) in.readValue((int.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
     }
@@ -128,6 +133,19 @@ public class Detail implements Serializable, Parcelable
 
     public Detail withName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getImages() {
+        return images;
+    }
+
+    public void setImages(String images) {
+        this.images = images;
+    }
+
+    public Detail withImages(String images) {
+        this.images = images;
         return this;
     }
 
@@ -235,15 +253,15 @@ public class Detail implements Serializable, Parcelable
         return this;
     }
 
-    public boolean isIndent() {
+    public String getIndent() {
         return indent;
     }
 
-    public void setIndent(boolean indent) {
+    public void setIndent(String indent) {
         this.indent = indent;
     }
 
-    public Detail withIndent(boolean indent) {
+    public Detail withIndent(String indent) {
         this.indent = indent;
         return this;
     }
@@ -274,10 +292,11 @@ public class Detail implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(orderId);
         dest.writeValue(codeProduct);
         dest.writeValue(name);
+        dest.writeValue(images);
         dest.writeValue(price);
         dest.writeValue(realPrice);
         dest.writeValue(persentaseDiskon);

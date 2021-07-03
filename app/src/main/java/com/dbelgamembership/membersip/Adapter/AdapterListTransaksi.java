@@ -91,7 +91,7 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
         holder.lnContent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAdapterCallback.onRowAdapterListTransactionClicked(position);
+                mAdapterCallback.onRowAdapterListTransactionClicked(item);
             }
         });
 
@@ -122,7 +122,7 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
     }
 
     public interface AdapterListTransactionCallback {
-        void onRowAdapterListTransactionClicked(int position);
+        void onRowAdapterListTransactionClicked(Datum item);
     }
 
 }

@@ -363,7 +363,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             Log.e(TAG, "Response : " + response);
                             Gson gson = new Gson();
                             ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
-                            Datum b = modelListTransaction.getData().get(0);
+                            Datum b = modelListTransaction.getData().getData().get(0);
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = Float.parseFloat(String.valueOf(b.getGrandtotal()));
                             ongkosKirim = 0;

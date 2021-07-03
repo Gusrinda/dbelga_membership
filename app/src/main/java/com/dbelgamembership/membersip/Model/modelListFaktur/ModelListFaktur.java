@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.modelListFaktur;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class ModelListFaktur implements Serializable, Parcelable
 {
@@ -26,7 +27,7 @@ public class ModelListFaktur implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelListFaktur createFromParcel(Parcel in) {
+        public ModelListFaktur createFromParcel(android.os.Parcel in) {
             return new ModelListFaktur(in);
         }
 
@@ -36,9 +37,9 @@ public class ModelListFaktur implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 8232287600302264482L;
+    private final static long serialVersionUID = 6861256330795585247L;
 
-    protected ModelListFaktur(Parcel in) {
+    protected ModelListFaktur(android.os.Parcel in) {
         in.readList(this.data, (com.dbelgamembership.membersip.Model.modelListFaktur.Datum.class.getClassLoader()));
         this.status = ((Status) in.readValue((Status.class.getClassLoader())));
     }
@@ -72,7 +73,7 @@ public class ModelListFaktur implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeList(data);
         dest.writeValue(status);
     }

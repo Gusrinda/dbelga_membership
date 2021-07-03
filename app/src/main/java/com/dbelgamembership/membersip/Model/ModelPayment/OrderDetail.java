@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class OrderDetail implements Serializable, Parcelable
 {
@@ -41,7 +42,7 @@ public class OrderDetail implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public OrderDetail createFromParcel(Parcel in) {
+        public OrderDetail createFromParcel(android.os.Parcel in) {
             return new OrderDetail(in);
         }
 
@@ -51,9 +52,9 @@ public class OrderDetail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -1986908156121052458L;
+    private final static long serialVersionUID = 4808559746993181281L;
 
-    protected OrderDetail(Parcel in) {
+    protected OrderDetail(android.os.Parcel in) {
         this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -157,7 +158,7 @@ public class OrderDetail implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
         dest.writeValue(soCode);

@@ -41,6 +41,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -74,6 +75,8 @@ public class MembershipPilih extends AppCompatActivity {
     ImageView backArrow;
     SimpleDateFormat formatExp, formatter, formatExpDate;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +99,29 @@ public class MembershipPilih extends AppCompatActivity {
         backArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                new KAlertDialog(MembershipPilih.this, KAlertDialog.WARNING_TYPE)
+                        .setTitleText("Keluar ?")
+                        .setContentText("Keluar dari halaman ini membuat anda menjadi member 'Reguler' secara default\nAnda yakin ?")
+                        .setConfirmText("Ya")
+                        .confirmButtonColor(R.color.biruBelga, MembershipPilih.this)
+                        .cancelButtonColor(R.color.grey_font, MembershipPilih.this)
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                finish();
+                                Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setCancelText("Tidak")
+                        .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
             }
         });
 
@@ -161,15 +186,33 @@ public class MembershipPilih extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Toast.makeText(this, "kembali . . .", Toast.LENGTH_SHORT).show();
+        new KAlertDialog(MembershipPilih.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Keluar ?")
+                .setContentText("Keluar dari halaman ini membuat anda menjadi member 'Reguler' secara default\nAnda yakin ?")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.biruBelga, MembershipPilih.this)
+                .cancelButtonColor(R.color.grey_font, MembershipPilih.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        finish();
+                        Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 
     private void registerUser() {
         if (isOnline() == true) {
-//            url = Http.server;
-//            url = url + "member-daftar";
-//            Log.e("URL: ", url);
             accessWebService();
         } else {
             Toast.makeText(MembershipPilih.this, "Periksa Koneksi Internet Anda", Toast.LENGTH_SHORT).show();
@@ -178,32 +221,23 @@ public class MembershipPilih extends AppCompatActivity {
 
     private void accessWebService() {
         pilihMember.setEnabled(false);
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(MembershipPilih.this);
-        builder1.setTitle("Konfirmasi");
-        builder1.setMessage("Anda akan memilih membership \n'" + choosenMembership + "' ?");
-        builder1.setCancelable(false);
-        builder1.setPositiveButton(
-                "Ya",
-                new DialogInterface.OnClickListener() {
-                    @SuppressLint("NewApi")
-                    public void onClick(DialogInterface dialog, int id) {
+        new KAlertDialog(MembershipPilih.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Konfirmasi")
+                .setContentText("Anda akan memilih membership \n'" + choosenMembership + "' ?")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.biruBelga, MembershipPilih.this)
+                .cancelButtonColor(R.color.grey_font, MembershipPilih.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
                         pilihMember.setEnabled(true);
-                        dialog.dismiss();
+                        sDialog.dismissWithAnimation();
                         if (isOnline()) {
                             url = Http.server;
-                            url = url + "register-customer";
+                            url = url + "update-status/" + sessionManager.getPID();
                             type = "post";
                             JSONObject postData = new JSONObject();
                             try {
-                                HashMap<String, String> map_order99 = new HashMap<String, String>();
-                                postData.put("name", namaMember);
-                                postData.put("main_address", alamatMember);
-                                postData.put("main_phone_1", nomorMember);
-                                postData.put("main_email", emailMember);
-                                postData.put("password", passwordMember);
-                                postData.put("date_birth", tanggalMember);
-                                postData.put("status_member", choosenMembership);
-
                                 final Calendar baru = Calendar.getInstance();
                                 baru.add(Calendar.DATE, 1);
                                 Date deadlineBayar = baru.getTime();
@@ -222,6 +256,7 @@ public class MembershipPilih extends AppCompatActivity {
                                 deadlinePayment = deadlen;
                                 expiredMembership = expDate;
 
+                                postData.put("status_member", choosenMembership);
                                 postData.put("expired_date", expiredMembership);
                                 postData.put("pay_date", deadlinePayment);
 
@@ -237,26 +272,17 @@ public class MembershipPilih extends AppCompatActivity {
                             Snack("Cek Koneksi Internet Anda");
                         }
                     }
-                });
-
-        builder1.setNegativeButton(
-                "Tidak",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
                         pilihMember.setEnabled(true);
                     }
-                });
+                })
+                .show();
 
-        final AlertDialog alert11 = builder1.create();
-        alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-            }
-        });
-        alert11.show();
     }
 
     private void SimpanPost(JSONObject postData) {

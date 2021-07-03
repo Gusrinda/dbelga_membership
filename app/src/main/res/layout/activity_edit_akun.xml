@@ -42,14 +42,12 @@
             android:layout_width="120dp"
             android:layout_height="120dp">
 
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgPengguna"
                 android:src="@mipmap/ic_launcher"
                 android:layout_centerInParent="true"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
-
+                android:layout_width="156dp"
+                android:layout_height="156dp" />
 
             <ImageView
                 android:visibility="gone"
@@ -153,8 +151,6 @@
                 android:textColor="@color/darkBiruBelga" />
 
         </com.google.android.material.textfield.TextInputLayout>
-
-
 
         <LinearLayout
             android:orientation="horizontal"
@@ -319,9 +315,7 @@
 
             </LinearLayout>
 
-
         </LinearLayout>
-
 
     </LinearLayout>
 

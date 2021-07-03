@@ -28,8 +28,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelSearchWish.ModelSearchWish;
+import com.dbelgamembership.membersip.Model.ResponseLogin.ResponseLogin;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -145,39 +148,45 @@ public class LoginActivity extends AppCompatActivity {
                         dialog1.dismiss();
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
-                            try {
-                                String responseX = String.valueOf(response);
-                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                                boolean success = root.get("success").getAsBoolean();
-                                Log.e("", "Test : " + success);
-                                if (success == false) {
-                                    String message = root.get("msgServer").getAsString();
-                                    Snack(message);
-                                    Log.e("TAG", "onResponse:  " + message);
-//                                    Toast.makeText(LoginActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
-                                } else {
-                                    JSONObject jsonObject = response.getJSONObject("msgServer");
-                                    String idUser = jsonObject.getString("id");
-                                    String namaUser = jsonObject.getString("name");
-                                    String emailUser = jsonObject.getString("main_email");
-                                    String membershipUser = jsonObject.getString("status_member");
-                                    Log.e("", "id User: " + idUser);
-                                    Log.e("", "nama User: " + namaUser);
-                                    Log.e("", "email User: " + emailUser);
-                                    Log.e("", "membership: " + membershipUser);
-                                    String status_pay = jsonObject.getString("status_payment");
-                                    if (status_pay.equals("TRUE")) {
-                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
-                                        if (jsonObject.getString("image_customer") != null) {
-                                            sessionManager.setImage("http://54.254.194.122/upload/customer-photo/"+jsonObject.getString("image_customer"));
+                            String responseX = String.valueOf(response);
+                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                            boolean success = root.get("success").getAsBoolean();
+                            Log.e("", "Test : " + success);
+                            if (!success) {
+                                String message = root.get("msgServer").getAsString();
+                                Snack(message);
+                                Log.e("TAG", "onResponse:  " + message);
+                            } else {
+                                Gson gson = new Gson();
+                                ResponseLogin modelUser = gson.fromJson(String.valueOf(response), ResponseLogin.class);
+                                String idUser = String.valueOf(modelUser.getMsgServer().getId());
+                                String namaUser = modelUser.getMsgServer().getName();
+                                String emailUser = modelUser.getMsgServer().getMainEmail();
+                                String membershipUser = modelUser.getMsgServer().getStatusMember();
+                                Log.e("", "id User: " + idUser);
+                                Log.e("", "nama User: " + namaUser);
+                                Log.e("", "email User: " + emailUser);
+                                Log.e("", "membership: " + membershipUser);
+
+                                boolean status_pay = Boolean.parseBoolean(modelUser.getMsgServer().getStatusPayment());
+
+                                sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
+
+                                if (modelUser.getMsgServer().isEmailVerification()) {
+                                    if (status_pay) {
+                                        finish();
+//                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                        if (modelUser.getMsgServer().getImageCustomer() != null) {
+                                            sessionManager.setImage("http://13.229.51.227/upload/customer-photo/" + modelUser.getMsgServer().getImageCustomer());
                                         }
                                         getSession();
                                     } else {
-                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
-                                        if (jsonObject.getString("image_customer") != null) {
-                                            sessionManager.setImage("http://54.254.194.122/upload/customer-photo/"+jsonObject.getString("image_customer"));
+//                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                        if (modelUser.getMsgServer().getImageCustomer() != null) {
+                                            sessionManager.setImage("http://13.229.51.227/upload/customer-photo/" + modelUser.getMsgServer().getImageCustomer());
                                         }
-                                        String deadlinePay = jsonObject.getString("pay_date");
+                                        String deadlinePay = modelUser.getMsgServer().getPayDate();
                                         formatExp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                         final Calendar baru = Calendar.getInstance();
                                         Date tanggalNow = baru.getTime();
@@ -189,9 +198,12 @@ public class LoginActivity extends AppCompatActivity {
                                         intent.putExtra("TANGGAL_1", tanggal);
                                         startActivity(intent);
                                     }
+                                } else {
+//                                    sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                    Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
+                                    startActivity(intent);
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+
                             }
                         } else {
                             Toast.makeText(LoginActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
@@ -243,7 +255,6 @@ public class LoginActivity extends AppCompatActivity {
         snackbar.show();
         currentlyshownSnackbar = snackbar;
     }
-
 
     @Override
     protected void onPause() {

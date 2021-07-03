@@ -24,5 +24,12 @@
     <color name="colorHint">#7fffffff</color>
     <color name="colorFacebook">#3b5998</color>
 
+    <color name="boarding1">#FF03DAC5</color>
+    <color name="boarding2">#03BADA</color>
+    <color name="boarding3">#FF03DAC5</color>
+    <color name="boarding4">#03BADA</color>
+    <color name="guide">#C7B299</color>
+
+
 
 </resources>

@@ -2,36 +2,44 @@
 package com.dbelgamembership.membersip.Model.ModelWish;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class MsgServer implements Serializable, Parcelable
 {
 
-    @SerializedName("id_customer")
+    @SerializedName("id_produk")
     @Expose
-    private int idCustomer;
-    @SerializedName("customer")
+    private int idProduk;
+    @SerializedName("gambar")
     @Expose
-    private String customer;
-    @SerializedName("image_customer")
+    private String gambar;
+    @SerializedName("name")
     @Expose
-    private String imageCustomer;
-    @SerializedName("wishlist_detail")
+    private String name;
+    @SerializedName("code_product")
     @Expose
-    private List<WishlistDetail> wishlistDetail = new ArrayList<WishlistDetail>();
-    public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
+    private String codeProduct;
+    @SerializedName("qty_stok")
+    @Expose
+    private int qtyStok;
+    @SerializedName("qty")
+    @Expose
+    private int qty;
+    @SerializedName("price")
+    @Expose
+    private Price price;
+    public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public MsgServer createFromParcel(Parcel in) {
+        public MsgServer createFromParcel(android.os.Parcel in) {
             return new MsgServer(in);
         }
 
@@ -41,75 +49,120 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -1385011490463947264L;
+    private final static long serialVersionUID = -6194412905315863148L;
 
-    protected MsgServer(Parcel in) {
-        this.idCustomer = ((int) in.readValue((int.class.getClassLoader())));
-        this.customer = ((String) in.readValue((String.class.getClassLoader())));
-        this.imageCustomer = ((String) in.readValue((String.class.getClassLoader())));
-        in.readList(this.wishlistDetail, (com.dbelgamembership.membersip.Model.ModelWish.WishlistDetail.class.getClassLoader()));
+    protected MsgServer(android.os.Parcel in) {
+        this.idProduk = ((int) in.readValue((int.class.getClassLoader())));
+        this.gambar = ((String) in.readValue((String.class.getClassLoader())));
+        this.name = ((String) in.readValue((String.class.getClassLoader())));
+        this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
+        this.qty = ((int) in.readValue((int.class.getClassLoader())));
+        this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public int getIdCustomer() {
-        return idCustomer;
+    public int getIdProduk() {
+        return idProduk;
     }
 
-    public void setIdCustomer(int idCustomer) {
-        this.idCustomer = idCustomer;
+    public void setIdProduk(int idProduk) {
+        this.idProduk = idProduk;
     }
 
-    public MsgServer withIdCustomer(int idCustomer) {
-        this.idCustomer = idCustomer;
+    public MsgServer withIdProduk(int idProduk) {
+        this.idProduk = idProduk;
         return this;
     }
 
-    public String getCustomer() {
-        return customer;
+    public String getGambar() {
+        return gambar;
     }
 
-    public void setCustomer(String customer) {
-        this.customer = customer;
+    public void setGambar(String gambar) {
+        this.gambar = gambar;
     }
 
-    public MsgServer withCustomer(String customer) {
-        this.customer = customer;
+    public MsgServer withGambar(String gambar) {
+        this.gambar = gambar;
         return this;
     }
 
-    public String getImageCustomer() {
-        return imageCustomer;
+    public String getName() {
+        return name;
     }
 
-    public void setImageCustomer(String imageCustomer) {
-        this.imageCustomer = imageCustomer;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public MsgServer withImageCustomer(String imageCustomer) {
-        this.imageCustomer = imageCustomer;
+    public MsgServer withName(String name) {
+        this.name = name;
         return this;
     }
 
-    public List<WishlistDetail> getWishlistDetail() {
-        return wishlistDetail;
+    public String getCodeProduct() {
+        return codeProduct;
     }
 
-    public void setWishlistDetail(List<WishlistDetail> wishlistDetail) {
-        this.wishlistDetail = wishlistDetail;
+    public void setCodeProduct(String codeProduct) {
+        this.codeProduct = codeProduct;
     }
 
-    public MsgServer withWishlistDetail(List<WishlistDetail> wishlistDetail) {
-        this.wishlistDetail = wishlistDetail;
+    public MsgServer withCodeProduct(String codeProduct) {
+        this.codeProduct = codeProduct;
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(idCustomer);
-        dest.writeValue(customer);
-        dest.writeValue(imageCustomer);
-        dest.writeList(wishlistDetail);
+    public int getQtyStok() {
+        return qtyStok;
+    }
+
+    public void setQtyStok(int qtyStok) {
+        this.qtyStok = qtyStok;
+    }
+
+    public MsgServer withQtyStok(int qtyStok) {
+        this.qtyStok = qtyStok;
+        return this;
+    }
+
+    public int getQty() {
+        return qty;
+    }
+
+    public void setQty(int qty) {
+        this.qty = qty;
+    }
+
+    public MsgServer withQty(int qty) {
+        this.qty = qty;
+        return this;
+    }
+
+    public Price getPrice() {
+        return price;
+    }
+
+    public void setPrice(Price price) {
+        this.price = price;
+    }
+
+    public MsgServer withPrice(Price price) {
+        this.price = price;
+        return this;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeValue(idProduk);
+        dest.writeValue(gambar);
+        dest.writeValue(name);
+        dest.writeValue(codeProduct);
+        dest.writeValue(qtyStok);
+        dest.writeValue(qty);
+        dest.writeValue(price);
     }
 
     public int describeContents() {

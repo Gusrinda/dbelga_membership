@@ -4,28 +4,30 @@ package com.dbelgamembership.membersip.Model.ModelListWishlist;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+
 public class ModelListWishlist implements Serializable, Parcelable
 {
 
-    @SerializedName("data")
+    @SerializedName("success")
     @Expose
-    private List<Datum> data = new ArrayList<Datum>();
-    @SerializedName("status")
+    private boolean success;
+    @SerializedName("msgServer")
     @Expose
-    private Status status;
-    public final static Parcelable.Creator<ModelListWishlist> CREATOR = new Creator<ModelListWishlist>() {
+    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
+    public final static Creator<ModelListWishlist> CREATOR = new Creator<ModelListWishlist>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelListWishlist createFromParcel(Parcel in) {
+        public ModelListWishlist createFromParcel(android.os.Parcel in) {
             return new ModelListWishlist(in);
         }
 
@@ -35,45 +37,45 @@ public class ModelListWishlist implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -8696520392850569594L;
+    private final static long serialVersionUID = -7954973648296105630L;
 
-    protected ModelListWishlist(Parcel in) {
-        in.readList(this.data, (com.dbelgamembership.membersip.Model.ModelListWishlist.Datum.class.getClassLoader()));
-        this.status = ((Status) in.readValue((Status.class.getClassLoader())));
+    protected ModelListWishlist(android.os.Parcel in) {
+        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.ModelListWishlist.MsgServer.class.getClassLoader()));
     }
 
     public ModelListWishlist() {
     }
 
-    public List<Datum> getData() {
-        return data;
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setData(List<Datum> data) {
-        this.data = data;
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 
-    public ModelListWishlist withData(List<Datum> data) {
-        this.data = data;
+    public ModelListWishlist withSuccess(boolean success) {
+        this.success = success;
         return this;
     }
 
-    public Status getStatus() {
-        return status;
+    public List<MsgServer> getMsgServer() {
+        return msgServer;
     }
 
-    public void setStatus(Status status) {
-        this.status = status;
+    public void setMsgServer(List<MsgServer> msgServer) {
+        this.msgServer = msgServer;
     }
 
-    public ModelListWishlist withStatus(Status status) {
-        this.status = status;
+    public ModelListWishlist withMsgServer(List<MsgServer> msgServer) {
+        this.msgServer = msgServer;
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(data);
-        dest.writeValue(status);
+    public void writeToParcel(android.os.Parcel dest, int flags) {
+        dest.writeValue(success);
+        dest.writeList(msgServer);
     }
 
     public int describeContents() {

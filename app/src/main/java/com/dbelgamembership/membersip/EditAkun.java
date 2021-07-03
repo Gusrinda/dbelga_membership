@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -42,8 +43,11 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -52,6 +56,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -219,9 +224,12 @@ public class EditAkun extends AppCompatActivity {
         btnGantiFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CropImage.activity(ImageUri)
-                        .setAspectRatio(1, 1)
-                        .start(EditAkun.this);
+
+                ImagePicker.Companion.with(EditAkun.this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
 
             }
         });
@@ -238,21 +246,23 @@ public class EditAkun extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+        if (resultCode == Activity.RESULT_OK) {
+            Log.e("TAG", "Path:" + ImagePicker.Companion.getFilePath(data));
             checkUbah = true;
-            ImageUri = result.getUri();
+            Uri uri = data.getData();
+            ImageUri = uri;
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
-                Log.e(TAG, "onActivityResult: " + bitmap );
+                Log.e(TAG, "onActivityResult: " + bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
             }
             imagePengguna.setImageURI(ImageUri);
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(this, ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "ERROR : Try Again !", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(EditAkun.this, EditAkun.class));
-            finish();
+            Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -272,31 +282,30 @@ public class EditAkun extends AppCompatActivity {
                         dialog1.dismiss();
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
-                            try {
-                                JSONObject jsonObject = response.getJSONObject("msgServer");
-                                name = jsonObject.getString("name");
-                                address = jsonObject.getString("main_address");
-                                phone = jsonObject.getString("main_phone_1");
-                                mail = jsonObject.getString("main_email");
-                                urlImage = jsonObject.getString("image_customer");
-                                password = jsonObject.getString("password");
-                                dateBirth = jsonObject.getString("date_birth");
+                            //                                Log.e("", "onResponse: " + response);
+                            Gson gson = new Gson();
+                            ModelUser modelListUser = gson.fromJson(String.valueOf(response), ModelUser.class);
+                            com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListUser.getMsgServer().get(0);
 
-                                Log.e(TAG, "checkUbah: " + checkUbah);
-                                if (checkUbah == false) {
-                                    if (urlImage.equals("http://54.254.194.122/upload/customer-photo/")) {
-                                        urlImage = "";
-                                    } else {
-                                        urlImage = jsonObject.getString("image_customer");
-                                    }
-                                    Log.e(TAG, "url Image: " + urlImage);
+                            name = dataUser.getName();
+                            address = dataUser.getMainAddress();
+                            phone = dataUser.getMainPhone1();
+                            mail = dataUser.getMainEmail();
+                            urlImage = dataUser.getImageCustomer();
+                            password = dataUser.getPassword();
+                            dateBirth = dataUser.getDateBirth();
+
+                            Log.e(TAG, "checkUbah: " + checkUbah);
+                            if (checkUbah == false) {
+                                if (urlImage.equals("http://13.229.51.227/upload/customer-photo/")) {
+                                    urlImage = "";
+                                } else {
+                                    urlImage = dataUser.getImageCustomer();
                                 }
-
-                                taruhDataUser();
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                Log.e(TAG, "url Image: " + urlImage);
                             }
+
+                            taruhDataUser();
 
                         } else {
                             Toast.makeText(EditAkun.this, "Tidak ada response", Toast.LENGTH_LONG).show();
@@ -352,7 +361,7 @@ public class EditAkun extends AppCompatActivity {
                             String gambarPayment;
                             String kodeReferal;
 
-                            bitmap = ((BitmapDrawable)imagePengguna.getDrawable()).getBitmap();
+                            bitmap = ((BitmapDrawable) imagePengguna.getDrawable()).getBitmap();
 
                             if (bitmap == null) {
                                 gambarPayment = "";

@@ -2,11 +2,13 @@
 package com.dbelgamembership.membersip.Model.ModelSearchWish;
 
 import java.io.Serializable;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class Price implements Serializable, Parcelable
 {
@@ -20,13 +22,12 @@ public class Price implements Serializable, Parcelable
     @SerializedName("harga_tiga")
     @Expose
     private String hargaTiga;
-    public final static Parcelable.Creator<Price> CREATOR = new Creator<Price>() {
-
+    public final static Creator<Price> CREATOR = new Creator<Price>() {
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Price createFromParcel(Parcel in) {
+        public Price createFromParcel(android.os.Parcel in) {
             return new Price(in);
         }
 
@@ -34,11 +35,11 @@ public class Price implements Serializable, Parcelable
             return (new Price[size]);
         }
 
-    }
-    ;
-    private final static long serialVersionUID = -224352059732339484L;
+    };
 
-    protected Price(Parcel in) {
+    private final static long serialVersionUID = 2982295650761907249L;
+
+    protected Price(android.os.Parcel in) {
         this.harga = ((String) in.readValue((String.class.getClassLoader())));
         this.hargaDua = ((String) in.readValue((String.class.getClassLoader())));
         this.hargaTiga = ((String) in.readValue((String.class.getClassLoader())));
@@ -86,7 +87,7 @@ public class Price implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(harga);
         dest.writeValue(hargaDua);
         dest.writeValue(hargaTiga);

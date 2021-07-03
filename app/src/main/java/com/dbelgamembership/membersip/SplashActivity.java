@@ -8,13 +8,28 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
+import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelGetKategori.ModelGetKategori;
 import com.dbelgamembership.membersip.Model.ModelGetKategori.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelGetSlider.Datum;
 import com.dbelgamembership.membersip.Model.ModelGetSlider.ModelGetSlider;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +40,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 public class SplashActivity extends AppCompatActivity {
+    public static boolean cekPreAccess;
+    SessionManager sessionManager;
+    public String url = Http.server, jsonResult, type, user, pass;
 
     private static final String TAG = "SPLASH";
     public static String[] listKategori;
@@ -32,36 +50,108 @@ public class SplashActivity extends AppCompatActivity {
     public static List<MsgServer> daftarKategori;
     public static List<String> listArrayKategori = new ArrayList<>();
 
-
     public static String[] listGambarSlider;
     public static HashMap<String, String> listImageSlider = new HashMap<String, String>();
     public static List<Datum> daftarGambarSlider;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        cekPreAccess = false;
+        sessionManager = new SessionManager(this);
 
         getDataSlider();
         getDataKategori();
 
-
+        Thread timerThread = new Thread() {
+            public void run() {
+                try {
+                    sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } finally {
+                    getSession();
+//                    getDataUser();
+                }
+            }
+        };
+        timerThread.start();
 
     }
 
+    private void getDataUser() {
+        url = Http.server;
+        url = url + "search-customer/" + sessionManager.getPID();
+        Log.e(TAG, "URL : " + url);
+        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Log.e("", "onResponse: " + response);
+                            try {
+                                String responseX = String.valueOf(response);
+                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                                boolean success = root.get("success").getAsBoolean();
+                                Log.e("", "Test : " + success);
+                                if (!success) {
+                                    Toast.makeText(SplashActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
+                                } else {
+                                    Gson gson = new Gson();
+                                    ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
+                                    com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
+                                    boolean status_pay = Boolean.parseBoolean(dataMember.getStatusPayment());
+
+                                    if (dataMember.isEmailVerification()) {
+                                        if (status_pay) {
+                                            finish();
+                                            Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                            startActivity(intent);
+                                        } else {
+                                            String deadlinePay = dataMember.getPayDate();
+                                            Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
+                                            Log.e(TAG, "onResponse: " + deadlinePay);
+                                            intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
+                                            startActivity(intent);
+                                        }
+                                    } else {
+                                        Intent intent = new Intent(SplashActivity.this, VerificationActivity.class);
+                                        startActivity(intent);
+                                    }
+
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
+//                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // TODO: Handle error
+
+//                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
+    }
+
     private void getDataSlider() {
-        final ProgressDialog dialog1 = new ProgressDialog(SplashActivity.this);
-        dialog1.setCancelable(false);
-        dialog1.setCanceledOnTouchOutside(false);
-        dialog1.setMessage("Harap Menunggu...");
-        dialog1.show();
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
         Call<ModelGetSlider> call = apiInterface.doGetDataSlider();
         call.enqueue(new Callback<ModelGetSlider>() {
             @Override
             public void onResponse(Call<ModelGetSlider> call, retrofit2.Response<ModelGetSlider> response) {
-                dialog1.dismiss();
                 if (response.code() == 200) {
                     ModelGetSlider modelGetKategori = response.body();
 
@@ -82,7 +172,6 @@ public class SplashActivity extends AppCompatActivity {
                     Log.e(TAG, "Daftar Divisi" + listGambarSlider);
 
 
-
                 } else {
                     Toast.makeText(getApplicationContext(), "Kesalahan memuat data", Toast.LENGTH_LONG).show();
                 }
@@ -90,24 +179,17 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ModelGetSlider> call, Throwable t) {
-                dialog1.dismiss();
                 Toast.makeText(getApplicationContext(), "Gagal Terhubung, Coba Lagi!", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getDataKategori() {
-        final ProgressDialog dialog1 = new ProgressDialog(SplashActivity.this);
-        dialog1.setCancelable(false);
-        dialog1.setCanceledOnTouchOutside(false);
-        dialog1.setMessage("Harap Menunggu...");
-        dialog1.show();
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
         Call<ModelGetKategori> call = apiInterface.doGetDataKategori();
         call.enqueue(new Callback<ModelGetKategori>() {
             @Override
             public void onResponse(Call<ModelGetKategori> call, retrofit2.Response<ModelGetKategori> response) {
-                dialog1.dismiss();
                 if (response.code() == 200) {
                     ModelGetKategori modelGetKategori = response.body();
 
@@ -133,19 +215,6 @@ public class SplashActivity extends AppCompatActivity {
 
                     Log.e(TAG, "Daftar Divisi" + listArrayKategori.toString());
 
-                    Thread timerThread = new Thread() {
-                        public void run() {
-                            try {
-                                sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            } finally {
-                                Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
-                                startActivity(intent);
-                            }
-                        }
-                    };
-                    timerThread.start();
 
 
                 } else {
@@ -155,10 +224,25 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ModelGetKategori> call, Throwable t) {
-                dialog1.dismiss();
                 Toast.makeText(getApplicationContext(), "Gagal Terhubung, Coba Lagi!", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+
+    public void getSession() {
+        Log.e("", "cek Nama session : " + sessionManager.getName());
+        Log.e("", "cek PID session : " + sessionManager.getPID());
+        Log.e("", "cek Email session : " + sessionManager.getEmail());
+        Log.e("", "sessionCondition: Username Login? " + sessionManager.isLoggedIn());
+        if (sessionManager.isLoggedIn()) {
+            cekPreAccess = true;
+            getDataUser();
+        } else {
+            cekPreAccess = false;
+            Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override

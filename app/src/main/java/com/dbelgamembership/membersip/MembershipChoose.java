@@ -41,6 +41,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -59,7 +60,7 @@ import java.util.Map;
 public class MembershipChoose extends AppCompatActivity {
 
     SessionManager sessionManager;
-    public String url = Http.server, jsonResult, type,user,pass;
+    public String url = Http.server, jsonResult, type, user, pass;
     Spinner sp_Membership;
     CardView cardMember;
     RelativeLayout layoutCardMember;
@@ -106,7 +107,7 @@ public class MembershipChoose extends AppCompatActivity {
         tanggal1.add(Calendar.YEAR, 1);
         Date tanggalTahun = tanggal1.getTime();
         String deadlen = formatExp.format(tanggalTahun);
-        Log.e(TAG, "Tanggal Tahun : " + deadlen );
+        Log.e(TAG, "Tanggal Tahun : " + deadlen);
 
         sp_Membership.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -151,9 +152,12 @@ public class MembershipChoose extends AppCompatActivity {
 
                 if (sessionManager.getMembership().equals(choosenMembership)) {
                     Snack("Anda telah menjadi member dengan status yang dipilih !");
+                } else if (choosenMembership.equals("DEBET")) {
+                    Intent intent = new Intent(MembershipChoose.this, BoardingMemberDebet.class);
+                    startActivity(intent);
                 } else {
                     url = Http.server;
-                    url = url+"update-status/" + sessionManager.getPID();
+                    url = url + "update-status/" + sessionManager.getPID();
                     updateDataUser();
                 }
             }
@@ -163,21 +167,22 @@ public class MembershipChoose extends AppCompatActivity {
 
     private void updateDataUser() {
         pilihMember.setEnabled(false);
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(MembershipChoose.this);
-        builder1.setTitle("Konfirmasi");
-        builder1.setMessage("Anda akan mengubah menjadi membership \n'" + choosenMembership + "' ?");
-        builder1.setCancelable(false);
-        builder1.setPositiveButton(
-                "Ya",
-                new DialogInterface.OnClickListener() {
-                    @SuppressLint("NewApi")
-                    public void onClick(DialogInterface dialog, int id) {
+
+        new KAlertDialog(MembershipChoose.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Konfirmasi")
+                .setContentText("Anda akan memilih membership \n'" + choosenMembership + "' ?")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.biruBelga, MembershipChoose.this)
+                .cancelButtonColor(R.color.grey_font, MembershipChoose.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
                         pilihMember.setEnabled(true);
-                        dialog.dismiss();
+                        sDialog.dismiss();
                         if (isOnline()) {
                             type = "post";
                             JSONObject postData = new JSONObject();
-                            Log.e(TAG, "choosenMember : " + choosenMembership );
+                            Log.e(TAG, "choosenMember : " + choosenMembership);
 
                             final Calendar baru = Calendar.getInstance();
                             final Calendar expired = Calendar.getInstance();
@@ -216,33 +221,25 @@ public class MembershipChoose extends AppCompatActivity {
 
                             if (isOnline()) {
                                 Log.e(TAG, "URL : " + url);
-                                Log.e(TAG, "onClick: " + postData );
+                                Log.e(TAG, "onClick: " + postData);
                                 SimpanPost(postData);
                             }
                         } else {
                             Snack("Cek Koneksi Internet Anda");
                         }
                     }
-                });
-
-        builder1.setNegativeButton(
-                "Tidak",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
                         pilihMember.setEnabled(true);
                     }
-                });
+                })
+                .show();
 
-        final AlertDialog alert11 = builder1.create();
-        alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-            }
-        });
-        alert11.show();
+
     }
 
     private void SimpanPost(JSONObject postData) {
@@ -352,7 +349,7 @@ public class MembershipChoose extends AppCompatActivity {
 
     private void getDataUser() {
         url = Http.server;
-        url = url+"search-customer/" + sessionManager.getPID();
+        url = url + "search-customer/" + sessionManager.getPID();
         final ProgressDialog dialog1 = new ProgressDialog(MembershipChoose.this);
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -372,7 +369,7 @@ public class MembershipChoose extends AppCompatActivity {
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
                                 boolean success = root.get("success").getAsBoolean();
                                 Log.e("", "Test : " + success);
-                                if (success == false){
+                                if (success == false) {
                                     Toast.makeText(MembershipChoose.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
                                 } else {
                                     JSONObject jsonObject = response.getJSONObject("msgServer");
@@ -382,9 +379,9 @@ public class MembershipChoose extends AppCompatActivity {
                                     Date created = formatter.parse(updated_at);
                                     Calendar cal = Calendar.getInstance();
                                     cal.setTime(created);
-                                    Log.e(TAG, "Today : " + cal.getTime() );
+                                    Log.e(TAG, "Today : " + cal.getTime());
                                     cal.add(Calendar.YEAR, 1);
-                                    Log.e(TAG, "Next year expired : " + cal.getTime() );
+                                    Log.e(TAG, "Next year expired : " + cal.getTime());
                                     Date nextYear = cal.getTime();
                                     String expDate = formatExp.format(nextYear);
                                     Log.e("", "email User: " + status_member);

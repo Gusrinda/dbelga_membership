@@ -2,11 +2,13 @@
 package com.dbelgamembership.membersip.Model.ModelSearchWish;
 
 import java.io.Serializable;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class MsgServer implements Serializable, Parcelable
 {
@@ -23,6 +25,9 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("code_product")
     @Expose
     private String codeProduct;
+    @SerializedName("barcode_product")
+    @Expose
+    private String barcodeProduct;
     @SerializedName("qty_stok")
     @Expose
     private int qtyStok;
@@ -32,13 +37,13 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("price")
     @Expose
     private Price price;
-    public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
+    public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public MsgServer createFromParcel(Parcel in) {
+        public MsgServer createFromParcel(android.os.Parcel in) {
             return new MsgServer(in);
         }
 
@@ -48,13 +53,14 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -8115727608728463056L;
+    private final static long serialVersionUID = 5350165025116176035L;
 
-    protected MsgServer(Parcel in) {
+    protected MsgServer(android.os.Parcel in) {
         this.idProduk = ((int) in.readValue((int.class.getClassLoader())));
         this.gambar = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
+        this.barcodeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
         this.qty = ((int) in.readValue((int.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
@@ -115,6 +121,19 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
+    public String getBarcodeProduct() {
+        return barcodeProduct;
+    }
+
+    public void setBarcodeProduct(String barcodeProduct) {
+        this.barcodeProduct = barcodeProduct;
+    }
+
+    public MsgServer withBarcodeProduct(String barcodeProduct) {
+        this.barcodeProduct = barcodeProduct;
+        return this;
+    }
+
     public int getQtyStok() {
         return qtyStok;
     }
@@ -154,11 +173,12 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(idProduk);
         dest.writeValue(gambar);
         dest.writeValue(name);
         dest.writeValue(codeProduct);
+        dest.writeValue(barcodeProduct);
         dest.writeValue(qtyStok);
         dest.writeValue(qty);
         dest.writeValue(price);

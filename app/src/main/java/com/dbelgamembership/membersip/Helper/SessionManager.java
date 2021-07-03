@@ -23,6 +23,7 @@ public class SessionManager {
     public static final String KEY_IMAGE = "urlImage";
     public static final String KEY_MEMBERSHIP = "membership";
     public static final String KEY_EXPDATE = "expired";
+    public static final String KEY_EXPOTP = "expOTP";
     public static final String KEY_ROLE = "role";
     public static final String KEY_TOKEN_GCM = "token_gcm";
     private static final String KEY_ID_USER = "key";
@@ -61,26 +62,14 @@ public class SessionManager {
         Log.d(TAG, "User login session modified!");
     }
 
-    public void setRegister(boolean isLoggedIn, String pid, String name, String email, String membership, String expDate) {
+    public void setRegister(boolean isLoggedIn, String pid, String name, String email, String membership, String expired) {
 
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
-        editor.putString(KEY_EXPDATE, expDate);
-        // commit changes
-        editor.apply();
-
-        Log.d(TAG, "User login session modified!");
-    }
-
-    public void setLoginVendor(boolean isLoggedIn, String pid, String name, int memberoid) {
-
-        editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
-        editor.putString(KEY_PID, pid);
-        editor.putString(KEY_NAME, name);
-        editor.putString(KEY_MEMBERID, String.valueOf(memberoid));
+        editor.putString(KEY_EXPDATE, expired);
         // commit changes
         editor.apply();
 
@@ -105,6 +94,12 @@ public class SessionManager {
 
     public void setExpiredDate(String expiredDate) {
         editor.putString(KEY_EXPDATE, expiredDate);
+        editor.commit();
+    }
+
+
+    public void setKeyExpotp(String expiredOTP) {
+        editor.putString(KEY_EXPOTP, expiredOTP);
         editor.commit();
     }
 
@@ -179,13 +174,16 @@ public class SessionManager {
         return pref.getString(KEY_EXPDATE, "null");
     }
 
+    public String getKeyExpotp() {
+        return pref.getString(KEY_EXPOTP, "null");
+    }
+
     public String getKeyMemberid() {
         return pref.getString(KEY_MEMBERID, "null");
     }
 
+
     public void destroySession() {
-
-
         editor.putString(KEY_PID, "");
         editor.putString(KEY_NAME, "");
         editor.putBoolean(IS_LOGGEDIN, false);
@@ -200,6 +198,7 @@ public class SessionManager {
         editor.putString(KEY_USERID, "");
         editor.putString(KEY_BANNER, "true");
         editor.putString(KEY_MEMBERID, "");
+        editor.putString(KEY_EXPOTP, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");

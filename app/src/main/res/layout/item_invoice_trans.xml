@@ -13,10 +13,22 @@
 
         <TextView
             android:id="@+id/tvNama"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bearing grobak pasir"
             android:textColor="#000" />
+
+        <TextView
+            android:gravity="center_vertical"
+            android:textSize="12sp"
+            android:layout_toRightOf="@id/tvNama"
+            android:id="@+id/tvKeterangan"
+            android:textAlignment="viewEnd"
+            android:layout_width="match_parent"
+            android:layout_height="18sp"
+            android:text="Bearing grobak pasir"
+            android:textColor="#000" />
+
 
     </RelativeLayout>
 

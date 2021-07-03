@@ -2,11 +2,13 @@
 package com.dbelgamembership.membersip.Model.ModelUser;
 
 import java.io.Serializable;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class MsgServer implements Serializable, Parcelable
 {
@@ -170,13 +172,28 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("expired_date")
     @Expose
     private String expiredDate;
-    public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
+    @SerializedName("otp")
+    @Expose
+    private String otp;
+    @SerializedName("exp_otp")
+    @Expose
+    private String expOtp;
+    @SerializedName("email_verification")
+    @Expose
+    private boolean emailVerification;
+    @SerializedName("sisa_credit_limit")
+    @Expose
+    private int sisaCreditLimit;
+    @SerializedName("grand_total_so")
+    @Expose
+    private int grandTotalSo;
+    public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public MsgServer createFromParcel(Parcel in) {
+        public MsgServer createFromParcel(android.os.Parcel in) {
             return new MsgServer(in);
         }
 
@@ -186,9 +203,9 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 7641663098431817067L;
+    private final static long serialVersionUID = 7502253461508041396L;
 
-    protected MsgServer(Parcel in) {
+    protected MsgServer(android.os.Parcel in) {
         this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
@@ -242,6 +259,11 @@ public class MsgServer implements Serializable, Parcelable
         this.poin = ((int) in.readValue((int.class.getClassLoader())));
         this.codeRefferal = ((String) in.readValue((String.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.otp = ((String) in.readValue((String.class.getClassLoader())));
+        this.expOtp = ((String) in.readValue((String.class.getClassLoader())));
+        this.emailVerification = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.sisaCreditLimit = ((int) in.readValue((int.class.getClassLoader())));
+        this.grandTotalSo = ((int) in.readValue((int.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -936,7 +958,72 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public MsgServer withOtp(String otp) {
+        this.otp = otp;
+        return this;
+    }
+
+    public String getExpOtp() {
+        return expOtp;
+    }
+
+    public void setExpOtp(String expOtp) {
+        this.expOtp = expOtp;
+    }
+
+    public MsgServer withExpOtp(String expOtp) {
+        this.expOtp = expOtp;
+        return this;
+    }
+
+    public boolean isEmailVerification() {
+        return emailVerification;
+    }
+
+    public void setEmailVerification(boolean emailVerification) {
+        this.emailVerification = emailVerification;
+    }
+
+    public MsgServer withEmailVerification(boolean emailVerification) {
+        this.emailVerification = emailVerification;
+        return this;
+    }
+
+    public int getSisaCreditLimit() {
+        return sisaCreditLimit;
+    }
+
+    public void setSisaCreditLimit(int sisaCreditLimit) {
+        this.sisaCreditLimit = sisaCreditLimit;
+    }
+
+    public MsgServer withSisaCreditLimit(int sisaCreditLimit) {
+        this.sisaCreditLimit = sisaCreditLimit;
+        return this;
+    }
+
+    public int getGrandTotalSo() {
+        return grandTotalSo;
+    }
+
+    public void setGrandTotalSo(int grandTotalSo) {
+        this.grandTotalSo = grandTotalSo;
+    }
+
+    public MsgServer withGrandTotalSo(int grandTotalSo) {
+        this.grandTotalSo = grandTotalSo;
+        return this;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
         dest.writeValue(code);
@@ -990,6 +1077,11 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(poin);
         dest.writeValue(codeRefferal);
         dest.writeValue(expiredDate);
+        dest.writeValue(otp);
+        dest.writeValue(expOtp);
+        dest.writeValue(emailVerification);
+        dest.writeValue(sisaCreditLimit);
+        dest.writeValue(grandTotalSo);
     }
 
     public int describeContents() {

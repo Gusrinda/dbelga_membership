@@ -39,9 +39,9 @@ import com.dbelgamembership.membersip.Model.ModelSearchVoucher.ModelSearchVouche
 import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
-import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.Datum;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaksi;
+import com.dbelgamembership.membersip.databinding.ActivityAkunSayaBinding;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
@@ -81,10 +81,14 @@ public class AkunSaya extends AppCompatActivity {
     private long totalPenggunaanLimit = 0;
     private long limitSisa = 0;
 
+    private ActivityAkunSayaBinding akunSayaBinding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_akun_saya);
+        akunSayaBinding = ActivityAkunSayaBinding.inflate(getLayoutInflater());
+        View view = akunSayaBinding.getRoot();
+        setContentView(view);
 
         sessionManager = new SessionManager(this);
         findID();
@@ -149,6 +153,15 @@ public class AkunSaya extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        akunSayaBinding.plafonDebet.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AkunSaya.this, LimitPlafon.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -174,50 +187,35 @@ public class AkunSaya extends AppCompatActivity {
                         dialog1.dismiss();
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
-                            try {
-                                Gson gson = new Gson();
-                                ModelUser modelListTransaction = gson.fromJson(String.valueOf(response), ModelUser.class);
-                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListTransaction.getMsgServer();
+                            Gson gson = new Gson();
+                            ModelUser modelListTransaction = gson.fromJson(String.valueOf(response), ModelUser.class);
+                            com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListTransaction.getMsgServer().get(0);
 
-                                if (dataUser.getCreditLimit() == null || dataUser.getCreditLimit().equals("0")) {
-                                    limitAwal = 0;
-                                } else {
-                                    limitAwal = Long.parseLong(dataUser.getCreditLimit());
-                                }
-                                JSONObject jsonObject = response.getJSONObject("msgServer");
-                                limitPlafon = jsonObject.getString("credit_limit").replace("null", "");
-                                sisaPlafon = jsonObject.getString("credit_limit_remain").replace("null", "");
-                                piutangBelanja = jsonObject.getString("saldo_piutang").replace("null", "");
-
-                                poinMember = jsonObject.getInt("poin");
-
-                                if (limitPlafon.equals("")){
-                                    limitPlafon = "0";
-                                }
-                                if (sisaPlafon.equals("")) {
-                                    sisaPlafon = "0";
-                                }
-                                if (piutangBelanja.equals("")) {
-                                    piutangBelanja = "0";
-                                }
-
-                                Log.e(TAG, "limit plafon: Rp. " + nf.format(Long.parseLong(limitPlafon)));
-                                Log.e(TAG, "sisa plafon: Rp. " + nf.format(Long.parseLong(sisaPlafon)));
-                                Log.e(TAG, "piutang belanja: Rp. " + nf.format(Long.parseLong(piutangBelanja)));
-                                Log.e(TAG, "Poin Belanja : " + poinMember);
-
-                                textCreditLimit.setText("Rp. " + nf.format(Long.parseLong(limitPlafon)));
-                                textSisaLimit.setText("Rp. " + nf.format(Long.parseLong(sisaPlafon)));
-                                textPiutangBelanja.setText("Rp. " + nf.format(Long.parseLong(piutangBelanja)));
-                                textTotalPoin.setText(poinMember + " Poin");
-
-
-
-                                getSisaPlafonMember(sessionManager.getPID());
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            if (dataUser.getCreditLimit() == null || dataUser.getCreditLimit().equals("0")) {
+                                limitAwal = 0;
+                            } else {
+                                limitAwal = Long.parseLong(dataUser.getCreditLimit());
                             }
+
+                            limitPlafon = String.valueOf(limitAwal);
+                            sisaPlafon = String.valueOf(dataUser.getSisaCreditLimit());
+                            piutangBelanja = String.valueOf(dataUser.getGrandTotalSo());
+
+                            poinMember = dataUser.getPoin();
+
+
+                            Log.e(TAG, "limit plafon: Rp. " + nf.format(Long.parseLong(limitPlafon)));
+                            Log.e(TAG, "sisa plafon: Rp. " + nf.format(Long.parseLong(sisaPlafon)));
+                            Log.e(TAG, "piutang belanja: Rp. " + nf.format(Long.parseLong(piutangBelanja)));
+                            Log.e(TAG, "Poin Belanja : " + poinMember);
+
+                            textCreditLimit.setText("Rp. " + nf.format(Long.parseLong(limitPlafon)));
+                            textSisaLimit.setText("Rp. " + nf.format(Long.parseLong(sisaPlafon)));
+                            textPiutangBelanja.setText("Rp. " + nf.format(Long.parseLong(piutangBelanja)));
+                            textTotalPoin.setText(poinMember + " Poin");
+
+
+//                            getSisaPlafonMember(sessionManager.getPID());
 
                         } else {
                             Toast.makeText(AkunSaya.this, "Tidak ada response", Toast.LENGTH_LONG).show();
@@ -239,71 +237,71 @@ public class AkunSaya extends AppCompatActivity {
         mQueue.add(jsonObjectRequest);
     }
 
-    private void getSisaPlafonMember(String idMember) {
-        url = Http.server;
-        url = url + "transaction/list?customer=" + idMember;
-        Log.e(TAG, "URL Ambil Plafon : " + url);
-        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response != null) {
-                            Log.e("", "onResponse: " + response);
-                            try {
-                                if (response != null) {
-                                    Gson gson = new Gson();
-                                    ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
-                                    List<Datum> itemlist = modelListTransaction.getData();
-                                    if (itemlist.size() > 0) {
-                                        Log.e(TAG, "Nilai plafon awal :" + limitAwal);
-
-                                        Log.e(TAG, "Item transaksi awal :" + itemlist.size());
-                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
-                                            if (!itemlist.get(i).getStatus().equalsIgnoreCase("approved")) {
-                                                itemlist.remove(i);
-                                            }
-                                        }
-                                        Log.e(TAG, "Item transaksi setelah filter :" + itemlist.size());
-
-                                        Log.e(TAG, "Nilai penggunaan plafon awal :  " + totalPenggunaanLimit);
-                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
-                                            totalPenggunaanLimit += itemlist.get(i).getGrandtotal();
-                                        }
-                                        Log.e(TAG, "Nilai penggunaan plafon akhir :  " + totalPenggunaanLimit);
-
-                                        limitSisa = limitAwal - totalPenggunaanLimit;
-
-                                        Log.e(TAG, "Sisa penggunaan plafon :  " + limitSisa);
-                                    } else {
-                                        limitSisa = limitAwal;
-                                    }
-
-                                    textCreditLimit.setText("Rp. " + nf.format(limitAwal));
-                                    textSisaLimit.setText("Rp. " + nf.format(limitSisa));
-
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, "onResponse: " + e.getMessage());
-                            }
-                        } else {
-//                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-//                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        mQueue.add(jsonObjectRequest);
-    }
+//    private void getSisaPlafonMember(String idMember) {
+//        url = Http.server;
+//        url = url + "transaction/list?customer=" + idMember;
+//        Log.e(TAG, "URL Ambil Plafon : " + url);
+//        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+//                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        if (response != null) {
+//                            Log.e("", "onResponse: " + response);
+//                            try {
+//                                if (response != null) {
+//                                    Gson gson = new Gson();
+//                                    ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
+//                                    List<Datum> itemlist = modelListTransaction.getData().getData();
+//                                    if (itemlist.size() > 0) {
+//                                        Log.e(TAG, "Nilai plafon awal :" + limitAwal);
+//
+//                                        Log.e(TAG, "Item transaksi awal :" + itemlist.size());
+//                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
+//                                            if (!itemlist.get(i).getStatus().equalsIgnoreCase("approved")) {
+//                                                itemlist.remove(i);
+//                                            }
+//                                        }
+//                                        Log.e(TAG, "Item transaksi setelah filter :" + itemlist.size());
+//
+//                                        Log.e(TAG, "Nilai penggunaan plafon awal :  " + totalPenggunaanLimit);
+//                                        for (int i = itemlist.size() - 1; i >= 0; i--) {
+//                                            totalPenggunaanLimit += itemlist.get(i).getGrandtotal();
+//                                        }
+//                                        Log.e(TAG, "Nilai penggunaan plafon akhir :  " + totalPenggunaanLimit);
+//
+//                                        limitSisa = limitAwal - totalPenggunaanLimit;
+//
+//                                        Log.e(TAG, "Sisa penggunaan plafon :  " + limitSisa);
+//                                    } else {
+//                                        limitSisa = limitAwal;
+//                                    }
+//
+//                                    textCreditLimit.setText("Rp. " + nf.format(limitAwal));
+//                                    textSisaLimit.setText("Rp. " + nf.format(limitSisa));
+//
+//                                }
+//                            } catch (Exception e) {
+//                                Log.e(TAG, "onResponse: " + e.getMessage());
+//                            }
+//                        } else {
+////                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO: Handle error
+////                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//
+//        mQueue.add(jsonObjectRequest);
+//    }
 
 
     private void getDataUser() {

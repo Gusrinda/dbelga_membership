@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.modelListTransaksi;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 
 public class Datum implements Serializable, Parcelable
 {
@@ -20,6 +21,9 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("code")
     @Expose
     private String code;
+    @SerializedName("id_customer")
+    @Expose
+    private int idCustomer;
     @SerializedName("customer")
     @Expose
     private String customer;
@@ -41,6 +45,12 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("keterangan_kirim")
     @Expose
     private String keteranganKirim;
+    @SerializedName("status_pengiriman")
+    @Expose
+    private String statusPengiriman;
+    @SerializedName("catatan_pengiriman")
+    @Expose
+    private String catatanPengiriman;
     @SerializedName("nomor_customer")
     @Expose
     private String nomorCustomer;
@@ -50,6 +60,9 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("tanggal_kirim")
     @Expose
     private String tanggalKirim;
+    @SerializedName("flagKirim")
+    @Expose
+    private boolean flagKirim;
     @SerializedName("date")
     @Expose
     private String date;
@@ -59,6 +72,9 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+    @SerializedName("updated_at")
+    @Expose
+    private String updatedAt;
     @SerializedName("detail")
     @Expose
     private List<Detail> detail = new ArrayList<Detail>();
@@ -68,7 +84,7 @@ public class Datum implements Serializable, Parcelable
         @SuppressWarnings({
             "unchecked"
         })
-        public Datum createFromParcel(Parcel in) {
+        public Datum createFromParcel(android.os.Parcel in) {
             return new Datum(in);
         }
 
@@ -78,11 +94,12 @@ public class Datum implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 1158327693636236449L;
+    private final static long serialVersionUID = -6842844691805139037L;
 
-    protected Datum(Parcel in) {
+    protected Datum(android.os.Parcel in) {
         this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
+        this.idCustomer = ((int) in.readValue((int.class.getClassLoader())));
         this.customer = ((String) in.readValue((String.class.getClassLoader())));
         this.grandtotal = ((int) in.readValue((int.class.getClassLoader())));
         this.createuser = ((int) in.readValue((int.class.getClassLoader())));
@@ -90,37 +107,20 @@ public class Datum implements Serializable, Parcelable
         this.alamatCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.alamatPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         this.keteranganKirim = ((String) in.readValue((String.class.getClassLoader())));
+        this.statusPengiriman = ((String) in.readValue((String.class.getClassLoader())));
+        this.catatanPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         this.nomorCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.ongkosKirim = ((int) in.readValue((int.class.getClassLoader())));
         this.tanggalKirim = ((String) in.readValue((String.class.getClassLoader())));
+        this.flagKirim = ((boolean) in.readValue((boolean.class.getClassLoader())));
         this.date = ((String) in.readValue((String.class.getClassLoader())));
         this.status = ((String) in.readValue((String.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
+        this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.detail, (com.dbelgamembership.membersip.Model.modelListTransaksi.Detail.class.getClassLoader()));
     }
 
     public Datum() {
-    }
-
-
-    public Datum(int id, String code, String customer, int grandtotal, int createuser, String identitasCustomer, String alamatCustomer, String alamatPengiriman, String nomorCustomer, int ongkosKirim, String tanggalKirim, String date, String status, String createdAt, List<Detail> detail) {
-        super();
-        this.id = id;
-        this.code = code;
-        this.customer = customer;
-        this.grandtotal = grandtotal;
-        this.createuser = createuser;
-        this.identitasCustomer = identitasCustomer;
-        this.alamatCustomer = alamatCustomer;
-        this.alamatPengiriman = alamatPengiriman;
-        this.keteranganKirim = keteranganKirim;
-        this.nomorCustomer = nomorCustomer;
-        this.ongkosKirim = ongkosKirim;
-        this.tanggalKirim = tanggalKirim;
-        this.date = date;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.detail = detail;
     }
 
     public int getId() {
@@ -146,6 +146,19 @@ public class Datum implements Serializable, Parcelable
 
     public Datum withCode(String code) {
         this.code = code;
+        return this;
+    }
+
+    public int getIdCustomer() {
+        return idCustomer;
+    }
+
+    public void setIdCustomer(int idCustomer) {
+        this.idCustomer = idCustomer;
+    }
+
+    public Datum withIdCustomer(int idCustomer) {
+        this.idCustomer = idCustomer;
         return this;
     }
 
@@ -240,6 +253,32 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
+    public String getStatusPengiriman() {
+        return statusPengiriman;
+    }
+
+    public void setStatusPengiriman(String statusPengiriman) {
+        this.statusPengiriman = statusPengiriman;
+    }
+
+    public Datum withStatusPengiriman(String statusPengiriman) {
+        this.statusPengiriman = statusPengiriman;
+        return this;
+    }
+
+    public String getCatatanPengiriman() {
+        return catatanPengiriman;
+    }
+
+    public void setCatatanPengiriman(String catatanPengiriman) {
+        this.catatanPengiriman = catatanPengiriman;
+    }
+
+    public Datum withCatatanPengiriman(String catatanPengiriman) {
+        this.catatanPengiriman = catatanPengiriman;
+        return this;
+    }
+
     public String getNomorCustomer() {
         return nomorCustomer;
     }
@@ -276,6 +315,19 @@ public class Datum implements Serializable, Parcelable
 
     public Datum withTanggalKirim(String tanggalKirim) {
         this.tanggalKirim = tanggalKirim;
+        return this;
+    }
+
+    public boolean isFlagKirim() {
+        return flagKirim;
+    }
+
+    public void setFlagKirim(boolean flagKirim) {
+        this.flagKirim = flagKirim;
+    }
+
+    public Datum withFlagKirim(boolean flagKirim) {
+        this.flagKirim = flagKirim;
         return this;
     }
 
@@ -318,6 +370,19 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public Datum withUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
     public List<Detail> getDetail() {
         return detail;
     }
@@ -331,9 +396,10 @@ public class Datum implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(code);
+        dest.writeValue(idCustomer);
         dest.writeValue(customer);
         dest.writeValue(grandtotal);
         dest.writeValue(createuser);
@@ -341,12 +407,16 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(alamatCustomer);
         dest.writeValue(alamatPengiriman);
         dest.writeValue(keteranganKirim);
+        dest.writeValue(statusPengiriman);
+        dest.writeValue(catatanPengiriman);
         dest.writeValue(nomorCustomer);
         dest.writeValue(ongkosKirim);
         dest.writeValue(tanggalKirim);
+        dest.writeValue(flagKirim);
         dest.writeValue(date);
         dest.writeValue(status);
         dest.writeValue(createdAt);
+        dest.writeValue(updatedAt);
         dest.writeList(detail);
     }
 

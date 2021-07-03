@@ -4,6 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -39,10 +41,17 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ModelUser.MsgServer;
+import com.developer.kalert.KAlertDialog;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.theartofdev.edmodo.cropper.CropImage;
@@ -60,8 +69,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 
 import cn.iwgang.countdownview.CountdownView;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class KonfirmasiMembership extends AppCompatActivity {
 
@@ -87,6 +99,72 @@ public class KonfirmasiMembership extends AppCompatActivity {
 
     private Bitmap bitmap;
     Boolean checkImage;
+
+    int loop = 0;
+
+    Handler handler = new Handler();
+
+    Runnable myRunnable = new Runnable() {
+        public void run() {
+            // do something
+            //call function
+            loop++;
+            cekUserLoop();
+            Log.e(TAG, "run: " + loop);
+            handler.postDelayed(this, 10000);
+        }
+    };
+
+    private void cekUserLoop() {
+        String url = Http.server + "search-customer/" + sessionManager.getPID();
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelUser> callUser = apiInterface.doLoopCustomer(url);
+        callUser.enqueue(new Callback<ModelUser>() {
+            @Override
+            public void onResponse(Call<ModelUser> call, retrofit2.Response<ModelUser> response) {
+                ModelUser object = response.body();
+
+                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getName() );
+                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getStatusPayment() );
+
+
+                boolean status_pay = Boolean.parseBoolean(object.getMsgServer().get(0).getStatusPayment());
+                if (status_pay) {
+                    Toast.makeText(KonfirmasiMembership.this, "Selamat bergabung menjadi member debet dbelga !", Toast.LENGTH_LONG).show();
+                    finish();
+                    Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
+                    startActivity(intent);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelUser> call, Throwable t) {
+
+            }
+        });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy: DESTROY" );
+        handler.removeCallbacks(myRunnable);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.e(TAG, "onDestroy: PAUSE" );
+        handler.removeCallbacks(myRunnable);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: RESUME" );
+        handler.postDelayed(myRunnable, 2000);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +194,13 @@ public class KonfirmasiMembership extends AppCompatActivity {
         btnUploadFoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                OpenGallery();
+                ImagePicker.Companion.with(KonfirmasiMembership.this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .start();
+
+//                OpenGallery();
             }
         });
 
@@ -132,7 +216,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
 
                 Log.e(TAG, "checkImage setelah kode : " + checkImage);
 
-                if (checkImage == false) {
+                if (!checkImage) {
                     Log.e(TAG, "onClick: " + sessionManager.getPID());
                     Toast.makeText(KonfirmasiMembership.this, "Pastikan anda memilih foto bukti transaksi terlebih dahulu !", Toast.LENGTH_SHORT).show();
                 } else {
@@ -205,23 +289,22 @@ public class KonfirmasiMembership extends AppCompatActivity {
                         dialog1.dismiss();
                         if (response != null) {
                             Log.e("", "onResponse: " + response);
-                            try {
-                                JSONObject jsonObject = response.getJSONObject("msgServer");
-                                image = jsonObject.optString("image_pay").replace("null", "");
-                                Log.e(TAG, "checkPembayaran: " + image);
+                            Gson gson = new Gson();
+                            ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
+                            MsgServer dataMember = modelMember.getMsgServer().get(0);
 
-                                if (!image.equals("")) {
-                                    infoTransfer.setVisibility(View.GONE);
-                                    infoBukti.setVisibility(View.GONE);
-                                    uploadFoto.setVisibility(View.GONE);
-                                    btnKonfirmasi.setVisibility(View.GONE);
-                                    btnHubungi.setVisibility(View.VISIBLE);
-                                    infoHubungi.setVisibility(View.VISIBLE);
-                                }
+                            image = dataMember.getImagePay().equals("null") ? "" : dataMember.getImagePay();
+                            Log.e(TAG, "checkPembayaran: " + image);
 
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            if (!image.equals("")) {
+                                infoTransfer.setVisibility(View.GONE);
+                                infoBukti.setVisibility(View.GONE);
+                                uploadFoto.setVisibility(View.GONE);
+                                btnKonfirmasi.setVisibility(View.GONE);
+                                btnHubungi.setVisibility(View.VISIBLE);
+                                infoHubungi.setVisibility(View.VISIBLE);
                             }
+
                         } else {
                             Toast.makeText(KonfirmasiMembership.this, "Tidak ada response", Toast.LENGTH_LONG).show();
                         }
@@ -259,11 +342,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             type = "post";
                             JSONObject postData = new JSONObject();
                             Log.e(TAG, "choosenMember : " + choosenMembership);
-//                            final Calendar baru = Calendar.getInstance();
-//                            baru.add(Calendar.DATE, 1);
-//                            Date deadlineBayar = baru.getTime();
-//                            String deadlen = formatter.format(deadlineBayar);
-
                             choosenMembership = "REGULER";
 
                             try {
@@ -422,7 +500,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
         return app_installed;
     }
 
-
     private void getCountDown() {
 
         try {
@@ -437,10 +514,59 @@ public class KonfirmasiMembership extends AppCompatActivity {
 
             if (count >= 0) {
                 countdownView.start(count);
+                countdownView.setOnCountdownEndListener(new CountdownView.OnCountdownEndListener() {
+                    @Override
+                    public void onEnd(CountdownView cv) {
+                        url = Http.server;
+                        url = url + "update-status/" + sessionManager.getPID();
+                        type = "post";
+                        JSONObject postData = new JSONObject();
+                        Log.e(TAG, "choosenMember : " + choosenMembership);
+                        choosenMembership = "REGULER";
+
+                        try {
+                            postData.put("status_member", choosenMembership);
+                            postData.put("pay_date", "");
+                        } catch (Exception e) {
+                            e.getMessage();
+                        }
+                        if (isOnline()) {
+                            Log.e(TAG, "URL : " + url);
+                            SimpanPost(postData);
+                        }
+                    }
+                });
+            } else {
+                Timer timer = new Timer();
+                final long DELAY = 2000; // milliseconds
+                androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(KonfirmasiMembership.this).create();
+                alertDialog.setTitle("PERHATIAN");
+                alertDialog.setMessage("Akun anda melebihi batas waktu untuk proses verifikasi membership DEBET, akun anda akan dialihkan menjadi akun REGULER.\nanda dapat mengubah kembali menjadi member debet dalam pengaturan akun aplikasi");
+                alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                url = Http.server;
+                                url = url + "update-status/" + sessionManager.getPID();
+                                type = "post";
+                                JSONObject postData = new JSONObject();
+                                Log.e(TAG, "choosenMember : " + choosenMembership);
+                                choosenMembership = "REGULER";
+
+                                try {
+                                    postData.put("status_member", choosenMembership);
+                                    postData.put("pay_date", "");
+                                } catch (Exception e) {
+                                    e.getMessage();
+                                }
+                                if (isOnline()) {
+                                    Log.e(TAG, "URL : " + url);
+                                    SimpanPost(postData);
+                                }
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
-//            else {
-//
-//            }
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -467,74 +593,45 @@ public class KonfirmasiMembership extends AppCompatActivity {
 
     }
 
-    private void OpenGallery() {
-//        Intent galleryIntent = new Intent();
-//        galleryIntent.setAction(Intent.ACTION_GET_CONTENT);
-//        galleryIntent.setType("image/*");
-//        startActivityForResult(galleryIntent, GalleryPick);
-        CropImage.activity(ImageUri)
-                .setAspectRatio(1, 1)
-                .start(KonfirmasiMembership.this);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            checkUbah = true;
-            ImageUri = result.getUri();
+        if (resultCode == Activity.RESULT_OK) {
+            Log.e("TAG", "Path:" + ImagePicker.Companion.getFilePath(data));
+            Uri uri = data.getData();
+            ImageUri = uri;
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-//            imagePengguna.setImageURI(ImageUri);
+
             fotoProduk.setImageURI(ImageUri);
             infoTransfer.setVisibility(View.GONE);
             infoBukti.setVisibility(View.VISIBLE);
             checkImage = true;
+        } else if (resultCode == ImagePicker.RESULT_ERROR) {
+            Toast.makeText(this, ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "ERROR : Try Again !", Toast.LENGTH_SHORT).show();
-//            finish();
-//            startActivity(new Intent(KonfirmasiMembership.this, KonfirmasiMembership.class));
+            Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
         }
 
-//        if (requestCode == GalleryPick && resultCode == RESULT_OK && data != null) {
-//            ImageUri = data.getData();
-//            try {
-//                bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
-//                fotoProduk.setImageURI(ImageUri);
-//                infoTransfer.setVisibility(View.GONE);
-//                infoBukti.setVisibility(View.VISIBLE);
-//                checkImage = true;
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        }
     }
 
     private void accessWebService() {
-//        x = imageToString(bitmap);
-//        int maxLogStringSize = x.length();
-//        for (int i = 0; i <= x.length() / maxLogStringSize; i++) {
-//            int start = i * maxLogStringSize;
-//            int end = (i + 1) * maxLogStringSize;
-//            end = end > x.length() ? x.length() : end;
-//            Log.e(TAG, x.substring(start, end));
-//        }
-//        save();
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(KonfirmasiMembership.this);
-        builder1.setTitle("Konfirmasi");
-        builder1.setMessage("Kirim bukti konfirmasi pembayaran ?");
-        builder1.setCancelable(false);
-        builder1.setPositiveButton(
-                "Ya",
-                new DialogInterface.OnClickListener() {
-                    @SuppressLint("NewApi")
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
+
+        new KAlertDialog(KonfirmasiMembership.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Konfirmasi")
+                .setContentText("Kirim bukti konfirmasi pembayaran ?")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.biruBelga, KonfirmasiMembership.this)
+                .cancelButtonColor(R.color.grey_font, KonfirmasiMembership.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
+                        sDialog.dismiss();
                         if (isOnline()) {
                             url = Http.server;
                             url = url + "upload-payment/" + sessionManager.getPID();
@@ -572,25 +669,16 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             Snack("Cek Koneksi Internet Anda");
                         }
                     }
-                });
-
-        builder1.setNegativeButton(
-                "Tidak",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
                     }
-                });
+                })
+                .show();
 
-        final AlertDialog alert11 = builder1.create();
-        alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface dialogInterface) {
-                alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-            }
-        });
-        alert11.show();
     }
 
     public void save() {
@@ -599,8 +687,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
         try {
             fos = openFileOutput(FILE_NAME, MODE_PRIVATE);
             fos.write(x.getBytes());
-//            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + FILE_NAME,
-//                    Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -652,7 +738,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
                                     Log.e(TAG, "status payment: " + statusPAY);
-                                    if (statusPAY.equals("TRUE") ) {
+                                    if (statusPAY.equals("TRUE")) {
                                         Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
                                         startActivity(intent);
                                         finish();

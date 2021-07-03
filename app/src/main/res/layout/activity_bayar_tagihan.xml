@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Presentation.Limit.BayarTagihan">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/biruBelga"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp"
+        tools:ignore="MissingConstraints">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                app:elevation="0dp"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/biruBelga"
+                app:title="Pembayaran Tagihan"
+                tools:ignore="HardcodedText">
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layoutInfo"
+            android:layout_alignParentTop="true"
+            android:paddingHorizontal="16sp"
+            android:background="@color/mdtp_white"
+            android:layout_width="match_parent"
+            android:layout_height="256dp">
+
+            <ImageView
+                android:layout_marginTop="48dp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/img"
+                android:src="@drawable/pay"
+                android:layout_width="86dp"
+                android:layout_height="86dp"/>
+
+            <TextView
+                android:id="@+id/txt_totalTagihan"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="16sp"
+                android:layout_below="@id/img"
+                android:textStyle="bold"
+                android:textSize="28dp"
+                android:text="Rp. 300.000"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/txt_statusTagihan"
+                android:layout_centerInParent="true"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_totalTagihan"
+                android:layout_marginTop="8dp"
+                android:text="Tagihan Anda . . . . . . " />
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginHorizontal="16sp"
+            tools:listitem="@layout/item_riwayat_sub"
+            android:layout_below="@+id/layoutInfo"
+            android:layout_above="@id/btn_BayarTagihan"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:textAllCaps="false"
+            android:text="Lunasi Tagihan Limit"
+            android:background="@color/merahBelga"
+            android:textColor="@color/white"
+            android:layout_marginHorizontal="16sp"
+            android:id="@+id/btn_BayarTagihan"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

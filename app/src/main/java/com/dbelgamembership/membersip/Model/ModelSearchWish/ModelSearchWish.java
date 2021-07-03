@@ -4,11 +4,13 @@ package com.dbelgamembership.membersip.Model.ModelSearchWish;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import android.os.Parcel;
+
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 
 public class ModelSearchWish implements Serializable, Parcelable
 {
@@ -25,13 +27,13 @@ public class ModelSearchWish implements Serializable, Parcelable
     @SerializedName("description")
     @Expose
     private String description;
-    public final static Parcelable.Creator<ModelSearchWish> CREATOR = new Creator<ModelSearchWish>() {
+    public final static Creator<ModelSearchWish> CREATOR = new Creator<ModelSearchWish>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelSearchWish createFromParcel(Parcel in) {
+        public ModelSearchWish createFromParcel(android.os.Parcel in) {
             return new ModelSearchWish(in);
         }
 
@@ -41,11 +43,11 @@ public class ModelSearchWish implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -1782019383436851562L;
+    private final static long serialVersionUID = 718329249406137146L;
 
-    protected ModelSearchWish(Parcel in) {
+    protected ModelSearchWish(android.os.Parcel in) {
         this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        in.readList(this.msgServer, ( com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer.class.getClassLoader()));
+        in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer.class.getClassLoader()));
         this.code = ((int) in.readValue((int.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
     }
@@ -105,7 +107,7 @@ public class ModelSearchWish implements Serializable, Parcelable
         return this;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(success);
         dest.writeList(msgServer);
         dest.writeValue(code);

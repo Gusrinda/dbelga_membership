@@ -85,7 +85,6 @@ import java.util.TimerTask;
 
 import static com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragment.filter;
 
-
 public class KatalogActivity extends AppCompatActivity implements AdapterListBarang.AdapterListBarangCallback {
 
     SessionManager sessionManager;
@@ -240,7 +239,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
             }
 
-
         });
 
         btnCari.setOnClickListener(new View.OnClickListener() {
@@ -344,7 +342,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                 }
             }
         });
-
     }
 
     private void getDataUser() {
@@ -399,7 +396,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                                     totalWishlist.setText("0");
                                 }
                             }
-
 
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: Error " + e);
@@ -541,7 +537,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         url = Http.server;
         swipeRefreshLayout.setRefreshing(false);
 
-
         if (isFilter) {
 
             try {
@@ -575,7 +570,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                     ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
                     List<Datum> modelItem = modelListItem.getMsgServer().getData();
                     if (modelListItem.getMsgServer().getCurrentPage() <= modelListItem.getMsgServer().getLastPage()) {
-//                        urlNextPage = String.valueOf(modelListItem.getMsgServer().getNextPageUrl());
+
                         if (modelListItem.getMsgServer().getNextPageUrl() != null) {
                             if (isFilter) {
                                 urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8")
