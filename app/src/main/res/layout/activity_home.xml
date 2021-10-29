@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    tools:context=".Screen.HomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,13 +16,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <ImageView
-            android:src="@drawable/belanja"
-            android:scaleType="fitXY"
-            android:alpha="0.1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="MissingConstraints" />
+<!--        <ImageView-->
+<!--            android:src="@drawable/belanja"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:alpha="0.1"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            tools:ignore="ContentDescription,MissingConstraints" />-->
 
         <ImageView
             android:id="@+id/logoBelga"

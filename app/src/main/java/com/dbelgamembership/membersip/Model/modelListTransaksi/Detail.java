@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.modelListTransaksi;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class Detail implements Serializable, Parcelable
 {
 
@@ -42,7 +43,7 @@ public class Detail implements Serializable, Parcelable
     private String totalDiskon;
     @SerializedName("total_setelah_diskon")
     @Expose
-    private int totalSetelahDiskon;
+    private String totalSetelahDiskon;
     @SerializedName("qty_outlet")
     @Expose
     private String qtyOutlet;
@@ -51,13 +52,16 @@ public class Detail implements Serializable, Parcelable
     private String qtyStore;
     @SerializedName("indent")
     @Expose
-    private String indent;
+    private Boolean indent;
     @SerializedName("indent_value")
     @Expose
-    private int indentValue;
+    private Integer indentValue;
     @SerializedName("so_code")
     @Expose
     private String soCode;
+    @SerializedName("potongan_diskon")
+    @Expose
+    private String potonganDiskon;
     public final static Creator<Detail> CREATOR = new Creator<Detail>() {
 
 
@@ -74,7 +78,7 @@ public class Detail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -4802241172845882753L;
+    private final static long serialVersionUID = 4207253769792826173L;
 
     protected Detail(android.os.Parcel in) {
         this.orderId = ((String) in.readValue((String.class.getClassLoader())));
@@ -86,12 +90,13 @@ public class Detail implements Serializable, Parcelable
         this.persentaseDiskon = ((String) in.readValue((String.class.getClassLoader())));
         this.total = ((String) in.readValue((String.class.getClassLoader())));
         this.totalDiskon = ((String) in.readValue((String.class.getClassLoader())));
-        this.totalSetelahDiskon = ((int) in.readValue((int.class.getClassLoader())));
+        this.totalSetelahDiskon = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyOutlet = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyStore = ((String) in.readValue((String.class.getClassLoader())));
-        this.indent = ((String) in.readValue((String.class.getClassLoader())));
-        this.indentValue = ((int) in.readValue((int.class.getClassLoader())));
+        this.indent = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.indentValue = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.potonganDiskon = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Detail() {
@@ -105,22 +110,12 @@ public class Detail implements Serializable, Parcelable
         this.orderId = orderId;
     }
 
-    public Detail withOrderId(String orderId) {
-        this.orderId = orderId;
-        return this;
-    }
-
     public String getCodeProduct() {
         return codeProduct;
     }
 
     public void setCodeProduct(String codeProduct) {
         this.codeProduct = codeProduct;
-    }
-
-    public Detail withCodeProduct(String codeProduct) {
-        this.codeProduct = codeProduct;
-        return this;
     }
 
     public String getName() {
@@ -131,22 +126,12 @@ public class Detail implements Serializable, Parcelable
         this.name = name;
     }
 
-    public Detail withName(String name) {
-        this.name = name;
-        return this;
-    }
-
     public String getImages() {
         return images;
     }
 
     public void setImages(String images) {
         this.images = images;
-    }
-
-    public Detail withImages(String images) {
-        this.images = images;
-        return this;
     }
 
     public String getPrice() {
@@ -157,22 +142,12 @@ public class Detail implements Serializable, Parcelable
         this.price = price;
     }
 
-    public Detail withPrice(String price) {
-        this.price = price;
-        return this;
-    }
-
     public String getRealPrice() {
         return realPrice;
     }
 
     public void setRealPrice(String realPrice) {
         this.realPrice = realPrice;
-    }
-
-    public Detail withRealPrice(String realPrice) {
-        this.realPrice = realPrice;
-        return this;
     }
 
     public String getPersentaseDiskon() {
@@ -183,22 +158,12 @@ public class Detail implements Serializable, Parcelable
         this.persentaseDiskon = persentaseDiskon;
     }
 
-    public Detail withPersentaseDiskon(String persentaseDiskon) {
-        this.persentaseDiskon = persentaseDiskon;
-        return this;
-    }
-
     public String getTotal() {
         return total;
     }
 
     public void setTotal(String total) {
         this.total = total;
-    }
-
-    public Detail withTotal(String total) {
-        this.total = total;
-        return this;
     }
 
     public String getTotalDiskon() {
@@ -209,22 +174,12 @@ public class Detail implements Serializable, Parcelable
         this.totalDiskon = totalDiskon;
     }
 
-    public Detail withTotalDiskon(String totalDiskon) {
-        this.totalDiskon = totalDiskon;
-        return this;
-    }
-
-    public int getTotalSetelahDiskon() {
+    public String getTotalSetelahDiskon() {
         return totalSetelahDiskon;
     }
 
-    public void setTotalSetelahDiskon(int totalSetelahDiskon) {
+    public void setTotalSetelahDiskon(String totalSetelahDiskon) {
         this.totalSetelahDiskon = totalSetelahDiskon;
-    }
-
-    public Detail withTotalSetelahDiskon(int totalSetelahDiskon) {
-        this.totalSetelahDiskon = totalSetelahDiskon;
-        return this;
     }
 
     public String getQtyOutlet() {
@@ -235,11 +190,6 @@ public class Detail implements Serializable, Parcelable
         this.qtyOutlet = qtyOutlet;
     }
 
-    public Detail withQtyOutlet(String qtyOutlet) {
-        this.qtyOutlet = qtyOutlet;
-        return this;
-    }
-
     public String getQtyStore() {
         return qtyStore;
     }
@@ -248,35 +198,20 @@ public class Detail implements Serializable, Parcelable
         this.qtyStore = qtyStore;
     }
 
-    public Detail withQtyStore(String qtyStore) {
-        this.qtyStore = qtyStore;
-        return this;
-    }
-
-    public String getIndent() {
+    public Boolean getIndent() {
         return indent;
     }
 
-    public void setIndent(String indent) {
+    public void setIndent(Boolean indent) {
         this.indent = indent;
     }
 
-    public Detail withIndent(String indent) {
-        this.indent = indent;
-        return this;
-    }
-
-    public int getIndentValue() {
+    public Integer getIndentValue() {
         return indentValue;
     }
 
-    public void setIndentValue(int indentValue) {
+    public void setIndentValue(Integer indentValue) {
         this.indentValue = indentValue;
-    }
-
-    public Detail withIndentValue(int indentValue) {
-        this.indentValue = indentValue;
-        return this;
     }
 
     public String getSoCode() {
@@ -287,9 +222,12 @@ public class Detail implements Serializable, Parcelable
         this.soCode = soCode;
     }
 
-    public Detail withSoCode(String soCode) {
-        this.soCode = soCode;
-        return this;
+    public String getPotonganDiskon() {
+        return potonganDiskon;
+    }
+
+    public void setPotonganDiskon(String potonganDiskon) {
+        this.potonganDiskon = potonganDiskon;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -308,6 +246,7 @@ public class Detail implements Serializable, Parcelable
         dest.writeValue(indent);
         dest.writeValue(indentValue);
         dest.writeValue(soCode);
+        dest.writeValue(potonganDiskon);
     }
 
     public int describeContents() {

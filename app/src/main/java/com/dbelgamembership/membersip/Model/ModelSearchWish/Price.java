@@ -2,14 +2,14 @@
 package com.dbelgamembership.membersip.Model.ModelSearchWish;
 
 import java.io.Serializable;
-
+import javax.annotation.Generated;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
+@Generated("jsonschema2pojo")
 public class Price implements Serializable, Parcelable
 {
 
@@ -22,7 +22,17 @@ public class Price implements Serializable, Parcelable
     @SerializedName("harga_tiga")
     @Expose
     private String hargaTiga;
+    @SerializedName("qty_harga_1")
+    @Expose
+    private Integer qtyHarga1;
+    @SerializedName("qty_harga_2")
+    @Expose
+    private Integer qtyHarga2;
+    @SerializedName("qty_harga_3")
+    @Expose
+    private Integer qtyHarga3;
     public final static Creator<Price> CREATOR = new Creator<Price>() {
+
 
         @SuppressWarnings({
             "unchecked"
@@ -35,14 +45,17 @@ public class Price implements Serializable, Parcelable
             return (new Price[size]);
         }
 
-    };
-
-    private final static long serialVersionUID = 2982295650761907249L;
+    }
+    ;
+    private final static long serialVersionUID = 2302770438708517198L;
 
     protected Price(android.os.Parcel in) {
         this.harga = ((String) in.readValue((String.class.getClassLoader())));
         this.hargaDua = ((String) in.readValue((String.class.getClassLoader())));
         this.hargaTiga = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyHarga1 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga2 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga3 = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public Price() {
@@ -56,22 +69,12 @@ public class Price implements Serializable, Parcelable
         this.harga = harga;
     }
 
-    public Price withHarga(String harga) {
-        this.harga = harga;
-        return this;
-    }
-
     public String getHargaDua() {
         return hargaDua;
     }
 
     public void setHargaDua(String hargaDua) {
         this.hargaDua = hargaDua;
-    }
-
-    public Price withHargaDua(String hargaDua) {
-        this.hargaDua = hargaDua;
-        return this;
     }
 
     public String getHargaTiga() {
@@ -82,15 +85,37 @@ public class Price implements Serializable, Parcelable
         this.hargaTiga = hargaTiga;
     }
 
-    public Price withHargaTiga(String hargaTiga) {
-        this.hargaTiga = hargaTiga;
-        return this;
+    public Integer getQtyHarga1() {
+        return qtyHarga1;
+    }
+
+    public void setQtyHarga1(Integer qtyHarga1) {
+        this.qtyHarga1 = qtyHarga1;
+    }
+
+    public Integer getQtyHarga2() {
+        return qtyHarga2;
+    }
+
+    public void setQtyHarga2(Integer qtyHarga2) {
+        this.qtyHarga2 = qtyHarga2;
+    }
+
+    public Integer getQtyHarga3() {
+        return qtyHarga3;
+    }
+
+    public void setQtyHarga3(Integer qtyHarga3) {
+        this.qtyHarga3 = qtyHarga3;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(harga);
         dest.writeValue(hargaDua);
         dest.writeValue(hargaTiga);
+        dest.writeValue(qtyHarga1);
+        dest.writeValue(qtyHarga2);
+        dest.writeValue(qtyHarga3);
     }
 
     public int describeContents() {

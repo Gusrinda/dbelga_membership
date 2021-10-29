@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.modelListTransaksi;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class ModelListTransaksi implements Serializable, Parcelable
 {
 
@@ -35,7 +36,7 @@ public class ModelListTransaksi implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -3620182073301334665L;
+    private final static long serialVersionUID = 1295920395915307866L;
 
     protected ModelListTransaksi(android.os.Parcel in) {
         this.data = ((Data) in.readValue((Data.class.getClassLoader())));
@@ -53,22 +54,12 @@ public class ModelListTransaksi implements Serializable, Parcelable
         this.data = data;
     }
 
-    public ModelListTransaksi withData(Data data) {
-        this.data = data;
-        return this;
-    }
-
     public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public ModelListTransaksi withStatus(Status status) {
-        this.status = status;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

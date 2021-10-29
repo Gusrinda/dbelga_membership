@@ -39,11 +39,11 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@id/layoutSearch"
         android:id="@+id/rv_Transaksi"
-        tools:listitem="@layout/adapter_list_transaksi"
-        android:layout_marginTop="8sp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@id/layoutSearch"
+        android:layout_marginTop="8sp"
+        tools:listitem="@layout/adapter_list_transaksi" />
 
 </RelativeLayout>

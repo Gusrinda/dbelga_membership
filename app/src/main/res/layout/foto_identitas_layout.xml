@@ -10,18 +10,6 @@
         android:layout_height="match_parent"
         tools:ignore="UselessLeaf">
 
-        <TextView
-            android:textStyle="bold"
-            android:textColor="@color/guide"
-            android:textSize="16dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="8dp"
-            android:layout_marginHorizontal="4dp"
-            android:gravity="center"
-            android:fontFamily="@font/hammer"
-            android:text="Lakukan foto kartu identitas anda seperti petunjuk !"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <RelativeLayout
             android:layout_centerInParent="true"

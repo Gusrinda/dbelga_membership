@@ -1,15 +1,16 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class ModelPayment implements Serializable, Parcelable
 {
 
@@ -35,7 +36,7 @@ public class ModelPayment implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 8272352843937347629L;
+    private final static long serialVersionUID = -105489987943140493L;
 
     protected ModelPayment(android.os.Parcel in) {
         this.data = ((Data) in.readValue((Data.class.getClassLoader())));
@@ -53,22 +54,12 @@ public class ModelPayment implements Serializable, Parcelable
         this.data = data;
     }
 
-    public ModelPayment withData(Data data) {
-        this.data = data;
-        return this;
-    }
-
     public Status getStatus() {
         return status;
     }
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public ModelPayment withStatus(Status status) {
-        this.status = status;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

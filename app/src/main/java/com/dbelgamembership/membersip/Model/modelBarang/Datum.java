@@ -1,20 +1,17 @@
 
 package com.dbelgamembership.membersip.Model.modelBarang;
 
-import java.io.Serializable;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 
 public class Datum implements Serializable, Parcelable
 {
 
-    @SerializedName("id")
-    @Expose
-    private int id;
     @SerializedName("company_code")
     @Expose
     private String companyCode;
@@ -26,13 +23,13 @@ public class Datum implements Serializable, Parcelable
     private String name;
     @SerializedName("kategori")
     @Expose
-    private int kategori;
+    private Integer kategori;
     @SerializedName("sub_kategori")
     @Expose
-    private int subKategori;
+    private Integer subKategori;
     @SerializedName("merek")
     @Expose
-    private int merek;
+    private Integer merek;
     @SerializedName("lebar")
     @Expose
     private String lebar;
@@ -50,22 +47,22 @@ public class Datum implements Serializable, Parcelable
     private String berat;
     @SerializedName("stok_minimal")
     @Expose
-    private int stokMinimal;
+    private Integer stokMinimal;
     @SerializedName("satuan_dipakai")
     @Expose
     private String satuanDipakai;
     @SerializedName("satuan_terkecil")
     @Expose
-    private int satuanTerkecil;
+    private Integer satuanTerkecil;
     @SerializedName("nilai_konversi_satuan_terkecil")
     @Expose
-    private String nilaiKonversiSatuanTerkecil;
+    private Integer nilaiKonversiSatuanTerkecil;
     @SerializedName("satuan_terbesar")
     @Expose
-    private String satuanTerbesar;
+    private Integer satuanTerbesar;
     @SerializedName("nilai_konversi_satuan_terbesar")
     @Expose
-    private String nilaiKonversiSatuanTerbesar;
+    private Integer nilaiKonversiSatuanTerbesar;
     @SerializedName("type_asset")
     @Expose
     private String typeAsset;
@@ -108,6 +105,9 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("tes_id")
     @Expose
     private String tesId;
+    @SerializedName("id")
+    @Expose
+    private Integer id;
     @SerializedName("nama_kategori")
     @Expose
     private String namaKategori;
@@ -126,9 +126,18 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("price_tiga")
     @Expose
     private String priceTiga;
+    @SerializedName("qty_harga_1")
+    @Expose
+    private Integer qtyHarga1;
+    @SerializedName("qty_harga_2")
+    @Expose
+    private Integer qtyHarga2;
+    @SerializedName("qty_harga_3")
+    @Expose
+    private Integer qtyHarga3;
     @SerializedName("stok")
     @Expose
-    private int stok;
+    private Integer stok;
     public final static Creator<Datum> CREATOR = new Creator<Datum>() {
 
 
@@ -145,27 +154,26 @@ public class Datum implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 1114864191204468438L;
+    private final static long serialVersionUID = -38210502697244851L;
 
     protected Datum(android.os.Parcel in) {
-        this.id = ((int) in.readValue((int.class.getClassLoader())));
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
-        this.kategori = ((int) in.readValue((int.class.getClassLoader())));
-        this.subKategori = ((int) in.readValue((int.class.getClassLoader())));
-        this.merek = ((int) in.readValue((int.class.getClassLoader())));
+        this.kategori = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.subKategori = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.merek = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.lebar = ((String) in.readValue((String.class.getClassLoader())));
         this.panjang = ((String) in.readValue((String.class.getClassLoader())));
         this.tinggi = ((String) in.readValue((String.class.getClassLoader())));
         this.diameter = ((String) in.readValue((String.class.getClassLoader())));
         this.berat = ((String) in.readValue((String.class.getClassLoader())));
-        this.stokMinimal = ((int) in.readValue((int.class.getClassLoader())));
+        this.stokMinimal = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.satuanDipakai = ((String) in.readValue((String.class.getClassLoader())));
-        this.satuanTerkecil = ((int) in.readValue((int.class.getClassLoader())));
-        this.nilaiKonversiSatuanTerkecil = ((String) in.readValue((String.class.getClassLoader())));
-        this.satuanTerbesar = ((String) in.readValue((String.class.getClassLoader())));
-        this.nilaiKonversiSatuanTerbesar = ((String) in.readValue((String.class.getClassLoader())));
+        this.satuanTerkecil = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.nilaiKonversiSatuanTerkecil = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.satuanTerbesar = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.nilaiKonversiSatuanTerbesar = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.typeAsset = ((String) in.readValue((String.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
         this.barcode = ((String) in.readValue((String.class.getClassLoader())));
@@ -180,29 +188,20 @@ public class Datum implements Serializable, Parcelable
         this.nilaiKonversiSatuanTengah = ((String) in.readValue((String.class.getClassLoader())));
         this.images = ((String) in.readValue((String.class.getClassLoader())));
         this.tesId = ((String) in.readValue((String.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.namaKategori = ((String) in.readValue((String.class.getClassLoader())));
         this.merekProduk = ((String) in.readValue((String.class.getClassLoader())));
         this.satuanKemasan = ((String) in.readValue((String.class.getClassLoader())));
         this.price = ((String) in.readValue((String.class.getClassLoader())));
         this.priceDua = ((String) in.readValue((String.class.getClassLoader())));
         this.priceTiga = ((String) in.readValue((String.class.getClassLoader())));
-        this.stok = ((int) in.readValue((int.class.getClassLoader())));
+        this.qtyHarga1 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga2 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga3 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.stok = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public Datum() {
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Datum withId(int id) {
-        this.id = id;
-        return this;
     }
 
     public String getCompanyCode() {
@@ -213,22 +212,12 @@ public class Datum implements Serializable, Parcelable
         this.companyCode = companyCode;
     }
 
-    public Datum withCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-        return this;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public Datum withCode(String code) {
-        this.code = code;
-        return this;
     }
 
     public String getName() {
@@ -239,48 +228,28 @@ public class Datum implements Serializable, Parcelable
         this.name = name;
     }
 
-    public Datum withName(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public int getKategori() {
+    public Integer getKategori() {
         return kategori;
     }
 
-    public void setKategori(int kategori) {
+    public void setKategori(Integer kategori) {
         this.kategori = kategori;
     }
 
-    public Datum withKategori(int kategori) {
-        this.kategori = kategori;
-        return this;
-    }
-
-    public int getSubKategori() {
+    public Integer getSubKategori() {
         return subKategori;
     }
 
-    public void setSubKategori(int subKategori) {
+    public void setSubKategori(Integer subKategori) {
         this.subKategori = subKategori;
     }
 
-    public Datum withSubKategori(int subKategori) {
-        this.subKategori = subKategori;
-        return this;
-    }
-
-    public int getMerek() {
+    public Integer getMerek() {
         return merek;
     }
 
-    public void setMerek(int merek) {
+    public void setMerek(Integer merek) {
         this.merek = merek;
-    }
-
-    public Datum withMerek(int merek) {
-        this.merek = merek;
-        return this;
     }
 
     public String getLebar() {
@@ -291,22 +260,12 @@ public class Datum implements Serializable, Parcelable
         this.lebar = lebar;
     }
 
-    public Datum withLebar(String lebar) {
-        this.lebar = lebar;
-        return this;
-    }
-
     public String getPanjang() {
         return panjang;
     }
 
     public void setPanjang(String panjang) {
         this.panjang = panjang;
-    }
-
-    public Datum withPanjang(String panjang) {
-        this.panjang = panjang;
-        return this;
     }
 
     public String getTinggi() {
@@ -317,22 +276,12 @@ public class Datum implements Serializable, Parcelable
         this.tinggi = tinggi;
     }
 
-    public Datum withTinggi(String tinggi) {
-        this.tinggi = tinggi;
-        return this;
-    }
-
     public String getDiameter() {
         return diameter;
     }
 
     public void setDiameter(String diameter) {
         this.diameter = diameter;
-    }
-
-    public Datum withDiameter(String diameter) {
-        this.diameter = diameter;
-        return this;
     }
 
     public String getBerat() {
@@ -343,22 +292,12 @@ public class Datum implements Serializable, Parcelable
         this.berat = berat;
     }
 
-    public Datum withBerat(String berat) {
-        this.berat = berat;
-        return this;
-    }
-
-    public int getStokMinimal() {
+    public Integer getStokMinimal() {
         return stokMinimal;
     }
 
-    public void setStokMinimal(int stokMinimal) {
+    public void setStokMinimal(Integer stokMinimal) {
         this.stokMinimal = stokMinimal;
-    }
-
-    public Datum withStokMinimal(int stokMinimal) {
-        this.stokMinimal = stokMinimal;
-        return this;
     }
 
     public String getSatuanDipakai() {
@@ -369,61 +308,36 @@ public class Datum implements Serializable, Parcelable
         this.satuanDipakai = satuanDipakai;
     }
 
-    public Datum withSatuanDipakai(String satuanDipakai) {
-        this.satuanDipakai = satuanDipakai;
-        return this;
-    }
-
-    public int getSatuanTerkecil() {
+    public Integer getSatuanTerkecil() {
         return satuanTerkecil;
     }
 
-    public void setSatuanTerkecil(int satuanTerkecil) {
+    public void setSatuanTerkecil(Integer satuanTerkecil) {
         this.satuanTerkecil = satuanTerkecil;
     }
 
-    public Datum withSatuanTerkecil(int satuanTerkecil) {
-        this.satuanTerkecil = satuanTerkecil;
-        return this;
-    }
-
-    public String getNilaiKonversiSatuanTerkecil() {
+    public Integer getNilaiKonversiSatuanTerkecil() {
         return nilaiKonversiSatuanTerkecil;
     }
 
-    public void setNilaiKonversiSatuanTerkecil(String nilaiKonversiSatuanTerkecil) {
+    public void setNilaiKonversiSatuanTerkecil(Integer nilaiKonversiSatuanTerkecil) {
         this.nilaiKonversiSatuanTerkecil = nilaiKonversiSatuanTerkecil;
     }
 
-    public Datum withNilaiKonversiSatuanTerkecil(String nilaiKonversiSatuanTerkecil) {
-        this.nilaiKonversiSatuanTerkecil = nilaiKonversiSatuanTerkecil;
-        return this;
-    }
-
-    public String getSatuanTerbesar() {
+    public Integer getSatuanTerbesar() {
         return satuanTerbesar;
     }
 
-    public void setSatuanTerbesar(String satuanTerbesar) {
+    public void setSatuanTerbesar(Integer satuanTerbesar) {
         this.satuanTerbesar = satuanTerbesar;
     }
 
-    public Datum withSatuanTerbesar(String satuanTerbesar) {
-        this.satuanTerbesar = satuanTerbesar;
-        return this;
-    }
-
-    public String getNilaiKonversiSatuanTerbesar() {
+    public Integer getNilaiKonversiSatuanTerbesar() {
         return nilaiKonversiSatuanTerbesar;
     }
 
-    public void setNilaiKonversiSatuanTerbesar(String nilaiKonversiSatuanTerbesar) {
+    public void setNilaiKonversiSatuanTerbesar(Integer nilaiKonversiSatuanTerbesar) {
         this.nilaiKonversiSatuanTerbesar = nilaiKonversiSatuanTerbesar;
-    }
-
-    public Datum withNilaiKonversiSatuanTerbesar(String nilaiKonversiSatuanTerbesar) {
-        this.nilaiKonversiSatuanTerbesar = nilaiKonversiSatuanTerbesar;
-        return this;
     }
 
     public String getTypeAsset() {
@@ -434,22 +348,12 @@ public class Datum implements Serializable, Parcelable
         this.typeAsset = typeAsset;
     }
 
-    public Datum withTypeAsset(String typeAsset) {
-        this.typeAsset = typeAsset;
-        return this;
-    }
-
     public String getDeskripsi() {
         return deskripsi;
     }
 
     public void setDeskripsi(String deskripsi) {
         this.deskripsi = deskripsi;
-    }
-
-    public Datum withDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
-        return this;
     }
 
     public String getBarcode() {
@@ -460,22 +364,12 @@ public class Datum implements Serializable, Parcelable
         this.barcode = barcode;
     }
 
-    public Datum withBarcode(String barcode) {
-        this.barcode = barcode;
-        return this;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public Datum withCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-        return this;
     }
 
     public String getUpdatedAt() {
@@ -486,22 +380,12 @@ public class Datum implements Serializable, Parcelable
         this.updatedAt = updatedAt;
     }
 
-    public Datum withUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
-
     public String getDeletedAt() {
         return deletedAt;
     }
 
     public void setDeletedAt(String deletedAt) {
         this.deletedAt = deletedAt;
-    }
-
-    public Datum withDeletedAt(String deletedAt) {
-        this.deletedAt = deletedAt;
-        return this;
     }
 
     public String getNameShort() {
@@ -512,22 +396,12 @@ public class Datum implements Serializable, Parcelable
         this.nameShort = nameShort;
     }
 
-    public Datum withNameShort(String nameShort) {
-        this.nameShort = nameShort;
-        return this;
-    }
-
     public String getTypeProduct() {
         return typeProduct;
     }
 
     public void setTypeProduct(String typeProduct) {
         this.typeProduct = typeProduct;
-    }
-
-    public Datum withTypeProduct(String typeProduct) {
-        this.typeProduct = typeProduct;
-        return this;
     }
 
     public String getVarianProduct() {
@@ -538,22 +412,12 @@ public class Datum implements Serializable, Parcelable
         this.varianProduct = varianProduct;
     }
 
-    public Datum withVarianProduct(String varianProduct) {
-        this.varianProduct = varianProduct;
-        return this;
-    }
-
     public String getStatusProduct() {
         return statusProduct;
     }
 
     public void setStatusProduct(String statusProduct) {
         this.statusProduct = statusProduct;
-    }
-
-    public Datum withStatusProduct(String statusProduct) {
-        this.statusProduct = statusProduct;
-        return this;
     }
 
     public String getSatuanTengah() {
@@ -564,22 +428,12 @@ public class Datum implements Serializable, Parcelable
         this.satuanTengah = satuanTengah;
     }
 
-    public Datum withSatuanTengah(String satuanTengah) {
-        this.satuanTengah = satuanTengah;
-        return this;
-    }
-
     public String getNilaiKonversiSatuanTengah() {
         return nilaiKonversiSatuanTengah;
     }
 
     public void setNilaiKonversiSatuanTengah(String nilaiKonversiSatuanTengah) {
         this.nilaiKonversiSatuanTengah = nilaiKonversiSatuanTengah;
-    }
-
-    public Datum withNilaiKonversiSatuanTengah(String nilaiKonversiSatuanTengah) {
-        this.nilaiKonversiSatuanTengah = nilaiKonversiSatuanTengah;
-        return this;
     }
 
     public String getImages() {
@@ -590,11 +444,6 @@ public class Datum implements Serializable, Parcelable
         this.images = images;
     }
 
-    public Datum withImages(String images) {
-        this.images = images;
-        return this;
-    }
-
     public String getTesId() {
         return tesId;
     }
@@ -603,9 +452,12 @@ public class Datum implements Serializable, Parcelable
         this.tesId = tesId;
     }
 
-    public Datum withTesId(String tesId) {
-        this.tesId = tesId;
-        return this;
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getNamaKategori() {
@@ -616,22 +468,12 @@ public class Datum implements Serializable, Parcelable
         this.namaKategori = namaKategori;
     }
 
-    public Datum withNamaKategori(String namaKategori) {
-        this.namaKategori = namaKategori;
-        return this;
-    }
-
     public String getMerekProduk() {
         return merekProduk;
     }
 
     public void setMerekProduk(String merekProduk) {
         this.merekProduk = merekProduk;
-    }
-
-    public Datum withMerekProduk(String merekProduk) {
-        this.merekProduk = merekProduk;
-        return this;
     }
 
     public String getSatuanKemasan() {
@@ -642,22 +484,12 @@ public class Datum implements Serializable, Parcelable
         this.satuanKemasan = satuanKemasan;
     }
 
-    public Datum withSatuanKemasan(String satuanKemasan) {
-        this.satuanKemasan = satuanKemasan;
-        return this;
-    }
-
     public String getPrice() {
         return price;
     }
 
     public void setPrice(String price) {
         this.price = price;
-    }
-
-    public Datum withPrice(String price) {
-        this.price = price;
-        return this;
     }
 
     public String getPriceDua() {
@@ -668,11 +500,6 @@ public class Datum implements Serializable, Parcelable
         this.priceDua = priceDua;
     }
 
-    public Datum withPriceDua(String priceDua) {
-        this.priceDua = priceDua;
-        return this;
-    }
-
     public String getPriceTiga() {
         return priceTiga;
     }
@@ -681,26 +508,39 @@ public class Datum implements Serializable, Parcelable
         this.priceTiga = priceTiga;
     }
 
-    public Datum withPriceTiga(String priceTiga) {
-        this.priceTiga = priceTiga;
-        return this;
+    public Integer getQtyHarga1() {
+        return qtyHarga1;
     }
 
-    public int getStok() {
+    public void setQtyHarga1(Integer qtyHarga1) {
+        this.qtyHarga1 = qtyHarga1;
+    }
+
+    public Integer getQtyHarga2() {
+        return qtyHarga2;
+    }
+
+    public void setQtyHarga2(Integer qtyHarga2) {
+        this.qtyHarga2 = qtyHarga2;
+    }
+
+    public Integer getQtyHarga3() {
+        return qtyHarga3;
+    }
+
+    public void setQtyHarga3(Integer qtyHarga3) {
+        this.qtyHarga3 = qtyHarga3;
+    }
+
+    public Integer getStok() {
         return stok;
     }
 
-    public void setStok(int stok) {
+    public void setStok(Integer stok) {
         this.stok = stok;
-    }
-
-    public Datum withStok(int stok) {
-        this.stok = stok;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
-        dest.writeValue(id);
         dest.writeValue(companyCode);
         dest.writeValue(code);
         dest.writeValue(name);
@@ -732,12 +572,16 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(nilaiKonversiSatuanTengah);
         dest.writeValue(images);
         dest.writeValue(tesId);
+        dest.writeValue(id);
         dest.writeValue(namaKategori);
         dest.writeValue(merekProduk);
         dest.writeValue(satuanKemasan);
         dest.writeValue(price);
         dest.writeValue(priceDua);
         dest.writeValue(priceTiga);
+        dest.writeValue(qtyHarga1);
+        dest.writeValue(qtyHarga2);
+        dest.writeValue(qtyHarga3);
         dest.writeValue(stok);
     }
 

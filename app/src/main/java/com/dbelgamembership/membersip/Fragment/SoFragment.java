@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -32,24 +31,20 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.dbelgamembership.membersip.Adapter.AdapterListTransaksi;
-import com.dbelgamembership.membersip.DaftarTransaksi;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListTransaksi;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
-import com.dbelgamembership.membersip.MainActivity;
+import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.Datum;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaksi;
-import com.dbelgamembership.membersip.PrintActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
 import com.dbelgamembership.membersip.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +67,9 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     EditText txt_CariTransaksi;
     RecyclerView rvTransaksi;
 
+    List<Datum> itemlist = new ArrayList<>();
+
+    private boolean isOnCreate = true;
 
 
     private String mParam1;
@@ -118,6 +116,15 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isOnCreate) {
+        getDataUser();
+
+        }
+    }
+
     private void pagenation() {
         Log.e(TAG, "URL : " + urlNextPage);
         final ProgressDialog dialog1 = new ProgressDialog(getActivity());
@@ -145,26 +152,20 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                 }
                             }
 
-                            List<Datum> itemlist = modelListTransaction.getData().getData();
+                            if (modelListTransaction.getData().getData().size() > 0) {
 
-                            if (itemlist.size() > 0) {
-                                for (int j = itemlist.size() - 1; j >= 0; j--) {
-                                    if (itemlist.get(j).getStatus().equals("closed")) {
-                                        itemlist.remove(j);
+                                for (int i = 0; i < modelListTransaction.getData().getData().size(); i++) {
+                                    if (!modelListTransaction.getData().getData().get(i).getStatus().equals("closed")) {
+                                        Log.e(TAG, "onResponse: ADD PAGENATION : " + modelListTransaction.getData().getData().get(i).getCode() );
+
+                                        itemlist.add(modelListTransaction.getData().getData().get(i));
                                     }
                                 }
-                                Log.e(TAG, "masuk Page 2");
-                                if (itemlist.size() != 0) {
-                                    Collections.sort(itemlist, new Comparator<Datum>() {
-                                        @Override
-                                        public int compare(Datum datum, Datum t1) {
-                                            return t1.getCreatedAt().compareToIgnoreCase(datum.getCreatedAt());
-                                        }
 
-                                    });
-                                }
-                                Log.e(TAG, "Hasil SO " + itemlist.toString());
-                                adapterListTransaksi.addItems(itemlist);
+                                adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
+                                rvTransaksi.setAdapter(adapterListTransaksi);
+
+
                             } else {
                                 Snack("Data Terakhir !");
                             }
@@ -254,6 +255,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     private void getDataUser() {
         idUser = sessionManager.getPID();
         Log.e(TAG, "ID USER SEARCH : " + idUser);
+         url = Http.server;
         url = url + "transaction/list?customer=" + sessionManager.getPID();
         getDataTransaksi();
     }
@@ -287,29 +289,24 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }
 
-                                List<Datum> itemlist = modelListTransaction.getData().getData();
-                                if (itemlist.size() > 0) {
-                                    for (int j = itemlist.size() - 1; j >= 0; j--) {
-                                        if (itemlist.get(j).getStatus().equals("closed")) {
-                                            itemlist.remove(j);
+
+                                if (modelListTransaction.getData().getData().size() > 0) {
+
+                                    for (int i = 0; i < modelListTransaction.getData().getData().size(); i++) {
+                                        if (!modelListTransaction.getData().getData().get(i).getStatus().equals("closed")) {
+                                            Log.e(TAG, "onResponse: ADD : " + modelListTransaction.getData().getData().get(i).getCode() );
+                                            itemlist.add(modelListTransaction.getData().getData().get(i));
                                         }
                                     }
-                                    Log.e(TAG, "masuk 6");
-                                    if (itemlist.size() != 0) {
-                                        Collections.sort(itemlist, new Comparator<Datum>() {
-                                            @Override
-                                            public int compare(Datum datum, Datum t1) {
-                                                return t1.getCreatedAt().compareToIgnoreCase(datum.getCreatedAt());
-                                            }
 
-                                        });
-                                    }
-                                    Log.e(TAG, "Hasil SO " + itemlist.toString());
                                     adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
                                     rvTransaksi.setAdapter(adapterListTransaksi);
+
                                 } else {
                                     Snack("Data SO Kosong");
                                 }
+
+                                isOnCreate = false;
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
@@ -408,7 +405,6 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
         intent.putExtra("DATAPRINT", DataOOS);
         startActivity(intent);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

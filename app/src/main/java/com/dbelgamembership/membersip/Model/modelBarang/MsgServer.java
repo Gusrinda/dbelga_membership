@@ -1,14 +1,13 @@
 
 package com.dbelgamembership.membersip.Model.modelBarang;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 
 
 public class MsgServer implements Serializable, Parcelable
@@ -16,16 +15,16 @@ public class MsgServer implements Serializable, Parcelable
 
     @SerializedName("current_page")
     @Expose
-    private int currentPage;
+    private Integer currentPage;
     @SerializedName("data")
     @Expose
-    private List<Datum> data = new ArrayList<Datum>();
+    private List<Datum> data = null;
     @SerializedName("from")
     @Expose
-    private int from;
+    private Integer from;
     @SerializedName("last_page")
     @Expose
-    private int lastPage;
+    private Integer lastPage;
     @SerializedName("next_page_url")
     @Expose
     private String nextPageUrl;
@@ -34,16 +33,16 @@ public class MsgServer implements Serializable, Parcelable
     private String path;
     @SerializedName("per_page")
     @Expose
-    private int perPage;
+    private Integer perPage;
     @SerializedName("prev_page_url")
     @Expose
     private String prevPageUrl;
     @SerializedName("to")
     @Expose
-    private int to;
+    private Integer to;
     @SerializedName("total")
     @Expose
-    private int total;
+    private Integer total;
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -60,35 +59,30 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 2980450578661763053L;
+    private final static long serialVersionUID = -1838252875466300534L;
 
     protected MsgServer(android.os.Parcel in) {
-        this.currentPage = ((int) in.readValue((int.class.getClassLoader())));
+        this.currentPage = ((Integer) in.readValue((Integer.class.getClassLoader())));
         in.readList(this.data, (com.dbelgamembership.membersip.Model.modelBarang.Datum.class.getClassLoader()));
-        this.from = ((int) in.readValue((int.class.getClassLoader())));
-        this.lastPage = ((int) in.readValue((int.class.getClassLoader())));
+        this.from = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.lastPage = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.nextPageUrl = ((String) in.readValue((String.class.getClassLoader())));
         this.path = ((String) in.readValue((String.class.getClassLoader())));
-        this.perPage = ((int) in.readValue((int.class.getClassLoader())));
+        this.perPage = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.prevPageUrl = ((String) in.readValue((String.class.getClassLoader())));
-        this.to = ((int) in.readValue((int.class.getClassLoader())));
-        this.total = ((int) in.readValue((int.class.getClassLoader())));
+        this.to = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.total = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public int getCurrentPage() {
+    public Integer getCurrentPage() {
         return currentPage;
     }
 
-    public void setCurrentPage(int currentPage) {
+    public void setCurrentPage(Integer currentPage) {
         this.currentPage = currentPage;
-    }
-
-    public MsgServer withCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-        return this;
     }
 
     public List<Datum> getData() {
@@ -99,35 +93,20 @@ public class MsgServer implements Serializable, Parcelable
         this.data = data;
     }
 
-    public MsgServer withData(List<Datum> data) {
-        this.data = data;
-        return this;
-    }
-
-    public int getFrom() {
+    public Integer getFrom() {
         return from;
     }
 
-    public void setFrom(int from) {
+    public void setFrom(Integer from) {
         this.from = from;
     }
 
-    public MsgServer withFrom(int from) {
-        this.from = from;
-        return this;
-    }
-
-    public int getLastPage() {
+    public Integer getLastPage() {
         return lastPage;
     }
 
-    public void setLastPage(int lastPage) {
+    public void setLastPage(Integer lastPage) {
         this.lastPage = lastPage;
-    }
-
-    public MsgServer withLastPage(int lastPage) {
-        this.lastPage = lastPage;
-        return this;
     }
 
     public String getNextPageUrl() {
@@ -138,11 +117,6 @@ public class MsgServer implements Serializable, Parcelable
         this.nextPageUrl = nextPageUrl;
     }
 
-    public MsgServer withNextPageUrl(String nextPageUrl) {
-        this.nextPageUrl = nextPageUrl;
-        return this;
-    }
-
     public String getPath() {
         return path;
     }
@@ -151,22 +125,12 @@ public class MsgServer implements Serializable, Parcelable
         this.path = path;
     }
 
-    public MsgServer withPath(String path) {
-        this.path = path;
-        return this;
-    }
-
-    public int getPerPage() {
+    public Integer getPerPage() {
         return perPage;
     }
 
-    public void setPerPage(int perPage) {
+    public void setPerPage(Integer perPage) {
         this.perPage = perPage;
-    }
-
-    public MsgServer withPerPage(int perPage) {
-        this.perPage = perPage;
-        return this;
     }
 
     public String getPrevPageUrl() {
@@ -177,35 +141,20 @@ public class MsgServer implements Serializable, Parcelable
         this.prevPageUrl = prevPageUrl;
     }
 
-    public MsgServer withPrevPageUrl(String prevPageUrl) {
-        this.prevPageUrl = prevPageUrl;
-        return this;
-    }
-
-    public int getTo() {
+    public Integer getTo() {
         return to;
     }
 
-    public void setTo(int to) {
+    public void setTo(Integer to) {
         this.to = to;
     }
 
-    public MsgServer withTo(int to) {
-        this.to = to;
-        return this;
-    }
-
-    public int getTotal() {
+    public Integer getTotal() {
         return total;
     }
 
-    public void setTotal(int total) {
+    public void setTotal(Integer total) {
         this.total = total;
-    }
-
-    public MsgServer withTotal(int total) {
-        this.total = total;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

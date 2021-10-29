@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    android:id="@+id/layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="#FAF2F2"
+    app:cardElevation="0dp">
+
+    <LinearLayout
+        android:padding="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:src="@drawable/whatsapp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            app:tint="#4CAF50" />
+
+        <LinearLayout
+            android:layout_marginLeft="4dp"
+            android:padding="8dp"
+            android:orientation="vertical"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/txtNamaCS"
+                android:layout_marginVertical="2dp"
+                android:text="Admin Whatsapp 1"
+                android:textColor="@color/darkBiruBelga"
+                android:fontFamily="@font/hammer_font"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/txtKontakCS"
+                android:layout_marginVertical="2dp"
+                android:text="+6281559584297"
+                android:textColor="@color/darkBiruBelga"
+                android:fontFamily="@font/hammer_font"
+                android:textSize="12sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.dbelgamembership.membersip">
+
+
+    <queries>
+        <package android:name="com.google.android.apps.maps" />
+    </queries>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
@@ -9,6 +15,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -20,59 +28,95 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/dbelga"
         android:label="@string/app_name"
         android:largeHeap="true"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/dbelga"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".CameraGuideline">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
+        <activity
+            android:name=".Screen.Katalog.CartActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Screen.Katalog.GudangActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Screen.Setting.SupportActivity" />
+        <activity
+            android:name=".Screen.User.Verifikasi.CameraGuideline"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
 
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".MembershipFoto" />
-        <activity android:name=".BoardingMemberDebet" />
-        <activity android:name=".VerificationActivity" />
-        <activity android:name=".Presentation.Limit.BayarTagihan" />
-        <activity android:name=".Presentation.Limit.RiwayatTagihan" />
-        <activity android:name=".Presentation.Limit.DaftarTagihan" />
-        <activity android:name=".LimitPlafon" />
-        <activity android:name=".ResetPassword" />
-        <activity android:name=".ForgotPassword" />
-        <activity android:name=".VoucherMember" />
-        <activity android:name=".ListVoucher" />
-        <activity android:name=".ListTransaksi" />
-        <activity android:name=".UbahPassword" />
-        <activity android:name=".EditAkun" />
-        <activity android:name=".KonfirmasiMembership" />
+        <activity
+            android:name=".Screen.User.Verifikasi.MembershipFoto"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Screen.User.BoardingMemberDebet" />
+        <activity android:name=".Screen.User.Verifikasi.VerificationActivity" />
+        <activity android:name=".Screen.Limit.BayarTagihan" />
+        <activity android:name=".Screen.Limit.RiwayatTagihan" />
+        <activity android:name=".Screen.Limit.DaftarTagihan" />
+        <activity android:name=".Screen.User.LimitPlafon" />
+        <activity android:name=".Screen.User.ResetPassword" />
+        <activity android:name=".Screen.Setting.ForgotPassword" />
+        <activity android:name=".Screen.User.VoucherMember" />
+        <activity android:name=".Screen.User.ListVoucher" />
+        <activity android:name=".Screen.Transaksi.ListTransaksi" />
+        <activity android:name=".Screen.Setting.UbahPassword" />
+        <activity android:name=".Screen.Setting.EditAkun" />
+        <activity
+            android:name=".Screen.User.Verifikasi.KonfirmasiMembership"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".SalesActivity" />
-        <activity android:name=".WishlishActivity" />
-        <activity android:name=".KatalogActivity" />
-        <activity android:name=".MembershipChoose" />
-        <activity android:name=".DaftarTransaksi" />
-        <activity android:name=".MembershipPilih" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".AkunSaya" />
+        <activity android:name=".Screen.Katalog.WishlishActivity" />
         <activity
-            android:name=".PrintActivity"
+            android:name=".Screen.Katalog.KatalogActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Screen.User.Membership.MembershipChoose"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".Screen.Transaksi.DaftarTransaksi" />
+        <activity android:name=".Screen.User.Membership.MembershipPilih" />
+        <activity android:name=".Screen.RegisterActivity" />
+        <activity android:name=".Screen.User.AkunSaya" />
+        <activity
+            android:name=".Screen.Transaksi.PrintActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".PrintFakturActivity"
+            android:name=".Screen.Transaksi.PrintFakturActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Screen.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -81,24 +125,55 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".HomeActivity"
+            android:name=".Screen.HomeActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".SplashActivity"
+            android:name=".Screen.SplashActivity"
             android:theme="@style/AppTheme.NoActionBar">
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".Screen.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
+
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/dbelga" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+        <!-- [END fcm_default_icon] -->
+
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".Screen.MyFirebaseInstanceIDService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
+
+<!--        <receiver android:name=".GeofenceBroadcastReceiver"/>-->
+
     </application>
 
 </manifest>

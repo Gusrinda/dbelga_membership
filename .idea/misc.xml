@@ -1,6 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/radius2.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/bg_gambar.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_qr_code_24.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/radius2.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/strike_through.xml" value="0.308" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_akun_saya.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_buktibayar_new.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_cart.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_daftar_transaksi.xml" value="0.3063063063063063" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_gudang.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_home.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_katalog.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_list_voucher.xml" value="0.12117117117117117" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_login.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_reset_password.xml" value="0.3063063063063063" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/adapter_list_transaksi.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktibayar_new.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktifaktur_new.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_riwayat_transaksi_qr.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_so.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_barang.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_cart.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_checkout.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_invoice_trans.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_wishlist.xml" value="0.3063063063063063" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_barang.xml" value="0.2942222222222222" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_checkout.xml" value="0.2942222222222222" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

@@ -5,7 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PrintActivity"
+    tools:context=".Screen.Transaksi.PrintActivity"
     android:background="@color/darkBiruBelga">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -28,6 +28,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_buktibayar_new" />
+    <include
+        android:id="@+id/contentBuktiBayar"
+        layout="@layout/content_buktibayar_new" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

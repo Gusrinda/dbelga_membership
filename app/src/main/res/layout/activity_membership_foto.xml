@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MembershipFoto">
+    tools:context=".Screen.User.Verifikasi.MembershipFoto">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -24,7 +24,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+
+                <ImageView
+                    android:layout_marginRight="16dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginVertical="8dp"
+                    android:src="@drawable/dbelga"
+                    android:layout_width="72dp"
+                    android:layout_height="36dp"/>
+
+
+            </RelativeLayout>
+
         </androidx.appcompat.widget.Toolbar>
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -49,19 +66,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-
-                <ImageView
-                    android:layout_marginVertical="8dp"
-                    android:src="@drawable/dbelga"
-                    android:layout_width="72dp"
-                    android:layout_height="36dp"/>
-
-
                 <TextView
                     android:textStyle="bold"
                     android:fontFamily="@font/hammer"
                     android:textColor="@color/black"
-                    android:textSize="18dp"
+                    android:textSize="20dp"
                     android:text="Verifikasi Identitas"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -204,6 +213,7 @@
                 </LinearLayout>
 
                 <ImageView
+
                     android:visibility="gone"
                     android:id="@+id/img_fotoSelfie"
                     android:layout_marginVertical="8dp"
@@ -218,7 +228,6 @@
 
 
         <Button
-            android:enabled="false"
             android:background="@drawable/button_round_theme"
             android:layout_marginBottom="16dp"
             android:layout_alignParentBottom="true"

@@ -2,28 +2,27 @@
 package com.dbelgamembership.membersip.Model.ModelSearchWish;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
-
+import javax.annotation.Generated;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
+@Generated("jsonschema2pojo")
 public class ModelSearchWish implements Serializable, Parcelable
 {
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private Boolean success;
     @SerializedName("msgServer")
     @Expose
-    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
+    private List<MsgServer> msgServer = null;
     @SerializedName("code")
     @Expose
-    private int code;
+    private Integer code;
     @SerializedName("description")
     @Expose
     private String description;
@@ -43,29 +42,24 @@ public class ModelSearchWish implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 718329249406137146L;
+    private final static long serialVersionUID = 4486353010032819269L;
 
     protected ModelSearchWish(android.os.Parcel in) {
-        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer.class.getClassLoader()));
-        this.code = ((int) in.readValue((int.class.getClassLoader())));
+        this.code = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public ModelSearchWish() {
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
-    }
-
-    public ModelSearchWish withSuccess(boolean success) {
-        this.success = success;
-        return this;
     }
 
     public List<MsgServer> getMsgServer() {
@@ -76,22 +70,12 @@ public class ModelSearchWish implements Serializable, Parcelable
         this.msgServer = msgServer;
     }
 
-    public ModelSearchWish withMsgServer(List<MsgServer> msgServer) {
-        this.msgServer = msgServer;
-        return this;
-    }
-
-    public int getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(int code) {
+    public void setCode(Integer code) {
         this.code = code;
-    }
-
-    public ModelSearchWish withCode(int code) {
-        this.code = code;
-        return this;
     }
 
     public String getDescription() {
@@ -100,11 +84,6 @@ public class ModelSearchWish implements Serializable, Parcelable
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public ModelSearchWish withDescription(String description) {
-        this.description = description;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

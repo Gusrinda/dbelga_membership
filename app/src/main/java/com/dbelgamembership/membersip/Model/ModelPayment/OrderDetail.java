@@ -1,41 +1,44 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.util.List;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class OrderDetail implements Serializable, Parcelable
 {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private Integer id;
     @SerializedName("pembayaran_code")
     @Expose
     private String pembayaranCode;
     @SerializedName("so_code")
     @Expose
     private String soCode;
+    @SerializedName("sales")
+    @Expose
+    private Integer sales;
     @SerializedName("payment_id")
     @Expose
-    private int paymentId;
+    private Integer paymentId;
     @SerializedName("order_id")
     @Expose
-    private int orderId;
+    private Integer orderId;
     @SerializedName("alamat_pengiriman")
     @Expose
     private String alamatPengiriman;
     @SerializedName("items")
     @Expose
-    private List<Item> items = new ArrayList<Item>();
+    private List<Item> items = null;
     public final static Creator<OrderDetail> CREATOR = new Creator<OrderDetail>() {
 
 
@@ -52,14 +55,15 @@ public class OrderDetail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 4808559746993181281L;
+    private final static long serialVersionUID = 930822047293440060L;
 
     protected OrderDetail(android.os.Parcel in) {
-        this.id = ((int) in.readValue((int.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
-        this.paymentId = ((int) in.readValue((int.class.getClassLoader())));
-        this.orderId = ((int) in.readValue((int.class.getClassLoader())));
+        this.sales = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.paymentId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.orderId = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.alamatPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.items, (com.dbelgamembership.membersip.Model.ModelPayment.Item.class.getClassLoader()));
     }
@@ -67,17 +71,12 @@ public class OrderDetail implements Serializable, Parcelable
     public OrderDetail() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public OrderDetail withId(int id) {
-        this.id = id;
-        return this;
     }
 
     public String getPembayaranCode() {
@@ -88,11 +87,6 @@ public class OrderDetail implements Serializable, Parcelable
         this.pembayaranCode = pembayaranCode;
     }
 
-    public OrderDetail withPembayaranCode(String pembayaranCode) {
-        this.pembayaranCode = pembayaranCode;
-        return this;
-    }
-
     public String getSoCode() {
         return soCode;
     }
@@ -101,35 +95,28 @@ public class OrderDetail implements Serializable, Parcelable
         this.soCode = soCode;
     }
 
-    public OrderDetail withSoCode(String soCode) {
-        this.soCode = soCode;
-        return this;
+    public Integer getSales() {
+        return sales;
     }
 
-    public int getPaymentId() {
+    public void setSales(Integer sales) {
+        this.sales = sales;
+    }
+
+    public Integer getPaymentId() {
         return paymentId;
     }
 
-    public void setPaymentId(int paymentId) {
+    public void setPaymentId(Integer paymentId) {
         this.paymentId = paymentId;
     }
 
-    public OrderDetail withPaymentId(int paymentId) {
-        this.paymentId = paymentId;
-        return this;
-    }
-
-    public int getOrderId() {
+    public Integer getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(Integer orderId) {
         this.orderId = orderId;
-    }
-
-    public OrderDetail withOrderId(int orderId) {
-        this.orderId = orderId;
-        return this;
     }
 
     public String getAlamatPengiriman() {
@@ -140,11 +127,6 @@ public class OrderDetail implements Serializable, Parcelable
         this.alamatPengiriman = alamatPengiriman;
     }
 
-    public OrderDetail withAlamatPengiriman(String alamatPengiriman) {
-        this.alamatPengiriman = alamatPengiriman;
-        return this;
-    }
-
     public List<Item> getItems() {
         return items;
     }
@@ -153,15 +135,11 @@ public class OrderDetail implements Serializable, Parcelable
         this.items = items;
     }
 
-    public OrderDetail withItems(List<Item> items) {
-        this.items = items;
-        return this;
-    }
-
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
         dest.writeValue(soCode);
+        dest.writeValue(sales);
         dest.writeValue(paymentId);
         dest.writeValue(orderId);
         dest.writeValue(alamatPengiriman);

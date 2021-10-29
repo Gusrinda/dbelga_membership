@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    tools:context=".AkunSaya">
+    tools:context=".Screen.User.AkunSaya">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -130,14 +130,13 @@
         android:layout_above="@id/btb_upgrade"
         android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
+        android:fillViewport="true"
         android:layout_height="match_parent">
 
         <RelativeLayout
             android:layout_marginVertical="8sp"
-            android:layout_below="@id/appBar"
-            android:layout_above="@id/btb_upgrade"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp">
 
             <LinearLayout
                 android:id="@+id/layoutBBB"
@@ -147,25 +146,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+                <TextView
+                    android:layout_marginBottom="8sp"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="18sp"
+                    android:text="MEMBERSHIP"
+                    android:fontFamily="@font/hammer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <androidx.cardview.widget.CardView
-                    app:cardCornerRadius="15dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:padding="16dp"
-                        android:background="#D4EFF3"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
-
-                        <TextView
-                            android:layout_marginBottom="8sp"
-                            android:textColor="@color/darkBiruBelga"
-                            android:textStyle="italic"
-                            android:text="Member Anda"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:visibility="gone"
@@ -320,10 +320,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
+
+                <TextView
+                    android:layout_marginBottom="8sp"
+                    android:textColor="@color/darkBiruBelga"
+                    android:text="DANA"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/hammer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
                 <androidx.cardview.widget.CardView
                     app:contentPadding="16dp"
                     app:cardPreventCornerOverlap="false"
-                    app:cardCornerRadius="15dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -332,13 +343,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
 
-                        <TextView
-                            android:layout_marginBottom="8sp"
-                            android:textColor="@color/darkBiruBelga"
-                            android:textStyle="italic"
-                            android:text="Dana Anda"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:gravity="center_horizontal"
@@ -418,27 +422,29 @@
                 android:layout_marginHorizontal="18dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginBottom="8sp"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="18sp"
+                    android:text="TRANSAKSI &amp; POIN"
+                    android:fontFamily="@font/hammer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
 
                 <androidx.cardview.widget.CardView
-                    app:cardCornerRadius="15dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <LinearLayout
                         android:padding="16dp"
-                        android:background="#F2F6ED"
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
-
-                        <TextView
-                            android:layout_marginBottom="8sp"
-                            android:textColor="@color/darkBiruBelga"
-                            android:textStyle="italic"
-                            android:text="Transaksi &amp; Poin Anda"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
 
                         <LinearLayout
                             android:gravity="center_horizontal"
@@ -536,6 +542,7 @@
 
 
                                 <TextView
+                                    android:gravity="center"
                                     android:textSize="10sp"
                                     android:textStyle="italic"
                                     android:text="klik disini untuk melihat data transaksi anda"
@@ -548,13 +555,42 @@
 
                         </LinearLayout>
 
-                        <TextView
-                            android:layout_marginTop="12sp"
-                            android:textColor="@color/darkBiruBelga"
-                            android:textStyle="italic"
-                            android:text="Voucher Anda"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutEEE"
+                android:layout_below="@id/layoutDDD"
+                android:layout_marginVertical="8sp"
+                android:layout_marginHorizontal="18dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/hammer_font"
+                    android:text="VOUCHER"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <androidx.cardview.widget.CardView
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:padding="16dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
 
                         <LinearLayout
                             android:gravity="center_horizontal"
@@ -623,12 +659,12 @@
 
                         </LinearLayout>
 
+
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
-
 
         </RelativeLayout>
 
@@ -644,6 +680,8 @@
         android:background="@drawable/button_round_theme"
         android:textColor="@color/white"
         android:text="UBAH MEMBERSHIP"
+        android:textAllCaps="false"
+        android:fontFamily="@font/hammer_font"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

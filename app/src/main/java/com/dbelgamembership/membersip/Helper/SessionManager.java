@@ -31,8 +31,15 @@ public class SessionManager {
     private static final String KEY_USERID = "id_user";
     private static final String KEY_BANNER = "false";
     private static final String KEY_TOKEN = "Bearer";
-
+    private static final String CART_GUDANG = "";
     private static final String KEY_MEMBERID = "memberoid";
+    private static final String KEY_ALAMAT_MEMBER = "alamatMember";
+    private static final String KEY_TELEFON_MEMBER = "telfMember";
+    private static final String KEY_ALAMAT_PENGIRIMAN = "alamatPengiriman";
+
+
+
+
     // LogCat tag
     private static String TAG = com.dbelgamembership.membersip.Helper.SessionManager.class.getSimpleName();
     // Shared Preferences
@@ -50,7 +57,6 @@ public class SessionManager {
     }
 
     public void setLogin(boolean isLoggedIn, String pid, String name, String email, String membership) {
-
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
         editor.putString(KEY_NAME, name);
@@ -60,6 +66,29 @@ public class SessionManager {
         editor.apply();
 
         Log.d(TAG, "User login session modified!");
+    }
+
+    public void setCartGudang(String cartGudang) {
+        editor.putString(CART_GUDANG, cartGudang);
+        editor.apply();
+    }
+
+    public void clearCartGudang() {
+        editor.putString(CART_GUDANG, "");
+        editor.apply();
+    };
+
+    public void setAccountUser(String name, String email, String alamat, String nomorTelp) {
+        editor.putString(KEY_NAME, name);
+        editor.putString(KEY_EMAIL, email);
+        editor.putString(KEY_ALAMAT_MEMBER, alamat);
+        editor.putString(KEY_TELEFON_MEMBER, nomorTelp);
+        editor.apply();
+    }
+
+    public void setAlamatPengiriman(String alamatPengiriman) {
+        editor.putString(KEY_ALAMAT_PENGIRIMAN, alamatPengiriman);
+        editor.apply();
     }
 
     public void setRegister(boolean isLoggedIn, String pid, String name, String email, String membership, String expired) {
@@ -182,6 +211,19 @@ public class SessionManager {
         return pref.getString(KEY_MEMBERID, "null");
     }
 
+    public String getKeyAlamatMember() {
+        return pref.getString(KEY_ALAMAT_MEMBER, "null");
+    }
+
+    public String getKeyAlamatPengiriman() {
+        return pref.getString(KEY_ALAMAT_PENGIRIMAN, "null");
+    }
+
+    public String getKeyTelefonMember() {
+        return pref.getString(KEY_TELEFON_MEMBER, "null");
+    }
+
+
 
     public void destroySession() {
         editor.putString(KEY_PID, "");
@@ -199,6 +241,9 @@ public class SessionManager {
         editor.putString(KEY_BANNER, "true");
         editor.putString(KEY_MEMBERID, "");
         editor.putString(KEY_EXPOTP, "");
+        editor.putString(KEY_TELEFON_MEMBER, "");
+        editor.putString(KEY_ALAMAT_MEMBER, "");
+        editor.putString(KEY_ALAMAT_PENGIRIMAN, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");

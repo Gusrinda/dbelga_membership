@@ -31,27 +31,25 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.dbelgamembership.membersip.Adapter.AdapterListTransaksi;
-import com.dbelgamembership.membersip.Adapter.AdapterListTransaksiPayment;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListTransaksiPayment;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
-import com.dbelgamembership.membersip.MainActivity;
+import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
 import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
-import com.dbelgamembership.membersip.PrintFakturActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintFakturActivity;
 import com.dbelgamembership.membersip.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FakturFragment extends Fragment implements AdapterListTransaksiPayment.AdapterListTransactionCallback {
+public class    FakturFragment extends Fragment implements AdapterListTransaksiPayment.AdapterListTransactionCallback {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -84,6 +82,8 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
     int current_index = 0;
     //PAGENATION
 
+    private boolean isOnCreate = true;
+
     public FakturFragment() {
         // Required empty public constructor
     }
@@ -109,9 +109,18 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!isOnCreate) {
+         getDataUser();
+        }
+    }
+
     private void getDataUser() {
         idUser = sessionManager.getPID();
         Log.e(TAG, "ID USER SEARCH : " + idUser);
+        url = Http.server;
         url = url + "payment/list?customer=" + sessionManager.getPID();
         getDataTransaksi();
     }
@@ -166,7 +175,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                             } else {
                                 Snack("Data Terakhir !");
                             }
-
+                            isOnCreate = false;
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
                             Snack("Data SO Error !");
@@ -189,7 +198,6 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -245,9 +253,7 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
         dialog1.dismiss();
-
     }
-
 
     private void getDataTransaksi() {
         Log.e(TAG, "URL : " + url);
@@ -265,7 +271,6 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
                             Log.e(TAG, "masuk 1");
-
                             Log.e(TAG, "masuk 2");
                             if (response != null) {
                                 Log.e(TAG, "masuk 3");
@@ -301,7 +306,6 @@ public class FakturFragment extends Fragment implements AdapterListTransaksiPaym
                             Log.e(TAG, "onResponse: " + e.getMessage());
                             Snack("Data Faktur Error !");
                             rvTransaksi.setVisibility(View.GONE);
-
                         }
 
                     }

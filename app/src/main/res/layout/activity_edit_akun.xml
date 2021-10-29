@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+
     android:id="@+id/mainLayout"
     android:orientation="vertical"
     android:weightSum="1"
@@ -8,315 +9,363 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".EditAkun">
+    tools:context=".Screen.Setting.EditAkun">
 
 
-    <RelativeLayout
-        android:elevation="8sp"
-        android:background="@drawable/background_grad_biru"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:background="@color/biruBelga"
+        android:elevation="4dp"
+        app:elevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.35">
+        android:layout_height="?attr/actionBarSize"
+        tools:ignore="MissingConstraints">
 
-
-        <ImageView
-            android:id="@+id/backArrow"
-            android:layout_marginLeft="16sp"
-            android:layout_marginTop="16sp"
-            android:src="@drawable/ic_baseline_arrow_back_24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:tint="@color/black" />
-
-        <TextView
-            android:textSize="16dp"
-            android:textStyle="bold"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="16dp"
-            android:text="Edit Profile"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <RelativeLayout
-            android:layout_centerInParent="true"
-            android:layout_width="120dp"
-            android:layout_height="120dp">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/imgPengguna"
-                android:src="@mipmap/ic_launcher"
-                android:layout_centerInParent="true"
-                android:layout_width="156dp"
-                android:layout_height="156dp" />
-
-            <ImageView
-                android:visibility="gone"
-                android:id="@+id/ubahImage"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:src="@drawable/ic_baseline_camera"
-                android:layout_alignParentRight="true" />
-
-
-        </RelativeLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-
-            android:layout_marginVertical="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="32dp"
-            android:id="@+id/LoginPhoneNumber"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/darkBiruBelga">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:enabled="false"
-                android:id="@+id/namaPengguna"
-                android:textSize="14sp"
-                android:inputType="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Nama pengguna"
-                android:textColor="@color/darkBiruBelga" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-    </RelativeLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.6">
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginVertical="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/darkBiruBelga">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:enabled="false"
-                android:id="@+id/alamatPengguna"
-                android:textSize="14sp"
-                android:inputType="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Alamat pengguna"
-                android:textColor="@color/darkBiruBelga" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginVertical="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/darkBiruBelga">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:enabled="false"
-                android:id="@+id/teleponPengguna"
-                android:textSize="14sp"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Telepon pengguna"
-                android:textColor="@color/darkBiruBelga" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginVertical="16dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginHorizontal="32dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:hintTextColor="@color/darkBiruBelga">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:enabled="false"
-                android:id="@+id/emailPengguna"
-                android:textSize="14sp"
-                android:inputType="textEmailAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Email pengguna"
-                android:textColor="@color/darkBiruBelga" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
+        <androidx.appcompat.widget.Toolbar
+            android:textAlignment="center"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/layoutUbahAkun"
-                android:visibility="visible"
-                android:elevation="16dp"
-                android:layout_marginHorizontal="16dp"
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:text="Edit Akun"
+                android:fontFamily="@font/hammer_font"
+                android:layout_gravity="center" />
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="15dp">
 
-                    <RelativeLayout
-                        android:id="@+id/btnUbahAkun"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="15dp">
+        </androidx.appcompat.widget.Toolbar>
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_baseline_edit_24" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-                    </RelativeLayout>
+    <RelativeLayout
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+        android:layout_width="match_parent"
+        android:background="@color/biruBelga"
+        android:layout_height="match_parent">
 
-                </androidx.cardview.widget.CardView>
+        <View
+            android:layout_marginTop="56dp"
+            android:background="@drawable/background_support"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-                <TextView
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:layout_marginLeft="32dp"
+                android:layout_centerInParent="true"
+                android:layout_width="120dp"
+                android:layout_height="120dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgPengguna"
+                    android:src="@mipmap/ic_launcher"
+                    android:layout_centerInParent="true"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp" />
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/ubahImage"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_baseline_camera"
+                    android:layout_alignParentRight="true"
+                    app:tint="@color/black" />
+
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.6">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginHorizontal="32dp"
+                    android:id="@+id/LoginPhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="Ubah Akun" />
+                    app:hintTextColor="@color/darkBiruBelga">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layoutSimpanAkun"
-                android:visibility="gone"
-                android:elevation="16dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="15dp">
-
-                    <RelativeLayout
-                        android:id="@+id/btnSimpanAkun"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:enabled="false"
+                        android:fontFamily="@font/hammer_font"
+                        android:id="@+id/namaPengguna"
+                        android:textSize="14sp"
+                        android:inputType="text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="15dp">
+                        android:hint="Nama pengguna"
+                        android:textColor="@color/greyBelha" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_baseline_check_24" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginHorizontal="32dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="Simpan Akun" />
+                    app:hintTextColor="@color/darkBiruBelga">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layoutBatalSimpan"
-                android:visibility="gone"
-                android:elevation="16dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="15dp">
-
-                    <RelativeLayout
-                        android:id="@+id/btnBatalSimpan"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:enabled="false"
+                        android:id="@+id/alamatPengguna"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/hammer_font"
+                        android:inputType="text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="15dp">
+                        android:hint="Alamat pengguna"
+                        android:textColor="@color/greyBelha" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_baseline_close_24" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginHorizontal="32dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:gravity="center"
-                    android:text="Batal Simpan" />
+                    app:hintTextColor="@color/darkBiruBelga">
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layoutUbahPassword"
-                android:visibility="visible"
-                android:elevation="16dp"
-                android:gravity="center_horizontal"
-                android:layout_marginHorizontal="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardCornerRadius="15dp">
-
-                    <RelativeLayout
-                        android:id="@+id/btnUbahPassword"
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:enabled="false"
+                        android:id="@+id/teleponPengguna"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/hammer_font"
+                        android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="15dp">
+                        android:hint="Telepon pengguna"
+                        android:textColor="@color/greyBelha" />
 
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/ic_baseline_lock_24" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    </RelativeLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_marginVertical="16dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginHorizontal="32dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:enabled="false"
+                        android:id="@+id/emailPengguna"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/hammer_font"
+                        android:inputType="textEmailAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Email pengguna"
+                        android:textColor="@color/greyBelha" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:gravity="center"
-                    android:text="Ubah Password" />
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/layoutUbahAkun"
+                        android:visibility="visible"
+                        android:elevation="16dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/btnUbahAkun"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="15dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_baseline_edit_24" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="Ubah Akun" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutSimpanAkun"
+                        android:visibility="gone"
+                        android:elevation="16dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/btnSimpanAkun"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="15dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_baseline_check_24" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="Simpan Akun" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutBatalSimpan"
+                        android:visibility="gone"
+                        android:elevation="16dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/btnBatalSimpan"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="15dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_baseline_close_24" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="Batal Simpan" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layoutUbahPassword"
+                        android:visibility="visible"
+                        android:elevation="16dp"
+                        android:gravity="center_horizontal"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:cardCornerRadius="15dp">
+
+                            <RelativeLayout
+                                android:id="@+id/btnUbahPassword"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:padding="15dp">
+
+                                <ImageView
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:src="@drawable/ic_baseline_lock_24" />
+
+                            </RelativeLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center"
+                            android:text="Ubah Password" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_alignParentBottom="true"
+                        android:src="@drawable/dbelga"
+                        android:layout_marginBottom="16sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp" />
+
+                </RelativeLayout>
+
 
             </LinearLayout>
+
 
         </LinearLayout>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-</LinearLayout>
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

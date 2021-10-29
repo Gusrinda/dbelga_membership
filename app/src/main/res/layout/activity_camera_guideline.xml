@@ -2,9 +2,10 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#DFFFFFFF"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CameraGuideline">
+    tools:context=".Screen.User.Verifikasi.CameraGuideline">
 
     <RelativeLayout
         android:padding="16dp"
@@ -13,8 +14,21 @@
         tools:ignore="UselessLeaf">
 
 
-        <FrameLayout
+        <TextView
+            android:id="@+id/textPetunjuk"
+            android:textStyle="bold"
+            android:textColor="@color/biruBelga"
+            android:textSize="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="4dp"
+            android:gravity="center"
+            android:fontFamily="@font/hammer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
 
+
+        <FrameLayout
             android:layout_above="@id/layoutBawah"
             android:layout_marginVertical="86dp"
             android:layout_width="match_parent"
@@ -45,6 +59,7 @@
         </FrameLayout>
 
         <RelativeLayout
+            android:gravity="center_vertical"
             android:layout_marginBottom="32dp"
             android:id="@+id/layoutBawah"
             android:layout_alignParentBottom="true"
@@ -52,14 +67,18 @@
             android:layout_height="86dp"
            >
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_centerInParent="true"
+            <Button
                 android:id="@+id/btn_ambil_foto"
-                android:backgroundTint="@color/colorPrimary"
-                android:src="@drawable/ic_photo_camera_black_48dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:ignore="ContentDescription" />
+                android:text="Ambil Foto"
+                android:background="@drawable/button_round_theme"
+                android:drawableTop="@drawable/ic_baseline_camera"
+                android:textColor="@color/white"
+                android:drawableTint="@color/white"
+                android:padding="8dp"
+                android:gravity="center"
+                android:layout_marginHorizontal="32dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
 
         </RelativeLayout>
 

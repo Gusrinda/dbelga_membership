@@ -1,12 +1,12 @@
 
 package com.dbelgamembership.membersip.Model.modelBarang;
 
-import java.io.Serializable;
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
 
 
 public class ModelBarang implements Serializable, Parcelable
@@ -14,7 +14,7 @@ public class ModelBarang implements Serializable, Parcelable
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private Boolean success;
     @SerializedName("msgServer")
     @Expose
     private MsgServer msgServer;
@@ -34,27 +34,22 @@ public class ModelBarang implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 6428111982478850324L;
+    private final static long serialVersionUID = 8899701475779197731L;
 
     protected ModelBarang(android.os.Parcel in) {
-        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.msgServer = ((MsgServer) in.readValue((MsgServer.class.getClassLoader())));
     }
 
     public ModelBarang() {
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
-    }
-
-    public ModelBarang withSuccess(boolean success) {
-        this.success = success;
-        return this;
     }
 
     public MsgServer getMsgServer() {
@@ -63,11 +58,6 @@ public class ModelBarang implements Serializable, Parcelable
 
     public void setMsgServer(MsgServer msgServer) {
         this.msgServer = msgServer;
-    }
-
-    public ModelBarang withMsgServer(MsgServer msgServer) {
-        this.msgServer = msgServer;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

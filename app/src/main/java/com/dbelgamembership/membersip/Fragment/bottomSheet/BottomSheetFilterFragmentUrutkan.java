@@ -1,30 +1,20 @@
 package com.dbelgamembership.membersip.Fragment.bottomSheet;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.dbelgamembership.membersip.Fragment.bottomSheet.Adapter.AdapterListKategori;
-import com.dbelgamembership.membersip.KatalogActivity;
-import com.dbelgamembership.membersip.databinding.FragmentBottomSheetFilterBinding;
+import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
 import com.dbelgamembership.membersip.databinding.FragmentBottomSheetSortBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-
-import static com.dbelgamembership.membersip.Fragment.bottomSheet.Adapter.AdapterListKategori.selected_position;
-import static com.dbelgamembership.membersip.SplashActivity.listArrayKategori;
-
-//import static com.dbelgamembership.membersip.KatalogActivity.dismissDialog;
+//import static com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity.dismissDialog;
 
 
 public class BottomSheetFilterFragmentUrutkan extends BottomSheetDialogFragment {

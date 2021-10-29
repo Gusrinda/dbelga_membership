@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MembershipPilih">
+    tools:context=".Screen.User.Membership.MembershipPilih">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,23 +57,24 @@
                 android:layout_height="wrap_content" />
 
             <androidx.cardview.widget.CardView
-                app:cardCornerRadius="15dp"
-                android:visibility="visible"
                 android:id="@+id/cardMember"
                 android:layout_marginHorizontal="32dp"
-                android:layout_marginTop="12sp"
-                android:layout_marginBottom="4dp"
-                android:layout_width="match_parent"
-                android:layout_height="173dp">
+                android:layout_marginVertical="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="172dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp">
 
                 <RelativeLayout
+                    android:background="@drawable/card_reguler"
                     android:padding="16dp"
                     android:id="@+id/layoutCardMember"
-                    android:background="@drawable/member_premium"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <LinearLayout
+                        android:layout_marginTop="40dp"
                         android:id="@+id/headerCard"
                         android:weightSum="3"
                         android:layout_width="match_parent"
@@ -87,7 +88,7 @@
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:textSize="10sp"
+                                android:textSize="8sp"
                                 android:text="NAMA MEMBER"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
@@ -96,66 +97,14 @@
                             <TextView
                                 android:id="@+id/txtNamaMember"
                                 android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:text="Nama Member"
+                                android:textSize="14sp"
+                                android:text="NAMA MEMBER ADALAH"
                                 android:textStyle="bold"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
-                        <LinearLayout
-                            android:gravity="end"
-                            android:orientation="vertical"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content">
-
-                            <ImageView
-                                android:layout_width="60dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/dbelga" />
-
-                            <LinearLayout
-                                android:id="@+id/bintangPremium"
-                                android:visibility="visible"
-                                android:gravity="end"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <ImageView
-                                    android:layout_marginHorizontal="4dp"
-                                    android:src="@drawable/star"
-                                    android:layout_width="15dp"
-                                    android:layout_height="15dp" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/bintangGold"
-                                android:visibility="gone"
-                                android:gravity="end"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-
-                                <ImageView
-                                    android:layout_marginHorizontal="4dp"
-                                    android:src="@drawable/star"
-                                    android:layout_width="15dp"
-                                    android:layout_height="15dp" />
-
-                                <ImageView
-                                    android:layout_marginHorizontal="4dp"
-                                    android:src="@drawable/star"
-                                    android:layout_width="15dp"
-                                    android:layout_height="15dp" />
-
-                            </LinearLayout>
-
-
-                        </LinearLayout>
 
                     </LinearLayout>
 
@@ -163,19 +112,20 @@
                         android:layout_marginTop="8dp"
                         android:layout_below="@id/headerCard"
                         android:id="@+id/bodyCard"
-                        android:weightSum="3"
-                        android:layout_width="match_parent"
+                        android:weightSum="2"
+                        android:orientation="horizontal"
+                        android:layout_width="fill_parent"
                         android:layout_height="wrap_content">
 
 
                         <LinearLayout
                             android:orientation="vertical"
-                            android:layout_weight="2"
+                            android:layout_weight="1"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:textSize="10sp"
+                                android:textSize="8sp"
                                 android:text="NOMOR MEMBERSHIP"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
@@ -184,33 +134,22 @@
                             <TextView
                                 android:id="@+id/txtNomorMember"
                                 android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:text="1234"
+                                android:textSize="14sp"
+                                android:text="1111"
                                 android:textStyle="bold"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" />
 
                         </LinearLayout>
 
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_below="@id/bodyCard"
-                        android:id="@+id/footerCard"
-                        android:weightSum="3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-
                         <LinearLayout
+                            android:id="@+id/layoutExpired"
                             android:orientation="vertical"
-                            android:layout_weight="2"
-                            android:layout_width="0dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
                             <TextView
-                                android:textSize="10sp"
+                                android:textSize="8sp"
                                 android:text="EXP DATE"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
@@ -219,38 +158,11 @@
                             <TextView
                                 android:id="@+id/txtExpDate"
                                 android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:text="12/2021"
-                                android:textStyle="bold"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:gravity="end"
-                            android:orientation="vertical"
-                            android:layout_weight="1"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content">
-
-                            <TextView
-                                android:textSize="10sp"
-                                android:text="STATUS MEMBER"
+                                android:textSize="14sp"
+                                android:text="11/2021"
                                 android:textStyle="bold"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
-
-                            <TextView
-                                android:textAlignment="viewEnd"
-                                android:id="@+id/txtStatusMember"
-                                android:textColor="@color/black"
-                                android:textSize="18dp"
-                                android:text="PREMIUM"
-                                android:textStyle="bold"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="end" />
 
                         </LinearLayout>
 
@@ -258,7 +170,6 @@
 
 
                 </RelativeLayout>
-
 
             </androidx.cardview.widget.CardView>
 

@@ -5,306 +5,360 @@
     xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_marginVertical="6dp"
     android:elevation="3dp"
     app:cardCornerRadius="7dp"
     card_view:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
         android:padding="4dp"
-        android:id="@+id/barangItem"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:background="@drawable/bg_gambar"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@+id/imageBarang"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="1dp"
-            android:background="@drawable/bg_gambar2"
-            android:cropToPadding="true"
-            android:scaleType="centerInside" />
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <LinearLayout
+
+            android:id="@+id/barangItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingLeft="8dp"
-            android:paddingTop="2dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="8dp">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageBarang"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/bg_gambar2"
+                android:cropToPadding="true"
+                android:scaleType="centerInside" />
 
             <LinearLayout
-                android:weightSum="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/namaBarang"
-                    android:layout_weight="0.85"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:maxLines="2"
-                    android:minLines="2"
-                    android:textSize="15sp"
-                    android:text="Nama Barang"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <RelativeLayout
-                    android:id="@+id/hapusItemWishlist"
-                    android:gravity="center"
-                    android:layout_weight="0.15"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent">
-
-                    <ImageView
-                        android:src="@drawable/ic_baseline_delete_24"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:visibility="gone"
-                android:weightSum="1"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <TextView
-                    android:id="@+id/kategoriBarang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:text="Kategori"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/black"
-                    android:textSize="12dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" : "
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/black"
-                    android:textSize="12dp" />
-
-                <TextView
-                    android:id="@+id/merkBarang"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:text="Merek Barang"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/black"
-                    android:textSize="12dp" />
-
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/tvKodeBarang"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="2dp"
-                android:layout_marginRight="2dp"
-                android:text="Kode Barang"
-                android:textAppearance="?android:textAppearanceMedium"
-                android:textColor="@color/black"
-                android:textSize="12dp" />
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:visibility="gone"
-                    android:id="@+id/hargaDiskonBarang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:background="@drawable/strike_through"
-                    android:text="Rp. 100.000"
-                    android:textAppearance="?android:textAppearanceSmall"
-                    android:textSize="10dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/hargaBarang"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="2dp"
-                    android:layout_marginRight="2dp"
-                    android:text="Rp. 80.000"
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="@color/design_default_color_primary_dark"
-                    android:textSize="13dp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/hargaDiskonBarang"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="2dp"-->
-            <!--                android:layout_marginRight="2dp"-->
-            <!--                android:background="@drawable/strike_through"-->
-            <!--                android:text="Rp. 100.000"-->
-            <!--                android:textAppearance="?android:textAppearanceSmall"-->
-            <!--                android:textSize="10dp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <LinearLayout
-                android:id="@+id/layoutStokWishlist"
-                android:weightSum="2"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical"
+                android:paddingLeft="8dp"
+                android:paddingTop="2dp"
+                android:paddingRight="8dp"
+                android:paddingBottom="8dp">
 
                 <LinearLayout
-                    android:textAlignment="viewStart"
                     android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textSize="10sp"
-                        android:text="STOK BUTUH : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/textStokWishlist"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/namaBarang"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="-"
-                        android:textSize="12sp"
+                        android:maxLines="2"
+                        android:minLines="2"
+                        android:textSize="15sp"
+                        android:text="Nama Barang"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
-
                 </LinearLayout>
 
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/layoutStok"
-                android:weightSum="2"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:textAlignment="viewStart"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:textSize="10sp"
-                        android:text="STOK BARANG : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:textStyle="bold"
-                        android:id="@+id/textStokOutlet"
-                        android:textSize="12sp"
-                        android:text="-"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-
-                </LinearLayout>
 
                 <LinearLayout
                     android:visibility="gone"
-                    android:textAlignment="viewStart"
+                    android:weightSum="1"
                     android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <TextView
-                        android:textSize="10sp"
-                        android:text="Stok Gudang : "
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
 
                     <TextView
-                        android:textStyle="bold"
-                        android:id="@+id/textStokGudang"
-                        android:textSize="12sp"
-                        android:text="-"
+                        android:id="@+id/kategoriBarang"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:text="Kategori"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" : "
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/merkBarang"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:text="Merek Barang"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/tvKodeBarang"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="2dp"
+                    android:layout_marginRight="2dp"
+                    android:text="Kode Barang"
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="@color/black"
+                    android:textSize="12dp" />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/hargaRealBarang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:background="@drawable/strike_through"
+                        android:text="Rp. 100.000"
+                        android:textAppearance="?android:textAppearanceSmall"
+                        android:textSize="10dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/hargaBarang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp"
+                        android:text="Rp. 80.000"
+                        android:textAppearance="?android:textAppearanceMedium"
+                        android:textColor="@color/design_default_color_primary_dark"
+                        android:textSize="13dp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutNamaToko"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:textAlignment="viewStart"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="10sp"
+                            android:text="TOKO : "
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:id="@+id/textNamaToko"
+                            android:textSize="12sp"
+                            android:text="-"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutStokWishlist"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:textAlignment="viewStart"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="10sp"
+                            android:text="WISHLIST : "
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:id="@+id/textStokWishlist"
+                            android:textSize="12sp"
+                            android:text="-"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layoutStok"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:textAlignment="viewStart"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="10sp"
+                            android:text="STOK BARANG : "
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:id="@+id/textStokOutlet"
+                            android:textSize="12sp"
+                            android:text="-"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:textAlignment="viewStart"
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:textSize="10sp"
+                            android:text="Stok Gudang : "
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:textStyle="bold"
+                            android:id="@+id/textStokGudang"
+                            android:textSize="12sp"
+                            android:text="-"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+
+                <TextView
+                    android:id="@+id/tvStok"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+
+                <!--<TextView-->
+                <!--android:id="@+id/tvKodeBarang"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:visibility="visible"/>-->
+
+                <TextView
+                    android:id="@+id/tvBarcodeBarang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvUri"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
             </LinearLayout>
-
-
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/hargaBarang"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:layout_marginLeft="2dp"-->
-            <!--                android:layout_marginRight="2dp"-->
-            <!--                android:text="Rp. 80.000"-->
-            <!--                android:textAppearance="?android:textAppearanceMedium"-->
-            <!--                android:textColor="#FF5722"-->
-            <!--                android:textSize="13dp"-->
-            <!--                android:textStyle="bold" />-->
-
-            <TextView
-                android:id="@+id/tvStok"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <!--<TextView-->
-            <!--android:id="@+id/tvKodeBarang"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:visibility="visible"/>-->
-
-            <TextView
-                android:id="@+id/tvBarcodeBarang"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvUri"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone" />
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_marginHorizontal="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:background="@drawable/outline_border"
+                android:id="@+id/hapusItemWishlist"
+                android:gravity="center"
+                android:padding="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_delete_24"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:background="@drawable/outline_border"
+                android:orientation="horizontal"
+                android:id="@+id/btn_tambahKeranjang"
+                android:layout_weight="1"
+                android:layout_marginLeft="8dp"
+                android:padding="8dp"
+                android:gravity="center"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:fontFamily="@font/hammer_font"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:id="@+id/text_Button"
+                    android:text="+ Tambah Keranjang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
     </LinearLayout>
+
+
+
 </androidx.cardview.widget.CardView>

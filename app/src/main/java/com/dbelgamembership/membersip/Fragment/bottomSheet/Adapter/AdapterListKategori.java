@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dbelgamembership.membersip.R;
 
 import static com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragment.katekategori;
-//import static com.dbelgamembership.membersip.KatalogActivity.kategoriDipilih;
+//import static com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity.kategoriDipilih;
 
 import java.util.List;
 import java.util.Random;

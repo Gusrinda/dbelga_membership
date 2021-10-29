@@ -1,147 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView
+    android:id="@+id/cardLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
+    android:layout_marginTop="8dp"
     android:layout_marginHorizontal="8sp"
     app:cardCornerRadius="10sp"
-    app:contentPadding="4dp"
+    app:contentPadding="12dp"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <LinearLayout
+        android:layout_marginVertical="4dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <LinearLayout
-            android:id="@+id/lnContent"
-            android:padding="4dp"
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:weightSum="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="5"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
 
-                <ImageView
-                    android:layout_weight="0.1"
-                    android:src="@drawable/ic_baseline_shopping_bag_24"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/txt_kodeTransaksi"
+                    android:text="SOSL2108120003"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/hammer_font"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
-                <LinearLayout
-                    android:layout_weight="0.7"
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/txt_kodeBelanja"
-                        android:text="Transaksi Belanja"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/txt_tanggalBelanja"
-                        android:text="12-12-2012"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
                 <TextView
-                    android:id="@+id/txt_statusBelanja"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:textSize="12sp"
-                    android:textColor="@color/white"
-                    android:text="status"
-                    android:background="@drawable/button_round_theme"
-                    android:layout_weight="0.2"
-                    android:layout_width="0dp"
+                    android:id="@+id/txt_tanggalTransaksi"
+                    android:text="2021-08-12 09:00:00"
+                    android:textSize="10sp"
+                    android:fontFamily="@font/hammer_font"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
-            <View
-                android:id="@+id/viewGarisTotal"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginHorizontal="4dp"
-                android:layout_marginVertical="4dp"
-                android:background="#6E6E6E" />
-
-
             <LinearLayout
-                android:layout_marginVertical="4dp"
-                android:weightSum="1"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:layout_weight="5"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content">
 
-
-                <LinearLayout
-                    android:layout_weight="0.35"
-                    android:layout_marginLeft="12sp"
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:textSize="10sp"
-                        android:text="Total Belanja"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/txt_totalBelanja"
-                        android:textSize="12sp"
-                        android:text="Rp. 100.000"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_weight="0.35"
-                    android:layout_marginLeft="12sp"
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:id="@+id/txt_poin"
-                        android:textSize="10sp"
-                        android:text="Poin Belanja"
-                        android:textStyle="bold"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/txt_poinBelanja"
-                        android:textSize="12sp"
-                        android:text="0 Poin"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-                </LinearLayout>
+                <TextView
+                    android:gravity="end"
+                    android:id="@+id/txt_nominalTransaksi"
+                    android:text="Rp. 65.000"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/hammer_font"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
                 <TextView
-                    android:id="@+id/txt_lihatDetail"
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:textSize="8sp"
-                    android:textColor="@color/darkBiruBelga"
-                    android:text="klik untuk\nlihat detail"
-                    android:layout_weight="0.3"
-                    android:layout_width="0dp"
+                    android:gravity="end"
+                    android:id="@+id/txt_poinTransaksi"
+                    android:text="+ 6 Poin"
+                    android:textColor="@color/hijauBelga"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/hammer_font"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+
 
             </LinearLayout>
 
         </LinearLayout>
+
+        <View
+            android:layout_marginVertical="4dp"
+            android:background="@color/greyBelha"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <LinearLayout
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:textColor="@color/black"
+                android:text="Status : "
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:id="@+id/status_transaksi"
+                android:fontFamily="@font/hammer_font"
+                android:textColor="@color/hijauBelga"
+                android:text="TRANSACTION DONE"
+                android:textSize="14sp"
+                android:gravity="end"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
 
 </androidx.cardview.widget.CardView>

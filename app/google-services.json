@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "945174211088",
+    "project_id": "dbelga-apps",
+    "storage_bucket": "dbelga-apps.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945174211088:android:c8c6083c8a841ee3737895",
+        "android_client_info": {
+          "package_name": "com.dbelga.kasir"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945174211088-n377tkc6r9vconrsso31iaf83qd1ljau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgjP6r8r9nEkf4Q-vRZ4_w7g7mXCgDpBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945174211088-n377tkc6r9vconrsso31iaf83qd1ljau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945174211088:android:a4bb61d9453135d1737895",
+        "android_client_info": {
+          "package_name": "com.dbelgamembership.membersip"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945174211088-n377tkc6r9vconrsso31iaf83qd1ljau.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgjP6r8r9nEkf4Q-vRZ4_w7g7mXCgDpBE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "945174211088-n377tkc6r9vconrsso31iaf83qd1ljau.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

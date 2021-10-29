@@ -1,21 +1,22 @@
 
 package com.dbelgamembership.membersip.Model.ModelPayment;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class PaymentDetail implements Serializable, Parcelable
 {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private Integer id;
     @SerializedName("pembayaran_code")
     @Expose
     private String pembayaranCode;
@@ -62,10 +63,10 @@ public class PaymentDetail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -7335226943933260605L;
+    private final static long serialVersionUID = -4224077284257403506L;
 
     protected PaymentDetail(android.os.Parcel in) {
-        this.id = ((int) in.readValue((int.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.paymentType = ((String) in.readValue((String.class.getClassLoader())));
         this.optionBank = ((String) in.readValue((String.class.getClassLoader())));
@@ -81,17 +82,12 @@ public class PaymentDetail implements Serializable, Parcelable
     public PaymentDetail() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public PaymentDetail withId(int id) {
-        this.id = id;
-        return this;
     }
 
     public String getPembayaranCode() {
@@ -102,22 +98,12 @@ public class PaymentDetail implements Serializable, Parcelable
         this.pembayaranCode = pembayaranCode;
     }
 
-    public PaymentDetail withPembayaranCode(String pembayaranCode) {
-        this.pembayaranCode = pembayaranCode;
-        return this;
-    }
-
     public String getPaymentType() {
         return paymentType;
     }
 
     public void setPaymentType(String paymentType) {
         this.paymentType = paymentType;
-    }
-
-    public PaymentDetail withPaymentType(String paymentType) {
-        this.paymentType = paymentType;
-        return this;
     }
 
     public String getOptionBank() {
@@ -128,22 +114,12 @@ public class PaymentDetail implements Serializable, Parcelable
         this.optionBank = optionBank;
     }
 
-    public PaymentDetail withOptionBank(String optionBank) {
-        this.optionBank = optionBank;
-        return this;
-    }
-
     public String getOptionsAccount() {
         return optionsAccount;
     }
 
     public void setOptionsAccount(String optionsAccount) {
         this.optionsAccount = optionsAccount;
-    }
-
-    public PaymentDetail withOptionsAccount(String optionsAccount) {
-        this.optionsAccount = optionsAccount;
-        return this;
     }
 
     public String getCharge() {
@@ -154,22 +130,12 @@ public class PaymentDetail implements Serializable, Parcelable
         this.charge = charge;
     }
 
-    public PaymentDetail withCharge(String charge) {
-        this.charge = charge;
-        return this;
-    }
-
     public String getChargeAmount() {
         return chargeAmount;
     }
 
     public void setChargeAmount(String chargeAmount) {
         this.chargeAmount = chargeAmount;
-    }
-
-    public PaymentDetail withChargeAmount(String chargeAmount) {
-        this.chargeAmount = chargeAmount;
-        return this;
     }
 
     public String getTotal() {
@@ -180,22 +146,12 @@ public class PaymentDetail implements Serializable, Parcelable
         this.total = total;
     }
 
-    public PaymentDetail withTotal(String total) {
-        this.total = total;
-        return this;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public PaymentDetail withCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-        return this;
     }
 
     public String getUpdatedAt() {
@@ -206,22 +162,12 @@ public class PaymentDetail implements Serializable, Parcelable
         this.updatedAt = updatedAt;
     }
 
-    public PaymentDetail withUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
-    }
-
     public String getCardHolder() {
         return cardHolder;
     }
 
     public void setCardHolder(String cardHolder) {
         this.cardHolder = cardHolder;
-    }
-
-    public PaymentDetail withCardHolder(String cardHolder) {
-        this.cardHolder = cardHolder;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
