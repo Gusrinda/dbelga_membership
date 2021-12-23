@@ -1,5 +1,7 @@
 package com.dbelgamembership.membersip.app.Adapter;
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -43,7 +45,7 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView kodeBelanja, tanggalBelanja, statusBelanja, totalBelanja, poinBelanja;
+        TextView kodeBelanja, tanggalBelanja, statusBelanja, totalBelanja, poinBelanja, namaToko;
         CardView cardLayout;
 
         public ViewHolder(@NonNull View itemView) {
@@ -54,6 +56,7 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
             poinBelanja = itemView.findViewById(R.id.txt_poinTransaksi);
             statusBelanja = itemView.findViewById(R.id.status_transaksi);
             cardLayout = itemView.findViewById(R.id.cardLayout);
+            namaToko = itemView.findViewById(R.id.txtNamaToko);
         }
     }
 
@@ -85,7 +88,14 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
             holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
         }
 
-//        Log.e("TAG", "status: " + status);
+        String idGudang = String.valueOf(item.getGudang());
+
+        for (int i = 0; i < modelGudangs.size(); i++) {
+            if (idGudang == modelGudangs.get(i).getIdGudang()) {
+                holder.namaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
+            }
+        }
+
         holder.statusBelanja.setText(status);
         holder.totalBelanja.setText("Rp. " + nf.format(item.getGrandtotal()));
         int totalBelanja = item.getGrandtotal();

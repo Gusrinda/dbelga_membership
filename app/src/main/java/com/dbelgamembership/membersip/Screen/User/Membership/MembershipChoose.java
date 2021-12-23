@@ -37,8 +37,10 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.User.BoardingMemberDebet;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.MembershipFoto;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipChooseBinding;
 import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -111,25 +113,35 @@ public class MembershipChoose extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String yangDipilih = sp_Membership.getSelectedItem().toString();
                 Drawable image;
-                if (yangDipilih.equals("Reguler")) {
-                    choosenMembership = "REGULER";
+                if (yangDipilih.equals("Silver")) {
+                    choosenMembership = "SILVER";
                     cardMember.setVisibility(View.VISIBLE);
-                    image = getResources().getDrawable(R.drawable.card_reguler);
+                    image = getResources().getDrawable(R.drawable.card_member_silver);
                     binding.layoutCardMember.setBackground(image);
                     binding.layoutMemberGold.setVisibility(View.GONE);
                     binding.layoutExpired.setVisibility(View.GONE);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
-                    binding.txtNomorMember.setText("RGL_" + sessionManager.getPID());
-                } else {
-                    choosenMembership = "DEBET";
+                    binding.txtNomorMember.setText("SLV_" + sessionManager.getPID());
+                } else if (yangDipilih.equals("Gold")) {
+                    choosenMembership = "GOLD";
                     cardMember.setVisibility(View.VISIBLE);
-                    image = getResources().getDrawable(R.drawable.card_debet);
+                    image = getResources().getDrawable(R.drawable.card_member_gold);
                     binding.layoutCardMember.setBackground(image);
                     binding.layoutMemberGold.setVisibility(View.VISIBLE);
                     binding.layoutExpired.setVisibility(View.VISIBLE);
                     binding.txtExpDate.setText(deadlen);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
-                    binding.txtNomorMember.setText("DBT_" + sessionManager.getPID());
+                    binding.txtNomorMember.setText("GLD_" + sessionManager.getPID());
+                } else {
+                    choosenMembership = "PLATINUM";
+                    cardMember.setVisibility(View.VISIBLE);
+                    image = getResources().getDrawable(R.drawable.card_member_platinum);
+                    binding.layoutCardMember.setBackground(image);
+                    binding.layoutMemberGold.setVisibility(View.VISIBLE);
+                    binding.layoutExpired.setVisibility(View.VISIBLE);
+                    binding.txtExpDate.setText(deadlen);
+                    binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
+                    binding.txtNomorMember.setText("PLT_" + sessionManager.getPID());
                 }
             }
 
@@ -142,13 +154,14 @@ public class MembershipChoose extends AppCompatActivity {
         pilihMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (sessionManager.getMembership().equals(choosenMembership)) {
                     Snack("Anda telah menjadi member dengan status yang dipilih !");
-                } else if (choosenMembership.equals("DEBET")) {
-                    Intent intent = new Intent(MembershipChoose.this, BoardingMemberDebet.class);
-                    startActivity(intent);
-                } else {
+                }
+//                else if (choosenMembership.equals("DEBET")) {
+//                    Intent intent = new Intent(MembershipChoose.this, BoardingMemberDebet.class);
+//                    startActivity(intent);
+//                }
+                else {
                     url = Http.server;
                     url = url + "update-status/" + sessionManager.getPID();
                     updateDataUser();
@@ -186,7 +199,7 @@ public class MembershipChoose extends AppCompatActivity {
                             Date expiredMembership = expired.getTime();
                             String expiredMber = formatExpDate.format(expiredMembership);
 
-                            if (choosenMembership.equals("DEBET")) {
+                            if (!choosenMembership.equals("SILVER")) {
                                 paydate = deadlen;
                                 expdate = expiredMber;
                             } else {
@@ -195,7 +208,7 @@ public class MembershipChoose extends AppCompatActivity {
                             }
 
                             final Calendar expiredMember = Calendar.getInstance();
-                            if (choosenMembership.equals("REGULER")) {
+                            if (choosenMembership.equals("SILVER")) {
                                 expiredMember.add(Calendar.YEAR, 100);
                             } else {
                                 expiredMember.add(Calendar.YEAR, 1);
@@ -250,42 +263,11 @@ public class MembershipChoose extends AppCompatActivity {
                             dialog1.dismiss();
                             pilihMember.setClickable(true);
                             if (response != null) {
-                                Log.e(TAG, "URL " + url);
-                                Log.e(TAG, "onResponseSimpan: " + response);
-                                String responseX = String.valueOf(response);
-                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                                boolean success = root.get("success").getAsBoolean();
-                                Log.e("", "Test : " + success);
-                                if (success == false) {
-                                    Snack(response.getJSONArray("msgServer").toString());
-                                } else {
-                                    JSONObject dataPengguna = response.getJSONObject("msgServer");
-                                    String id = dataPengguna.getString("id");
-                                    String name = dataPengguna.getString("name");
-                                    String email = dataPengguna.getString("main_email");
-                                    String membership = dataPengguna.getString("status_member");
-                                    String statusPayment = dataPengguna.getString("status_payment");
-                                    String deadlinePay = dataPengguna.getString("pay_date");
-                                    String dateExpired = dataPengguna.getString("expired_date");
-                                    Log.e("", "id User: " + id);
-                                    Log.e("", "nama User: " + name);
-                                    Log.e("", "email User: " + email);
-                                    Log.e("", "membership: " + membership);
-                                    Log.e("", "statusPayment: " + statusPayment);
-                                    Log.e("", "expired membership: " + dateExpired);
-                                    Log.e(TAG, "onResponse: " + paydate);
-                                    sessionManager.setMembership(membership);
-                                    if (statusPayment.equals("TRUE")) {
-                                        Intent intent = new Intent(MembershipChoose.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Intent intent = new Intent(MembershipChoose.this, KonfirmasiMembership.class);
-                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
+                                finishAffinity();
+                                sessionManager.setMembership(choosenMembership);
+                                sessionManager.setKeyDeadlinePayment(paydate);
+                                Intent intent = new Intent(MembershipChoose.this, SplashActivity.class);
+                                startActivity(intent);
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());

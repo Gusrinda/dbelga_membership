@@ -1,5 +1,7 @@
 package com.dbelgamembership.membersip.app.Adapter;
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
@@ -52,7 +54,7 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView kodeBelanja, tanggalBelanja, statusBelanja, totalBelanja, poinBelanja;
+        TextView kodeBelanja, tanggalBelanja, statusBelanja, totalBelanja, poinBelanja, namaToko;
         CardView cardLayout;
 
 
@@ -64,6 +66,7 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
             poinBelanja = itemView.findViewById(R.id.txt_poinTransaksi);
             statusBelanja = itemView.findViewById(R.id.status_transaksi);
             cardLayout = itemView.findViewById(R.id.cardLayout);
+            namaToko = itemView.findViewById(R.id.txtNamaToko);
         }
     }
 
@@ -80,7 +83,7 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
 
         Log.e(TAG, "Data : " + item.getStatusPengiriman());
 
-        if (item.getFlagKirim()) {
+//        if (item.getFlagKirim()) {
             if (item.getStatus().equals("approved")) {
                 statusPengiriman = "Transaksi Selesai";
                 holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
@@ -88,26 +91,19 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
                 statusPengiriman = item.getStatusPengiriman();
                 holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
             }
-        } else {
-            statusPengiriman = "Tidak Pakai Jasa Kirim";
-            holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
+
+        String idGudang = String.valueOf(item.getGudang());
+
+        for (int i = 0; i < modelGudangs.size(); i++) {
+            if (idGudang == modelGudangs.get(i).getIdGudang()) {
+                holder.namaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
+            }
         }
 
 
         Log.e("TAG", "status Pengiriman : " + statusPengiriman);
         holder.statusBelanja.setText(statusPengiriman);
         int total = (int) Double.parseDouble(item.getTotalBelanja());
-//        for (OrderDetail orderDetail : item.getOrderDetail()) {
-//            List<com.dbelgamembership.membersip.Model.ModelPayment.Item> items = orderDetail.getItems();
-//            for (int i = 0; i < items.size(); i++) {
-//                Item barang = items.get(i);
-//                total += (Double.parseDouble(barang.getTotal() == null ? "0" : barang.getTotal()));
-//            }
-//        }
-//
-//        for (AddItem barang : item.getAddItem()) {
-//                total += (int) (Double.parseDouble(barang.getCustomerPrice()) - Double.parseDouble(barang.getDiskonPotongan()));
-//        }
 
         int grandCOK = total;
         holder.totalBelanja.setText("Rp. " + nf.format(grandCOK));

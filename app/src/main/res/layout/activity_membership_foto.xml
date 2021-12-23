@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout
+    android:id="@+id/lnContent"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -52,14 +53,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
         <ScrollView
-            android:layout_above="@id/btn_Kirim_Identitas"
+            android:layout_above="@id/layoutBottom"
             android:fillViewport="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:ignore="UselessLeaf">
-
 
             <LinearLayout
                 android:orientation="vertical"
@@ -85,7 +84,7 @@
 
                     <TextView
                         android:fontFamily="@font/hammer"
-                        android:text="1. Foto Identitas"
+                        android:text="1. Foto Kartu Identitas"
                         android:textSize="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -213,9 +212,57 @@
                 </LinearLayout>
 
                 <ImageView
-
                     android:visibility="gone"
                     android:id="@+id/img_fotoSelfie"
+                    android:layout_marginVertical="8dp"
+                    android:layout_marginStart="12dp"
+                    android:layout_width="156dp"
+                    android:layout_height="156dp"/>
+
+                <LinearLayout
+                    android:id="@+id/linearLayoutFotoRumah"
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:fontFamily="@font/hammer"
+                        android:text="4. Foto Rumah"
+                        android:textSize="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:visibility="invisible"
+                        android:id="@+id/img_check_fotoRumah"
+                        android:layout_marginLeft="4dp"
+                        android:src="@drawable/ic_baseline_check_24"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:tint="@color/material_green_900" />
+
+                    <RelativeLayout
+                        android:id="@+id/btn_UploadFotoRumah"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_marginRight="16dp"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginLeft="48dp"
+                            android:src="@drawable/ic_baseline_drive_folder_upload_24"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"/>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/img_fotoRumah"
                     android:layout_marginVertical="8dp"
                     android:layout_marginStart="12dp"
                     android:layout_width="156dp"
@@ -227,17 +274,40 @@
         </ScrollView>
 
 
-        <Button
-            android:background="@drawable/button_round_theme"
-            android:layout_marginBottom="16dp"
+        <LinearLayout
+            android:id="@+id/layoutBottom"
             android:layout_alignParentBottom="true"
-            android:textColor="@color/white"
-            android:fontFamily="@font/hammer"
-            android:id="@+id/btn_Kirim_Identitas"
-            android:textAllCaps="false"
-            android:text="Kirim Identitas"
+            android:layout_marginBottom="16dp"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_marginBottom="8dp"
+                android:id="@+id/btn_set_alamatRumah"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_round_theme"
+                android:backgroundTint="@color/material_orange_400"
+                android:fontFamily="@font/hammer"
+                android:text="Ambil Alamat Rumah"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/btn_Kirim_Identitas"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/button_round_theme"
+                android:fontFamily="@font/hammer"
+                android:text="Kirim Identitas"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
+
+
 
 
     </RelativeLayout>

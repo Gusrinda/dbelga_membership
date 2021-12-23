@@ -45,6 +45,7 @@ import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelUser.MsgServer;
@@ -106,8 +107,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
 
     Runnable myRunnable = new Runnable() {
         public void run() {
-            // do something
-            //call function
             loop++;
             cekUserLoop();
             Log.e(TAG, "run: " + loop);
@@ -124,16 +123,15 @@ public class KonfirmasiMembership extends AppCompatActivity {
             public void onResponse(Call<ModelUser> call, retrofit2.Response<ModelUser> response) {
                 ModelUser object = response.body();
 
-                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getName() );
-                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getStatusPayment() );
+                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getName());
+                Log.e(TAG, "onResponse: " + object.getMsgServer().get(0).getStatusPayment());
 
 
                 boolean status_pay = Boolean.parseBoolean(object.getMsgServer().get(0).getStatusPayment());
                 if (status_pay) {
-                    Toast.makeText(KonfirmasiMembership.this, "Selamat bergabung menjadi member debet dbelga !", Toast.LENGTH_LONG).show();
-                    finish();
-                    Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
+                    Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
                     startActivity(intent);
+                    finish();
                 }
             }
 
@@ -147,21 +145,21 @@ public class KonfirmasiMembership extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e(TAG, "onDestroy: DESTROY" );
+        Log.e(TAG, "onDestroy: DESTROY");
         handler.removeCallbacks(myRunnable);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onDestroy: PAUSE" );
+        Log.e(TAG, "onDestroy: PAUSE");
         handler.removeCallbacks(myRunnable);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e(TAG, "onResume: RESUME" );
+        Log.e(TAG, "onResume: RESUME");
         handler.postDelayed(myRunnable, 2000);
     }
 
@@ -182,7 +180,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
         Date tanggalNow = baru.getTime();
         String tanggal = formatExp.format(tanggalNow);
 
-        tanggalDeadline = getIntent().getStringExtra("TANGGAL_DEADLINE");
+        tanggalDeadline = sessionManager.getKeyDeadlinePayment();
         tanggalSekarang = tanggal;
         Log.e(TAG, "tanggal deadline : " + tanggalDeadline);
         Log.e(TAG, "tanggal sekarang : " + tanggalSekarang);
@@ -200,7 +198,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
                         .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
                         .start();
 
-//                OpenGallery();
             }
         });
 
@@ -247,7 +244,6 @@ public class KonfirmasiMembership extends AppCompatActivity {
         btnHubungi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //So you can get the edittext value
                 String mobileNumber = nomorWA.getText().toString();
                 String message = "Halo saya adalah Member Belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName();
                 boolean installed = appInstalledOrNot("com.whatsapp");
@@ -294,10 +290,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             MsgServer dataMember = modelMember.getMsgServer().get(0);
 
 
-
                             image = "";
 
-                            if (dataMember.getImagePay() != null ) {
+                            if (dataMember.getImagePay() != null) {
                                 image = dataMember.getImagePay().equals("null") ? "" : dataMember.getImagePay();
                             }
 
@@ -336,7 +331,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
 //        pilihMember.setEnabled(false);
         AlertDialog.Builder builder1 = new AlertDialog.Builder(KonfirmasiMembership.this);
         builder1.setTitle("Konfirmasi");
-        builder1.setMessage("Anda yakin untuk membatalkan proses membership ?\n(Status membership anda akan berubah menjadi Reguler)");
+        builder1.setMessage("Anda yakin untuk membatalkan proses membership ?\n(Status membership anda akan berubah menjadi SILVER)");
         builder1.setCancelable(false);
         builder1.setPositiveButton(
                 "Ya",
@@ -349,8 +344,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             type = "post";
                             JSONObject postData = new JSONObject();
                             Log.e(TAG, "choosenMember : " + choosenMembership);
-                            choosenMembership = "REGULER";
-
+                            choosenMembership = "SILVER";
                             try {
                                 postData.put("status_member", choosenMembership);
                                 postData.put("pay_date", "");
@@ -359,6 +353,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             }
                             if (isOnline()) {
                                 Log.e(TAG, "URL : " + url);
+
                                 SimpanPost(postData);
                             }
                         } else {
@@ -402,37 +397,11 @@ public class KonfirmasiMembership extends AppCompatActivity {
                             dialog1.dismiss();
 //                            pilihMember.setClickable(true);
                             if (response != null) {
-                                Log.e(TAG, "URL " + url);
-                                Log.e(TAG, "onResponseSimpan: " + response);
-                                String responseX = String.valueOf(response);
-                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                                boolean success = root.get("success").getAsBoolean();
-                                Log.e("", "Test : " + success);
-                                if (success == false) {
-                                    Snack(response.getJSONArray("msgServer").toString());
-                                } else {
-                                    JSONObject dataPengguna = response.getJSONObject("msgServer");
-                                    String id = dataPengguna.getString("id");
-                                    String name = dataPengguna.getString("name");
-                                    String email = dataPengguna.getString("main_email");
-                                    String membership = dataPengguna.getString("status_member");
-                                    String statusPayment = dataPengguna.getString("status_payment");
-                                    Log.e("", "id User: " + id);
-                                    Log.e("", "nama User: " + name);
-                                    Log.e("", "email User: " + email);
-                                    Log.e("", "membership: " + membership);
-                                    Log.e("", "statusPayment: " + statusPayment);
-                                    sessionManager.setMembership(membership);
-                                    if (statusPayment.equals("TRUE")) {
-                                        Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    } else {
-                                        Intent intent = new Intent(KonfirmasiMembership.this, KonfirmasiMembership.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
+                                sessionManager.setMembership(choosenMembership);
+                                sessionManager.setKeyDeadlinePayment("");
+                                Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
+                                startActivity(intent);
+                                finish();
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
@@ -529,7 +498,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                         type = "post";
                         JSONObject postData = new JSONObject();
                         Log.e(TAG, "choosenMember : " + choosenMembership);
-                        choosenMembership = "REGULER";
+                        choosenMembership = "SILVER";
 
                         try {
                             postData.put("status_member", choosenMembership);
@@ -548,7 +517,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                 final long DELAY = 2000; // milliseconds
                 androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(KonfirmasiMembership.this).create();
                 alertDialog.setTitle("PERHATIAN");
-                alertDialog.setMessage("Akun anda melebihi batas waktu untuk proses verifikasi membership DEBET, akun anda akan dialihkan menjadi akun REGULER.\nanda dapat mengubah kembali menjadi member debet dalam pengaturan akun aplikasi");
+                alertDialog.setMessage("Akun anda melebihi batas waktu untuk proses verifikasi membership DBELGA, akun anda akan dialihkan menjadi akun SILVER.\nAnda dapat mengubah kembali menjadi member debet dalam pengaturan akun aplikasi");
                 alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -557,7 +526,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                 type = "post";
                                 JSONObject postData = new JSONObject();
                                 Log.e(TAG, "choosenMember : " + choosenMembership);
-                                choosenMembership = "REGULER";
+                                choosenMembership = "SILVER";
 
                                 try {
                                     postData.put("status_member", choosenMembership);

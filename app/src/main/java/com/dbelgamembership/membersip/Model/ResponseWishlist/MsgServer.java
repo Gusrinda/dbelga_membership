@@ -2,18 +2,20 @@
 package com.dbelgamembership.membersip.Model.ResponseWishlist;
 
 import java.io.Serializable;
-import android.os.Parcel;
+import javax.annotation.Generated;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Generated("jsonschema2pojo")
 public class MsgServer implements Serializable, Parcelable
 {
 
     @SerializedName("id_produk")
     @Expose
-    private int idProduk;
+    private Integer idProduk;
     @SerializedName("gambar")
     @Expose
     private String gambar;
@@ -23,22 +25,25 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("code_product")
     @Expose
     private String codeProduct;
-    @SerializedName("qty_stok")
-    @Expose
-    private int qtyStok;
     @SerializedName("qty")
     @Expose
-    private int qty;
+    private String qty;
+    @SerializedName("id_gudang")
+    @Expose
+    private Integer idGudang;
+    @SerializedName("qty_stok")
+    @Expose
+    private double qtyStok;
     @SerializedName("price")
     @Expose
     private Price price;
-    public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
+    public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public MsgServer createFromParcel(Parcel in) {
+        public MsgServer createFromParcel(android.os.Parcel in) {
             return new MsgServer(in);
         }
 
@@ -48,32 +53,28 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 3674765621048004265L;
+    private final static long serialVersionUID = 4550613377690107450L;
 
-    protected MsgServer(Parcel in) {
-        this.idProduk = ((int) in.readValue((int.class.getClassLoader())));
+    protected MsgServer(android.os.Parcel in) {
+        this.idProduk = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.gambar = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
-        this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
-        this.qty = ((int) in.readValue((int.class.getClassLoader())));
+        this.qty = ((String) in.readValue((String.class.getClassLoader())));
+        this.idGudang = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyStok = ((Double) in.readValue((Double.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public int getIdProduk() {
+    public Integer getIdProduk() {
         return idProduk;
     }
 
-    public void setIdProduk(int idProduk) {
+    public void setIdProduk(Integer idProduk) {
         this.idProduk = idProduk;
-    }
-
-    public MsgServer withIdProduk(int idProduk) {
-        this.idProduk = idProduk;
-        return this;
     }
 
     public String getGambar() {
@@ -84,22 +85,12 @@ public class MsgServer implements Serializable, Parcelable
         this.gambar = gambar;
     }
 
-    public MsgServer withGambar(String gambar) {
-        this.gambar = gambar;
-        return this;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public MsgServer withName(String name) {
-        this.name = name;
-        return this;
     }
 
     public String getCodeProduct() {
@@ -110,35 +101,28 @@ public class MsgServer implements Serializable, Parcelable
         this.codeProduct = codeProduct;
     }
 
-    public MsgServer withCodeProduct(String codeProduct) {
-        this.codeProduct = codeProduct;
-        return this;
-    }
-
-    public int getQtyStok() {
-        return qtyStok;
-    }
-
-    public void setQtyStok(int qtyStok) {
-        this.qtyStok = qtyStok;
-    }
-
-    public MsgServer withQtyStok(int qtyStok) {
-        this.qtyStok = qtyStok;
-        return this;
-    }
-
-    public int getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 
-    public MsgServer withQty(int qty) {
-        this.qty = qty;
-        return this;
+    public Integer getIdGudang() {
+        return idGudang;
+    }
+
+    public void setIdGudang(Integer idGudang) {
+        this.idGudang = idGudang;
+    }
+
+    public Double getQtyStok() {
+        return qtyStok;
+    }
+
+    public void setQtyStok(Double qtyStok) {
+        this.qtyStok = qtyStok;
     }
 
     public Price getPrice() {
@@ -149,18 +133,14 @@ public class MsgServer implements Serializable, Parcelable
         this.price = price;
     }
 
-    public MsgServer withPrice(Price price) {
-        this.price = price;
-        return this;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(idProduk);
         dest.writeValue(gambar);
         dest.writeValue(name);
         dest.writeValue(codeProduct);
-        dest.writeValue(qtyStok);
         dest.writeValue(qty);
+        dest.writeValue(idGudang);
+        dest.writeValue(qtyStok);
         dest.writeValue(price);
     }
 

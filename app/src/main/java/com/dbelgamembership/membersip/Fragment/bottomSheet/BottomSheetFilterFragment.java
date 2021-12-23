@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.dbelgamembership.membersip.Fragment.bottomSheet.Adapter.AdapterListKategori;
+import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.MainFragment;
 import com.dbelgamembership.membersip.databinding.FragmentBottomSheetFilterBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -101,7 +104,11 @@ public class BottomSheetFilterFragment extends BottomSheetDialogFragment {
                 } else {
 //                    Toast.makeText(getContext(), filter, Toast.LENGTH_LONG).show();
 
-                    ((KatalogActivity)getActivity()).dismissDialog(filter);
+//                    ((KatalogActivity)getActivity()).dismissDialog(filter);
+                    FragmentManager fm = getParentFragmentManager();
+                    assert fm != null;
+                    MainFragment fragm = (MainFragment)fm.findFragmentById(R.id.frameContainer);
+                    fragm.dismissDialog(filter);
 //                    dismissDialog(filter);
                     dismiss();
                 }

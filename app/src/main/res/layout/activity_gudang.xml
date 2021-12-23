@@ -8,34 +8,6 @@
     android:layout_height="match_parent"
     tools:context=".Screen.Katalog.GudangActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/biruBelga"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        tools:ignore="MissingConstraints">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/biruBelga"
-                app:popupTheme="@style/AppTheme.PopupOverlay"
-                app:title="Pilih Gudang"
-                tools:ignore="HardcodedText">
-
-
-            </androidx.appcompat.widget.Toolbar>
-
-        </RelativeLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
     <RelativeLayout
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
@@ -53,7 +25,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_customer"
                 android:layout_width="64dp"
-                android:layout_height="64dp"/>
+                android:layout_height="64dp" />
 
 
             <LinearLayout
@@ -70,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/hammer_font"
-                    android:text="Hi there, jagoan !"
+                    android:text="Hi there, customer !"
                     android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
@@ -85,19 +57,100 @@
 
         </RelativeLayout>
 
+        <TextView
+            android:id="@+id/txtAlamatPengiriman"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardCustomer"
+            android:layout_marginTop="4dp"
+            android:text="alamat pengiriman . . ." />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="24dp"
             android:id="@+id/rv_Gudang"
-            android:layout_below="@id/cardCustomer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_above="@id/layoutButtonBottom"
+            android:layout_below="@id/txtAlamatPengiriman"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="24dp"
+            android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            android:orientation="vertical"
-            tools:listitem="@layout/item_gudang"
-            />
+            tools:listitem="@layout/item_gudang" />
 
+        <LinearLayout
+            android:layout_above="@id/logoBawawh"
+            android:id="@+id/layoutButtonBottom"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/btnAlamatPengiriman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_round_theme"
+                android:backgroundTint="@color/material_orange_400"
+                android:fontFamily="@font/hammer_font"
+                android:text="Set Alamat Pengiriman" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/btnLoginRegister"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="8dp"
+                android:background="@drawable/button_round_theme"
+                android:backgroundTint="@color/white"
+                android:fontFamily="@font/hammer_font"
+                android:text="Login &amp; Register" />
+
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/btnKeluar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_round_theme"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="4dp"
+                    android:src="@drawable/logout"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="@font/hammer_font"
+                    android:gravity="center"
+                    android:text="Keluar"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <ImageView
+            android:id="@+id/logoBawawh"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/dbelga" />
 
     </RelativeLayout>
 

@@ -67,7 +67,7 @@
                 app:cardMaxElevation="0dp">
 
                 <RelativeLayout
-                    android:background="@drawable/card_reguler"
+                    android:background="@drawable/card_member_silver"
                     android:padding="16dp"
                     android:id="@+id/layoutCardMember"
                     android:layout_width="match_parent"
@@ -188,7 +188,7 @@
                     android:id="@+id/namaMembership"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:text="MEMBER REGULAR"
+                    android:text="MEMBER SILVER"
                     android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

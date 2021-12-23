@@ -17,11 +17,11 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/ppUser"
-                android:layout_marginTop="32dp"
-                android:layout_marginLeft="32dp"
-                app:srcCompat="@mipmap/ic_launcher"
                 android:layout_width="56dp"
-                android:layout_height="56dp" />
+                android:layout_height="56dp"
+                android:layout_marginLeft="32dp"
+                android:layout_marginTop="32dp"
+                app:srcCompat="@mipmap/ic_launcher" />
 
             <TextView
                 android:textSize="14sp"
@@ -48,22 +48,22 @@
 
             <ImageView
                 android:id="@+id/btn_help"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginTop="48dp"
                 android:layout_marginRight="12dp"
                 android:layout_toStartOf="@id/btn_logout"
                 android:src="@drawable/ic_baseline_help_24"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                app:tint="@color/white"/>
+                app:tint="@color/white" />
 
             <ImageView
                 android:id="@+id/btn_logout"
-                android:layout_marginTop="48dp"
-                android:layout_marginRight="38dp"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/logout"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="48dp"
+                android:layout_marginRight="38dp"
+                android:src="@drawable/logout"
                 app:tint="@color/white" />
 
         </RelativeLayout>

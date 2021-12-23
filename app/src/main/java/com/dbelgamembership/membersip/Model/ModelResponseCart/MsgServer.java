@@ -28,10 +28,10 @@ public class MsgServer implements Serializable, Parcelable
     private String namaGudang;
     @SerializedName("total_item")
     @Expose
-    private Integer totalItem;
+    private double totalItem;
     @SerializedName("total_qty")
     @Expose
-    private Integer totalQty;
+    private String totalQty;
     @SerializedName("total_cart")
     @Expose
     private String totalCart;
@@ -54,7 +54,7 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 5873636081566600458L;
+    private final static long serialVersionUID = -8165707101030848236L;
 
     protected MsgServer(android.os.Parcel in) {
         this.idCustomer = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -62,7 +62,7 @@ public class MsgServer implements Serializable, Parcelable
         this.idGudang = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.namaGudang = ((String) in.readValue((String.class.getClassLoader())));
         this.totalItem = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.totalQty = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.totalQty = ((String) in.readValue((String.class.getClassLoader())));
         this.totalCart = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.detailItemCart, (com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart.class.getClassLoader()));
     }
@@ -102,19 +102,19 @@ public class MsgServer implements Serializable, Parcelable
         this.namaGudang = namaGudang;
     }
 
-    public Integer getTotalItem() {
+    public double getTotalItem() {
         return totalItem;
     }
 
-    public void setTotalItem(Integer totalItem) {
+    public void setTotalItem(double totalItem) {
         this.totalItem = totalItem;
     }
 
-    public Integer getTotalQty() {
+    public String getTotalQty() {
         return totalQty;
     }
 
-    public void setTotalQty(Integer totalQty) {
+    public void setTotalQty(String totalQty) {
         this.totalQty = totalQty;
     }
 

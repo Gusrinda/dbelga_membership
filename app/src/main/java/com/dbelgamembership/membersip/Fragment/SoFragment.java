@@ -120,8 +120,8 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     public void onResume() {
         super.onResume();
         if (!isOnCreate) {
-        getDataUser();
-
+            Log.e(TAG, "onResume SO FRAGMENT: " + isOnCreate );
+            getDataUser();
         }
     }
 
@@ -278,6 +278,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                             Log.e(TAG, "masuk 1");
                             Log.e(TAG, "masuk 2");
                             if (response != null) {
+                                itemlist.clear();
                                 Log.e(TAG, "masuk 3");
                                 Gson gson = new Gson();
                                 ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);

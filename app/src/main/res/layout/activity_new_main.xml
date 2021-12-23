@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Screen.NewMainScreen.NewMainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:visibility="visible"
+        android:id="@+id/appBar"
+        app:elevation="0dp"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <LinearLayout
+            android:visibility="visible"
+            android:id="@+id/linearIsiAppBar"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_marginLeft="8dp"
+                android:text="Toko\nDipilih"
+                android:textStyle="bold"
+                android:fontFamily="@font/hammer_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Spinner
+                android:id="@+id/spinner_gudang"
+                android:layout_marginRight="24dp"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"/>
+
+            <ru.nikartm.support.ImageBadgeView
+                android:id="@+id/icon_whislist"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16sp"
+                android:layout_toLeftOf="@id/icon_Keranjang"
+                android:src="@drawable/ic_like"
+                app:tint="@color/biruBelga"
+                app:ibv_badgeColor="#F44336"
+                app:ibv_badgeLimitValue="false"
+                app:ibv_badgeTextColor="#ffffff"
+                app:ibv_badgeTextSize="10sp"
+                app:ibv_badgeTextStyle="bold"
+                app:ibv_fixedBadgeRadius="10dp"
+                app:ibv_maxBadgeValue="99" />
+
+            <ru.nikartm.support.ImageBadgeView
+                android:id="@+id/icon_Keranjang"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_baseline_shopping_cart_24"
+                app:tint="@color/biruBelga"
+                app:ibv_badgeColor="#F44336"
+                app:ibv_badgeLimitValue="false"
+                app:ibv_badgeTextColor="#ffffff"
+                app:ibv_badgeTextSize="10sp"
+                app:ibv_badgeTextStyle="bold"
+                app:ibv_fixedBadgeRadius="10dp"
+                app:ibv_maxBadgeValue="99" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/linearIsiPengaturanAkun"
+            android:gravity="center_vertical"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ppUser"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+
+            <ImageView
+                android:id="@+id/btn_help"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="12dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_baseline_help_24"
+                app:tint="@color/biruBelga" />
+
+            <ImageView
+                android:id="@+id/btn_pengaturan"
+                android:layout_toStartOf="@id/btn_help"
+                android:layout_marginRight="8dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_baseline_settings_24"
+                app:tint="@color/biruBelga" />
+
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/frameContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomNavView"
+        android:layout_below="@id/appBar" />
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_navigation_menu" />
+
+
+</RelativeLayout>

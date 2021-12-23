@@ -30,10 +30,10 @@ public class MsgServer implements Serializable, Parcelable
     private String barcodeProduct;
     @SerializedName("qty_stok")
     @Expose
-    private Integer qtyStok;
+    private double qtyStok;
     @SerializedName("qty")
     @Expose
-    private Integer qty;
+    private String qty;
     @SerializedName("id_gudang")
     @Expose
     private Integer idGudang;
@@ -59,7 +59,7 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 4471272042496625592L;
+    private final static long serialVersionUID = -5108849876716715012L;
 
     protected MsgServer(android.os.Parcel in) {
         this.idProduk = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -67,8 +67,8 @@ public class MsgServer implements Serializable, Parcelable
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.barcodeProduct = ((String) in.readValue((String.class.getClassLoader())));
-        this.qtyStok = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.qty = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyStok = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.qty = ((String) in.readValue((String.class.getClassLoader())));
         this.idGudang = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
@@ -117,19 +117,19 @@ public class MsgServer implements Serializable, Parcelable
         this.barcodeProduct = barcodeProduct;
     }
 
-    public Integer getQtyStok() {
+    public Double getQtyStok() {
         return qtyStok;
     }
 
-    public void setQtyStok(Integer qtyStok) {
+    public void setQtyStok(Double qtyStok) {
         this.qtyStok = qtyStok;
     }
 
-    public Integer getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 

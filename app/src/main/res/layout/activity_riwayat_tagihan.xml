@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".Screen.Limit.RiwayatTagihan">
 
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -20,7 +19,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -46,9 +44,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_Tagihan"
-            tools:listitem="@layout/item_riwayat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_riwayat" />
 
     </RelativeLayout>
 

@@ -215,6 +215,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             private Timer timer = new Timer();
             private final long DELAY = 1000; // milliseconds
 
+
             @Override
             public void afterTextChanged(Editable editable) {
 
@@ -405,7 +406,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                         Log.e(TAG, "onResponse: " + msgServer);
                         katalogBinding.iconKeranjang.setBadgeValue(0);
                     }
-                    
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -655,7 +656,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                                         + filterString;
                             } else {
                                 urlNextPage = modelListItem.getMsgServer().getNextPageUrl() + "&gudang=" + idGudang + "&name=" + URLEncoder.encode(textCariBarang.getText().toString().trim(), "UTF-8");
-
                             }
 
                         } else {
@@ -1165,7 +1165,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         }
 
         Drawable image;
-        if (!position.getImages().equals("http://54.254.194.122/upload/barang/")) {
+        if (!position.getImages().equals(Http.serverNotApi + "upload/barang/")) {
             Glide.with(this)
                     .asBitmap()
                     .load(position.getImages())
@@ -1235,16 +1235,34 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
 
             private Timer timer = new Timer();
-            private final long DELAY = 500; // milliseconds
+            private final long DELAY = 1000; // milliseconds
+
+            boolean isLooping = true;
 
             @Override
             public void afterTextChanged(Editable editable) {
 
-                int qty = Integer.parseInt((editable.toString().length() == 0 ? "0" : editable.toString()));
-                Log.e(TAG, "afterTextChanged: " + qty );
+                int qty = 0;
+                if (editable.length() > 0) {
+                    qty = Integer.parseInt(editable.toString());
+                } else {
+                    qty = 0;
+                }
+
+                if (qty >= stokMax) {
+                    qty = stokMax;
+                    popupBarangBinding.orderQtyOrder.setText(String.valueOf(qty));
+                    btnTambahQTY.setEnabled(false);
+                    btnTambahQTY.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+                    isLooping = false;
+                }  else {
+                    btnTambahQTY.setEnabled(true);
+                    btnTambahQTY.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
+                }
 
                 timer.cancel();
                 timer = new Timer();
+                int finalQty = qty;
                 timer.schedule(
                         new TimerTask() {
                             @Override
@@ -1252,16 +1270,8 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (qty >= stokMax) {
-                                            popupBarangBinding.orderQtyOrder.setText(String.valueOf(stokMax));
-                                            btnTambahQTY.setEnabled(false);
-                                            btnTambahQTY.setBackgroundColor(getResources().getColor(R.color.greyBelha));
-                                        } else {
-                                            btnTambahQTY.setEnabled(true);
-                                            btnTambahQTY.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
-                                        }
 
-                                        int jumlahBarangDibeli = qty;
+                                        int jumlahBarangDibeli = finalQty;
                                         String hargaFix = "0";
 
                                         int batasan1 = (int) Double.parseDouble(position.getBatasan1());
@@ -1309,8 +1319,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
         });
 
-
-
         Log.e(TAG, "AdapterListBarangClicked: " + itemCartList.size());
 
         for (int i = 0; i < itemCartList.size(); i++) {
@@ -1333,8 +1341,6 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             popupBarangBinding.layoutButtonKeranjang.setBackground(d);
             popupBarangBinding.layoutPesanStok.setVisibility(View.GONE);
         }
-
-
 
 
         btnTambah.setOnClickListener(new View.OnClickListener() {
@@ -1550,12 +1556,12 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                             dialog1.dismiss();
                             Log.e(TAG, "Response : " + response);
                             Gson gson = new Gson();
-                            ResponseWishlist responseWishlist = gson.fromJson(String.valueOf(response), ResponseWishlist.class);
+                            ModelSearchWish responseWishlist = gson.fromJson(String.valueOf(response), ModelSearchWish.class);
                             listBarang = responseWishlist.getMsgServer();
 
-                            boolean responseBool = responseWishlist.isSuccess();
+                            boolean responseBool = responseWishlist.getSuccess();
 
-                            if (responseWishlist.isSuccess()) {
+                            if (responseWishlist.getSuccess()) {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 Snack("Berhasil menambahkan barang di Wishlist");
                             } else {

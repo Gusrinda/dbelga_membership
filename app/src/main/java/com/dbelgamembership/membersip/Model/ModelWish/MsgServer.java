@@ -26,16 +26,14 @@ public class MsgServer implements Serializable, Parcelable
     private String codeProduct;
     @SerializedName("qty_stok")
     @Expose
-    private int qtyStok;
+    private double qtyStok;
     @SerializedName("qty")
     @Expose
-    private int qty;
+    private double qty;
     @SerializedName("price")
     @Expose
     private Price price;
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
-
-
         @SuppressWarnings({
             "unchecked"
         })
@@ -56,8 +54,8 @@ public class MsgServer implements Serializable, Parcelable
         this.gambar = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
-        this.qtyStok = ((int) in.readValue((int.class.getClassLoader())));
-        this.qty = ((int) in.readValue((int.class.getClassLoader())));
+        this.qtyStok = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.qty = ((Double) in.readValue((Double.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
@@ -116,28 +114,28 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public int getQtyStok() {
+    public Double getQtyStok() {
         return qtyStok;
     }
 
-    public void setQtyStok(int qtyStok) {
+    public void setQtyStok(Double qtyStok) {
         this.qtyStok = qtyStok;
     }
 
-    public MsgServer withQtyStok(int qtyStok) {
+    public MsgServer withQtyStok(Double qtyStok) {
         this.qtyStok = qtyStok;
         return this;
     }
 
-    public int getQty() {
+    public Double getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(Double qty) {
         this.qty = qty;
     }
 
-    public MsgServer withQty(int qty) {
+    public MsgServer withQty(Double qty) {
         this.qty = qty;
         return this;
     }

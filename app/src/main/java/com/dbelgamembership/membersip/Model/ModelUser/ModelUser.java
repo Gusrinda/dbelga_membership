@@ -1,26 +1,26 @@
 
 package com.dbelgamembership.membersip.Model.ModelUser;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.util.List;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class ModelUser implements Serializable, Parcelable
 {
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private Boolean success;
     @SerializedName("msgServer")
     @Expose
-    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
+    private List<MsgServer> msgServer = null;
     public final static Creator<ModelUser> CREATOR = new Creator<ModelUser>() {
 
 
@@ -37,27 +37,22 @@ public class ModelUser implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 7181067616153652402L;
+    private final static long serialVersionUID = -6796515145435897367L;
 
     protected ModelUser(android.os.Parcel in) {
-        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.ModelUser.MsgServer.class.getClassLoader()));
     }
 
     public ModelUser() {
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
-    }
-
-    public ModelUser withSuccess(boolean success) {
-        this.success = success;
-        return this;
     }
 
     public List<MsgServer> getMsgServer() {
@@ -66,11 +61,6 @@ public class ModelUser implements Serializable, Parcelable
 
     public void setMsgServer(List<MsgServer> msgServer) {
         this.msgServer = msgServer;
-    }
-
-    public ModelUser withMsgServer(List<MsgServer> msgServer) {
-        this.msgServer = msgServer;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

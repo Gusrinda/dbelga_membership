@@ -112,7 +112,6 @@ public class EditAkun extends AppCompatActivity {
             }
         });
 
-
         layoutUbahAkun.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -305,9 +304,12 @@ public class EditAkun extends AppCompatActivity {
                             password = dataUser.getPassword();
                             dateBirth = dataUser.getDateBirth();
 
+                            Log.e(TAG, "onResponse: " + dataUser.getImageCustomer() );
+                            Log.e(TAG, "onResponse: " + dataUser.getImageCustomer() );
+
                             Log.e(TAG, "checkUbah: " + checkUbah);
-                            if (checkUbah == false) {
-                                if (urlImage.equals("http://52.77.225.163/upload/customer-photo/")) {
+                            if (!checkUbah) {
+                                if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
                                     urlImage = "";
                                 } else {
                                     urlImage = dataUser.getImageCustomer();
@@ -338,6 +340,7 @@ public class EditAkun extends AppCompatActivity {
     }
 
     private void taruhDataUser() {
+        Log.e(TAG, "taruhDataUser: " + sessionManager );
         namaPengguna.setText(name);
         alamatPengguna.setText(address);
         nomorPengguna.setText(phone);
@@ -474,18 +477,20 @@ public class EditAkun extends AppCompatActivity {
                                     Gson gson = new Gson();
                                     ResponseLogin modelUser = gson.fromJson(String.valueOf(response), ResponseLogin.class);
 
-                                    String id = dataPengguna.getString("id");
-                                    String name = dataPengguna.getString("name");
-                                    String email = dataPengguna.getString("main_email");
-                                    String membership = dataPengguna.getString("status_member");
+                                    String id = String.valueOf(modelUser.getMsgServer().getId());
+                                    String name = modelUser.getMsgServer().getName();
+                                    String email = modelUser.getMsgServer().getMainEmail();
+                                    String membership = modelUser.getMsgServer().getStatusMember();
+                                    String identitasPelanggan = modelUser.getMsgServer().getIdentitas();
                                     Log.e("", "id User: " + id);
                                     Log.e("", "nama User: " + name);
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
-                                    sessionManager.setLogin(true, id, name, email, membership);
+                                    Log.e("", "identitasPelanggan: " + identitasPelanggan);
+                                    sessionManager.setLogin(true, id, identitasPelanggan, name, email, membership);
                                     sessionManager.setAccountUser(modelUser.getMsgServer().getName(), modelUser.getMsgServer().getMainEmail(), modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                     if (dataPengguna.getString("image_customer") != null) {
-                                        sessionManager.setImage("http://54.254.194.122/upload/customer-photo/" + dataPengguna.getString("image_customer"));
+                                        sessionManager.setImage( Http.serverNotApi + "upload/customer-photo/" + dataPengguna.getString("image_customer"));
                                     }
 
                                 }

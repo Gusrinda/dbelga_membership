@@ -256,7 +256,7 @@ public class AkunSaya extends AppCompatActivity {
         String cekStatus = sessionManager.getMembership();
 
         if (cekStatus.equals("DEBET")) {
-            image = getResources().getDrawable(R.drawable.member_gold);
+            image = getResources().getDrawable(R.drawable.card_member_gold);
             kartuSaya.setBackground(image);
             plafonDebet.setVisibility(View.VISIBLE);
             plafonReguler.setVisibility(View.GONE);

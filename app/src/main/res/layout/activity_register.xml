@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Screen.RegisterActivity">
+    tools:context=".Screen.Registrasi.RegisterActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -28,14 +28,14 @@
             android:src="@drawable/dbelga" />
 
         <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_below="@+id/logoBelga"
             android:id="@+id/judul"
-            android:textStyle="bold"
-            android:textColor="@color/darkBiruBelga"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="REGISTRASI MEMBERSHIP" />
+            android:layout_below="@+id/logoBelga"
+            android:layout_centerHorizontal="true"
+            android:text="REGISTRASI AWAL MEMBERSHIP"
+            android:textColor="@color/darkBiruBelga"
+            android:textStyle="bold" />
 
         <ScrollView
             android:layout_marginTop="8sp"
@@ -72,6 +72,65 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+
+                <RadioGroup
+                    android:layout_marginVertical="8dp"
+                    android:orientation="horizontal"
+                    android:id="@+id/radioGroupKelamin"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/radioJenisLaki"
+                        android:text="Laki laki"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                    <RadioButton
+                        android:id="@+id/radioJenisPerempuan"
+                        android:text="Perempuan"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+                </RadioGroup>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:focusableInTouchMode="false"
+                        android:id="@+id/tanggalLahir"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.6"
+                        android:layout_height="wrap_content"
+                        app:endIconMode="custom"
+                        app:endIconDrawable="@drawable/ic_baseline_calendar"
+                        app:hintTextColor="@color/darkBiruBelga"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:focusable="false"
+                            android:textSize="14dp"
+                            android:id="@+id/txt_tanggalLahir"
+                            android:inputType="text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Tanggal Lahir"
+                            android:textColor="@color/darkBiruBelga" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginVertical="8sp"
                     android:id="@+id/nomorHandphonePelanggan"
@@ -93,6 +152,7 @@
                 </com.google.android.material.textfield.TextInputLayout>
 
 
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginVertical="8sp"
                     android:id="@+id/emailPelanngan"
@@ -111,64 +171,6 @@
                         android:textColor="@color/darkBiruBelga" />
 
                 </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_marginVertical="8sp"
-                    android:id="@+id/alamatPelanggan"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:hintTextColor="@color/darkBiruBelga"
-                    app:counterMaxLength="255"
-                    app:counterEnabled="true">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:textSize="14dp"
-                        android:id="@+id/txt_alamatPelanggan"
-                        android:layout_marginTop="12dp"
-                        android:inputType="textMultiLine"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Alamat Pelanggan"
-                        android:textColor="@color/darkBiruBelga" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <LinearLayout
-                    android:layout_marginVertical="8sp"
-                    android:id="@+id/layoutTanggalLahir"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:focusableInTouchMode="false"
-                        android:id="@+id/tanggalLahir"
-                        android:layout_weight="0.9"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        app:hintTextColor="@color/darkBiruBelga"
-                        android:orientation="horizontal">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:focusableInTouchMode="false"
-                            android:textSize="14dp"
-                            android:id="@+id/txt_tanggalLahir"
-                            android:inputType="text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="Tanggal Lahir"
-                            android:textColor="@color/darkBiruBelga" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageView
-                        android:layout_weight="0.1"
-                        android:src="@drawable/ic_baseline_calendar"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_marginVertical="8sp"
@@ -232,7 +234,8 @@
                 android:layout_marginBottom="8dp"
                 android:id="@+id/btnRegister"
                 android:layout_marginTop="16dp"
-                android:text="Register"
+                android:textAllCaps="false"
+                android:text="Lanjut Pengisian Identitas"
                 android:background="@drawable/button_round_theme"
                 android:layout_marginHorizontal="32dp"
                 android:layout_width="match_parent"

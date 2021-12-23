@@ -39,6 +39,7 @@ import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.User.BoardingMemberDebet;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.MembershipFoto;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipPilihBinding;
 import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
@@ -70,6 +71,9 @@ public class MembershipPilih extends AppCompatActivity {
     SimpleDateFormat formatExp, formatter, formatExpDate;
 
     private ActivityMembershipPilihBinding binding;
+    public static String selectedMembership = "";
+    String pilihan = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +100,7 @@ public class MembershipPilih extends AppCompatActivity {
             public void onClick(View view) {
                 new KAlertDialog(MembershipPilih.this, KAlertDialog.WARNING_TYPE)
                         .setTitleText("Keluar ?")
-                        .setContentText("Keluar dari halaman ini membuat anda menjadi member 'Reguler' secara default\nAnda yakin ?")
+                        .setContentText("Keluar dari halaman ini mengganggap anda logout dari sesi aplikasi, anda yakin ?")
                         .setConfirmText("Ya")
                         .confirmButtonColor(R.color.biruBelga, MembershipPilih.this)
                         .cancelButtonColor(R.color.grey_font, MembershipPilih.this)
@@ -105,6 +109,7 @@ public class MembershipPilih extends AppCompatActivity {
                             public void onClick(KAlertDialog sDialog) {
                                 sDialog.dismissWithAnimation();
                                 finish();
+                                sessionManager.destroySession();
                                 Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
                                 startActivity(intent);
                             }
@@ -133,27 +138,42 @@ public class MembershipPilih extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String yangDipilih = sp_Membership.getSelectedItem().toString();
                 Drawable image;
-                if (yangDipilih.equals("Reguler")) {
+                binding.namaMembership.setText("MEMBER " + yangDipilih.toUpperCase());
+                if (yangDipilih.equals("Silver")) {
+                    selectedMembership = "SILVER";
                     layoutDetail.setVisibility(View.VISIBLE);
-                    image = getResources().getDrawable(R.drawable.card_reguler);
+                    image = getResources().getDrawable(R.drawable.card_member_silver);
                     binding.layoutCardMember.setBackground(image);
-                    memberRegular.setVisibility(View.VISIBLE);
-                    memberGold.setVisibility(View.GONE);
+                    binding.infoMemberReguler.setVisibility(View.VISIBLE);
+                    binding.infoMemberGold.setVisibility(View.GONE);
                     binding.layoutExpired.setVisibility(View.GONE);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
-                    binding.txtNomorMember.setText("RGL_" + sessionManager.getPID());
-                    choosenMembership = "REGULER";
-                } else {
+                    binding.txtNomorMember.setText("SLV" + sessionManager.getPID());
+                    choosenMembership = "SILVER";
+                } else if (yangDipilih.equals("Gold")) {
+                    selectedMembership = "GOLD";
                     layoutDetail.setVisibility(View.VISIBLE);
-                    image = getResources().getDrawable(R.drawable.card_debet);
+                    image = getResources().getDrawable(R.drawable.card_member_gold);
                     binding.layoutCardMember.setBackground(image);
-                    memberRegular.setVisibility(View.GONE);
-                    memberGold.setVisibility(View.VISIBLE);
+                    binding.infoMemberReguler.setVisibility(View.GONE);
+                    binding.infoMemberGold.setVisibility(View.VISIBLE);
                     binding.layoutExpired.setVisibility(View.VISIBLE);
                     binding.txtExpDate.setText(deadlen);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
-                    binding.txtNomorMember.setText("DBT_" + sessionManager.getPID());
-                    choosenMembership = "DEBET";
+                    binding.txtNomorMember.setText("GLD" + sessionManager.getPID());
+                    choosenMembership = "GOLD";
+                } else {
+                    selectedMembership = "PLATINUM";
+                    layoutDetail.setVisibility(View.VISIBLE);
+                    image = getResources().getDrawable(R.drawable.card_member_platinum);
+                    binding.layoutCardMember.setBackground(image);
+                    binding.infoMemberReguler.setVisibility(View.GONE);
+                    binding.infoMemberGold.setVisibility(View.VISIBLE);
+                    binding.layoutExpired.setVisibility(View.VISIBLE);
+                    binding.txtExpDate.setText(deadlen);
+                    binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
+                    binding.txtNomorMember.setText("PLT" + sessionManager.getPID());
+                    choosenMembership = "PLATINUM";
                 }
             }
 
@@ -166,16 +186,27 @@ public class MembershipPilih extends AppCompatActivity {
         pilihMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (choosenMembership.equals("DEBET")) {
-                    Intent intent = new Intent(MembershipPilih.this, BoardingMemberDebet.class);
-                    startActivity(intent);
-                } else {
-                    registerUser();
-                }
-
-
+//                    Intent intent = new Intent(MembershipPilih.this, MembershipFoto.class);
+////                    Intent intent = new Intent(MembershipPilih.this, BoardingMemberDebet.class);
+//                    startActivity(intent);
+                registerUser();
             }
         });
+
+
+        if (getIntent().getStringExtra("pilihan_membership") != null) {
+            pilihan = getIntent().getStringExtra("pilihan_membership");
+        }
+
+        if (pilihan.equals("SILVER")) {
+            binding.spinnerMembership.setSelection(0);
+        } else if (pilihan.equals("GOLD")) {
+            binding.spinnerMembership.setSelection(1);
+        } else if (pilihan.equals("PLATINUM")) {
+            binding.spinnerMembership.setSelection(2);
+        } else {
+            binding.spinnerMembership.setSelection(0);
+        }
 
     }
 
@@ -183,7 +214,7 @@ public class MembershipPilih extends AppCompatActivity {
     public void onBackPressed() {
         new KAlertDialog(MembershipPilih.this, KAlertDialog.WARNING_TYPE)
                 .setTitleText("Keluar ?")
-                .setContentText("Keluar dari halaman ini membuat anda menjadi member 'Reguler' secara default\nAnda yakin ?")
+                .setContentText("Keluar dari halaman ini mengganggap anda logout dari sesi aplikasi, anda yakin ?")
                 .setConfirmText("Ya")
                 .confirmButtonColor(R.color.biruBelga, MembershipPilih.this)
                 .cancelButtonColor(R.color.grey_font, MembershipPilih.this)
@@ -191,9 +222,13 @@ public class MembershipPilih extends AppCompatActivity {
                     @Override
                     public void onClick(KAlertDialog sDialog) {
                         sDialog.dismissWithAnimation();
+//                        finish();
+
                         finish();
+                        sessionManager.destroySession();
                         Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
                         startActivity(intent);
+
                     }
                 })
                 .setCancelText("Tidak")
@@ -239,7 +274,7 @@ public class MembershipPilih extends AppCompatActivity {
                                 String deadlen = formatter.format(deadlineBayar);
 
                                 final Calendar expired = Calendar.getInstance();
-                                if (choosenMembership.equals("REGULER")) {
+                                if (choosenMembership.equals("SILVER")) {
                                     expired.add(Calendar.YEAR, 100);
                                 } else {
                                     expired.add(Calendar.YEAR, 1);
@@ -296,50 +331,10 @@ public class MembershipPilih extends AppCompatActivity {
                             dialog1.dismiss();
                             pilihMember.setClickable(true);
                             if (response != null) {
-                                Log.e(TAG, "URL " + url);
-                                Log.e(TAG, "onResponseSimpan: " + response);
-                                String responseX = String.valueOf(response);
-                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                                boolean success = root.get("success").getAsBoolean();
-                                Log.e("", "Test : " + success);
-                                if (success == false) {
-                                    Snack(response.getJSONArray("msgServer").toString());
-                                } else {
-                                    JSONObject dataPengguna = response.getJSONObject("msgServer");
-                                    String id = dataPengguna.getString("id");
-                                    String name = dataPengguna.getString("name");
-                                    String email = dataPengguna.getString("main_email");
-                                    String membership = dataPengguna.getString("status_member");
-//                                    String createdDate = dataPengguna.getString("created_at");
-                                    String deadlinePay = dataPengguna.getString("pay_date");
-                                    String dateExpired = dataPengguna.getString("expired_date");
-
-                                    Date created = formatExpDate.parse(dateExpired);
-                                    Calendar cal = Calendar.getInstance();
-                                    cal.setTime(created);
-                                    Log.e(TAG, "Expired member : " + cal.getTime());
-                                    Date expiredMember = cal.getTime();
-                                    String expDate = formatExp.format(expiredMember);
-
-                                    Log.e("", "id User: " + id);
-                                    Log.e("", "nama User: " + name);
-                                    Log.e("", "email User: " + email);
-                                    Log.e("", "membership: " + membership);
-                                    Log.e("", "expired: " + expDate);
-
-                                    Log.e("", "deadline: " + deadlinePay);
-                                    sessionManager.setRegister(true, id, name, email, membership, expDate);
-                                    if (membership.equals("REGULER")) {
-                                        Intent intent = new Intent(MembershipPilih.this, MainActivity.class);
-                                        startActivity(intent);
-                                        Toast.makeText(MembershipPilih.this, "Selamat bergabung menjadi member Dbelga !", Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Intent intent = new Intent(MembershipPilih.this, KonfirmasiMembership.class);
-                                        Log.e(TAG, "onResponse: " + deadlinePayment);
-                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
-                                        startActivity(intent);
-                                    }
-                                }
+                                sessionManager.setMembership(choosenMembership);
+                                sessionManager.setKeyDeadlinePayment(deadlinePayment);
+                                Intent intent = new Intent(MembershipPilih.this, MembershipFoto.class);
+                                startActivity(intent);
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
@@ -402,7 +397,6 @@ public class MembershipPilih extends AppCompatActivity {
         memberGold = findViewById(R.id.infoMemberGold);
         pilihMember = findViewById(R.id.btnPilihMembership);
         backArrow = findViewById(R.id.backArrow);
-
     }
 
     private boolean isOnline() {

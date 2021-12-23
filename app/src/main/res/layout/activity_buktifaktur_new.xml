@@ -23,20 +23,12 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title=""
             tools:ignore="HardcodedText">
-
-<!--            <TextView-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="match_parent"-->
-<!--                android:layout_gravity="center_horizontal"-->
-<!--                android:text="Bukti Pembayaran"-->
-<!--                android:textColor="@color/white"-->
-<!--                android:textSize="20dp"-->
-<!--                android:gravity="center"/>-->
-
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_buktifaktur_new" />
+    <include
+        android:id="@+id/contentBuktiFaktur"
+        layout="@layout/content_buktifaktur_new" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

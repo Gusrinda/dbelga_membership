@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.Price;
@@ -68,7 +69,7 @@ public class AdapterListWishlist extends
         try {
             final MsgServer item = list.get(position);
             Drawable image;
-            if (!item.getGambar().equals("http://54.254.194.122/upload/barang/")) {
+            if (!item.getGambar().equals( Http.serverNotApi + "upload/barang/")) {
                 Glide.with(context)
                         .asBitmap()
                         .load(item.getGambar())
@@ -93,7 +94,7 @@ public class AdapterListWishlist extends
             Price harga = item.getPrice();
 
             Log.e(TAG, "MASUK 2");
-            int cekStok = item.getQtyStok();
+            double cekStok = item.getQtyStok();
             Log.e(TAG, "onBindViewHolder: " + cekStok );
             Log.e(TAG, "MASUK 3");
 
@@ -132,7 +133,7 @@ public class AdapterListWishlist extends
                 String harga2 = item.getPrice().getQtyHarga2() == null ? "0" : item.getPrice().getHargaDua();
                 String harga3 = item.getPrice().getQtyHarga3() == null ? "0" : item.getPrice().getHargaTiga();
 
-                int jumlahBarangDibeli = cekStok;
+                double jumlahBarangDibeli = cekStok;
                 String hargaFix = "0";
 
                 if (batasan1 == batasan2) {
@@ -181,6 +182,13 @@ public class AdapterListWishlist extends
                 }
             });
 
+            holder.editWishlist.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mAdapterCallback.AdapterEditListWishlist(item);
+                }
+            });
+
             for (int i = 0; i < GudangActivity.modelGudangs.size(); i++) {
                 if (GudangActivity.modelGudangs.get(i).getIdGudang().equals(String.valueOf(item.getIdGudang()))) {
                         holder.txtNamaToko.setText(GudangActivity.modelGudangs.get(i).getNamaGudang());
@@ -211,6 +219,8 @@ public class AdapterListWishlist extends
         void AdapterListDelete(MsgServer position);
 
         void AdapterListTambahKeranjang(MsgServer position);
+
+        void AdapterEditListWishlist(MsgServer position);
 
     }
 
@@ -243,6 +253,9 @@ public class AdapterListWishlist extends
 
         @BindView(R.id.hapusItemWishlist)
         RelativeLayout hapusWishlist;
+
+        @BindView(R.id.editItemWishlist)
+        RelativeLayout editWishlist;
 
 
         public ViewHolder(View itemView) {

@@ -61,7 +61,7 @@
             android:layout_above="@id/layoutTotalBelanja"
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="56dp">
+            android:layout_height="64dp">
 
             <View
                 android:background="#C1C1C1"
@@ -105,33 +105,65 @@
 
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_weight="5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent">
 
-                    <TextView
-                        android:textSize="12sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Total Jarak"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
 
-                    <TextView
-                        android:id="@+id/txt_Jarak"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="+- 5 Km"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="match_parent">
 
+                        <TextView
+                            android:textSize="12sp"
+                            android:fontFamily="@font/hammer_font"
+                            android:textColor="@color/black"
+                            android:text="Total Jarak"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/txt_Jarak"
+                            android:textSize="16sp"
+                            android:fontFamily="@font/hammer_font"
+                            android:textColor="@color/black"
+                            android:text="+- 5 Km"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+
+
+                    </LinearLayout>
+
+                    <RelativeLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent">
+
+                        <Button
+                            android:id="@+id/btnAlamatPengiriman"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@android:color/transparent"
+                            android:drawableTop="@drawable/ic_baseline_pin_drop_24"
+                            android:drawableTint="@android:color/holo_orange_dark"
+                            android:text="Alamat\nPengiriman"
+                            android:textAllCaps="false"
+                            android:textColor="@android:color/holo_orange_dark"
+                            android:textSize="10dp" />
+
+
+                    </RelativeLayout>
 
                 </LinearLayout>
+
+
 
             </LinearLayout>
 
@@ -140,7 +172,7 @@
 
         <LinearLayout
             android:id="@+id/layoutTotalBelanja"
-            android:layout_above="@id/layoutBottom"
+            android:layout_above="@id/layoutMetodePembayaran"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="56dp">
@@ -221,6 +253,79 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/layoutMetodePembayaran"
+            android:layout_above="@id/layoutBottom"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:background="#C1C1C1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="64dp">
+
+                <LinearLayout
+                    android:layout_marginHorizontal="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:layout_weight="75"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/black"
+                        android:text="Metode Pembayaran"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/txtMetode"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/black"
+                        android:text="metode belum dipilih"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/btn_metodePembayaran"
+                    android:gravity="center"
+                    android:background="@color/material_orange_400"
+                    android:orientation="vertical"
+                    android:layout_weight="25"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@drawable/bg_payment"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp" />
+
+                    <TextView
+                        android:text="Pembayaran"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/layoutBottom"
             android:layout_alignParentBottom="true"
             android:orientation="vertical"
@@ -233,7 +338,6 @@
                 android:layout_height="1dp" />
 
             <LinearLayout
-
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="64dp">
@@ -270,7 +374,7 @@
                 <LinearLayout
                     android:id="@+id/btn_Checkout"
                     android:gravity="center"
-                    android:background="@color/merahBelga"
+                    android:background="@color/greyBelha"
                     android:orientation="vertical"
                     android:layout_weight="25"
                     android:layout_width="0dp"

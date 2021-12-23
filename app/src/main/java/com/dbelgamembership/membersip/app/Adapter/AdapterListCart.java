@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.databinding.ItemCartBinding;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
@@ -60,8 +62,8 @@ public class AdapterListCart extends
         holder.hargaItem.setText(nf.format(Double.parseDouble(detailItemCart.getHarga().getHarga())));
         holder.edtQty.setText(String.valueOf(detailItemCart.getQty()));
 
-        int stokMax = detailItemCart.getStok();
-        int qty = Integer.parseInt(holder.edtQty.getText().toString());
+        double stokMax = detailItemCart.getStok();
+        double qty = Double.parseDouble(holder.edtQty.getText().toString());
 
         int batasan1 = detailItemCart.getHarga().getQtyHarga1();
         int batasan2 = detailItemCart.getHarga().getQtyHarga2();
@@ -79,7 +81,7 @@ public class AdapterListCart extends
             holder.btnTambah.setTextColor(context.getColor(R.color.black));
         }
 
-        int jumlahBarangDibeli = qty;
+        double jumlahBarangDibeli = qty;
         String hargaFix = "0";
 
         if (batasan1 == batasan2) {
@@ -102,14 +104,13 @@ public class AdapterListCart extends
 
         if (diskon > 0) {
             holder.hargaReal.setVisibility(View.VISIBLE);
-            holder.hargaReal.setText("Rp. "+ nf.format(Double.parseDouble(harga1)));
+            holder.hargaReal.setText("Rp. " + nf.format(Double.parseDouble(harga1)));
             holder.hargaItem.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
         } else {
             holder.hargaReal.setVisibility(View.GONE);
             holder.hargaReal.setText("0");
             holder.hargaItem.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
         }
-
 
         holder.totalBarang.setText("Rp. " + nf.format(qty * Double.parseDouble(hargaFix)));
 
@@ -119,21 +120,42 @@ public class AdapterListCart extends
         holder.btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int qty = Integer.parseInt(holder.edtQty.getText().toString());
-                holder.edtQty.setText(String.valueOf(qty + 1));
+                double qty = Double.parseDouble(holder.edtQty.getText().toString());
+
+                qty = qty + 1;
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                String dx = df.format(qty);
+                qty = Double.parseDouble(dx);
+                Log.e(TAG, "onClick: " + qty);
+
+                if (qty > detailItemCart.getStok()) {
+                    holder.edtQty.setText(String.valueOf((detailItemCart.getStok())));
+                } else {
+                    holder.edtQty.setText(String.valueOf(qty));
+                }
+
             }
         });
 
         holder.btnKurang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                double qty = Double.parseDouble(holder.edtQty.getText().toString());
 
-                if (holder.edtQty.getText().toString().equals("1")) {
+                qty = qty - 1;
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                String dx = df.format(qty);
+                qty = Double.parseDouble(dx);
+                Log.e(TAG, "onClick: " + qty);
+
+                if (qty <= 0) {
                     mAdapterCallback.deleteBarang(detailItemCart);
                 } else {
-                    int qty = Integer.parseInt(holder.edtQty.getText().toString());
-                    holder.edtQty.setText(String.valueOf(qty - 1));
+                    holder.edtQty.setText(String.valueOf(qty));
                 }
+
             }
         });
 
@@ -163,16 +185,25 @@ public class AdapterListCart extends
             @Override
             public void afterTextChanged(Editable editable) {
 
-                int qty = Integer.parseInt(holder.edtQty.getText().toString());
+                double check = 0;
+
+                if (editable.length() > 0) {
+                    check = Double.parseDouble(editable.toString());
+                } else {
+                    check = 0;
+                }
+
+                double qty = check;
 
                 if (qty >= stokMax) {
                     holder.btnTambah.setEnabled(false);
                     holder.btnTambah.setTextColor(context.getColor(R.color.greyBelha));
                 } else {
                     holder.btnTambah.setEnabled(true);
+//                    holder.btnKurang.setEnabled(true);
                     holder.btnTambah.setTextColor(context.getColor(R.color.black));
+//                    holder.btnKurang.setTextColor(context.getColor(R.color.black));
                 }
-
 
                 timer.cancel();
                 timer = new Timer();
@@ -206,7 +237,7 @@ public class AdapterListCart extends
     public interface AdapterListGudangCallback {
         void deleteBarang(DetailItemCart detailItemCart);
 
-        void updateQtyBarang(DetailItemCart detailItemCart, int qtyItem);
+        void updateQtyBarang(DetailItemCart detailItemCart, double qtyItem);
 
     }
 

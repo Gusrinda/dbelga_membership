@@ -8,9 +8,9 @@ public class ModelGudang {
     String latGudang;
     String longGudang;
     String textJarak;
-    int valueJarak;
+    double valueJarak;
 
-    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, int valueJarak) {
+    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, double valueJarak) {
         this.namaGudang = namaGudang;
         this.alamatGudang = alamatGudang;
         this.idGudang = idGudang;
@@ -70,7 +70,7 @@ public class ModelGudang {
         this.textJarak = textJarak;
     }
 
-    public int getValueJarak() {
+    public double getValueJarak() {
         return valueJarak;
     }
 

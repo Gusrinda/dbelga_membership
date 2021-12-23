@@ -2,20 +2,20 @@
 package com.dbelgamembership.membersip.Model.ResponseUser;
 
 import java.io.Serializable;
-
+import javax.annotation.Generated;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-
+@Generated("jsonschema2pojo")
 public class ResponseUser implements Serializable, Parcelable
 {
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private Boolean success;
     @SerializedName("msgServer")
     @Expose
     private MsgServer msgServer;
@@ -35,27 +35,22 @@ public class ResponseUser implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 5483051537816037594L;
+    private final static long serialVersionUID = -3645945382619050036L;
 
     protected ResponseUser(android.os.Parcel in) {
-        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.msgServer = ((MsgServer) in.readValue((MsgServer.class.getClassLoader())));
     }
 
     public ResponseUser() {
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
-    }
-
-    public ResponseUser withSuccess(boolean success) {
-        this.success = success;
-        return this;
     }
 
     public MsgServer getMsgServer() {
@@ -64,11 +59,6 @@ public class ResponseUser implements Serializable, Parcelable
 
     public void setMsgServer(MsgServer msgServer) {
         this.msgServer = msgServer;
-    }
-
-    public ResponseUser withMsgServer(MsgServer msgServer) {
-        this.msgServer = msgServer;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {

@@ -298,7 +298,6 @@ public class MainActivity extends AppCompatActivity {
                                     com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
 
                                     String status_member = dataMember.getStatusMember();
-//                                    String updated_at = jsonObject.getString("updated_at");
                                     String expiredMember = dataMember.getExpiredDate();
                                     String ulangTahun = dataMember.getDateBirth();
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -323,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e("", "expired date: " + expDate);
                                     urlImage = dataMember.getImageCustomer();
 
-                                    if (urlImage.equals("http://52.77.225.163/upload/customer-photo/")) {
+                                    if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
                                         urlImage = "";
                                     } else {
                                         urlImage = dataMember.getImageCustomer();
@@ -378,7 +377,7 @@ public class MainActivity extends AppCompatActivity {
                                 ModelWish modelListItem = gson.fromJson(response, ModelWish.class);
                                 List<com.dbelgamembership.membersip.Model.ModelWish.MsgServer> modelItem = modelListItem.getMsgServer();
 
-                                int stokBarang;
+                                double stokBarang;
                                 barangStok = 0;
 
                                 if (modelItem.size() > 0) {
@@ -557,14 +556,12 @@ public class MainActivity extends AppCompatActivity {
             image = getResources().getDrawable(R.drawable.card_reguler);
             bintangPremium.setVisibility(View.VISIBLE);
             bintangGold.setVisibility(View.GONE);
-//            statusMembership.setText("REGULER");
             layoutCardMember.setBackground(image);
             layoutExpired.setVisibility(View.GONE);
         } else if (statusMember.equals("DEBET")) {
             image = getResources().getDrawable(R.drawable.card_debet);
             bintangPremium.setVisibility(View.GONE);
             bintangGold.setVisibility(View.VISIBLE);
-//            statusMembership.setText("DEBET");
             layoutCardMember.setBackground(image);
             layoutExpired.setVisibility(View.VISIBLE);
         }

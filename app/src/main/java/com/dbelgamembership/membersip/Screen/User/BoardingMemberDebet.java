@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.MembershipFoto;
 import com.dbelgamembership.membersip.R;
 import com.github.appintro.AppIntro;
@@ -25,21 +26,21 @@ public class BoardingMemberDebet extends AppIntro {
 
         Log.e(TAG, "onCreate: MASUK HALAMAN BOARDING");
 
-        addSlide(AppIntroFragment.newInstance("Foto",
-                "Lakukan foto sesuai dengan petunjuk (Foto Wajah, Foto KTP, dan Foto Selfie dengan KTP)",
-                R.drawable.bg_foto, ContextCompat.getColor(getApplicationContext(), R.color.boarding1)));
+        addSlide(AppIntroFragment.newInstance("Peringatan",
+                "Pastikan ketika kamu mengisi data verifikasi membership tidak keluar atau menutup aplikasi !\n( Apabila menutup / keluar maka anda akan secara default menjadi member SILVER )",
+                R.drawable.bg_wait, ContextCompat.getColor(getApplicationContext(), R.color.merahBelga)));
 
-        addSlide(AppIntroFragment.newInstance("Tunggu",
-                "Tunggu sebentar, admin akan memproses foto yang kamu upload untuk memverifikasi",
-                R.drawable.bg_wait, ContextCompat.getColor(getApplicationContext(), R.color.boarding2)));
+        addSlide(AppIntroFragment.newInstance("Pilih Membership",
+                "Pilih membership yang anda inginkan ! Benefit tiap membership dapat dilihat di bagian bawah saat memilih membership.",
+                R.drawable.bg_foto, ContextCompat.getColor(getApplicationContext(), R.color.material_blue_200)));
 
-        addSlide(AppIntroFragment.newInstance("Konfirmasi Pembayaran",
-                "Upload foto pembayaran dan tunggu proses konfirmasi dari admin pembayaran DBELGA",
-                R.drawable.bg_payment, ContextCompat.getColor(getApplicationContext(), R.color.boarding3)));
+        addSlide(AppIntroFragment.newInstance("Verifikasi Foto",
+                "Upload foto verifikasi membership DBELGA",
+                R.drawable.bg_foto, ContextCompat.getColor(getApplicationContext(), R.color.material_deep_orange_300)));
 
-        addSlide(AppIntroFragment.newInstance("Selesai",
-                "Selamat anda berhasil menjadi member Debet DBELGA !",
-                R.drawable.bg_finish, ContextCompat.getColor(getApplicationContext(), R.color.boarding4)));
+        addSlide(AppIntroFragment.newInstance("Verifikasi Pembayaran",
+                "Jika anda memilih membership GOLD / PLATINUM maka anda akan diwajibkan membayar biaya administrasi bulanan dan upload bukti pembayaran",
+                R.drawable.bg_payment, ContextCompat.getColor(getApplicationContext(), R.color.material_green_500)));
 
         setTransformer(AppIntroPageTransformerType.Fade.INSTANCE);
 
@@ -49,14 +50,16 @@ public class BoardingMemberDebet extends AppIntro {
     protected void onSkipPressed(@Nullable Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
         finish();
-        startActivity(new Intent(getApplicationContext(), MembershipFoto.class));
+        startActivity(new Intent(getApplicationContext(), MembershipPilih.class));
+//        startActivity(new Intent(getApplicationContext(), MembershipFoto.class));
     }
 
     @Override
     protected void onDonePressed(@Nullable Fragment currentFragment) {
         super.onDonePressed(currentFragment);
         finish();
-        startActivity(new Intent(getApplicationContext(), MembershipFoto.class));
+        startActivity(new Intent(getApplicationContext(), MembershipPilih.class));
+//        startActivity(new Intent(getApplicationContext(), MembershipFoto.class));
     }
 
 

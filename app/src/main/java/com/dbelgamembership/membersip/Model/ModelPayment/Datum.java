@@ -87,6 +87,9 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("rt_code")
     @Expose
     private String rtCode;
+    @SerializedName("gudang")
+    @Expose
+    private Integer gudang;
     @SerializedName("order_detail")
     @Expose
     private List<OrderDetail> orderDetail = null;
@@ -139,6 +142,8 @@ public class Datum implements Serializable, Parcelable
         this.totalBelanja = ((String) in.readValue((String.class.getClassLoader())));
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.rtCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.gudang = ((Integer) in.readValue((String.class.getClassLoader())));
+
         in.readList(this.orderDetail, (com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail.class.getClassLoader()));
         in.readList(this.paymentDetail, (com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail.class.getClassLoader()));
         in.readList(this.addItem, (com.dbelgamembership.membersip.Model.ModelPayment.AddItem.class.getClassLoader()));
@@ -339,6 +344,14 @@ public class Datum implements Serializable, Parcelable
         this.rtCode = rtCode;
     }
 
+    public Integer getGudang() {
+        return gudang;
+    }
+
+    public void setGudang(Integer gudang) {
+        this.gudang = gudang;
+    }
+
     public List<OrderDetail> getOrderDetail() {
         return orderDetail;
     }
@@ -388,6 +401,7 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(totalBelanja);
         dest.writeValue(updatedAt);
         dest.writeValue(rtCode);
+        dest.writeValue(gudang);
         dest.writeList(orderDetail);
         dest.writeList(paymentDetail);
         dest.writeList(addItem);

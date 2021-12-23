@@ -11,8 +11,6 @@ import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
 public class SessionManager {
-    // Shared preferences file name
-    public static final String PREF_NAME = "simpleRunningAssistant";
     public static final String IS_LOGGEDIN = "isLoggedIn";
     public static final String MEMBERCODE = "MemberCode";
     public static final String KEY_NAME = "name";
@@ -23,31 +21,30 @@ public class SessionManager {
     public static final String KEY_IMAGE = "urlImage";
     public static final String KEY_MEMBERSHIP = "membership";
     public static final String KEY_EXPDATE = "expired";
+    public static final String KEY_DEADLINE_PAYMENT = "expired";
     public static final String KEY_EXPOTP = "expOTP";
     public static final String KEY_ROLE = "role";
     public static final String KEY_TOKEN_GCM = "token_gcm";
     private static final String KEY_ID_USER = "key";
     private static final String KEY_PID = "pid";
-    private static final String KEY_USERID = "id_user";
+    private static final String KEY_USERIDENTITAS = "id_user";
     private static final String KEY_BANNER = "false";
     private static final String KEY_TOKEN = "Bearer";
-    private static final String CART_GUDANG = "";
     private static final String KEY_MEMBERID = "memberoid";
     private static final String KEY_ALAMAT_MEMBER = "alamatMember";
     private static final String KEY_TELEFON_MEMBER = "telfMember";
     private static final String KEY_ALAMAT_PENGIRIMAN = "alamatPengiriman";
+    private static final String KEY_LAT = "alamatLat";
+    private static final String KEY_LONG = "alamatLong";
+    private static final String KEY_SET_GUDANG_PENCARIAN = "idGudang";
+    private static final String KEY_SISA_PLAFON = "0";
 
 
-
-
-    // LogCat tag
     private static String TAG = com.dbelgamembership.membersip.Helper.SessionManager.class.getSimpleName();
-    // Shared Preferences
     SharedPreferences pref;
     Editor editor;
     Context _context;
-    // Shared pref mode
-    int PRIVATE_MODE = 0;
+
 
     public SessionManager(Context context) {
         this._context = context;
@@ -56,9 +53,10 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setLogin(boolean isLoggedIn, String pid, String name, String email, String membership) {
+    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership) {
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
+        editor.putString(KEY_USERIDENTITAS, identitasPelanggan);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
@@ -67,16 +65,6 @@ public class SessionManager {
 
         Log.d(TAG, "User login session modified!");
     }
-
-    public void setCartGudang(String cartGudang) {
-        editor.putString(CART_GUDANG, cartGudang);
-        editor.apply();
-    }
-
-    public void clearCartGudang() {
-        editor.putString(CART_GUDANG, "");
-        editor.apply();
-    };
 
     public void setAccountUser(String name, String email, String alamat, String nomorTelp) {
         editor.putString(KEY_NAME, name);
@@ -91,10 +79,21 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setRegister(boolean isLoggedIn, String pid, String name, String email, String membership, String expired) {
+    public void setKeyDeadlinePayment(String deadlinePayment) {
+        editor.putString(KEY_DEADLINE_PAYMENT, deadlinePayment);
+        editor.apply();
+    }
 
+    public void setLatLong(String lat, String lon) {
+        editor.putString(KEY_LAT, lat);
+        editor.putString(KEY_LONG, lon);
+        editor.apply();
+    }
+
+    public void setRegister(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String expired) {
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
+        editor.putString(KEY_USERIDENTITAS, identitasPelanggan);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
@@ -104,17 +103,6 @@ public class SessionManager {
 
         Log.d(TAG, "User login session modified!");
     }
-
-    public void setJumlah(String jml) {
-        editor.putString(KEY_NAME, jml);
-        editor.commit();
-    }
-
-    public void setToken(String token) {
-        editor.putString(KEY_TOKEN_GCM, token);
-        editor.commit();
-    }
-
 
     public void setMembership(String membership) {
         editor.putString(KEY_MEMBERSHIP, membership);
@@ -138,18 +126,24 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void setKeyPoinbelanja(String poinbelanja) {
-        editor.putString(KEY_POINBELANJA, poinbelanja);
+
+    public void setKeySetGudangPencarian(String gudangPencarian) {
+        editor.putString(KEY_SET_GUDANG_PENCARIAN, gudangPencarian);
         editor.commit();
     }
 
+    public String getKeySetGudangPencarian() {
+        return pref.getString(KEY_SET_GUDANG_PENCARIAN, "null");
+    }
 
-    public void setKeyTotaltransaksi(String totaltransaksi) {
-        editor.putString(KEY_TOTALTRANSAKSI, totaltransaksi);
+    public void setKeySisaPlafon(String sisaPlafon) {
+        editor.putString(KEY_SISA_PLAFON, sisaPlafon);
         editor.commit();
     }
 
-
+    public String getSisaPlafon() {
+        return pref.getString(String.valueOf(KEY_SISA_PLAFON), "null");
+    }
 
     public boolean isLoggedIn() {
         return pref.getBoolean(IS_LOGGEDIN, false);
@@ -161,6 +155,10 @@ public class SessionManager {
 
     public String getPID() {
         return pref.getString(KEY_PID, "null");
+    }
+
+    public String getKeyUseridentitas() {
+        return pref.getString(KEY_USERIDENTITAS, "null");
     }
 
     public String getKey() {
@@ -183,11 +181,11 @@ public class SessionManager {
         return pref.getString(KEY_ROLE, "null");
     }
 
-    public  String getKeyPoinbelanja() {
+    public String getKeyPoinbelanja() {
         return pref.getString(KEY_POINBELANJA, "null");
     }
 
-    public  String getKeyTotaltransaksi() {
+    public String getKeyTotaltransaksi() {
         return pref.getString(KEY_TOTALTRANSAKSI, "null");
     }
 
@@ -219,10 +217,21 @@ public class SessionManager {
         return pref.getString(KEY_ALAMAT_PENGIRIMAN, "null");
     }
 
+    public String getKeyLat() {
+        return pref.getString(KEY_LAT, "null");
+    }
+
+    public String getKeyLong() {
+        return pref.getString(KEY_LONG, "null");
+    }
+
     public String getKeyTelefonMember() {
         return pref.getString(KEY_TELEFON_MEMBER, "null");
     }
 
+    public String getKeyDeadlinePayment() {
+        return pref.getString(KEY_DEADLINE_PAYMENT, "null");
+    }
 
 
     public void destroySession() {
@@ -237,37 +246,22 @@ public class SessionManager {
         editor.putString(KEY_TOTALTRANSAKSI, "");
         editor.putString(KEY_MEMBERSHIP, "");
         editor.putString(KEY_EXPDATE, "");
-        editor.putString(KEY_USERID, "");
+        editor.putString(KEY_DEADLINE_PAYMENT, "");
+        editor.putString(KEY_USERIDENTITAS, "");
         editor.putString(KEY_BANNER, "true");
         editor.putString(KEY_MEMBERID, "");
         editor.putString(KEY_EXPOTP, "");
         editor.putString(KEY_TELEFON_MEMBER, "");
         editor.putString(KEY_ALAMAT_MEMBER, "");
         editor.putString(KEY_ALAMAT_PENGIRIMAN, "");
+        editor.putString(KEY_LAT, "");
+        editor.putString(KEY_LONG, "");
+        editor.putString(KEY_SET_GUDANG_PENCARIAN, "");
+        editor.putString(KEY_SISA_PLAFON, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");
 
-    }
-
-    public void updateData(String codemember) {
-        editor.putString(MEMBERCODE, codemember);
-        editor.commit();
-    }
-
-    public void InsertSession(String codemember) {
-        editor.putString(MEMBERCODE, codemember);
-        editor.commit();
-    }
-
-    public void updateDataSession(String Key, String Value) {
-        editor.putString(Key, Value);
-        editor.commit();
-    }
-
-    public void bannerUpdate(String Value) {
-        editor.putString(KEY_BANNER, Value);
-        editor.commit();
     }
 
 
@@ -275,13 +269,6 @@ public class SessionManager {
         return pref.getString(key, "");
     }
 
-    public String getMemberCode() {
-        return pref.getString(MEMBERCODE, "");
-    }
-
-    public String getKeyTokenGcm() {
-        return pref.getString(KEY_TOKEN_GCM, "");
-    }
 
     public String getKeyToken() {
         return pref.getString(KEY_TOKEN, "");

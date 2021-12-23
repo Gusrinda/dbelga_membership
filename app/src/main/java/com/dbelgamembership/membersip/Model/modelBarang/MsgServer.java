@@ -9,7 +9,9 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
+import javax.annotation.Generated;
 
+@Generated("jsonschema2pojo")
 public class MsgServer implements Serializable, Parcelable
 {
 

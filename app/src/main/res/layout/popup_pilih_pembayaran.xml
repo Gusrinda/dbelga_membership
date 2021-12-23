@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/popup_round"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/produk_close"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_above="@id/layoutTotalBelanja"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/produk_kategori"
+            android:layout_centerHorizontal="true"
+            android:text="PEMBAYARAN BELANJA"
+            android:fontFamily="@font/hammer_font"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/produk_image"
+            android:src="@drawable/bg_payment"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Pilih metode pembayaran yang ingin anda gunakan !"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_marginVertical="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radio_COD"
+                android:text="COD"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/radio_Transfer"
+                android:text="Transfer"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <RadioButton
+                android:id="@+id/radio_debitMember"
+                android:text="Debit"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:id="@+id/layoutCOD"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:text="Pembayaran COD : "
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ScrollView
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="1. Pastikan anda memilih pembayaran menggunakan COD"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="2. Lakukan proses checkout dan tunggu barang dikonfirmasi kasir"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="3. Persiapapkan uang pas anda untuk proses pembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="4. Tunggu kurir datang"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="5. Pastikan barang anda sesuai ketika kurir sudah sampai"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="6. Lakukan pembayaran sesuai dengan grandtotal belanja pada kurir Dbelga"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:id="@+id/layoutTransfer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:text="Pembayaran Transfer : "
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ScrollView
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="1. Pastikan anda memilih pembayaran menggunakan transfer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="2. Lakukan transfer sesuai dengan total checkout "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Transfer ke rekening : "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:text="BCA\n0110-01-013660-53-7 "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/black"
+                        android:text="an PT DUNIA BELANJA INDONESIA "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="3. Selesaikan transfer dan jangan lupa screenshot atau foto bukti transfer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="4. Lakukan checkout bersamaan dengan upload bukti transfer anda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:id="@+id/layoutDebit"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:text="Pembayaran Debit : "
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ScrollView
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="1. Pastikan anda memilih pembayaran menggunakan debit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="2. Pastikan sisa limit anda masih cukup untuk pembayaran checkout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="3. Lakukan checkout (jika saldo kurang akan muncul notifikasi !)"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginVertical="8dp"
+        android:id="@+id/layoutBottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <LinearLayout
+            android:id="@+id/layout_btnBayar"
+            android:paddingVertical="12sp"
+            android:gravity="center"
+            android:background="@drawable/button_round_theme"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_baseline_credit_card_24"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:text="Pilih Metode Pembayaran"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

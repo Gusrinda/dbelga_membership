@@ -49,26 +49,26 @@ public class AdapterDetailbarang extends
         Detail item = list.get(position);
         holder.tvNama.setText(item.getName());
         holder.tvCode.setText(item.getCodeProduct());
-        long qty = Long.parseLong(item.getQtyOutlet()) + Long.parseLong(item.getQtyStore()) + item.getIndentValue();
-        long qtyOutlet = Long.parseLong(item.getQtyOutlet());
-        long qtyIndent = item.getIndentValue();
+        double qty = Double.parseDouble(item.getQtyOutlet()) + Double.parseDouble(item.getQtyStore()) + item.getIndentValue();
+        double qtyOutlet = Double.parseDouble(item.getQtyOutlet());
+        double qtyIndent = item.getIndentValue();
         if (item.getIndentValue() != 0) {
                 if (qtyOutlet > 0 ){
-                    holder.tvQty.setText(qtyOutlet + " (STOK) + " + qtyIndent +" (INDENT)");
+                    holder.tvQty.setText(String.valueOf(nf.format((int) qtyOutlet)) + " (STOK) + " + String.valueOf(nf.format((int) qtyIndent)) +" (INDENT)");
                 }   else {
-                    holder.tvQty.setText(qty + " (INDENT)");
+                    holder.tvQty.setText(String.valueOf(nf.format((int) qty)) + " (INDENT)");
                 }
         } else {
-            holder.tvQty.setText(qty +" (STOK)");
+            holder.tvQty.setText(String.valueOf(nf.format((int) qty)) +" (STOK)");
         }
         holder.tvKeterangan.setVisibility(View.GONE);
         holder.tvHarga.setText("Rp. " + nf.format(Double.parseDouble(item.getRealPrice() == null ? item.getPrice() : item.getRealPrice())));
 
-        int totalDiskon = (int) Double.parseDouble(item.getTotalDiskon() == null ? "0" : item.getTotalDiskon());
+        double totalDiskon =  Double.parseDouble(item.getTotalDiskon() == null ? "0" : item.getTotalDiskon());
 
         if (totalDiskon > 0) {
 
-            int potonganDiskon = (int) (totalDiskon / qty);
+            double potonganDiskon =  (totalDiskon / qty);
 
             holder.tvDiskonan.setText("Rp. " + nf.format(totalDiskon) + " ( " + qty + " x " + nf.format(potonganDiskon) + ")");
             holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotalSetelahDiskon())));

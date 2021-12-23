@@ -177,316 +177,313 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_below="@id/bagianCount"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/bagianCount">
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layout_hubungiKonfirmasi"
-            android:gravity="center"
-            android:layout_marginVertical="16dp"
-            android:layout_marginHorizontal="32dp"
-            android:layout_above="@id/layout_UploadFoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_above="@id/layout_UploadFoto"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:textSize="24dp"
-                android:textStyle="bold"
-                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:text="Akun anda sedang diproses oleh admin kami !"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold" />
 
             <TextView
-                android:textSize="12sp"
-                android:textAlignment="center"
-                android:textStyle="italic"
-                android:textColor="@color/merahBelga"
-                android:text="anda dapat menghubungi admin whatsapp kami apabila ada pertanyaan"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="anda dapat menghubungi admin whatsapp kami apabila ada pertanyaan"
+                android:textAlignment="center"
+                android:textColor="@color/merahBelga"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
             <ImageView
-                android:src="@drawable/whatsapp"
                 android:layout_width="200dp"
-                android:layout_height="150dp" />
+                android:layout_height="150dp"
+                android:src="@drawable/whatsapp" />
 
             <TextView
                 android:id="@+id/text_NomorWA"
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textAlignment="center"
-                android:text="+6281559584297"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="+6281559584297"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
             <TextView
-                android:textSize="16dp"
-                android:textColor="@color/black"
-                android:textAlignment="center"
-                android:text="a/n Dbelga Mart Tulungagung"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="a/n Dbelga Mart Tulungagung"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="visible"
             android:id="@+id/layout_infoBayar"
-            android:gravity="center"
-            android:layout_marginVertical="16dp"
-            android:layout_marginHorizontal="32dp"
-            android:layout_above="@id/layout_UploadFoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_above="@id/layout_UploadFoto"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <TextView
-                android:textColor="@color/merahBelga"
-                android:textAlignment="center"
-                android:textStyle="italic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:text="Segera lakukan pembayaran sebesar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
-
-            <TextView
-                android:textSize="24dp"
-                android:textStyle="bold"
                 android:textAlignment="center"
-                android:text="Rp. 50.000"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
-
-            <TextView
-                android:textAlignment="center"
-                android:textStyle="italic"
                 android:textColor="@color/merahBelga"
-                android:text="pada rekening berikut !"
+                android:textStyle="italic" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="Rp. 50.000"
+                android:textAlignment="center"
+                android:textSize="24dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="pada rekening berikut !"
+                android:textAlignment="center"
+                android:textColor="@color/merahBelga"
+                android:textStyle="italic" />
 
             <ImageView
-                android:src="@drawable/bca"
                 android:layout_width="200dp"
-                android:layout_height="150dp" />
+                android:layout_height="150dp"
+                android:src="@drawable/bca" />
 
             <TextView
-                android:textSize="20dp"
-                android:textColor="@color/black"
-                android:textStyle="bold"
-                android:textAlignment="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
                 android:text="6551 5125 5632 9212"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold" />
 
             <TextView
-                android:textSize="16dp"
-                android:textColor="@color/black"
-                android:textAlignment="center"
-                android:text="a/n Dbelga Mart Tulungagung"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="a/n Dbelga Mart Tulungagung"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layout_kodeReferral"
-            android:gravity="center"
-            android:layout_marginVertical="16dp"
-            android:layout_marginHorizontal="32dp"
-            android:layout_above="@id/layout_UploadFoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_above="@id/layout_UploadFoto"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginVertical="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:textColor="@color/merahBelga"
-                android:textAlignment="center"
-                android:textStyle="italic"
-                android:text="Masukkan kode referral Member"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="Masukkan kode referral Member"
+                android:textAlignment="center"
+                android:textColor="@color/merahBelga"
+                android:textStyle="italic" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:layout_marginTop="8sp"
                 android:id="@+id/kodeRefMember"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8sp"
                 app:hintTextColor="@color/darkBiruBelga">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:gravity="center"
-                    android:textSize="16dp"
-                    android:textStyle="bold"
                     android:id="@+id/txt_kodeRefMember"
-                    android:layout_marginTop="12dp"
-                    android:inputType="text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:gravity="center"
                     android:hint="Masukkan kode referral disini"
-                    android:textColor="@color/darkBiruBelga" />
+                    android:inputType="text"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="32dp"
-                android:textColor="#777777"
-                android:textAlignment="center"
-                android:textStyle="italic"
-                android:textSize="12sp"
-                android:text="dengan kode referral anda tidak perlu melakukan biaya transfer dan bebas untuk mengunggah foto bukti bayar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center_horizontal"
+                android:text="dengan kode referral anda tidak perlu melakukan biaya transfer dan bebas untuk mengunggah foto bukti bayar"
+                android:textAlignment="center"
+                android:textColor="#777777"
+                android:textSize="12sp"
+                android:textStyle="italic" />
 
 
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/layoutGambarBukti"
-            android:gravity="center"
-            android:layout_marginTop="16dp"
-            android:layout_marginHorizontal="32dp"
-            android:layout_above="@id/layout_UploadFoto"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_above="@id/layout_UploadFoto"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
-                android:textColor="@color/merahBelga"
-                android:textAlignment="center"
-                android:textStyle="italic"
-                android:text="Bukti Pembayaran"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal" />
+                android:gravity="center_horizontal"
+                android:text="Bukti Pembayaran"
+                android:textAlignment="center"
+                android:textColor="@color/merahBelga"
+                android:textStyle="italic" />
 
             <ImageView
                 android:id="@+id/fotoBukti"
-                android:src="@mipmap/ic_launcher"
-                android:padding="16dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:padding="16dp"
+                android:src="@mipmap/ic_launcher" />
 
         </LinearLayout>
 
 
         <LinearLayout
-            android:visibility="visible"
-            android:layout_above="@id/btn_Konfirmasi"
             android:id="@+id/layout_UploadFoto"
-            android:orientation="vertical"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_Konfirmasi"
             android:layout_marginHorizontal="32dp"
             android:layout_marginBottom="16dp"
-            android:layout_height="wrap_content">
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
-                android:orientation="horizontal"
-                android:weightSum="1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1">
 
 
                 <Button
-                    android:layout_margin="8sp"
-                    android:background="@drawable/button_round_theme"
                     android:id="@+id/btn_showUpload"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
                     android:layout_weight="0.5"
-                    android:textSize="10sp"
-                    android:textColor="@color/white"
+                    android:background="@drawable/button_round_theme"
                     android:padding="8sp"
                     android:text="Pakai Transfer"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
+                    android:textColor="@color/white"
+                    android:textSize="10sp" />
 
                 <Button
-                    android:layout_margin="8sp"
-                    android:padding="8sp"
-                    android:background="@drawable/button_round_upload"
                     android:id="@+id/btn_KodeRef"
-                    android:layout_weight="0.5"
-                    android:textSize="10sp"
-                    android:textColor="@color/black"
-                    android:text="Pakai Kode Referral"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8sp"
+                    android:layout_weight="0.5"
+                    android:background="@drawable/button_round_upload"
+                    android:padding="8sp"
+                    android:text="Pakai Kode Referral"
+                    android:textColor="@color/black"
+                    android:textSize="10sp" />
 
             </LinearLayout>
 
 
-
             <Button
-                android:visibility="visible"
+                android:id="@+id/btn_UploadFoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_margin="8sp"
                 android:background="@drawable/button_round_voucher"
-                android:id="@+id/btn_UploadFoto"
-                android:textSize="10sp"
-                android:textColor="@color/white"
                 android:padding="8sp"
                 android:text="Upload Foto Bukti Pembayaran"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:visibility="visible" />
 
 
         </LinearLayout>
 
         <Button
-            android:visibility="visible"
-            android:layout_above="@id/btn_Batal"
-            android:textSize="12sp"
-            android:layout_marginBottom="8sp"
-            android:background="@drawable/button_round_confirm"
-            android:textColor="@color/white"
             android:id="@+id/btn_Konfirmasi"
-            android:layout_marginHorizontal="48dp"
-            android:text="KONFIRMASI PEMBAYARAN"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:visibility="gone"
+            android:layout_height="wrap_content"
             android:layout_above="@id/btn_Batal"
-            android:textSize="12sp"
+            android:layout_marginHorizontal="48dp"
             android:layout_marginBottom="8sp"
             android:background="@drawable/button_round_confirm"
+            android:text="KONFIRMASI PEMBAYARAN"
             android:textColor="@color/white"
-            android:id="@+id/btn_Hubungi"
-            android:layout_marginHorizontal="48dp"
-            android:text="HUBUNGI DBELGA"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textSize="12sp"
+            android:visibility="visible" />
 
         <Button
-            android:layout_marginBottom="32dp"
-            android:layout_alignParentBottom="true"
-            android:textSize="12sp"
-            android:background="@drawable/button_round_cancel"
-            android:textColor="@color/white"
-            android:id="@+id/btn_Batal"
-            android:layout_marginHorizontal="48dp"
-            android:text="BATALKAN PENGAJUAN"
+            android:id="@+id/btn_Hubungi"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_Batal"
+            android:layout_marginHorizontal="48dp"
+            android:layout_marginBottom="8sp"
+            android:background="@drawable/button_round_confirm"
+            android:text="HUBUNGI DBELGA"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btn_Batal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="48dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/button_round_cancel"
+            android:text="BATALKAN PENGAJUAN"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
 
     </RelativeLayout>
 

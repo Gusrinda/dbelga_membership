@@ -228,7 +228,7 @@ public class ListVoucher extends AppCompatActivity implements AdapterListVoucher
         String cekStatus = sessionManager.getMembership();
 
         if (cekStatus.equals("DEBET")) {
-            image = getResources().getDrawable(R.drawable.member_gold);
+            image = getResources().getDrawable(R.drawable.card_member_gold);
             badgeMember.setBackground(image);
         } else {
             image = getResources().getDrawable(R.drawable.member_premium);

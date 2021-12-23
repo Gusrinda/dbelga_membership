@@ -4,6 +4,8 @@ package com.dbelgamembership.membersip.Screen.Transaksi;
  * Created by hp on 12/23/2016.
  */
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -80,6 +82,8 @@ import com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail;
 import com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.databinding.ActivityBuktibayarNewBinding;
+import com.dbelgamembership.membersip.databinding.ActivityBuktifakturNewBinding;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
@@ -177,8 +181,8 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     CoordinatorLayout container;
     @BindView(R.id.titleKembalian)
     TextView titleKembalian;
-    @BindView(R.id.linearContent)
-    RelativeLayout llcontent;
+//    @BindView(R.id.linearContent)
+//    RelativeLayout llcontent;
     @BindView(R.id.linearDiskon)
     LinearLayout linearDiskon;
     @BindView(R.id.txt_Diskon)
@@ -259,7 +263,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     @BindView(R.id.linearCharge)
     LinearLayout linearCharge;
     private RelativeLayout mScan, mPrint;
-    private int total = 0;
+    private double total = 0;
     private String tipeMetode = null;
     private ProgressDialog mBluetoothConnectProgressDialog;
     private BluetoothSocket mBluetoothSocket;
@@ -284,12 +288,16 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     private float amountAnotherPayment;
     private float pembayaranTunai;
 
+
+    ActivityBuktifakturNewBinding binding;
+
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
         super.onCreate(mSavedInstanceState);
-        setContentView(R.layout.activity_buktifaktur_new);
+        binding = ActivityBuktifakturNewBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         ButterKnife.bind(this);
-        llcontent.setVisibility(View.GONE);
+        binding.contentBuktiFaktur.linearContent.setVisibility(View.GONE);
         linearCharge.setVisibility(View.GONE);
         sessionManager = new SessionManager(this);
         setSupportActionBar(toolbar);
@@ -354,6 +362,14 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             grandTotal = (b.getTotalPaymentPaid() - b.getChange());
                             String cok1 = String.valueOf(b.getTotalPaymentPaid());
                             String cok2 = String.valueOf(b.getChange());
+
+                            String idGudang = String.valueOf(b.getGudang());
+
+                            for (int i = 0; i < modelGudangs.size(); i++) {
+                                if (idGudang == modelGudangs.get(i).getIdGudang()) {
+                                    binding.contentBuktiFaktur.txtNamaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
+                                }
+                            }
 
                             //BAGIAN IS THERE RETUR
 //                            String returCode = "";
@@ -457,7 +473,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                     Item barang = itemss.get(i);
                                     HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
                                     hashMap.put("namaBrg", barang.getName());
-                                    int Qty = Integer.parseInt(barang.getQtyOutlet()) + Integer.parseInt(barang.getQtyStore()) + barang.getIndentValue();
+                                    double Qty = Double.parseDouble(barang.getQtyOutlet()) + Double.parseDouble(barang.getQtyStore()) + barang.getIndentValue();
                                     hashMap.put("qtyUnit", Qty + " Unit");
                                     hashMap.put("qty", String.valueOf(Qty));
                                     hashMap.put("harga", barang.getRealPrice() + "");
@@ -479,8 +495,8 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             for (AddItem barangAdd : b.getAddItem()) {
                                 HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
                                 hashMap.put("namaBrg", barangAdd.getName());
-                                int Qty = barangAdd.getQty();
-                                Double tots = Double.parseDouble(barangAdd.getCustomerPrice());
+                                double Qty = barangAdd.getQty();
+                                double tots = Double.parseDouble(barangAdd.getCustomerPrice());
                                 hashMap.put("qtyUnit", Qty + " Unit");
                                 hashMap.put("qty", String.valueOf(Qty));
                                 hashMap.put("harga", tots + "");
@@ -489,7 +505,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                 hashMap.put("nominal_diskon", barangAdd.getDiskonPotongan() + "");
 //                                arrayDetail.add(hashMap);
                                 listBarangTambah.add(barangAdd);
-                                int totalDiskon = (int) (Double.parseDouble(barangAdd.getDiskonPotongan()) * Qty);
+                                double totalDiskon = (Double.parseDouble(barangAdd.getDiskonPotongan()) * Qty);
                                 total += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
                                 GTCOKCOKCOKCOCKCOK += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
                                 GTCOKCOKCOKCOCKCOK -= totalDiskon;
@@ -499,10 +515,18 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
 
                             for (int i = 0; i < listBarang.size(); i++) {
                                 for (int j = 0; j < listBarangTambah.size(); j++) {
-                                    if (listBarang.get(i).getCodeProduct().equals(listBarangTambah.get(j).getCodeProduct())
-                                            && listBarang.get(i).getQtyOutlet().equals(String.valueOf(listBarangTambah.get(j).getQty()))) {
 
-                                        int totalBarang = (int) (Double.parseDouble(listBarang.get(i).getTotal()) - Double.parseDouble(listBarang.get(i).getTotalDiskon()));
+                                    Log.e(TAG, "onResponse CODE PRODUCT: " + listBarang.get(i).getCodeProduct());
+                                    Log.e(TAG, "onResponse : " + listBarangTambah.get(j).getCodeProduct());
+
+                                    double qtyBarangA = Double.parseDouble(listBarang.get(i).getQtyOutlet());
+                                    double qtyBarangB = Double.parseDouble(String.valueOf(listBarangTambah.get(j).getQty()));
+
+
+                                    if (listBarang.get(i).getCodeProduct().equals(listBarangTambah.get(j).getCodeProduct())
+                                            && qtyBarangA == qtyBarangB) {
+
+                                        double totalBarang = (Double.parseDouble(listBarang.get(i).getTotal()) - Double.parseDouble(listBarang.get(i).getTotalDiskon()));
 
                                         total -= totalBarang;
                                         Log.e(TAG, "onResponse: " + listBarang.get(i).getName() );
@@ -521,13 +545,13 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                 barang.setNamaBrg(listBarang.get(i).getName());
                                 barang.setCode(listBarang.get(i).getCodeProduct());
                                 barang.setHarga(listBarang.get(i).getRealPrice());
-                                barang.setQty(Integer.parseInt(listBarang.get(i).getQtyOutlet()));
-                                int Qty = Integer.parseInt(listBarang.get(i).getQtyOutlet());
-                                Double tots = Double.parseDouble(listBarang.get(i).getRealPrice() == null ? listBarang.get(i).getPrice() : listBarang.get(i).getRealPrice());
+                                barang.setQty(Double.parseDouble(listBarang.get(i).getQtyOutlet()));
+                                double Qty = Double.parseDouble(listBarang.get(i).getQtyOutlet());
+                                double tots = Double.parseDouble(listBarang.get(i).getRealPrice() == null ? listBarang.get(i).getPrice() : listBarang.get(i).getRealPrice());
                                 barang.setTotal(String.valueOf(Qty * tots));
 
-                                int totalDiskon = (int) Double.parseDouble(listBarang.get(i).getTotalDiskon());
-                                int diskonPerBarang = totalDiskon / Qty;
+                                double totalDiskon =  Double.parseDouble(listBarang.get(i).getTotalDiskon());
+                                double diskonPerBarang = totalDiskon / Qty;
 
                                 //Sementara yang dari SO seperti ini !
                                 barang.setPotongan_diskon(String.valueOf(diskonPerBarang));
@@ -542,9 +566,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                 barang.setNamaBrg(listBarangTambah.get(i).getName());
                                 barang.setCode(listBarangTambah.get(i).getCodeProduct());
                                 barang.setHarga(listBarangTambah.get(i).getCustomerPrice());
-                                barang.setQty(Integer.parseInt(String.valueOf(listBarangTambah.get(i).getQty())));
-                                int Qty = listBarangTambah.get(i).getQty();
-                                Double tots = Double.parseDouble(listBarangTambah.get(i).getCustomerPrice());
+                                barang.setQty(Double.parseDouble(String.valueOf(listBarangTambah.get(i).getQty())));
+                                double Qty = listBarangTambah.get(i).getQty();
+                                double tots = Double.parseDouble(listBarangTambah.get(i).getCustomerPrice());
                                 barang.setPotongan_diskon(listBarangTambah.get(i).getDiskonPotongan());
                                 barang.setTotal(String.valueOf(Qty * tots));
                                 barang.setNominal_diskon(listBarangTambah.get(i).getDiskonPotongan());
@@ -585,14 +609,13 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             grand_total.setText("Rp. " + nf.format(GTCOKCOKCOKCOCKCOK));
 
                             if (!arrayDetail.isEmpty()) {
+                                Log.e(TAG, "onResponse: " );
                                 lvListView1.setVisibility(View.VISIBLE);
-//                                lvListView2.setVisibility(View.VISIBLE);
-                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, listBarang, PrintFakturActivity.this);
-//                                AdapterAddBarang adapterAddBarang = new AdapterAddBarang(PrintActivity.this, -1, listBarangTambah, PrintActivity.this);
+                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, arrayDetail, PrintFakturActivity.this);
+//                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, listBarang, PrintFakturActivity.this);
                                 lvListView1.setAdapter(adapterDetailbarang);
-//                                lvListView2.setAdapter(adapterAddBarang);
                             }
-                            llcontent.setVisibility(View.VISIBLE);
+                            binding.contentBuktiFaktur.linearContent.setVisibility(View.VISIBLE);
                             Log.e("idTransaksi: ", idTransaksi);
 
 
@@ -707,299 +730,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
 
     }
 
-//    private void setupFaktur(String dataprint) {
-//        Log.e(TAG, "setupFaktur: " + dataprint);
-//        bb.setVisibility(View.VISIBLE);
-//        String url = Http.server + "payment/list?code=" + dataprint;
-//        Log.e(TAG, "url: " + url);
-//        final ProgressDialog dialog1 = new ProgressDialog(PrintFakturActivity.this);
-//        dialog1.setCancelable(false);
-//        dialog1.setCanceledOnTouchOutside(false);
-//        dialog1.setMessage("Harap Menunggu...");
-//        dialog1.show();
-//        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-//        Log.e(TAG, "accessWebService: Katalog Start with Token " + sessionManager.getKeyToken());
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try {
-//                            Gson gson = new Gson();
-//                            ModelPayment modelListFaktur = gson.fromJson(String.valueOf(response), ModelPayment.class);
-//                            Datum b = modelListFaktur.getData().getData().get(0);
-//                            idTransaksi = String.valueOf(b.getId());
-//                            grandTotal = (b.getTotalPaymentPaid() - b.getChange());
-//                            String cok1 = String.valueOf(b.getTotalPaymentPaid());
-//                            String cok2 = String.valueOf(b.getChange());
-//
-//                            Log.e(TAG, "cok1 : " + cok1 + "cok2 : " + cok2);
-//                            soCode = b.getPembayaranCode();
-//                            Log.e(TAG, "onCreate: " + soCode);
-//                            sales = String.valueOf(b.getCreateuser());
-//                            tvdate.setText(b.getDateTransaction() + "");
-//                            tvSO.setText(b.getPembayaranCode());
-//
-//                            String status = "";
-//
-//                            Log.e(TAG, "Data : " + b.getStatusPengiriman());
-//                            if (b.getStatusPengiriman() == null) {
-//                                status = "Belum Dikirim";
-//
-//                            } else {
-//                                status = b.getStatusPengiriman();
-//                            }
-//
-//                            tvStatus.setText(status);
-//
-//                            String catatanPesanan = "";
-//                            if (b.getCatatanPengiriman() == null) {
-//                                catatanPesanan = "Tidak ada catatan khusus";
-//                            } else {
-//                                catatanPesanan = b.getCatatanPengiriman();
-//                            }
-//
-//                            txtCatatan.setText(catatanPesanan);
-//
-//                            tvOngkosKirim.setText("Rp. " + nf.format(b.getOngkosKirim()));
-//                            ONGKIR_COK = b.getOngkosKirim();
-//                            printBayar = String.valueOf(b.getTotalPaymentPaid());
-//                            ALAMAT_KIRIM = b.getAlamatPengiriman();
-//                            NAMA_CUSTOMER = b.getCustomer();
-//                            printKembalian = String.valueOf(b.getChange());
-//                            FLAG_DP = String.valueOf(b.getFlagDp());
-//                            if (b.getFlagDp() == true) {
-////                                tvKembalian.setVisibility(View.GONE);
-//                                String kembalianString = "0";
-//                                int kembalianDP = 0;
-//                                if (!printKembalian.isEmpty()) {
-//                                    kembalianString = printKembalian.substring(1, printKembalian.length());
-//                                }
-//                                if (!kembalianString.isEmpty()) {
-//                                    kembalianDP = Integer.parseInt(kembalianString);
-//                                }
-//                                tvKembalian.setText("Rp. " + nf.format(kembalianDP));
-//                                titleKembalian.setText("Kurang Bayar");
-//                            } else {
-//                                tvKembalian.setText("Rp. " + nf.format(b.getChange()));
-//                            }
-//                            Log.e(TAG, "onResponse: FLAGDP" + FLAG_DP);
-//
-////                            if (!b.getOrderDetail().get(0).getAlamatPengiriman().equals(null)){
-////                                ALAMAT_KIRIM = b.getOrderDetail().get(0).getAlamatPengiriman();
-////                            }
-//
-//                            btnQR.setOnClickListener(new View.OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    FragmentManager fm = getSupportFragmentManager();
-//                                    Bundle bundle = new Bundle();
-//                                    bundle.putString("noFaktur", b.getPembayaranCode());
-//                                    RiwayatTransaksiQrFragment editNameDialogFragment = new RiwayatTransaksiQrFragment();
-//                                    editNameDialogFragment.setArguments(bundle);
-//                                    editNameDialogFragment.show(fm, RiwayatTransaksiQrFragment.class.getSimpleName());
-//                                }
-//                            });
-//
-//                            grandTotal = 0;
-//                            for (com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail payment : b.getPaymentDetail()) {
-//                                Log.e(TAG, "onCreate: PAYMENT" + payment.getTotal());
-//                                Double dnum = Double.parseDouble(payment.getTotal());
-//                                grandTotal += dnum.intValue();
-//                                if (payment.getPaymentType().equals("PAY_TYPE_TUNAI")) {
-//                                    pembayaranTunai = new Float(payment.getTotal());
-//                                    tvPembayaranTunai.setText("Rp. " + nf.format(pembayaranTunai));
-//                                }
-//                            }
-//                            tvTotalPembayaran.setText("Rp. " + nf.format(b.getTotalPaymentPaid()));
-//                            dateNow = b.getDateTransaction();
-//                            for (PaymentDetail DetailCheckOut : b.getPaymentDetail()) {
-//                                if (DetailCheckOut.getPaymentType().equals("PAY_TYPE_CREDIT") || DetailCheckOut.getPaymentType().equals("PAY_TYPE_TRANSFER")
-//                                        || DetailCheckOut.getPaymentType().equals("PAY_TYPE_DEBET")) {
-//                                    if (DetailCheckOut.getPaymentType().equals("PAY_TYPE_CREDIT")) {
-//                                        tipeMetode = "KREDIT " + DetailCheckOut.getOptionBank();
-//                                    } else if (DetailCheckOut.getPaymentType().equals("PAY_TYPE_TRANSFER")) {
-//                                        tipeMetode = "TRANSFER " + DetailCheckOut.getOptionBank();
-//                                    } else if (DetailCheckOut.getPaymentType().equals("PAY_TYPE_DEBET")) {
-//                                        tipeMetode = "DEBIT " + DetailCheckOut.getOptionBank();
-//                                    }
-//                                    amountAnotherPayment = Float.parseFloat(DetailCheckOut.getTotal());
-//                                    amountCharge = Float.parseFloat(DetailCheckOut.getChargeAmount());
-//                                    viewPembayaranLain.setVisibility(View.VISIBLE);
-//                                    viewChargePembayaran.setVisibility(View.VISIBLE);
-//                                    tvmetodeLain.setText(tipeMetode);
-//                                    tvPembayaranLain.setText("Rp. " + nf.format(amountAnotherPayment));
-//                                    tvChargePembayaran.setText("Rp. " + nf.format(amountCharge));
-//                                }
-//                            }
-//                            for (OrderDetail barangCheckout : b.getOrderDetail()) {
-//                                List<com.dbelgamembership.membersip.Model.ModelPayment.Item> itemss = barangCheckout.getItems();
-//                                for (int i = 0; i < itemss.size(); i++) {
-//                                    com.dbelgamembership.membersip.Model.ModelPayment.Item barang = itemss.get(i);
-//                                    HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
-//                                    hashMap.put("namaBrg", barang.getName());
-//                                    int Qty = Integer.parseInt(barang.getQtyOutlet()) + Integer.parseInt(barang.getQtyStore()) + barang.getIndentValue();
-//                                    hashMap.put("qtyUnit", Qty + " Unit");
-//                                    hashMap.put("qty", String.valueOf(Qty));
-//                                    hashMap.put("harga", barang.getRealPrice() + "");
-//                                    hashMap.put("Code", barang.getCodeProduct() + "");
-//                                    hashMap.put("total", Double.parseDouble(barang.getTotal()) - Double.parseDouble(barang.getTotalDiskon()) + "");
-//                                    hashMap.put("nominal_diskon", barang.getTotalDiskon() + "");
-////                                    arrayDetail.add(hashMap);
-//                                    listBarang.add(barang);
-//                                    total += (Double.parseDouble(barang.getTotal()) - Double.parseDouble(barang.getTotalDiskon()));
-//                                    GTCOKCOKCOKCOCKCOK += (Double.parseDouble(barang.getTotal()) - Double.parseDouble(barang.getTotalDiskon()));
-//                                }
-//                            }
-//
-//                            for (AddItem barangAdd : b.getAddItem()) {
-//                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
-//                                hashMap.put("namaBrg", barangAdd.getName());
-//                                int Qty = barangAdd.getQty();
-//                                Double tots = Double.parseDouble(barangAdd.getCustomerPrice());
-//                                hashMap.put("qtyUnit", Qty + " Unit");
-//                                hashMap.put("qty", String.valueOf(Qty));
-//                                hashMap.put("harga", tots + "");
-//                                hashMap.put("Code", barangAdd.getCodeProduct() + "");
-//                                hashMap.put("total", Qty * tots + "");
-//                                hashMap.put("nominal_diskon", barangAdd.getDiskonPotongan() + "");
-////                                arrayDetail.add(hashMap);
-//                                listBarangTambah.add(barangAdd);
-//                                total += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
-//                                GTCOKCOKCOKCOCKCOK += (Qty * Double.parseDouble(barangAdd.getCustomerPrice()));
-//                            }
-//
-//                            for (int i = 0; i < listBarang.size(); i++) {
-//                                for (int j = 0; j < listBarangTambah.size(); j++) {
-//                                    if (listBarang.get(i).getCodeProduct().equals(listBarangTambah.get(j).getCodeProduct())
-//                                            && listBarang.get(i).getQtyOutlet().equals(String.valueOf(listBarangTambah.get(j).getQty()))) {
-//                                        total -= Integer.parseInt(listBarang.get(i).getTotal());
-//                                        listBarang.remove(i);
-//                                    }
-//                                }
-//                            }
-//
-//                            for (int i = 0; i < listBarang.size(); i++) {
-//                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
-//                                hashMap.put("namaBrg", listBarang.get(i).getName());
-//                                int Qty = Integer.parseInt(listBarang.get(i).getQtyOutlet());
-//                                Double tots = Double.parseDouble(listBarang.get(i).getRealPrice());
-//                                hashMap.put("qtyUnit", Qty + " Unit");
-//                                hashMap.put("qty", String.valueOf(Qty));
-//                                hashMap.put("harga", tots + "");
-//                                hashMap.put("Code", listBarang.get(i).getCodeProduct() + "");
-//                                hashMap.put("total", Qty * tots + "");
-//                                hashMap.put("nominal_diskon", listBarang.get(i).getTotalDiskon() + "");
-//                                hashMap.put("keterangan", "Order");
-//                                arrayDetail.add(hashMap);
-//                            }
-//
-//                            for (int i = 0; i < listBarangTambah.size(); i++) {
-//                                HashMap<String, String> hashMap = new HashMap<>();//create a hashmap to store the data in key value pair
-//                                hashMap.put("namaBrg", listBarangTambah.get(i).getName());
-//                                int Qty = listBarangTambah.get(i).getQty();
-//                                Double tots = Double.parseDouble(listBarangTambah.get(i).getCustomerPrice());
-//                                hashMap.put("qtyUnit", Qty + " Unit");
-//                                hashMap.put("qty", String.valueOf(Qty));
-//                                hashMap.put("harga", tots + "");
-//                                hashMap.put("Code", listBarangTambah.get(i).getCodeProduct() + "");
-//                                hashMap.put("total", Qty * tots + "");
-//                                hashMap.put("nominal_diskon", listBarangTambah.get(i).getDiskonPotongan() + "");
-//                                hashMap.put("keterangan", "Beli Langsung");
-//                                arrayDetail.add(hashMap);
-//                            }
-//
-//                            Log.e(TAG, "onCreate: " + arrayDetail.size());
-//                            grandTOTAL = b.getTotalPaymentPaid() - b.getChange();
-//                            float grandCOK = total + b.getOngkosKirim() + amountCharge;
-//                            grand_total.setText("Rp. " + nf.format(grandCOK));
-//                            Log.e("arrayDetailOrder: ", String.valueOf(arrayDetailOrder));
-//                            if (!arrayDetail.isEmpty()) {
-//                                lvListView1.setVisibility(View.VISIBLE);
-//                                AdapterDetailbarangFak adapterDetailbarang = new AdapterDetailbarangFak(PrintFakturActivity.this, -1, arrayDetail, PrintFakturActivity.this);
-//                                lvListView1.setAdapter(adapterDetailbarang);
-//                            }
-//                            llcontent.setVisibility(View.VISIBLE);
-//                            Log.e("idTransaksi: ", idTransaksi);
-//                        } catch (Exception e) {
-//                            Log.e(TAG, "onResponse: " + e.getMessage() + Arrays.toString(e.getStackTrace()));
-//                            Snack("Data Tidak Ditemukan");
-////                            list_trans.setVisibility(View.GONE);
-//                        }
-//
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.e("onResponse", error.getMessage(), error);
-//
-////                dialog.dismiss();
-//                Log.e(TAG, "onErrorResponse: " + error.getMessage());
-//                if (error instanceof AuthFailureError) {
-//                    sessionManager.destroySession();
-//                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    startActivity(intent);
-//
-//                } else if (error instanceof NetworkError) {
-//                    Log.e(TAG, "onErrorResponse: " + error.getMessage());
-//                    VolleyLog.d(TAG, "Error: " + error.getMessage());
-//                    AlertDialog.Builder builder1 = new AlertDialog.Builder(PrintFakturActivity.this);
-//                    builder1.setTitle("Peringatan");
-//                    builder1.setMessage("Terjadi Kesalahan\nIngin memuat ulang?");
-//                    builder1.setCancelable(false);
-//                    builder1.setPositiveButton(
-//                            "Ya",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    setupFaktur(dataprint);
-//                                }
-//                            });
-//                    builder1.setNegativeButton(
-//                            "Tidak",
-//                            new DialogInterface.OnClickListener() {
-//                                public void onClick(DialogInterface dialog, int id) {
-//                                    dialog.cancel();
-//                                    finish();
-//                                }
-//                            });
-//                    final AlertDialog alert11 = builder1.create();
-//                    alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-//                        @Override
-//                        public void onShow(DialogInterface dialogInterface) {
-//                            alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-//                            alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-//                        }
-//                    });
-//                    alert11.show();
-//                }
-//            }
-//        }) {
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("Content-Type", "application/json");
-//                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
-//                return params;
-//            }
-//
-//            @Override
-//            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
-//                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
-//                return super.parseNetworkResponse(response);
-//            }
-//        };
-//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//        mQueue.add(jsonObjectRequest);
-//        dialog1.dismiss();
-//
-//    }
 
     private void Snack(String string) {
-        Snackbar snackbar = Snackbar.make(llcontent, string, Snackbar.LENGTH_LONG)
+        Snackbar snackbar = Snackbar.make(binding.contentBuktiFaktur.linearContent, string, Snackbar.LENGTH_LONG)
                 .setAction("Action", null);
         View snackBarView = snackbar.getView();
         snackBarView.setBackgroundColor(getResources().getColor(R.color.colorPrimary));

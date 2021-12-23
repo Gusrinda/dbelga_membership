@@ -37,12 +37,12 @@ public class AdapterListBarang extends
 
     private Context context;
     private List<ModelKatalog> list;
-    private KatalogActivity mAdapterCallback;
+    private AdapterListBarang.AdapterListBarangCallback mAdapterCallback;
     private int result = -1;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 
 
-    public AdapterListBarang(Context context, List<ModelKatalog> list, KatalogActivity adapterCallback) {
+    public AdapterListBarang(Context context, List<ModelKatalog> list, AdapterListBarang.AdapterListBarangCallback adapterCallback) {
         this.context = context;
         this.list = list;
         this.mAdapterCallback = adapterCallback;
@@ -90,7 +90,7 @@ public class AdapterListBarang extends
                 holder.tvKodeBarang.setText(item.getKode_barang());
             }
 
-            int cekStok = Integer.parseInt(item.getStok());
+            double cekStok = Double.parseDouble(item.getStok());
 
 
             if (cekStok > 0 && cekStok < 10) {
@@ -112,8 +112,6 @@ public class AdapterListBarang extends
 
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
-
-
             if (holder.tvStokOutlet.getText().toString().equals("KOSONG") || item.getHarga_barang() == null ) {
                 isClickable = false;
                 Double hargaBarang = Double.parseDouble(item.getHarga_barang() == null ? "0" : item.getHarga_barang());
@@ -130,9 +128,9 @@ public class AdapterListBarang extends
             } else {
 
                 Log.e(TAG, "MASUK 6");
-                int hargaBarang = (int) Double.parseDouble(item.getHarga_barang());
-                int hargaBarang2 = (int) Double.parseDouble(item.getHarga_2());
-                int hargaBarang3 = (int) Double.parseDouble(item.getHarga_3());
+                double hargaBarang =  Double.parseDouble(item.getHarga_barang());
+                double hargaBarang2 =  Double.parseDouble(item.getHarga_2());
+                double hargaBarang3 =  Double.parseDouble(item.getHarga_3());
 
                 String testHarga = "Rp. " + nf.format(hargaBarang)+" [1]";
                 String testHarga2 = "Rp. " + nf.format(hargaBarang2)+" ["+ item.getBatasan2() +"]";

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@drawable/ic_baseline_shopping_basket_24"
+        android:title="Belanja"/>
+
+    <item
+        android:id="@+id/promoFragment"
+        android:icon="@drawable/ic_baseline_app_discount_24"
+        android:title="Promo"/>
+
+    <item
+        android:id="@+id/transaksiFragment"
+        android:icon="@drawable/transaction"
+        android:title="Transaksi"/>
+
+    <item
+        android:id="@+id/akunFragment"
+        android:icon="@drawable/user"
+        android:title="Akun"/>
+
+</menu>

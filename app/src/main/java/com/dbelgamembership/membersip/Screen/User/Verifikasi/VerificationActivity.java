@@ -21,6 +21,7 @@ import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.User.BoardingMemberDebet;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.databinding.ActivityVerificationBinding;
@@ -89,8 +90,6 @@ public class VerificationActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         formatExp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-
 
         getCountDown();
 
@@ -308,7 +307,8 @@ public class VerificationActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(VerificationActivity.this, "Berhasil terverifikasi !", Toast.LENGTH_SHORT).show();
                         finish();
-                        Intent intent = new Intent(VerificationActivity.this, MembershipPilih.class);
+                        Intent intent = new Intent(VerificationActivity.this, BoardingMemberDebet.class);
+//                        Intent intent = new Intent(VerificationActivity.this, MembershipPilih.class);
                         startActivity(intent);
                     }
                 } catch (JSONException e) {

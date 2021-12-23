@@ -1,5 +1,7 @@
 package com.dbelgamembership.membersip.Screen.Transaksi;
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -550,7 +552,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP);
-
     }
 
     //batas awal api access
@@ -571,6 +572,16 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = Float.parseFloat(String.valueOf(b.getGrandtotal()));
                             ongkosKirim = 0;
+
+                            String idGudang = String.valueOf(b.getGudang());
+
+                            for (int i = 0; i < modelGudangs.size(); i++) {
+                                if (idGudang == modelGudangs.get(i).getIdGudang()) {
+                                    binding.contentBuktiBayar.txtNamaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
+                                }
+                            }
+
+
 
                             if (b.getOngkosKirim() != 0) {
                                 ongkosKirim = b.getOngkosKirim();
@@ -598,11 +609,11 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             }
 
 
-                            if (b.getStatus().equals("payment")) {
-                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.VISIBLE);
-                            } else {
-                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.GONE);
-                            }
+//                            if (b.getStatus().equals("payment")) {
+//                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.VISIBLE);
+//                            } else {
+//                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.GONE);
+//                            }
 
                             nomorKostumer = b.getNomorCustomer();
                             tanggalKirim = b.getTanggalKirim();
@@ -644,8 +655,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             grand_total.setText("Rp. " + nf.format(total));
                             listBarang = b.getDetail();
 
-                            int diskonBarang = 0;
-                            int belanjaBarang = 0;
+                            double diskonBarang = 0;
+                            double belanjaBarang = 0;
                             for (Detail barang : listBarang) {
                                 HashMap<String, String> hashMap = new HashMap<>(); //create a hashmap to store the data in key value pair
                                 hashMap.put("namaBrg", barang.getName());
@@ -654,7 +665,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 Log.e(TAG, "Masuk12: " + barang.getQtyOutlet());
                                 Log.e(TAG, "Masuk13: " + barang.getIndentValue());
 
-                                int Qty = Integer.parseInt(barang.getQtyOutlet()) + Integer.parseInt(barang.getQtyStore()) + barang.getIndentValue();
+                                double Qty = Double.parseDouble(barang.getQtyOutlet()) + Double.parseDouble(barang.getQtyStore()) + barang.getIndentValue();
                                 hashMap.put("qtyUnit", Qty + " Unit");
                                 Log.e(TAG, "Masuk2: " + barang.getName());
                                 hashMap.put("qty", String.valueOf(Qty));
@@ -667,7 +678,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 belanjaBarang = Integer.parseInt(barang.getTotal());
                                 Log.e(TAG, "Belanja Barang : " + belanjaBarang);
 
-                                int totalDiskon = (int) Double.parseDouble(barang.getTotalDiskon() == null ? "0" : barang.getTotalDiskon());
+                                double totalDiskon = Double.parseDouble(barang.getTotalDiskon() == null ? "0" : barang.getTotalDiskon());
 
                                 if (totalDiskon > 0) {
                                     hashMap.put("total", barang.getTotalSetelahDiskon() + "");
@@ -1011,7 +1022,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     public void onRowAdapterDetailbarangClicked(int position) {
 
     }
-
 
     @Override
     public void run() {

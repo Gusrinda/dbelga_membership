@@ -27,7 +27,7 @@ public class DetailItemCart implements Serializable, Parcelable
     private String barcode;
     @SerializedName("qty")
     @Expose
-    private Integer qty;
+    private String qty;
     @SerializedName("images")
     @Expose
     private String images;
@@ -42,7 +42,7 @@ public class DetailItemCart implements Serializable, Parcelable
     private Harga harga;
     @SerializedName("stok")
     @Expose
-    private Integer stok;
+    private double stok;
     public final static Creator<DetailItemCart> CREATOR = new Creator<DetailItemCart>() {
 
 
@@ -59,14 +59,14 @@ public class DetailItemCart implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -816437064709975113L;
+    private final static long serialVersionUID = 3589017338206870768L;
 
     protected DetailItemCart(android.os.Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.namaProduk = ((String) in.readValue((String.class.getClassLoader())));
         this.produk = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.barcode = ((String) in.readValue((String.class.getClassLoader())));
-        this.qty = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qty = ((String) in.readValue((String.class.getClassLoader())));
         this.images = ((String) in.readValue((String.class.getClassLoader())));
         this.merek = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
@@ -109,11 +109,11 @@ public class DetailItemCart implements Serializable, Parcelable
         this.barcode = barcode;
     }
 
-    public Integer getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 
@@ -149,11 +149,11 @@ public class DetailItemCart implements Serializable, Parcelable
         this.harga = harga;
     }
 
-    public Integer getStok() {
+    public double getStok() {
         return stok;
     }
 
-    public void setStok(Integer stok) {
+    public void setStok(double stok) {
         this.stok = stok;
     }
 

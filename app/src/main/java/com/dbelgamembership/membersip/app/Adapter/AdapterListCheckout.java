@@ -41,7 +41,7 @@ public class AdapterListCheckout extends
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
         DetailItemCart detailItemCart = list.get(position);
-        int qty = detailItemCart.getQty();
+        double qty = Double.parseDouble(detailItemCart.getQty());
 
         int batasan1 = detailItemCart.getHarga().getQtyHarga1();
         int batasan2 = detailItemCart.getHarga().getQtyHarga2();
@@ -50,7 +50,7 @@ public class AdapterListCheckout extends
         String harga1 = detailItemCart.getHarga().getHarga();
         String harga2 = detailItemCart.getHarga().getQtyHarga2() == null ? "0" : detailItemCart.getHarga().getHargaDua();
         String harga3 = detailItemCart.getHarga().getQtyHarga3() == null ? "0" : detailItemCart.getHarga().getHargaTiga();
-        int jumlahBarangDibeli = qty;
+        double jumlahBarangDibeli = qty;
         String hargaFix = "0";
 
         if (batasan1 == batasan2) {
@@ -77,10 +77,9 @@ public class AdapterListCheckout extends
         holder.hargaItem.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
         holder.stokItem.setText(" ( " + String.valueOf(detailItemCart.getQty()) + " item )");
 
-        int total = (int) (Double.parseDouble(hargaFix) * detailItemCart.getQty());
+        double total = Double.parseDouble(hargaFix) * Double.parseDouble(detailItemCart.getQty());
 
         holder.totalItem.setText("Rp. " + nf.format(total));
-
 
     }
 

@@ -5,7 +5,7 @@ import java.util.Objects;
 public class modelArrayDetailBarangOrder {
 
     private String namaBrg;
-    private int qty;
+    private double qty;
     private String harga;
     private String Code;
     private String total;
@@ -16,7 +16,7 @@ public class modelArrayDetailBarangOrder {
     public modelArrayDetailBarangOrder() {
     }
 
-    public modelArrayDetailBarangOrder(String namaBrg, int qty, String harga, String code, String total, String potongan_diskon, String nominal_diskon, String keterangan) {
+    public modelArrayDetailBarangOrder(String namaBrg, double qty, String harga, String code, String total, String potongan_diskon, String nominal_diskon, String keterangan) {
         this.namaBrg = namaBrg;
         this.qty = qty;
         this.harga = harga;
@@ -54,11 +54,11 @@ public class modelArrayDetailBarangOrder {
         this.namaBrg = namaBrg;
     }
 
-    public int getQty() {
+    public double getQty() {
         return qty;
     }
 
-    public void setQty(int qty) {
+    public void setQty(double qty) {
         this.qty = qty;
     }
 

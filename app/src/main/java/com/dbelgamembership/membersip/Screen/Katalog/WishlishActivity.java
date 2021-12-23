@@ -3,11 +3,13 @@ package com.dbelgamembership.membersip.Screen.Katalog;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +18,8 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -40,6 +44,8 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
@@ -50,18 +56,26 @@ import com.dbelgamembership.membersip.Model.ModelSearchWish.ModelSearchWish;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelSearchWish.Price;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.databinding.ActivityWishlistBinding;
+import com.dbelgamembership.membersip.databinding.PopupBarangBinding;
+import com.dbelgamembership.membersip.databinding.PopupWishlistEditingBinding;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -97,10 +111,13 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
 
     Toolbar toolbar;
 
+    private ActivityWishlistBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_wishlist);
+        binding = ActivityWishlistBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         sessionManager = new SessionManager(this);
         findID();
 
@@ -305,73 +322,341 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
 
     @Override
     public void AdapterListDelete(MsgServer position) {
-        deleteItemWishlist(position);
+        deleteItemWishlist(position, true);
     }
 
     @Override
     public void AdapterListTambahKeranjang(MsgServer position) {
+
+        if (String.valueOf(position.getIdGudang()).equals( sessionManager.getKeySetGudangPencarian())) {
+            android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(WishlishActivity.this);
+            builder1.setTitle("Konfirmasi");
+            builder1.setMessage("Menambah item ke keranjang ?");
+            builder1.setCancelable(false);
+            builder1.setPositiveButton("YA", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+
+                    double qty = 0;
+                    boolean flagQtyLebih = false;
+
+                    if (Double.parseDouble(position.getQty()) > position.getQtyStok()) {
+                        qty = position.getQtyStok();
+                        flagQtyLebih = true;
+                    } else {
+                        qty = Double.parseDouble(position.getQty());
+                        flagQtyLebih = false;
+                    }
+
+                    final ProgressDialog progressDialog = ProgressDialog.show(WishlishActivity.this, "Loading", "Please Wait...");
+                    APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+                    Call<String> call = apiInterface.doAddCart(sessionManager.getPID(),
+                            String.valueOf(position.getIdGudang()),
+                            String.valueOf(position.getIdProduk()),
+                            position.getBarcodeProduct(),
+                            qty);
+
+                    boolean finalFlagQtyLebih = flagQtyLebih;
+                    call.enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                            progressDialog.dismiss();
+                            dialogInterface.dismiss();
+                            try {
+                                JSONObject obj = new JSONObject(response.body());
+
+                                boolean success = obj.getBoolean("success");
+                                String msgServer = obj.get("msgServer").toString();
+
+                                if (success) {
+                                    Gson gson = new Gson();
+                                    ModelResponseCart modelResponseCart = gson.fromJson(response.body(), ModelResponseCart.class);
+
+                                    assert modelResponseCart != null;
+
+                                    if (finalFlagQtyLebih) {
+                                        Toast.makeText(WishlishActivity.this, "Barang anda melebihi stok yang ada, menambahkan ke keranjang sesuai dengan stok maksimal sistem !", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(WishlishActivity.this, "Berhasil menambahkan ke keranjang !", Toast.LENGTH_SHORT).show();
+                                    }
+
+
+                                } else {
+                                    Toast.makeText(WishlishActivity.this, msgServer, Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, "onResponse: " + msgServer);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            progressDialog.dismiss();
+                            dialogInterface.dismiss();
+                            Log.e(TAG, "onFailure: " + t.getMessage());
+                        }
+                    });
+
+                }
+            });
+
+            builder1.setNegativeButton("TIDAK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+
+            final android.app.AlertDialog alert11 = builder1.create();
+            alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    alert11.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                    alert11.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                }
+            });
+            alert11.show();
+        } else {
+            Toast.makeText(WishlishActivity.this, "Barang wishlist bukan dari Toko yang dipilih !", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    //popUpBarang
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog alertDialog;
+    private PopupWishlistEditingBinding popupWishlistEditingBinding;
+
+    @Override
+    public void AdapterEditListWishlist(MsgServer position) {
+        NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+        Log.e(TAG, "AdapterListBarangClicked: " + position.getCodeProduct());
+        dialogBuilder = new AlertDialog.Builder(WishlishActivity.this);
+
+        popupWishlistEditingBinding = PopupWishlistEditingBinding.inflate(getLayoutInflater());
+
+        final View wishlistPop = popupWishlistEditingBinding.getRoot();
+        dialogBuilder.setView(wishlistPop);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+        popupWishlistEditingBinding.namaBarang.setText(position.getName());
+
+        double qtyPesan = Double.parseDouble(position.getQty());
+        double stokMaksimal = position.getQtyStok();
+
+        popupWishlistEditingBinding.qty.setText(String.valueOf(qtyPesan));
+
+        String hargaFix = "0";
+
+        int batasan1 = (int) position.getPrice().getQtyHarga1();
+        int batasan2 = (int) position.getPrice().getQtyHarga2();
+        int batasan3 = (int) position.getPrice().getQtyHarga3();
+
+        if (batasan1 == batasan2) {
+            hargaFix = position.getPrice().getHarga();
+        } else {
+            if (qtyPesan < batasan2) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
+                hargaFix = position.getPrice().getHarga();
+            } else if (qtyPesan >= batasan2 && qtyPesan < batasan3) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
+                hargaFix = position.getPrice().getHargaDua();
+            } else if (qtyPesan >= batasan3) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
+                hargaFix = position.getPrice().getHargaTiga();
+            }
+        }
+
+        int diskon = (int) (Double.parseDouble(position.getPrice().getHarga()) - Double.parseDouble(hargaFix));
+
+        if (diskon > 0) {
+            popupWishlistEditingBinding.hargaRealBarang.setVisibility(View.VISIBLE);
+            popupWishlistEditingBinding.hargaRealBarang.setText("Rp. " + nf.format(Double.parseDouble(position.getPrice().getHarga())));
+            popupWishlistEditingBinding.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+        } else {
+            popupWishlistEditingBinding.hargaRealBarang.setVisibility(View.GONE);
+            popupWishlistEditingBinding.hargaRealBarang.setText("0");
+            popupWishlistEditingBinding.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+        }
+
+        popupWishlistEditingBinding.increment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double qty = Double.parseDouble(popupWishlistEditingBinding.qty.getText().toString());
+                popupWishlistEditingBinding.qty.setText(String.valueOf(qty + 1));
+            }
+        });
+
+        popupWishlistEditingBinding.decrement.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (popupWishlistEditingBinding.qty.getText().toString().equals("1")) {
+                    deleteItemWishlist(position, false);
+                } else {
+                    double qty = Double.parseDouble(popupWishlistEditingBinding.qty.getText().toString());
+                    popupWishlistEditingBinding.qty.setText(String.valueOf(qty - 1));
+                }
+            }
+        });
+
+
+        popupWishlistEditingBinding.qty.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            private Timer timer = new Timer();
+            private final long DELAY = 1000; // milliseconds
+
+            @SuppressLint("NewApi")
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                double qty = Double.parseDouble(popupWishlistEditingBinding.qty.getText().toString());
+
+                Log.e(TAG, "afterTextChanged: " + qty);
+
+                if (qty >= stokMaksimal) {
+                    popupWishlistEditingBinding.increment.setEnabled(false);
+                    popupWishlistEditingBinding.increment.setTextColor(getApplicationContext().getColor(R.color.greyBelha));
+                } else {
+                    popupWishlistEditingBinding.increment.setEnabled(true);
+                    popupWishlistEditingBinding.increment.setTextColor(getApplicationContext().getColor(R.color.black));
+                }
+
+
+                timer.cancel();
+                timer = new Timer();
+                timer.schedule(
+                        new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        String hargaFix = "0";
+
+                                        int batasan1 = (int) position.getPrice().getQtyHarga1();
+                                        int batasan2 = (int) position.getPrice().getQtyHarga2();
+                                        int batasan3 = (int) position.getPrice().getQtyHarga3();
+
+                                        Log.e(TAG, "run: BATASAN 1 " + batasan1);
+                                        Log.e(TAG, "run: BATASAN 2 " + batasan2);
+                                        Log.e(TAG, "run: BATASAN 3 " + batasan3);
+                                        Log.e(TAG, "run: QTY " + qty);
+
+
+                                        if (batasan1 == batasan2) {
+                                            hargaFix = position.getPrice().getHarga();
+                                        } else {
+                                            if (qty < batasan2) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
+                                                hargaFix = position.getPrice().getHarga();
+                                            } else if (qty >= batasan2 && qty < batasan3) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
+                                                hargaFix = position.getPrice().getHargaDua();
+                                            } else if (qty >= batasan3) {
+//                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
+                                                hargaFix = position.getPrice().getHargaTiga();
+                                            }
+                                        }
+
+                                        int diskon = (int) (Double.parseDouble(position.getPrice().getHarga()) - Double.parseDouble(hargaFix));
+
+                                        if (diskon > 0) {
+                                            popupWishlistEditingBinding.hargaRealBarang.setVisibility(View.VISIBLE);
+                                            popupWishlistEditingBinding.hargaRealBarang.setText("Rp. " + nf.format(Double.parseDouble(position.getPrice().getHarga())));
+                                            popupWishlistEditingBinding.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+                                        } else {
+                                            popupWishlistEditingBinding.hargaRealBarang.setVisibility(View.GONE);
+                                            popupWishlistEditingBinding.hargaRealBarang.setText("0");
+                                            popupWishlistEditingBinding.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+                                        }
+                                    }
+                                });
+
+
+                            }
+                        },
+                        DELAY
+                );
+
+
+            }
+        });
+
+
+        popupWishlistEditingBinding.closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupWishlistEditingBinding.btnHapusWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteItemWishlist(position, false);
+            }
+        });
+
+        popupWishlistEditingBinding.btnUpdateWishlist.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateItemWishilist(String.valueOf(position.getIdProduk()), popupWishlistEditingBinding.qty.getText().toString(), position.getIdGudang());
+            }
+        });
+
+    }
+
+    private void updateItemWishilist(String code, String stokBarang, int idGudang) {
+        Log.e(TAG, "ID Member : " + sessionManager.getPID());
+        Log.e(TAG, "ID Barang : " + code);
+        url = Http.server + "wishlist-update/" + sessionManager.getPID();
+        Log.e(TAG, "URL : " + url);
         android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(WishlishActivity.this);
         builder1.setTitle("Konfirmasi");
-        builder1.setMessage("Menambah item ke keranjang ?");
+        builder1.setMessage("Update item dari wishlist ?");
         builder1.setCancelable(false);
-        builder1.setPositiveButton("YA", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                final ProgressDialog progressDialog = ProgressDialog.show(WishlishActivity.this, "Loading", "Please Wait...");
-                APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-                Call<String> call = apiInterface.doAddCart(sessionManager.getPID(),
-                        String.valueOf(position.getIdGudang()),
-                        String.valueOf(position.getIdProduk()),
-                        position.getBarcodeProduct(),
-                        1);
-
-                call.enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-                        progressDialog.dismiss();
-                        dialogInterface.dismiss();
+        builder1.setPositiveButton(
+                "Ya",
+                new DialogInterface.OnClickListener() {
+                    @SuppressLint("NewApi")
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                        JSONObject postData = new JSONObject();
                         try {
-                            JSONObject obj = new JSONObject(response.body());
-
-                            boolean success = obj.getBoolean("success");
-                            String msgServer = obj.get("msgServer").toString();
-
-                            if (success) {
-                                Gson gson = new Gson();
-                                ModelResponseCart modelResponseCart = gson.fromJson(response.body(), ModelResponseCart.class);
-
-                                assert modelResponseCart != null;
-
-                                Toast.makeText(WishlishActivity.this, "Berhasil menambahkan ke kerangjang !", Toast.LENGTH_SHORT).show();
-
-
-                            } else {
-                                Toast.makeText(WishlishActivity.this, msgServer, Toast.LENGTH_SHORT).show();
-                                Log.e(TAG, "onResponse: " + msgServer );
-                            }
-
+                            postData.put("produk", code);
+                            postData.put("qty", stokBarang);
+                            postData.put("id_gudang", idGudang);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                     progressDialog.dismiss();
-                        dialogInterface.dismiss();
-                        Log.e(TAG, "onFailure: " + t.getMessage() );
+                        Log.e(TAG, "URL : " + url);
+                        Log.e(TAG, "onClickSubmit: " + postData);
+                        SimpanPostUpdate(postData);
+                        alertDialog.dismiss();
                     }
                 });
-
-            }
-        });
-
-        builder1.setNegativeButton("TIDAK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.dismiss();
-            }
-        });
+        builder1.setNegativeButton(
+                "Tidak",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
 
         final android.app.AlertDialog alert11 = builder1.create();
         alert11.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -384,7 +669,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
         alert11.show();
     }
 
-    private void deleteItemWishlist(MsgServer position) {
+    private void deleteItemWishlist(MsgServer position, boolean fromAdapter) {
         String code = String.valueOf(position.getIdProduk());
         Log.e(TAG, "ID Member : " + sessionManager.getPID());
         Log.e(TAG, "ID Barang : " + code);
@@ -403,18 +688,26 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                         if (isOnline()) {
                             JSONObject postData = new JSONObject();
                             try {
-                                postData.put("produk", code);
-                                postData.put("id_gudang", String.valueOf(position.getIdGudang()));
+                                ArrayList<HashMap<String, String>> detail_order = new ArrayList<HashMap<String, String>>();
+                                HashMap<String, String> map_order = new HashMap<String, String>();
+
+                                map_order.put("produk", String.valueOf(position.getIdProduk()));
+                                map_order.put("idGudang", String.valueOf(position.getIdGudang()));
+                                detail_order.add(map_order);
+                                JSONArray arrayWishlist = new JSONArray(detail_order);
+
+                                postData.put("wishlist", arrayWishlist);
+
+                                Log.e(TAG, "URL : " + url);
+                                Log.e(TAG, "onClickSubmit: " + postData);
+                                if (!fromAdapter) {
+                                    alertDialog.dismiss();
+                                }
+                                SimpanPost(postData);
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
-                            if (isOnline()) {
-                                Log.e(TAG, "URL : " + url);
-                                Log.e(TAG, "onClickSubmit: " + postData);
-
-                                SimpanPost(postData);
-                            }
                         } else {
                             Snack("Cek Koneksi Internet Anda");
                         }
@@ -462,7 +755,6 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                             Log.e(TAG, "onResponse: " + e.getMessage());
                             Snack(e.getMessage());
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -472,6 +764,94 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
                     Intent intent = new Intent(getApplicationContext(), KatalogActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                } else if (error instanceof ServerError) {
+                    Snack("Terjadi Kesalahan.");
+                } else if (error instanceof NetworkError) {
+                    Snack("Tidak Ada Koneksi Internet");
+                } else if (error instanceof ParseError) {
+                    Snack(error.getMessage());
+                } else {
+                    Snack(error.getMessage());
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Content-Type", "application/json");
+//                params.put("type", "create");
+                params.put("Authorization", "Bearer " + sessionManager.getKeyToken());
+                return params;
+            }
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+                Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
+                return super.parseNetworkResponse(response);
+            }
+        };
+
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+
+        mQueue.add(jsonObjectRequest);
+    }
+
+    private void SimpanPostUpdate(JSONObject postData) {
+        final ProgressDialog dialog1 = new ProgressDialog(WishlishActivity.this);
+        dialog1.setCancelable(false);
+        dialog1.setCanceledOnTouchOutside(false);
+        dialog1.setMessage("Harap Menunggu...");
+        dialog1.show();
+        RequestQueue mQueue = Volley.newRequestQueue(WishlishActivity.this);
+        Log.e(TAG, "postData: " + postData);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, postData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            dialog1.dismiss();
+
+                            Log.e(TAG, "Response : " + response);
+                            Gson gson = new Gson();
+                            ResponseWishlist responseWishlist = gson.fromJson(String.valueOf(response), ResponseWishlist.class);
+
+                            boolean responseBool = responseWishlist.getSuccess();
+
+                            if (responseWishlist.getSuccess()) {
+                                Log.e(TAG, "onResponse: " + responseBool);
+                                Snack("Berhasil update di Wishlist");
+                            } else {
+                                Log.e(TAG, "onResponse: " + responseBool);
+                                String string = "error : " + responseWishlist.getDescription();
+                                Snackbar snackbar = Snackbar.make(binding.mainLayout, string, Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null);
+                                View snackBarView = snackbar.getView();
+                                snackBarView.setBackgroundColor(getResources().getColor(R.color.merahBelga));
+                                snackbar.show();
+                            }
+
+                            SearchingWishlist(sessionManager.getPID());
+
+                        } catch (Exception e) {
+                            Log.e(TAG, "onResponse: " + e.getMessage());
+                            Snack(e.getMessage());
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("onResponse", error.getMessage(), error);
+                dialog1.dismiss();
+                if (error instanceof AuthFailureError) {
+                    sessionManager.destroySession();
+                    Intent intent = new Intent(WishlishActivity.this, WishlishActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

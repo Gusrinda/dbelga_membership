@@ -11,7 +11,6 @@ import android.widget.Toast;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
@@ -25,7 +24,12 @@ import com.dbelgamembership.membersip.Model.ModelGetSlider.Datum;
 import com.dbelgamembership.membersip.Model.ModelGetSlider.ModelGetSlider;
 import com.dbelgamembership.membersip.Model.ModelResponseCS.ModelResponseCS;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiFoto;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
 import com.google.gson.Gson;
@@ -43,12 +47,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class SplashActivity extends AppCompatActivity {
     public static boolean cekPreAccess;
@@ -101,11 +107,10 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ModelResponseCS> call, retrofit2.Response<ModelResponseCS> response) {
                 if (response.code() == 200) {
-                   ModelResponseCS responseCS = response.body();
+                    ModelResponseCS responseCS = response.body();
 
                     assert responseCS != null;
                     daftarCS = responseCS.getMsgServer();
-
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Kesalahan memuat data", Toast.LENGTH_LONG).show();
@@ -119,70 +124,70 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-    private void getDataUser() {
-        url = Http.server;
-        url = url + "search-customer/" + sessionManager.getPID();
-        Log.e(TAG, "URL : " + url);
-        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response != null) {
-                            Log.e("", "onResponse: " + response);
-                            String responseX = String.valueOf(response);
-                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                            boolean success = root.get("success").getAsBoolean();
-                            Log.e("", "Test : " + success);
-                            if (!success) {
-//                                    Toast.makeText(SplashActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
-                                Log.e(TAG, "onResponse: " + root.get("msgServer").getAsString());
-                                sessionManager.destroySession();
-                                getSession();
-                            } else {
-                                Gson gson = new Gson();
-                                ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
-                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
-                                boolean status_pay = Boolean.parseBoolean(dataMember.getStatusPayment());
-
-                                if (dataMember.isEmailVerification()) {
-                                    if (status_pay) {
-                                        finish();
-                                        Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                    } else {
-                                        String deadlinePay = dataMember.getPayDate();
-                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
-                                        Log.e(TAG, "onResponse: " + deadlinePay);
-                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
-                                        startActivity(intent);
-                                    }
-                                } else {
-                                    Intent intent = new Intent(SplashActivity.this, VerificationActivity.class);
-                                    startActivity(intent);
-                                }
-
-
-                            }
-                        } else {
-//                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // TODO: Handle error
-
-//                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
-
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-
-        mQueue.add(jsonObjectRequest);
-    }
+//    private void getDataUser() {
+//        url = Http.server;
+//        url = url + "search-customer/" + sessionManager.getPID();
+//        Log.e(TAG, "URL : " + url);
+//        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+//                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        if (response != null) {
+//                            Log.e("", "onResponse: " + response);
+//                            String responseX = String.valueOf(response);
+//                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+//                            boolean success = root.get("success").getAsBoolean();
+//                            Log.e("", "Test : " + success);
+//                            if (!success) {
+////                                    Toast.makeText(SplashActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
+//                                Log.e(TAG, "onResponse: " + root.get("msgServer").getAsString());
+//                                sessionManager.destroySession();
+//                                getSession();
+//                            } else {
+//                                Gson gson = new Gson();
+//                                ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
+//                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
+//                                boolean status_pay = Boolean.parseBoolean(dataMember.getStatusPayment());
+//
+//                                if (dataMember.isEmailVerification()) {
+//                                    if (status_pay) {
+//                                        Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    } else {
+//                                        String deadlinePay = dataMember.getPayDate();
+//                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
+//                                        Log.e(TAG, "onResponse: " + deadlinePay);
+//                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }
+//                                } else {
+//                                    Intent intent = new Intent(SplashActivity.this, VerificationActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }
+//                            }
+//                        } else {
+////                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // TODO: Handle error
+//
+////                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+//
+//        mQueue.add(jsonObjectRequest);
+//    }
 
     private void getDataSlider() {
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
@@ -266,20 +271,81 @@ public class SplashActivity extends AppCompatActivity {
         });
     }
 
-
     public void getSession() {
         Log.e("", "cek Nama session : " + sessionManager.getName());
         Log.e("", "cek PID session : " + sessionManager.getPID());
         Log.e("", "cek Email session : " + sessionManager.getEmail());
+        Log.e("", "cek UserIdentitas session : " + sessionManager.getKeyUseridentitas());
         Log.e("", "sessionCondition: Username Login? " + sessionManager.isLoggedIn());
+
+
         if (sessionManager.isLoggedIn()) {
             cekPreAccess = true;
-            getDataUser();
+            cekVerifikasiUser();
         } else {
-            cekPreAccess = false;
-            Intent intent = new Intent(SplashActivity.this, HomeActivity.class);
+            Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
             startActivity(intent);
         }
+
+    }
+
+    private void cekVerifikasiUser() {
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ResponseCekVerifikasi> call = apiInterface.doCekVerifikasiUser(sessionManager.getPID());
+        call.enqueue(new Callback<ResponseCekVerifikasi>() {
+            @Override
+            public void onResponse(Call<ResponseCekVerifikasi> call, Response<ResponseCekVerifikasi> response) {
+                ResponseCekVerifikasi dataResponse = response.body();
+                if (response.code() == 200) {
+                    if (dataResponse.getSuccess()) {
+                        com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.MsgServer dataVerifikasi = dataResponse.getMsgServer();
+                        if (!dataVerifikasi.getVeirifikasiEmail()) {
+                            Intent intent = new Intent(SplashActivity.this, VerificationActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            if (!dataVerifikasi.getIsThereFoto()) {
+                                Intent intent = new Intent(SplashActivity.this, MembershipPilih.class);
+                                intent.putExtra("pilihan_membership", dataResponse.getMsgServer().getMembership());
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                if (!dataVerifikasi.getVeirifikasiFoto()) {
+                                    Intent intent = new Intent(SplashActivity.this, KonfirmasiFoto.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    if (!dataVerifikasi.getIsTherePayment() || !dataVerifikasi.getVeirifikasiPayment()) {
+                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
+                                        startActivity(intent);
+                                        finish();
+
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        Toast.makeText(SplashActivity.this, "Error network getting data.", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
+                } else {
+                    Toast.makeText(SplashActivity.this, "Error Server !", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseCekVerifikasi> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                Toast.makeText(SplashActivity.this, "Error : " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
     }
 
     @Override
@@ -288,7 +354,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onPause();
         finish();
     }
-
 
 
 }

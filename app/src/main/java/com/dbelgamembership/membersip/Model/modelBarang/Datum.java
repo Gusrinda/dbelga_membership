@@ -8,7 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+import javax.annotation.Generated;
 
+@Generated("jsonschema2pojo")
 public class Datum implements Serializable, Parcelable
 {
 
@@ -95,10 +97,10 @@ public class Datum implements Serializable, Parcelable
     private String statusProduct;
     @SerializedName("satuan_tengah")
     @Expose
-    private String satuanTengah;
+    private Integer satuanTengah;
     @SerializedName("nilai_konversi_satuan_tengah")
     @Expose
-    private String nilaiKonversiSatuanTengah;
+    private Integer nilaiKonversiSatuanTengah;
     @SerializedName("images")
     @Expose
     private String images;
@@ -137,7 +139,7 @@ public class Datum implements Serializable, Parcelable
     private Integer qtyHarga3;
     @SerializedName("stok")
     @Expose
-    private Integer stok;
+    private Double stok;
     public final static Creator<Datum> CREATOR = new Creator<Datum>() {
 
 
@@ -154,7 +156,7 @@ public class Datum implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -38210502697244851L;
+    private final static long serialVersionUID = 5139119846644163946L;
 
     protected Datum(android.os.Parcel in) {
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -184,8 +186,8 @@ public class Datum implements Serializable, Parcelable
         this.typeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.varianProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.statusProduct = ((String) in.readValue((String.class.getClassLoader())));
-        this.satuanTengah = ((String) in.readValue((String.class.getClassLoader())));
-        this.nilaiKonversiSatuanTengah = ((String) in.readValue((String.class.getClassLoader())));
+        this.satuanTengah = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.nilaiKonversiSatuanTengah = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.images = ((String) in.readValue((String.class.getClassLoader())));
         this.tesId = ((String) in.readValue((String.class.getClassLoader())));
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -198,7 +200,7 @@ public class Datum implements Serializable, Parcelable
         this.qtyHarga1 = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.qtyHarga2 = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.qtyHarga3 = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.stok = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.stok = ((Double) in.readValue((Double.class.getClassLoader())));
     }
 
     public Datum() {
@@ -420,19 +422,19 @@ public class Datum implements Serializable, Parcelable
         this.statusProduct = statusProduct;
     }
 
-    public String getSatuanTengah() {
+    public Integer getSatuanTengah() {
         return satuanTengah;
     }
 
-    public void setSatuanTengah(String satuanTengah) {
+    public void setSatuanTengah(Integer satuanTengah) {
         this.satuanTengah = satuanTengah;
     }
 
-    public String getNilaiKonversiSatuanTengah() {
+    public Integer getNilaiKonversiSatuanTengah() {
         return nilaiKonversiSatuanTengah;
     }
 
-    public void setNilaiKonversiSatuanTengah(String nilaiKonversiSatuanTengah) {
+    public void setNilaiKonversiSatuanTengah(Integer nilaiKonversiSatuanTengah) {
         this.nilaiKonversiSatuanTengah = nilaiKonversiSatuanTengah;
     }
 
@@ -532,11 +534,11 @@ public class Datum implements Serializable, Parcelable
         this.qtyHarga3 = qtyHarga3;
     }
 
-    public Integer getStok() {
+    public Double getStok() {
         return stok;
     }
 
-    public void setStok(Integer stok) {
+    public void setStok(Double stok) {
         this.stok = stok;
     }
 

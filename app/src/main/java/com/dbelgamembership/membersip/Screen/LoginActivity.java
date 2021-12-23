@@ -28,6 +28,9 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ResponseLogin.ResponseLogin;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
+import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
+import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
 import com.google.android.material.snackbar.Snackbar;
@@ -128,8 +131,6 @@ public class LoginActivity extends AppCompatActivity {
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-        Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
-        startActivity(intent);
     }
 
     public void accessWebService() {
@@ -158,6 +159,7 @@ public class LoginActivity extends AppCompatActivity {
                                 Gson gson = new Gson();
                                 ResponseLogin modelUser = gson.fromJson(String.valueOf(response), ResponseLogin.class);
                                 String idUser = String.valueOf(modelUser.getMsgServer().getId());
+                                String identitasPelanggan = String.valueOf(modelUser.getMsgServer().getIdentitas());
                                 String namaUser = modelUser.getMsgServer().getName();
                                 String emailUser = modelUser.getMsgServer().getMainEmail();
                                 String membershipUser = modelUser.getMsgServer().getStatusMember();
@@ -165,38 +167,18 @@ public class LoginActivity extends AppCompatActivity {
                                 Log.e("", "nama User: " + namaUser);
                                 Log.e("", "email User: " + emailUser);
                                 Log.e("", "membership: " + membershipUser);
+                                Log.e("", "membership: " + identitasPelanggan);
 
                                 boolean status_pay = Boolean.parseBoolean(modelUser.getMsgServer().getStatusPayment());
 
-                                sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
+                                sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser);
                                 sessionManager.setAccountUser(namaUser, emailUser, modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                 sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
 
-                                if (modelUser.getMsgServer().isEmailVerification()) {
-                                    if (status_pay) {
-                                        finish();
-//                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
-                                        if (modelUser.getMsgServer().getImageCustomer() != null) {
-                                            sessionManager.setImage("http://52.77.225.163/upload/customer-photo/" + modelUser.getMsgServer().getImageCustomer());
-                                        }
-                                        getSession();
-                                    } else {
-//                                        sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
-                                        if (modelUser.getMsgServer().getImageCustomer() != null) {
-                                            sessionManager.setImage("http://52.77.225.163/upload/customer-photo/" + modelUser.getMsgServer().getImageCustomer());
-                                        }
-                                        String deadlinePay = modelUser.getMsgServer().getPayDate();
-                                        formatExp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                                        final Calendar baru = Calendar.getInstance();
-                                        Date tanggalNow = baru.getTime();
-                                        String tanggal = formatExp.format(tanggalNow);
-                                        Intent intent = new Intent(LoginActivity.this, KonfirmasiMembership.class);
-                                        Log.e(TAG, "onResponse: " + deadlinePay);
-                                        Log.e(TAG, "onResponse: " + tanggal);
-                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
-                                        intent.putExtra("TANGGAL_1", tanggal);
-                                        startActivity(intent);
-                                    }
+                                if (modelUser.getMsgServer().getEmailVerification()) {
+                                    finish();
+                                    Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
+                                    startActivity(intent);
                                 } else {
 //                                    sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
                                     Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
@@ -237,7 +219,8 @@ public class LoginActivity extends AppCompatActivity {
     public void getSession() {
         Log.e("", "sessionCondition: Username Login? " + sessionManager.isLoggedIn());
         if (sessionManager.isLoggedIn()) {
-            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginActivity.this, GudangActivity.class);
             startActivity(intent);
             cekPreAccess = true;
         } else {

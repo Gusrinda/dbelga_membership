@@ -121,7 +121,7 @@ public class    FakturFragment extends Fragment implements AdapterListTransaksiP
         idUser = sessionManager.getPID();
         Log.e(TAG, "ID USER SEARCH : " + idUser);
         url = Http.server;
-        url = url + "payment/list?customer=" + sessionManager.getPID();
+        url = url + "payment/list?customer=" + sessionManager.getKeyUseridentitas();
         getDataTransaksi();
     }
 
@@ -144,7 +144,7 @@ public class    FakturFragment extends Fragment implements AdapterListTransaksiP
 
                             if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
                                 if (modelListTransaction.getData().getNextPageUrl() != null) {
-                                    urlNextPage = String.valueOf(modelListTransaction.getData().getNextPageUrl()) + "&customer=" + sessionManager.getPID();
+                                    urlNextPage = String.valueOf(modelListTransaction.getData().getNextPageUrl()) + "&customer=" + sessionManager.getKeyUseridentitas();
                                     page = modelListTransaction.getData().getCurrentPage();
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }else {
@@ -273,13 +273,14 @@ public class    FakturFragment extends Fragment implements AdapterListTransaksiP
                             Log.e(TAG, "masuk 1");
                             Log.e(TAG, "masuk 2");
                             if (response != null) {
+
                                 Log.e(TAG, "masuk 3");
                                 Gson gson = new Gson();
                                 ModelPayment modelListTransaction = gson.fromJson(String.valueOf(response), ModelPayment.class);
                                 Log.e(TAG, "masuk 4");
 
                                 if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
-                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl())) + "&customer=" + sessionManager.getPID();
+                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl())) + "&customer=" + sessionManager.getKeyUseridentitas();
                                     page = modelListTransaction.getData().getCurrentPage();
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/popup_round"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_gravity="center">
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="SET ALAMAT PENGIRIMAN"
+            android:textStyle="bold"
+            android:fontFamily="@font/hammer_font"
+            android:textSize="16dp"
+            android:textColor="@color/black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/hammer_font"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:text="Anda akan memilih alamat ini sebagai lokasi pengiriman belanja anda ?"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginTop="12sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/hammer_font"
+                    android:text="Alamat : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:id="@+id/btnUbahAlamat"
+                    android:gravity="center_vertical|end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <ImageView
+                        android:src="@drawable/ic_baseline_edit_24"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        app:tint="@android:color/holo_orange_dark" />
+
+                    <TextView
+                        android:layout_marginLeft="2dp"
+                        android:textColor="@android:color/holo_orange_dark"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Ubah Alamat"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginVertical="8sp"
+                android:id="@+id/alamatPengiriman"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:hintTextColor="@color/darkBiruBelga"
+                app:hintEnabled="false"
+                app:counterMaxLength="255"
+                app:counterEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:focusable="false"
+                    android:textSize="14dp"
+                    android:id="@+id/txt_alamatPengiriman"
+                    android:inputType="textMultiLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Alamat Pengiriman"
+                    android:textColor="@color/darkBiruBelga" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_marginEnd="4dp"
+                android:id="@+id/button_Close"
+                android:paddingVertical="12sp"
+                android:gravity="center"
+                android:background="@drawable/button_round_voucher"
+                android:backgroundTint="@color/black"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:text="Tutup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_marginStart="4dp"
+                android:id="@+id/button_Save"
+                android:paddingVertical="12sp"
+                android:gravity="center"
+                android:background="@drawable/button_round_theme"
+
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content">
+
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:text="Simpan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+</RelativeLayout>

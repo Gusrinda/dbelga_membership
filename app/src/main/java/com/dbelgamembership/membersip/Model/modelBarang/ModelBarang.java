@@ -8,7 +8,9 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
+import javax.annotation.Generated;
 
+@Generated("jsonschema2pojo")
 public class ModelBarang implements Serializable, Parcelable
 {
 

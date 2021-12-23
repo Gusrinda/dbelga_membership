@@ -1,5 +1,9 @@
 package com.dbelgamembership.membersip.Fragment.bottomSheet;
 
+import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,10 +13,17 @@ import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
+import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.MainFragment;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.databinding.FragmentBottomSheetSortBinding;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import java.util.Objects;
 
 //import static com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity.dismissDialog;
 
@@ -76,22 +87,34 @@ public class BottomSheetFilterFragmentUrutkan extends BottomSheetDialogFragment 
         });
 
 
-
-
         binding.btnFilterData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.e(TAG, "onClick: " + selectedPosition );
-                Log.e(TAG, "onClick: " + urutkanData );
-                ((KatalogActivity)getActivity()).sortBarang(urutkanData);
+                Log.e(TAG, "onClick urutkan: " + urutkanData );
+//                ((KatalogActivity)getActivity()).sortBarang(urutkanData);
+
+                MainFragment fragment = (MainFragment) getParentFragmentManager().findFragmentById(R.id.frameContainer);
+                fragment.sortBarang(urutkanData);
+//
+//                FragmentManager fm = getParentFragmentManager();
+//                MainFragment fragm = (MainFragment)fm.findFragmentById(R.id.mainFragment);
+//                fragm.sortBarang(urutkanData);
                 dismiss();
             }
         });
 
-        
+
 
     }
 
+    private static Activity unwrap(Context context) {
+        while (!(context instanceof Activity) && context instanceof ContextWrapper) {
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+
+        return (Activity) context;
+    }
 
     @Override
     public void onDestroyView() {

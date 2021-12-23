@@ -1,21 +1,22 @@
 
 package com.dbelgamembership.membersip.Model.ModelUser;
 
-import java.io.Serializable;
-
 import android.os.Parcelable;
-import android.os.Parcelable.Creator;
-import android.os.Parcelable.Creator;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 
+import javax.annotation.Generated;
+
+@Generated("jsonschema2pojo")
 public class MsgServer implements Serializable, Parcelable
 {
 
     @SerializedName("id")
     @Expose
-    private int id;
+    private Integer id;
     @SerializedName("company_code")
     @Expose
     private String companyCode;
@@ -87,7 +88,7 @@ public class MsgServer implements Serializable, Parcelable
     private String mainCpBirthdate;
     @SerializedName("saldo_piutang")
     @Expose
-    private int saldoPiutang;
+    private Integer saldoPiutang;
     @SerializedName("credit_limit")
     @Expose
     private String creditLimit;
@@ -120,7 +121,7 @@ public class MsgServer implements Serializable, Parcelable
     private String wilayahSales;
     @SerializedName("status")
     @Expose
-    private boolean status;
+    private Boolean status;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -135,10 +136,10 @@ public class MsgServer implements Serializable, Parcelable
     private String dptCode;
     @SerializedName("app_do")
     @Expose
-    private int appDo;
+    private Integer appDo;
     @SerializedName("app_sj")
     @Expose
-    private int appSj;
+    private Integer appSj;
     @SerializedName("password")
     @Expose
     private String password;
@@ -165,7 +166,7 @@ public class MsgServer implements Serializable, Parcelable
     private String dateMember;
     @SerializedName("poin")
     @Expose
-    private int poin;
+    private Integer poin;
     @SerializedName("code_refferal")
     @Expose
     private String codeRefferal;
@@ -180,13 +181,34 @@ public class MsgServer implements Serializable, Parcelable
     private String expOtp;
     @SerializedName("email_verification")
     @Expose
-    private boolean emailVerification;
+    private Boolean emailVerification;
+    @SerializedName("img_identitas")
+    @Expose
+    private String imgIdentitas;
+    @SerializedName("img_wajah")
+    @Expose
+    private String imgWajah;
+    @SerializedName("img_full")
+    @Expose
+    private String imgFull;
+    @SerializedName("img_rumah")
+    @Expose
+    private String imgRumah;
+    @SerializedName("verifikasi_foto")
+    @Expose
+    private Boolean verifikasiFoto;
+    @SerializedName("identitas")
+    @Expose
+    private String identitas;
+    @SerializedName("flag_member")
+    @Expose
+    private Boolean flagMember;
     @SerializedName("sisa_credit_limit")
     @Expose
-    private int sisaCreditLimit;
+    private Integer sisaCreditLimit;
     @SerializedName("grand_total_so")
     @Expose
-    private int grandTotalSo;
+    private String grandTotalSo;
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -203,10 +225,10 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 7502253461508041396L;
+    private final static long serialVersionUID = 5553300357197283451L;
 
     protected MsgServer(android.os.Parcel in) {
-        this.id = ((int) in.readValue((int.class.getClassLoader())));
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.accurateCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -230,7 +252,7 @@ public class MsgServer implements Serializable, Parcelable
         this.mainCpTitle = ((String) in.readValue((String.class.getClassLoader())));
         this.mainCpJabatan = ((String) in.readValue((String.class.getClassLoader())));
         this.mainCpBirthdate = ((String) in.readValue((String.class.getClassLoader())));
-        this.saldoPiutang = ((int) in.readValue((int.class.getClassLoader())));
+        this.saldoPiutang = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.creditLimit = ((String) in.readValue((String.class.getClassLoader())));
         this.creditLimitRemain = ((String) in.readValue((String.class.getClassLoader())));
         this.creditLimitDays = ((String) in.readValue((String.class.getClassLoader())));
@@ -241,13 +263,13 @@ public class MsgServer implements Serializable, Parcelable
         this.headOffice = ((String) in.readValue((String.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
         this.wilayahSales = ((String) in.readValue((String.class.getClassLoader())));
-        this.status = ((boolean) in.readValue((boolean.class.getClassLoader())));
+        this.status = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.alias = ((String) in.readValue((String.class.getClassLoader())));
         this.dptCode = ((String) in.readValue((String.class.getClassLoader())));
-        this.appDo = ((int) in.readValue((int.class.getClassLoader())));
-        this.appSj = ((int) in.readValue((int.class.getClassLoader())));
+        this.appDo = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.appSj = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.password = ((String) in.readValue((String.class.getClassLoader())));
         this.dateBirth = ((String) in.readValue((String.class.getClassLoader())));
         this.statusMember = ((String) in.readValue((String.class.getClassLoader())));
@@ -256,30 +278,32 @@ public class MsgServer implements Serializable, Parcelable
         this.imagePay = ((String) in.readValue((String.class.getClassLoader())));
         this.imageCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.dateMember = ((String) in.readValue((String.class.getClassLoader())));
-        this.poin = ((int) in.readValue((int.class.getClassLoader())));
+        this.poin = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.codeRefferal = ((String) in.readValue((String.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
         this.otp = ((String) in.readValue((String.class.getClassLoader())));
         this.expOtp = ((String) in.readValue((String.class.getClassLoader())));
-        this.emailVerification = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        this.sisaCreditLimit = ((int) in.readValue((int.class.getClassLoader())));
-        this.grandTotalSo = ((int) in.readValue((int.class.getClassLoader())));
+        this.emailVerification = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.imgIdentitas = ((String) in.readValue((String.class.getClassLoader())));
+        this.imgWajah = ((String) in.readValue((String.class.getClassLoader())));
+        this.imgFull = ((String) in.readValue((String.class.getClassLoader())));
+        this.imgRumah = ((String) in.readValue((String.class.getClassLoader())));
+        this.verifikasiFoto = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.identitas = ((String) in.readValue((String.class.getClassLoader())));
+        this.flagMember = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.sisaCreditLimit = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.grandTotalSo = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public MsgServer withId(int id) {
-        this.id = id;
-        return this;
     }
 
     public String getCompanyCode() {
@@ -290,22 +314,12 @@ public class MsgServer implements Serializable, Parcelable
         this.companyCode = companyCode;
     }
 
-    public MsgServer withCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-        return this;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public MsgServer withCode(String code) {
-        this.code = code;
-        return this;
     }
 
     public String getAccurateCode() {
@@ -316,22 +330,12 @@ public class MsgServer implements Serializable, Parcelable
         this.accurateCode = accurateCode;
     }
 
-    public MsgServer withAccurateCode(String accurateCode) {
-        this.accurateCode = accurateCode;
-        return this;
-    }
-
     public String getNik() {
         return nik;
     }
 
     public void setNik(String nik) {
         this.nik = nik;
-    }
-
-    public MsgServer withNik(String nik) {
-        this.nik = nik;
-        return this;
     }
 
     public String getGhCode() {
@@ -342,22 +346,12 @@ public class MsgServer implements Serializable, Parcelable
         this.ghCode = ghCode;
     }
 
-    public MsgServer withGhCode(String ghCode) {
-        this.ghCode = ghCode;
-        return this;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public MsgServer withName(String name) {
-        this.name = name;
-        return this;
     }
 
     public String getType() {
@@ -368,22 +362,12 @@ public class MsgServer implements Serializable, Parcelable
         this.type = type;
     }
 
-    public MsgServer withType(String type) {
-        this.type = type;
-        return this;
-    }
-
     public String getBentuk() {
         return bentuk;
     }
 
     public void setBentuk(String bentuk) {
         this.bentuk = bentuk;
-    }
-
-    public MsgServer withBentuk(String bentuk) {
-        this.bentuk = bentuk;
-        return this;
     }
 
     public String getMainAddress() {
@@ -394,22 +378,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainAddress = mainAddress;
     }
 
-    public MsgServer withMainAddress(String mainAddress) {
-        this.mainAddress = mainAddress;
-        return this;
-    }
-
     public String getMainKelurahan() {
         return mainKelurahan;
     }
 
     public void setMainKelurahan(String mainKelurahan) {
         this.mainKelurahan = mainKelurahan;
-    }
-
-    public MsgServer withMainKelurahan(String mainKelurahan) {
-        this.mainKelurahan = mainKelurahan;
-        return this;
     }
 
     public String getMainGeoLat() {
@@ -420,22 +394,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainGeoLat = mainGeoLat;
     }
 
-    public MsgServer withMainGeoLat(String mainGeoLat) {
-        this.mainGeoLat = mainGeoLat;
-        return this;
-    }
-
     public String getMainGeoLng() {
         return mainGeoLng;
     }
 
     public void setMainGeoLng(String mainGeoLng) {
         this.mainGeoLng = mainGeoLng;
-    }
-
-    public MsgServer withMainGeoLng(String mainGeoLng) {
-        this.mainGeoLng = mainGeoLng;
-        return this;
     }
 
     public String getMainEmail() {
@@ -446,22 +410,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainEmail = mainEmail;
     }
 
-    public MsgServer withMainEmail(String mainEmail) {
-        this.mainEmail = mainEmail;
-        return this;
-    }
-
     public String getMainOfficePhone1() {
         return mainOfficePhone1;
     }
 
     public void setMainOfficePhone1(String mainOfficePhone1) {
         this.mainOfficePhone1 = mainOfficePhone1;
-    }
-
-    public MsgServer withMainOfficePhone1(String mainOfficePhone1) {
-        this.mainOfficePhone1 = mainOfficePhone1;
-        return this;
     }
 
     public String getMainOfficePhone2() {
@@ -472,22 +426,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainOfficePhone2 = mainOfficePhone2;
     }
 
-    public MsgServer withMainOfficePhone2(String mainOfficePhone2) {
-        this.mainOfficePhone2 = mainOfficePhone2;
-        return this;
-    }
-
     public String getMainFax1() {
         return mainFax1;
     }
 
     public void setMainFax1(String mainFax1) {
         this.mainFax1 = mainFax1;
-    }
-
-    public MsgServer withMainFax1(String mainFax1) {
-        this.mainFax1 = mainFax1;
-        return this;
     }
 
     public String getMainFax2() {
@@ -498,22 +442,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainFax2 = mainFax2;
     }
 
-    public MsgServer withMainFax2(String mainFax2) {
-        this.mainFax2 = mainFax2;
-        return this;
-    }
-
     public String getMainPhone1() {
         return mainPhone1;
     }
 
     public void setMainPhone1(String mainPhone1) {
         this.mainPhone1 = mainPhone1;
-    }
-
-    public MsgServer withMainPhone1(String mainPhone1) {
-        this.mainPhone1 = mainPhone1;
-        return this;
     }
 
     public String getMainPhone2() {
@@ -524,22 +458,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainPhone2 = mainPhone2;
     }
 
-    public MsgServer withMainPhone2(String mainPhone2) {
-        this.mainPhone2 = mainPhone2;
-        return this;
-    }
-
     public String getMainCpName() {
         return mainCpName;
     }
 
     public void setMainCpName(String mainCpName) {
         this.mainCpName = mainCpName;
-    }
-
-    public MsgServer withMainCpName(String mainCpName) {
-        this.mainCpName = mainCpName;
-        return this;
     }
 
     public String getMainCpTitle() {
@@ -550,22 +474,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainCpTitle = mainCpTitle;
     }
 
-    public MsgServer withMainCpTitle(String mainCpTitle) {
-        this.mainCpTitle = mainCpTitle;
-        return this;
-    }
-
     public String getMainCpJabatan() {
         return mainCpJabatan;
     }
 
     public void setMainCpJabatan(String mainCpJabatan) {
         this.mainCpJabatan = mainCpJabatan;
-    }
-
-    public MsgServer withMainCpJabatan(String mainCpJabatan) {
-        this.mainCpJabatan = mainCpJabatan;
-        return this;
     }
 
     public String getMainCpBirthdate() {
@@ -576,22 +490,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainCpBirthdate = mainCpBirthdate;
     }
 
-    public MsgServer withMainCpBirthdate(String mainCpBirthdate) {
-        this.mainCpBirthdate = mainCpBirthdate;
-        return this;
-    }
-
-    public int getSaldoPiutang() {
+    public Integer getSaldoPiutang() {
         return saldoPiutang;
     }
 
-    public void setSaldoPiutang(int saldoPiutang) {
+    public void setSaldoPiutang(Integer saldoPiutang) {
         this.saldoPiutang = saldoPiutang;
-    }
-
-    public MsgServer withSaldoPiutang(int saldoPiutang) {
-        this.saldoPiutang = saldoPiutang;
-        return this;
     }
 
     public String getCreditLimit() {
@@ -602,22 +506,12 @@ public class MsgServer implements Serializable, Parcelable
         this.creditLimit = creditLimit;
     }
 
-    public MsgServer withCreditLimit(String creditLimit) {
-        this.creditLimit = creditLimit;
-        return this;
-    }
-
     public String getCreditLimitRemain() {
         return creditLimitRemain;
     }
 
     public void setCreditLimitRemain(String creditLimitRemain) {
         this.creditLimitRemain = creditLimitRemain;
-    }
-
-    public MsgServer withCreditLimitRemain(String creditLimitRemain) {
-        this.creditLimitRemain = creditLimitRemain;
-        return this;
     }
 
     public String getCreditLimitDays() {
@@ -628,22 +522,12 @@ public class MsgServer implements Serializable, Parcelable
         this.creditLimitDays = creditLimitDays;
     }
 
-    public MsgServer withCreditLimitDays(String creditLimitDays) {
-        this.creditLimitDays = creditLimitDays;
-        return this;
-    }
-
     public String getTax() {
         return tax;
     }
 
     public void setTax(String tax) {
         this.tax = tax;
-    }
-
-    public MsgServer withTax(String tax) {
-        this.tax = tax;
-        return this;
     }
 
     public String getMainPos() {
@@ -654,22 +538,12 @@ public class MsgServer implements Serializable, Parcelable
         this.mainPos = mainPos;
     }
 
-    public MsgServer withMainPos(String mainPos) {
-        this.mainPos = mainPos;
-        return this;
-    }
-
     public String getPriceVariant() {
         return priceVariant;
     }
 
     public void setPriceVariant(String priceVariant) {
         this.priceVariant = priceVariant;
-    }
-
-    public MsgServer withPriceVariant(String priceVariant) {
-        this.priceVariant = priceVariant;
-        return this;
     }
 
     public String getGudang() {
@@ -680,22 +554,12 @@ public class MsgServer implements Serializable, Parcelable
         this.gudang = gudang;
     }
 
-    public MsgServer withGudang(String gudang) {
-        this.gudang = gudang;
-        return this;
-    }
-
     public String getHeadOffice() {
         return headOffice;
     }
 
     public void setHeadOffice(String headOffice) {
         this.headOffice = headOffice;
-    }
-
-    public MsgServer withHeadOffice(String headOffice) {
-        this.headOffice = headOffice;
-        return this;
     }
 
     public String getDescription() {
@@ -706,11 +570,6 @@ public class MsgServer implements Serializable, Parcelable
         this.description = description;
     }
 
-    public MsgServer withDescription(String description) {
-        this.description = description;
-        return this;
-    }
-
     public String getWilayahSales() {
         return wilayahSales;
     }
@@ -719,22 +578,12 @@ public class MsgServer implements Serializable, Parcelable
         this.wilayahSales = wilayahSales;
     }
 
-    public MsgServer withWilayahSales(String wilayahSales) {
-        this.wilayahSales = wilayahSales;
-        return this;
-    }
-
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
-    }
-
-    public MsgServer withStatus(boolean status) {
-        this.status = status;
-        return this;
     }
 
     public String getCreatedAt() {
@@ -745,22 +594,12 @@ public class MsgServer implements Serializable, Parcelable
         this.createdAt = createdAt;
     }
 
-    public MsgServer withCreatedAt(String createdAt) {
-        this.createdAt = createdAt;
-        return this;
-    }
-
     public String getUpdatedAt() {
         return updatedAt;
     }
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public MsgServer withUpdatedAt(String updatedAt) {
-        this.updatedAt = updatedAt;
-        return this;
     }
 
     public String getAlias() {
@@ -771,11 +610,6 @@ public class MsgServer implements Serializable, Parcelable
         this.alias = alias;
     }
 
-    public MsgServer withAlias(String alias) {
-        this.alias = alias;
-        return this;
-    }
-
     public String getDptCode() {
         return dptCode;
     }
@@ -784,35 +618,20 @@ public class MsgServer implements Serializable, Parcelable
         this.dptCode = dptCode;
     }
 
-    public MsgServer withDptCode(String dptCode) {
-        this.dptCode = dptCode;
-        return this;
-    }
-
-    public int getAppDo() {
+    public Integer getAppDo() {
         return appDo;
     }
 
-    public void setAppDo(int appDo) {
+    public void setAppDo(Integer appDo) {
         this.appDo = appDo;
     }
 
-    public MsgServer withAppDo(int appDo) {
-        this.appDo = appDo;
-        return this;
-    }
-
-    public int getAppSj() {
+    public Integer getAppSj() {
         return appSj;
     }
 
-    public void setAppSj(int appSj) {
+    public void setAppSj(Integer appSj) {
         this.appSj = appSj;
-    }
-
-    public MsgServer withAppSj(int appSj) {
-        this.appSj = appSj;
-        return this;
     }
 
     public String getPassword() {
@@ -823,22 +642,12 @@ public class MsgServer implements Serializable, Parcelable
         this.password = password;
     }
 
-    public MsgServer withPassword(String password) {
-        this.password = password;
-        return this;
-    }
-
     public String getDateBirth() {
         return dateBirth;
     }
 
     public void setDateBirth(String dateBirth) {
         this.dateBirth = dateBirth;
-    }
-
-    public MsgServer withDateBirth(String dateBirth) {
-        this.dateBirth = dateBirth;
-        return this;
     }
 
     public String getStatusMember() {
@@ -849,22 +658,12 @@ public class MsgServer implements Serializable, Parcelable
         this.statusMember = statusMember;
     }
 
-    public MsgServer withStatusMember(String statusMember) {
-        this.statusMember = statusMember;
-        return this;
-    }
-
     public String getStatusPayment() {
         return statusPayment;
     }
 
     public void setStatusPayment(String statusPayment) {
         this.statusPayment = statusPayment;
-    }
-
-    public MsgServer withStatusPayment(String statusPayment) {
-        this.statusPayment = statusPayment;
-        return this;
     }
 
     public String getPayDate() {
@@ -875,22 +674,12 @@ public class MsgServer implements Serializable, Parcelable
         this.payDate = payDate;
     }
 
-    public MsgServer withPayDate(String payDate) {
-        this.payDate = payDate;
-        return this;
-    }
-
     public String getImagePay() {
         return imagePay;
     }
 
     public void setImagePay(String imagePay) {
         this.imagePay = imagePay;
-    }
-
-    public MsgServer withImagePay(String imagePay) {
-        this.imagePay = imagePay;
-        return this;
     }
 
     public String getImageCustomer() {
@@ -901,11 +690,6 @@ public class MsgServer implements Serializable, Parcelable
         this.imageCustomer = imageCustomer;
     }
 
-    public MsgServer withImageCustomer(String imageCustomer) {
-        this.imageCustomer = imageCustomer;
-        return this;
-    }
-
     public String getDateMember() {
         return dateMember;
     }
@@ -914,22 +698,12 @@ public class MsgServer implements Serializable, Parcelable
         this.dateMember = dateMember;
     }
 
-    public MsgServer withDateMember(String dateMember) {
-        this.dateMember = dateMember;
-        return this;
-    }
-
-    public int getPoin() {
+    public Integer getPoin() {
         return poin;
     }
 
-    public void setPoin(int poin) {
+    public void setPoin(Integer poin) {
         this.poin = poin;
-    }
-
-    public MsgServer withPoin(int poin) {
-        this.poin = poin;
-        return this;
     }
 
     public String getCodeRefferal() {
@@ -940,22 +714,12 @@ public class MsgServer implements Serializable, Parcelable
         this.codeRefferal = codeRefferal;
     }
 
-    public MsgServer withCodeRefferal(String codeRefferal) {
-        this.codeRefferal = codeRefferal;
-        return this;
-    }
-
     public String getExpiredDate() {
         return expiredDate;
     }
 
     public void setExpiredDate(String expiredDate) {
         this.expiredDate = expiredDate;
-    }
-
-    public MsgServer withExpiredDate(String expiredDate) {
-        this.expiredDate = expiredDate;
-        return this;
     }
 
     public String getOtp() {
@@ -966,11 +730,6 @@ public class MsgServer implements Serializable, Parcelable
         this.otp = otp;
     }
 
-    public MsgServer withOtp(String otp) {
-        this.otp = otp;
-        return this;
-    }
-
     public String getExpOtp() {
         return expOtp;
     }
@@ -979,48 +738,84 @@ public class MsgServer implements Serializable, Parcelable
         this.expOtp = expOtp;
     }
 
-    public MsgServer withExpOtp(String expOtp) {
-        this.expOtp = expOtp;
-        return this;
-    }
-
-    public boolean isEmailVerification() {
+    public Boolean getEmailVerification() {
         return emailVerification;
     }
 
-    public void setEmailVerification(boolean emailVerification) {
+    public void setEmailVerification(Boolean emailVerification) {
         this.emailVerification = emailVerification;
     }
 
-    public MsgServer withEmailVerification(boolean emailVerification) {
-        this.emailVerification = emailVerification;
-        return this;
+    public String getImgIdentitas() {
+        return imgIdentitas;
     }
 
-    public int getSisaCreditLimit() {
+    public void setImgIdentitas(String imgIdentitas) {
+        this.imgIdentitas = imgIdentitas;
+    }
+
+    public String getImgWajah() {
+        return imgWajah;
+    }
+
+    public void setImgWajah(String imgWajah) {
+        this.imgWajah = imgWajah;
+    }
+
+    public String getImgFull() {
+        return imgFull;
+    }
+
+    public void setImgFull(String imgFull) {
+        this.imgFull = imgFull;
+    }
+
+    public String getImgRumah() {
+        return imgRumah;
+    }
+
+    public void setImgRumah(String imgRumah) {
+        this.imgRumah = imgRumah;
+    }
+
+    public Boolean getVerifikasiFoto() {
+        return verifikasiFoto;
+    }
+
+    public void setVerifikasiFoto(Boolean verifikasiFoto) {
+        this.verifikasiFoto = verifikasiFoto;
+    }
+
+    public String getIdentitas() {
+        return identitas;
+    }
+
+    public void setIdentitas(String identitas) {
+        this.identitas = identitas;
+    }
+
+    public Boolean getFlagMember() {
+        return flagMember;
+    }
+
+    public void setFlagMember(Boolean flagMember) {
+        this.flagMember = flagMember;
+    }
+
+    public Integer getSisaCreditLimit() {
         return sisaCreditLimit;
     }
 
-    public void setSisaCreditLimit(int sisaCreditLimit) {
+    public void setSisaCreditLimit(Integer sisaCreditLimit) {
         this.sisaCreditLimit = sisaCreditLimit;
     }
 
-    public MsgServer withSisaCreditLimit(int sisaCreditLimit) {
-        this.sisaCreditLimit = sisaCreditLimit;
-        return this;
-    }
-
-    public int getGrandTotalSo() {
+    public String getGrandTotalSo() {
         return grandTotalSo;
     }
 
-    public void setGrandTotalSo(int grandTotalSo) {
+    public void setGrandTotalSo(String grandTotalSo) {
         this.grandTotalSo = grandTotalSo;
-    }
-
-    public MsgServer withGrandTotalSo(int grandTotalSo) {
-        this.grandTotalSo = grandTotalSo;
-        return this;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -1080,6 +875,13 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(otp);
         dest.writeValue(expOtp);
         dest.writeValue(emailVerification);
+        dest.writeValue(imgIdentitas);
+        dest.writeValue(imgWajah);
+        dest.writeValue(imgFull);
+        dest.writeValue(imgRumah);
+        dest.writeValue(verifikasiFoto);
+        dest.writeValue(identitas);
+        dest.writeValue(flagMember);
         dest.writeValue(sisaCreditLimit);
         dest.writeValue(grandTotalSo);
     }

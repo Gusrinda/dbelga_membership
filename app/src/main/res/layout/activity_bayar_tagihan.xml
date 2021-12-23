@@ -23,9 +23,9 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                app:elevation="0dp"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/biruBelga"
+                app:elevation="0dp"
                 app:title="Pembayaran Tagihan"
                 tools:ignore="HardcodedText">
 
@@ -58,34 +58,34 @@
 
             <TextView
                 android:id="@+id/txt_totalTagihan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/img"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="16sp"
-                android:layout_below="@id/img"
-                android:textStyle="bold"
-                android:textSize="28dp"
                 android:text="Rp. 300.000"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textSize="28dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/txt_statusTagihan"
-                android:layout_centerInParent="true"
-                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/txt_totalTagihan"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="8dp"
-                android:text="Tagihan Anda . . . . . . " />
+                android:text="Tagihan Anda . . . . . . "
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginHorizontal="16sp"
-            tools:listitem="@layout/item_riwayat_sub"
-            android:layout_below="@+id/layoutInfo"
-            android:layout_above="@id/btn_BayarTagihan"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:layout_above="@id/btn_BayarTagihan"
+            android:layout_below="@+id/layoutInfo"
+            android:layout_marginHorizontal="16sp"
+            tools:listitem="@layout/item_riwayat_sub" />
 
         <Button
             android:textAllCaps="false"

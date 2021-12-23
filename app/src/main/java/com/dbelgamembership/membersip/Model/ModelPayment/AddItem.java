@@ -25,7 +25,7 @@ public class AddItem implements Serializable, Parcelable
     private Integer produk;
     @SerializedName("qty")
     @Expose
-    private Integer qty;
+    private double qty;
     @SerializedName("customer_price")
     @Expose
     private String customerPrice;
@@ -134,11 +134,11 @@ public class AddItem implements Serializable, Parcelable
         this.produk = produk;
     }
 
-    public Integer getQty() {
+    public double getQty() {
         return qty;
     }
 
-    public void setQty(Integer qty) {
+    public void setQty(double qty) {
         this.qty = qty;
     }
 

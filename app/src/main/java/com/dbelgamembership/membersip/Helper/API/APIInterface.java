@@ -8,6 +8,7 @@ import com.dbelgamembership.membersip.Model.ModelResponseDistance.ModelResponseD
 import com.dbelgamembership.membersip.Model.ModelToko.ModelToko;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
+import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
 import com.google.gson.JsonElement;
 
@@ -34,6 +35,10 @@ public interface APIInterface {
     Call<ModelToko> doGetToko();
 
     @Headers("Content-Type: application/json")
+    @GET("get-date")
+    Call<JsonElement> doGetDateServer();
+
+    @Headers("Content-Type: application/json")
     @GET("list-slider")
     Call<ModelGetSlider> doGetDataSlider();
 
@@ -52,6 +57,11 @@ public interface APIInterface {
             @Field("otp") String otp
     );
 
+    @GET("check-phone-email")
+    Call<JsonElement> doCheckEmaildanHp(
+            @Query("phone") String phone,
+            @Query("email") String email
+    );
 
     @FormUrlEncoded
     @POST("verifikasi-member")
@@ -59,13 +69,20 @@ public interface APIInterface {
             @Field("id_member") String idMember,
             @Field("img_identitas") String imgIdentitas,
             @Field("img_wajah") String imgWajah,
-            @Field("img_full") String imgFull
+            @Field("img_full") String imgFull,
+            @Field("img_rumah") String imgRumah,
+            @Field("lat_rumah") String latRumah,
+            @Field("lon_rumah") String lonRumah,
+            @Field("address_rumah") String addressRumah
     );
 
     @GET
     Call<ModelUser> doLoopCustomer(
            @Url String url
     );
+
+    @GET("search-customer")
+    Call<JsonElement> doGetUser();
 
     @FormUrlEncoded
     @POST("cart-add")
@@ -74,7 +91,7 @@ public interface APIInterface {
             @Field("id_gudang") String idGudang,
             @Field("id_item") String idItem,
             @Field("barcode") String barcodeItem,
-            @Field("qty_item") int qtyItem
+            @Field("qty_item") double qtyItem
     );
 
     @FormUrlEncoded
@@ -97,6 +114,8 @@ public interface APIInterface {
     @GET("cart-empty")
     Call<String> doEmptyCart(
             @Query("id_member") String idMember);
+
+
 
     //https://maps.googleapis.com/maps/api/distancematrix/json?
     // origins=-8.054128666081018,%20111.88958097097624
@@ -126,5 +145,30 @@ public interface APIInterface {
             @Field("tipe_payment") String tipePayment,
             @Field("bukti_payment") String buktiPayment
     );
+
+    @FormUrlEncoded
+    @POST("register-customer")
+    Call<JsonElement> doRegistrasiMember(
+            @Field("pelanggan_nama") String namaPelanggan,
+            @Field("pelanggan_kelamin") String kelaminPelanggan,
+            @Field("pelanggan_tanggalLahir") String tanggalLahirPelanggan,
+            @Field("pelanggan_nomorHp") String hpPelanggan,
+            @Field("pelanggan_email") String emailPelanggan,
+            @Field("pelanggan_password") String passwordPelanggan,
+            @Field("pelanggan_identitas") String nomorIdPelanggan,
+            @Field("pelanggan_alamat_ktp") String alamatKTP,
+            @Field("pelanggan_alamat") String alamatPelanggan,
+            @Field("pelanggan_kota") String kotaPelanggan,
+            @Field("pelanggan_kodePos") String kodePosPelanggan,
+            @Field("status_member") String statusMember,
+            @Field("expired_date") String expiredDateMember,
+            @Field("pay_date") String expiredPaymentDate,
+            @Field("otp") String OTP,
+            @Field("exp_otp") String expOTP
+    );
+
+    @GET("check-verifikasi-user")
+    Call<ResponseCekVerifikasi> doCekVerifikasiUser(
+            @Query("id_user") String idMember);
 
 }

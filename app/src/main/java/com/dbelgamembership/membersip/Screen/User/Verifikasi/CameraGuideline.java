@@ -31,7 +31,6 @@ public class CameraGuideline extends AppCompatActivity {
     ShowCamera showCamera;
     int kode_Camera;
 
-
     // Constant used to identify data sent between Activities.
     public static final String EXTRA_DATA = "";
 
@@ -49,7 +48,7 @@ public class CameraGuideline extends AppCompatActivity {
         kode_Camera = getIntent().getIntExtra("kode_guide", 0);
 
         try {
-            if (kode_Camera == 1) {
+            if (kode_Camera == 1 || kode_Camera == 4) {
                 camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
             } else {
                 camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT);
@@ -74,6 +73,8 @@ public class CameraGuideline extends AppCompatActivity {
         } else if (kode_Camera == 3) {
             binding.incLayoutFotoSelfie.getRoot().setVisibility(View.VISIBLE);
             binding.textPetunjuk.setText("Lakukan selfie dengan kartu identitas dibawah wajah seperti petunjuk !");
+        } else if (kode_Camera == 4) {
+            binding.textPetunjuk.setText("Ambil foto rumah anda");
         }
 
         binding.btnAmbilFoto.setOnClickListener(new View.OnClickListener() {

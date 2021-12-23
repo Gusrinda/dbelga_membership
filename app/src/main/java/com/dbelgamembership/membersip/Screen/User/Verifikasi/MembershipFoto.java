@@ -1,20 +1,29 @@
 package com.dbelgamembership.membersip.Screen.User.Verifikasi;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.exifinterface.media.ExifInterface;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -27,20 +36,48 @@ import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
+import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipFotoBinding;
 import com.developer.kalert.KAlertDialog;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
+import java.lang.reflect.Member;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -59,17 +96,30 @@ public class MembershipFoto extends AppCompatActivity {
     private ImagePopup imagePopup;
     private ProgressDialog progressDialog;
 
-    private Uri uriFotoIdentitas, uriFotoWajah, uriFotoSelfie;
+    private Uri uriFotoIdentitas, uriFotoWajah, uriFotoSelfie, uriFotoRumah;
+
+    Location locationRumah;
+    private String alamatRumah;
+    private LatLng latLngRumah;
 
     String fotoIdentitas = "";
     String fotoWajah = "";
     String fotoSelfie = "";
+    String fotoRumah = "";
+
+    boolean flagFotoKTP = false;
+    boolean flagFotoSelfie = false;
+    boolean flagFotoSelfiedanKTP = false;
+    boolean flagFotoRumah = false;
+    boolean flagAlamatRumah = false;
+
+    private FusedLocationProviderClient fusedClient;
 
     @Override
     public void onBackPressed() {
         new KAlertDialog(MembershipFoto.this, KAlertDialog.WARNING_TYPE)
                 .setTitleText("Keluar")
-                .setContentText("Keluar dari halaman ini akan menyebabkan semua proses pendaftaran member debet hilang. Anda yakin ?")
+                .setContentText("Keluar dari halaman ini akan menyebabkan semua foto yang diambil hilang. Anda yakin ?")
                 .setConfirmText("Ya")
                 .confirmButtonColor(R.color.biruBelga, MembershipFoto.this)
                 .cancelButtonColor(R.color.grey_font, MembershipFoto.this)
@@ -100,8 +150,15 @@ public class MembershipFoto extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
 
+        try {
+            permissionRequest();
+        } catch (Exception e) {
+            Toast.makeText(MembershipFoto.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "onCreate: " + Arrays.toString(e.getStackTrace()));
+        }
+
         binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_black_24);
-//        verifBinding.toolbar.setNavigationIcon
+
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,12 +214,43 @@ public class MembershipFoto extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
                 selfie = true;
-
                 intent.putExtra("kode_guide", 3);
 //                startActivity(intent);
                 startActivityForResult(intent, 103);
             }
         });
+
+        binding.btnUploadFotoRumah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                selfie = false;
+                intent.putExtra("kode_guide", 4);
+//                startActivity(intent);
+                startActivityForResult(intent, 104);
+            }
+        });
+
+        binding.btnSetAlamatRumah.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MembershipFoto.this, SetAlamatRumah.class);
+                intent.putExtra("hasLocation", true);
+                intent.putExtra("location", latLngRumah);
+                startActivityForResult(intent, 1);
+            }
+        });
+
+        Log.e(TAG, "onCreate SELECTED MEMBERSHIP : " + MembershipPilih.selectedMembership);
+
+        if (sessionManager.getMembership().equals("SILVER")) {
+            binding.linearLayoutFotoRumah.setVisibility(View.GONE);
+            flagFotoRumah = true;
+            flagAlamatRumah = true;
+        } else {
+            flagFotoRumah = false;
+            flagAlamatRumah = false;
+        }
 
         imagePopup = new ImagePopup(this);
         imagePopup.setWindowHeight(1200); // Optional
@@ -215,7 +303,7 @@ public class MembershipFoto extends AppCompatActivity {
                                 @Override
                                 public void onClick(KAlertDialog sDialog) {
                                     sDialog.dismissWithAnimation();
-                                    sendDataVerifikasi(fotoIdentitas, fotoWajah, fotoSelfie);
+                                    sendDataVerifikasi(fotoIdentitas, fotoWajah, fotoSelfie, fotoRumah);
                                 }
                             })
                             .setCancelText("Tidak")
@@ -229,15 +317,145 @@ public class MembershipFoto extends AppCompatActivity {
                 }
             }
         });
+
+        checkAllData();
     }
+
+    @SuppressLint("NewApi")
+    private void checkAllData() {
+
+        if (flagFotoSelfie && flagFotoKTP && flagFotoRumah && flagFotoSelfiedanKTP && flagAlamatRumah) {
+            binding.btnKirimIdentitas.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.biruBelga)));
+            binding.btnKirimIdentitas.setEnabled(true);
+        } else {
+            binding.btnKirimIdentitas.setBackgroundTintList(ColorStateList.valueOf(getApplicationContext().getColor(R.color.greyBelha)));
+            binding.btnKirimIdentitas.setEnabled(false);
+        }
+
+    }
+
+    private void permissionRequest() {
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.INTERNET,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.BLUETOOTH,
+                        Manifest.permission.BLUETOOTH_ADMIN,
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.ACCESS_NETWORK_STATE,
+                        Manifest.permission.ACCESS_WIFI_STATE,
+                        Manifest.permission.CHANGE_WIFI_STATE,
+                        Manifest.permission.GET_ACCOUNTS,
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            Toast.makeText(getApplicationContext(), "All permissions are granted!", Toast.LENGTH_SHORT).show();
+
+                            Log.e(TAG, "onCreate: finally");
+                            fusedClient = LocationServices.getFusedLocationProviderClient(MembershipFoto.this);
+                            getLastLocation();
+
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), "Error occurred! ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .onSameThread()
+                .check();
+    }
+
+    @SuppressLint("MissingPermission")
+    private void getLastLocation() {
+        progressDialog = ProgressDialog.show(MembershipFoto.this, "Loading", "Please Wait...");
+        fusedClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+
+                        if (location != null) {
+                            progressDialog.dismiss();
+                            locationRumah = location;
+                            double latitude = location.getLatitude();
+                            double longitude = location.getLongitude();
+                            latLngRumah = new LatLng(latitude, longitude);
+
+                            Log.e(TAG, "onSuccess LAT : " + latitude);
+                            Log.e(TAG, "onSuccess LONG : " + longitude);
+
+                            Geocoder geocoder = new Geocoder(MembershipFoto.this, Locale.getDefault());
+                            List<Address> addresses = null; // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                            try {
+                                addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                                String address = addresses.get(0).getAddressLine(0);
+                                alamatRumah = address;
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                        } else {
+                            progressDialog.dismiss();
+                            LocationRequest locationRequest = new LocationRequest()
+                                    .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+                                    .setInterval(10000)
+                                    .setFastestInterval(1000)
+                                    .setNumUpdates(1);
+
+                            LocationCallback locationCallback = new LocationCallback() {
+                                @Override
+                                public void onLocationResult(@NonNull @NotNull LocationResult locationResult) {
+                                    super.onLocationResult(locationResult);
+                                    finish();
+                                    startActivity(new Intent(MembershipFoto.this, MembershipFoto.class));
+                                }
+                            };
+
+                            AlertDialog alertDialog = new AlertDialog.Builder(MembershipFoto.this).create();
+                            alertDialog.setTitle("Hi, " + sessionManager.getName());
+                            alertDialog.setMessage("Lokasi belum diambil, ambil sekarang ?");
+                            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            fusedClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+                                        }
+                                    });
+                            alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK",
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            finish();
+                                        }
+                                    });
+                            alertDialog.show();
+
+
+                        }
+                    }
+                });
+    }
+
 
     public void save(String fileText, String fileName) {
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(fileName + ".txt", MODE_PRIVATE);
             fos.write(fileText.getBytes());
-
-//            Toast.makeText(this, "Saved to " + getFilesDir() + "/" + fileName + ".txt", Toast.LENGTH_LONG).show();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -253,11 +471,42 @@ public class MembershipFoto extends AppCompatActivity {
         }
     }
 
-    private void sendDataVerifikasi(String fotoIdentitas, String fotoWajah, String fotoSelfie) {
+    private void sendDataVerifikasi(String fotoIdentitas, String fotoWajah, String fotoSelfie, String fotoRumah) {
         progressDialog = ProgressDialog.show(MembershipFoto.this, "Loading", "Please Wait...");
 
+        Writer output = null;
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+        JSONObject postData = new JSONObject();
+        try {
+            postData.put("id_member", sessionManager.getPID());
+            postData.put("img_identitas", fotoIdentitas);
+            postData.put("img_wajah", fotoWajah);
+            postData.put("img_full", fotoSelfie);
+            postData.put("img_rumah", fotoRumah);
+            postData.put("lat_rumah", latLngRumah.latitude);
+            postData.put("lon_rumah", latLngRumah.longitude);
+            postData.put("address_rumah", alamatRumah);
+
+            File pdfFile = new File(folder, "postData.json");
+            output = new BufferedWriter(new FileWriter(pdfFile));
+            output.write(postData.toString());
+            output.close();
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-        Call<String> call = apiInterface.doSendVerification(sessionManager.getPID(), fotoIdentitas, fotoWajah, fotoSelfie);
+        Call<String> call = apiInterface.doSendVerification(
+                sessionManager.getPID(),
+                fotoIdentitas,
+                fotoWajah,
+                fotoSelfie,
+                fotoRumah,
+                String.valueOf(latLngRumah.latitude),
+                String.valueOf(latLngRumah.longitude),
+                alamatRumah
+        );
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -270,10 +519,21 @@ public class MembershipFoto extends AppCompatActivity {
                     if (!check) {
                         PeringatanDialog("Error", jsonObject.getString("msgServer"));
                     } else {
-                        Toast.makeText(MembershipFoto.this, "Tunggu verifikasi admin dalam 1x24 jam !", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(MembershipFoto.this, "Tunggu verifikasi admin dalam 1x24 jam !", Toast.LENGTH_SHORT).show();
+//                        finish();
+//                        Intent intent = new Intent(MembershipFoto.this, MainActivity.class);
+//                        startActivity(intent);
+
+//                        if (sessionManager.getMembership().equals("SILVER")) {
                         finish();
-                        Intent intent = new Intent(MembershipFoto.this, MainActivity.class);
+                        Intent intent = new Intent(MembershipFoto.this, SplashActivity.class);
                         startActivity(intent);
+//                        } else {
+//                            Intent intent = new Intent(MembershipFoto.this, KonfirmasiMembership.class);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -308,13 +568,15 @@ public class MembershipFoto extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
                 uriFotoIdentitas = myUri;
                 try {
-                    fotoIdentitas = imageToString(MediaStore.Images.Media.getBitmap(getContentResolver(), uriFotoIdentitas));
+                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoIdentitas);
+                    fotoIdentitas = imageToString(thisFotoBitmap);
                     save(fotoIdentitas, "fotoIdentitas");
-
+                    setView(101, thisFotoBitmap);
+                    flagFotoKTP = true;
                 } catch (IOException e) {
+                    flagFotoKTP = false;
                     e.printStackTrace();
                 }
-                setView(101, myUri);
             } else if (requestCode == 102) {
                 //CAMERA SELFIE
                 final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
@@ -323,15 +585,16 @@ public class MembershipFoto extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
                 uriFotoWajah = myUri;
                 try {
-                    fotoWajah = imageToString(MediaStore.Images.Media.getBitmap(getContentResolver(), uriFotoWajah));
-
+                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoWajah);
+                    fotoWajah = imageToString(thisFotoBitmap);
                     save(fotoWajah, "fotoWajah");
-
-
+                    setView(102, thisFotoBitmap);
+                    flagFotoSelfie = true;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    flagFotoSelfie = false;
                 }
-                setView(102, myUri);
+
             } else if (requestCode == 103) {
                 //CAMERA SELFIE WITH ID
                 final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
@@ -340,24 +603,61 @@ public class MembershipFoto extends AppCompatActivity {
                 Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
                 uriFotoSelfie = myUri;
                 try {
-                    fotoSelfie = imageToString(MediaStore.Images.Media.getBitmap(getContentResolver(), uriFotoSelfie));
+                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoSelfie);
+                    fotoSelfie = imageToString(thisFotoBitmap);
                     save(fotoSelfie, "fotoSelfie");
+                    setView(103, thisFotoBitmap);
+                    flagFotoSelfiedanKTP = true;
                 } catch (IOException e) {
                     e.printStackTrace();
+                    flagFotoSelfiedanKTP = false;
                 }
-                setView(103, myUri);
+
+            } else if (requestCode == 104) {
+                //CAMERA SELFIE WITH ID
+                final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
+                Log.e(TAG, "onActivityResult: FOTO RUMAH ID  -> " + result);
+                Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+                Log.e(TAG, "onActivityResult: URI FOTO RUMAH  -> " + myUri);
+                uriFotoRumah = myUri;
+                try {
+                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoRumah);
+                    fotoRumah = imageToString(thisFotoBitmap);
+                    save(fotoRumah, "fotoSelfie");
+                    setView(104, thisFotoBitmap);
+                    flagFotoRumah = true;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    flagFotoRumah = false;
+                }
+
+            } else if (requestCode == 1) {
+                if (resultCode == -1) {
+                    Log.e(TAG, "onActivityResult: " + data);
+                    if (data != null) {
+                        if (data.hasExtra("hasAlamatRumah")) {
+                            String alamat = data.getStringExtra("alamat_address");
+                            LatLng latlong = data.getParcelableExtra("alamat_latlng");
+
+                            alamatRumah = alamat;
+                            latLngRumah = latlong;
+                            flagAlamatRumah = true;
+
+                            Toast.makeText(MembershipFoto.this, "ALAMAT :: " + alamat + "\nLAT :: " + latLngRumah.latitude + "\nLNG :: " + latLngRumah.longitude, Toast.LENGTH_SHORT).show();
+                        }
+
+                    } else {
+                        Log.e(TAG, "onActivityResult: data " + data);
+                    }
+                }
             }
 
+            checkAllData();
         }
 
     }
 
-    private void setView(int i, Uri myUri) {
-        try {
-            bitmap = handleSamplingAndRotationBitmap(this, myUri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private void setView(int i, Bitmap bitmap) {
 
         if (i == 101) {
             binding.imgFotoIdentitas.setImageBitmap(bitmap);
@@ -371,22 +671,18 @@ public class MembershipFoto extends AppCompatActivity {
             binding.imgFotoSelfie.setImageBitmap(bitmap);
             binding.imgFotoSelfie.setVisibility(View.VISIBLE);
             binding.imgCheckFotoSelfie.setVisibility(View.VISIBLE);
+        } else if (i == 104) {
+            binding.imgFotoRumah.setImageBitmap(bitmap);
+            binding.imgFotoRumah.setVisibility(View.VISIBLE);
+            binding.imgCheckFotoRumah.setVisibility(View.VISIBLE);
         }
 
         selfie = false;
 
+
     }
 
 
-    /**
-     * This method is responsible for solving the rotation issue if exist. Also scale the images to
-     * 1024x1024 resolution
-     *
-     * @param context       The current context
-     * @param selectedImage The Image URI
-     * @return Bitmap image results
-     * @throws IOException
-     */
     public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage)
             throws IOException {
         int MAX_HEIGHT = 1024;
@@ -411,20 +707,6 @@ public class MembershipFoto extends AppCompatActivity {
         return img;
     }
 
-    /**
-     * Calculate an inSampleSize for use in a {@link BitmapFactory.Options} object when decoding
-     * bitmaps using the decode* methods from {@link BitmapFactory}. This implementation calculates
-     * the closest inSampleSize that will result in the final decoded bitmap having a width and
-     * height equal to or larger than the requested width and height. This implementation does not
-     * ensure a power of 2 is returned for inSampleSize which can be faster when decoding but
-     * results in a larger bitmap which isn't as useful for caching purposes.
-     *
-     * @param options   An options object with out* params already populated (run through a decode*
-     *                  method with inJustDecodeBounds==true
-     * @param reqWidth  The requested width of the resulting bitmap
-     * @param reqHeight The requested height of the resulting bitmap
-     * @return The value to be used for inSampleSize
-     */
     private static int calculateInSampleSize(BitmapFactory.Options options,
                                              int reqWidth, int reqHeight) {
         // Raw height and width of image
@@ -434,19 +716,11 @@ public class MembershipFoto extends AppCompatActivity {
 
         if (height > reqHeight || width > reqWidth) {
 
-            // Calculate ratios of height and width to requested height and width
             final int heightRatio = Math.round((float) height / (float) reqHeight);
             final int widthRatio = Math.round((float) width / (float) reqWidth);
 
-            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
-            // with both dimensions larger than or equal to the requested height and width.
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
 
-            // This offers some additional logic in case the image has a strange
-            // aspect ratio. For example, a panorama may have a much larger
-            // width than height. In these cases the total pixels might still
-            // end up being too large to fit comfortably in memory, so we should
-            // be more aggressive with sample down the image (=larger inSampleSize).
 
             final float totalPixels = width * height;
 
@@ -470,14 +744,7 @@ public class MembershipFoto extends AppCompatActivity {
     private static Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
 
         ExifInterface ei = new ExifInterface(selectedImage.getPath());
-
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
-
-//        if (selfie) {
-//            orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_FLIP_HORIZONTAL);
-//        } else {
-//            orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-//        }
 
         Log.e(TAG, "rotateImageIfRequired: " + orientation);
 
@@ -501,7 +768,6 @@ public class MembershipFoto extends AppCompatActivity {
         } else {
             matrix.postRotate(degree);
         }
-//        matrix.postRotate(degree);
         Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
         img.recycle();
         return rotatedImg;
@@ -540,4 +806,6 @@ public class MembershipFoto extends AppCompatActivity {
         );
 
     }
+
+
 }

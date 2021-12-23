@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Screen.Registrasi.RegistrasiNext">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_marginLeft="16sp"
+            android:layout_marginTop="16sp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:tint="@color/black" />
+
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:id="@+id/logoBelga"
+            android:layout_marginTop="12dp"
+            android:layout_width="120dp"
+            android:layout_height="80dp"
+            android:src="@drawable/dbelga" />
+
+        <TextView
+            android:id="@+id/judul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/logoBelga"
+            android:layout_centerHorizontal="true"
+            android:text="REGISTRASI LANJUT MEMBERSHIP"
+            android:textColor="@color/darkBiruBelga"
+            android:textStyle="bold" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/layoutButton"
+            android:layout_below="@+id/judul"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="8sp">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lengkapi identitas anda sesuai dengan form dibawah ini !"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="12sp"
+                    android:textStyle="italic" />
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/nomorIdentitasPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8sp"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txt_nomorIdentitasPelanggan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Nomor Identitas Pelanggan"
+                        android:inputType="number"
+                        android:maxLength="16"
+                        android:textColor="@color/darkBiruBelga"
+                        android:textSize="14dp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/alamatKTP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8sp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="255"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txt_alamatKTP"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Alamat Sesuai KTP"
+                        android:inputType="textMultiLine"
+                        android:textColor="@color/darkBiruBelga"
+                        android:textSize="14dp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/checkboxAlamatSama"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alamat sekarang sama dengan KTP ?" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/alamatPelanggan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8sp"
+                    app:counterEnabled="true"
+                    app:counterMaxLength="255"
+                    app:hintTextColor="@color/darkBiruBelga">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/txt_alamatPelanggan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:hint="Alamat Sekarang"
+                        android:inputType="textMultiLine"
+                        android:textColor="@color/darkBiruBelga"
+                        android:textSize="14dp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/alamatKotaPelanggan"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="horizontal"
+                        app:hintTextColor="@color/darkBiruBelga">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txt_alamatKotaPelanggan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Kota / Kabupaten"
+                            android:inputType="text"
+                            android:textColor="@color/darkBiruBelga"
+                            android:textSize="14dp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.05" />
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/alamatKodePos"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="horizontal"
+                        app:hintTextColor="@color/darkBiruBelga">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/txt_kodePos"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Kode POS"
+                            android:inputType="number"
+                            android:textColor="@color/darkBiruBelga"
+                            android:textSize="14dp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+        <LinearLayout
+            android:id="@+id/layoutButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="32dp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/checkboxSetuju"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:id="@+id/txtPersyaratanMembership"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="Saya setuju dengan persyaratan membership Dbelga"
+                    android:textColor="@color/biruBelga"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnRegister"
+                android:enabled="false"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/button_round_theme"
+                android:backgroundTint="@color/greyBelha"
+                android:text="Registrasi"
+                android:textColor="@color/white" />
+
+            <LinearLayout
+                android:id="@+id/btnLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="12sp"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sudah punya akun ?"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" Login"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

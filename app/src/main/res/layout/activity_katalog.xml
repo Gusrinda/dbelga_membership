@@ -30,37 +30,37 @@
             </androidx.appcompat.widget.Toolbar>
 
             <ru.nikartm.support.ImageBadgeView
-                android:layout_toLeftOf="@id/icon_Keranjang"
-                android:layout_marginEnd="16sp"
-                android:layout_centerVertical="true"
                 android:id="@+id/icon_whislist"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16sp"
+                android:layout_toLeftOf="@id/icon_Keranjang"
 
-                app:ibv_badgeTextSize="10sp"
-                app:ibv_fixedBadgeRadius="10dp"
-                app:ibv_badgeTextStyle="bold"
-                app:ibv_badgeTextColor="#ffffff"
+                android:src="@drawable/ic_like"
                 app:ibv_badgeColor="#F44336"
                 app:ibv_badgeLimitValue="false"
-                app:ibv_maxBadgeValue="99"
-                android:src="@drawable/ic_like" />
+                app:ibv_badgeTextColor="#ffffff"
+                app:ibv_badgeTextSize="10sp"
+                app:ibv_badgeTextStyle="bold"
+                app:ibv_fixedBadgeRadius="10dp"
+                app:ibv_maxBadgeValue="99" />
 
             <ru.nikartm.support.ImageBadgeView
-                android:layout_alignParentRight="true"
-                android:layout_marginEnd="16sp"
-                android:layout_centerVertical="true"
                 android:id="@+id/icon_Keranjang"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                app:ibv_badgeTextSize="10sp"
-                app:ibv_fixedBadgeRadius="10dp"
-                app:ibv_badgeTextStyle="bold"
-                app:ibv_badgeTextColor="#ffffff"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="16sp"
+                android:src="@drawable/ic_baseline_shopping_cart_24"
                 app:ibv_badgeColor="#F44336"
                 app:ibv_badgeLimitValue="false"
-                app:ibv_maxBadgeValue="99"
-                android:src="@drawable/ic_baseline_shopping_cart_24" />
+                app:ibv_badgeTextColor="#ffffff"
+                app:ibv_badgeTextSize="10sp"
+                app:ibv_badgeTextStyle="bold"
+                app:ibv_fixedBadgeRadius="10dp"
+                app:ibv_maxBadgeValue="99" />
 
 
         </RelativeLayout>
@@ -101,11 +101,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:focusable="false" />
 
         <LinearLayout
             android:weightSum="1"
