@@ -96,14 +96,13 @@ public class LimitPlafon extends AppCompatActivity {
 
                     limitPlafon = (dataUser.getCreditLimit() == null ? 0 : Double.parseDouble(dataUser.getCreditLimit()));
                     sisaPlafon = dataUser.getSisaCreditLimit();
-                    piutangBelanja = Double.parseDouble(dataUser.getGrandTotalSo());
+                    piutangBelanja = Double.parseDouble(dataUser.getGrandTotalDebet());
 
                     Log.e(TAG, "onResponse LP: " + limitPlafon);
                     Log.e(TAG, "onResponse SP: " + sisaPlafon);
                     Log.e(TAG, "onResponse PB: " + piutangBelanja);
 
                     pengaturanDataLimit();
-
 
             }
 

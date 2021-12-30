@@ -10,6 +10,7 @@ import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
 import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.google.gson.JsonElement;
 
 import java.util.HashMap;
@@ -138,12 +139,9 @@ public interface APIInterface {
             @Field("status_update") String statusUpdate
     );
 
-    @FormUrlEncoded
     @POST("transaction/set-payment")
     Call<String> doSetPayment(
-            @Field("kode_transaksi") String kodeTransaksi,
-            @Field("tipe_payment") String tipePayment,
-            @Field("bukti_payment") String buktiPayment
+            @Body ModelPostSetPayment json
     );
 
     @FormUrlEncoded
@@ -170,5 +168,17 @@ public interface APIInterface {
     @GET("check-verifikasi-user")
     Call<ResponseCekVerifikasi> doCekVerifikasiUser(
             @Query("id_user") String idMember);
+
+
+
+    @GET("search-katalog")
+    Call<JsonElement> doGetKatalogPromo(
+            @Query("gudang") String idGudang,
+            @Query("name") String textPencarian
+
+    );
+
+
+
 
 }

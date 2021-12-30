@@ -206,9 +206,9 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("sisa_credit_limit")
     @Expose
     private Integer sisaCreditLimit;
-    @SerializedName("grand_total_so")
+    @SerializedName("grand_total_debet")
     @Expose
-    private String grandTotalSo;
+    private String grandTotalDebet;
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -292,7 +292,7 @@ public class MsgServer implements Serializable, Parcelable
         this.identitas = ((String) in.readValue((String.class.getClassLoader())));
         this.flagMember = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.sisaCreditLimit = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.grandTotalSo = ((String) in.readValue((String.class.getClassLoader())));
+        this.grandTotalDebet = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -810,12 +810,12 @@ public class MsgServer implements Serializable, Parcelable
         this.sisaCreditLimit = sisaCreditLimit;
     }
 
-    public String getGrandTotalSo() {
-        return grandTotalSo;
+    public String getGrandTotalDebet() {
+        return grandTotalDebet;
     }
 
-    public void setGrandTotalSo(String grandTotalSo) {
-        this.grandTotalSo = grandTotalSo;
+    public void setGrandTotalDebet(String grandTotalDebet) {
+        this.grandTotalDebet = grandTotalDebet;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -883,7 +883,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(identitas);
         dest.writeValue(flagMember);
         dest.writeValue(sisaCreditLimit);
-        dest.writeValue(grandTotalSo);
+        dest.writeValue(grandTotalDebet);
     }
 
     public int describeContents() {

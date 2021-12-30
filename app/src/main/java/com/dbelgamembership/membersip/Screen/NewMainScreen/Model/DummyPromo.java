@@ -1,6 +1,9 @@
 package com.dbelgamembership.membersip.Screen.NewMainScreen.Model;
 
-public class DummyPromo {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class DummyPromo implements Parcelable {
 
     private String namaPromo;
     private boolean isBaru;
@@ -18,6 +21,26 @@ public class DummyPromo {
         this.tipePromo = tipePromo;
         this.alamatGambar = alamatGambar;
     }
+
+    protected DummyPromo(Parcel in) {
+        namaPromo = in.readString();
+        isBaru = in.readByte() != 0;
+        tanggalBerlaku = in.readString();
+        tipePromo = in.readString();
+        alamatGambar = in.readInt();
+    }
+
+    public static final Creator<DummyPromo> CREATOR = new Creator<DummyPromo>() {
+        @Override
+        public DummyPromo createFromParcel(Parcel in) {
+            return new DummyPromo(in);
+        }
+
+        @Override
+        public DummyPromo[] newArray(int size) {
+            return new DummyPromo[size];
+        }
+    };
 
     public String getNamaPromo() {
         return namaPromo;
@@ -57,5 +80,19 @@ public class DummyPromo {
 
     public void setAlamatGambar(int alamatGambar) {
         this.alamatGambar = alamatGambar;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(namaPromo);
+        dest.writeByte((byte) (isBaru ? 1 : 0));
+        dest.writeString(tanggalBerlaku);
+        dest.writeString(tipePromo);
+        dest.writeInt(alamatGambar);
     }
 }

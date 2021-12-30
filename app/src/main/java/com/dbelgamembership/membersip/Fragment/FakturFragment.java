@@ -49,7 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class    FakturFragment extends Fragment implements AdapterListTransaksiPayment.AdapterListTransactionCallback {
+public class  FakturFragment extends Fragment implements AdapterListTransaksiPayment.AdapterListTransactionCallback {
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";

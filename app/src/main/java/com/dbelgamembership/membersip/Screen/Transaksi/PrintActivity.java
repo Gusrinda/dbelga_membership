@@ -71,6 +71,7 @@ import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncBluetoothEscPosPrint;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncEscPosPrinter;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarang;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
 import com.dbelgamembership.membersip.Helper.Http;
@@ -495,7 +496,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 
         final ProgressDialog progressDialog = ProgressDialog.show(PrintActivity.this, "Loading", "Setting Up Payment ...");
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-        Call<String> call = apiInterface.doSetPayment(dataSO, tipePayment, imageString);
+        Call<String> call = apiInterface.doSetPayment(new ModelPostSetPayment(dataSO, tipePayment, imageString, null));
 
         call.enqueue(new Callback<String>() {
             @Override

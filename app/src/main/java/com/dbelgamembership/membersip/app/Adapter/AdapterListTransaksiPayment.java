@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -84,13 +85,13 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
         Log.e(TAG, "Data : " + item.getStatusPengiriman());
 
 //        if (item.getFlagKirim()) {
-            if (item.getStatus().equals("approved")) {
-                statusPengiriman = "Transaksi Selesai";
-                holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
-            } else {
-                statusPengiriman = item.getStatusPengiriman();
-                holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
-            }
+        if (item.getStatus().equals("approved")) {
+            statusPengiriman = "Transaksi Selesai";
+            holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
+        } else {
+            statusPengiriman = item.getStatus();
+            holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
+        }
 
         String idGudang = String.valueOf(item.getGudang());
 
@@ -99,7 +100,6 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
                 holder.namaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
             }
         }
-
 
         Log.e("TAG", "status Pengiriman : " + statusPengiriman);
         holder.statusBelanja.setText(statusPengiriman);
@@ -121,7 +121,13 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
         holder.cardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mAdapterCallback.onRowAdapterListTransactionClicked(item);
+
+                if (item.getStatus().equals("in process")) {
+                    Toast.makeText(context, "Transaksi online belum selesai, in process !", Toast.LENGTH_SHORT).show();
+                } else {
+                    mAdapterCallback.onRowAdapterListTransactionClicked(item);
+                }
+
             }
         });
 

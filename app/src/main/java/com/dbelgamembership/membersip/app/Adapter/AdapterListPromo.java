@@ -43,6 +43,7 @@ public class AdapterListPromo extends
         this.adapterListPromoCallback = adapterListPromoCallback;
     }
 
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemCardPromoBinding itemBinding = ItemCardPromoBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);

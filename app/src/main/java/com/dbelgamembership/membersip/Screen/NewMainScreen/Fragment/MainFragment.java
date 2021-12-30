@@ -1176,6 +1176,8 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                     @Override
                                     public void run() {
 
+                                        Log.e(TAG, "run: " + jumlahBarangDibeli);
+
                                         String hargaFix = "0";
 
                                         int batasan1 = (int) Double.parseDouble(position.getBatasan1());
@@ -1185,16 +1187,20 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                         if (batasan1 == batasan2) {
 //                            Log.e(TAG, "TambahkanKeListBarang: " + pm.getHarga_barang());
                                             hargaFix = position.getHarga_barang();
+                                            Log.e(TAG, "run: HARGA 1");
                                         } else {
                                             if (jumlahBarangDibeli < batasan2) {
 //                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
                                                 hargaFix = position.getHarga_barang();
+                                                Log.e(TAG, "run: HARGA 1");
                                             } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
 //                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
                                                 hargaFix = position.getHarga_2();
+                                                Log.e(TAG, "run: HARGA 2");
                                             } else if (jumlahBarangDibeli >= batasan3) {
 //                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
                                                 hargaFix = position.getHarga_3();
+                                                Log.e(TAG, "run: HARGA 3");
                                             }
                                         }
 

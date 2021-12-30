@@ -1,9 +1,11 @@
 package com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Model.DummyPromo;
+import com.dbelgamembership.membersip.Screen.Promo.KatalogPromo;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListPromo;
 import com.dbelgamembership.membersip.databinding.FragmentAkunBinding;
 import com.dbelgamembership.membersip.databinding.FragmentPromoBinding;
@@ -19,8 +22,7 @@ import com.dbelgamembership.membersip.databinding.FragmentPromoBinding;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class PromoFragment extends Fragment {
+public class PromoFragment extends Fragment implements AdapterListPromo.AdapterListPromoCallback {
 
     private final String TAG = this.getClass().getSimpleName();
     public String url = Http.server, jsonResult, type, user, pass;
@@ -29,14 +31,8 @@ public class PromoFragment extends Fragment {
 
     private FragmentPromoBinding binding;
 
-
     public PromoFragment() {
     }
-
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,9 +95,23 @@ public class PromoFragment extends Fragment {
         );
 
 
-        AdapterListPromo adapterListPromo = new AdapterListPromo(requireContext(), daftarPromo);
+        AdapterListPromo adapterListPromo = new AdapterListPromo(requireContext(), daftarPromo, PromoFragment.this);
         binding.rvPromo.setAdapter(adapterListPromo);
 
         return binding.getRoot();
     }
+
+    @Override
+    public void AdapterListPromoClicked(DummyPromo position) {
+
+        DummyPromo dataPromo = position;
+        Log.e(TAG, "AdapterListPromoClicked: " + position.getNamaPromo());
+        Log.e(TAG, "AdapterListPromoClicked: " + position.getTanggalBerlaku());
+
+        Intent intent = new Intent(requireContext(), KatalogPromo.class);
+        intent.putExtra("hasExtra", true);
+        intent.putExtra("dataPromo", dataPromo);
+        startActivity(intent);
+    }
+
 }

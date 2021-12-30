@@ -47,6 +47,8 @@ import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
 import com.dbelgamembership.membersip.Model.ModelToko.ModelToko;
 import com.dbelgamembership.membersip.Model.ModelToko.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPayments;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
@@ -161,24 +163,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
 
-        if (jarakKm < 10) {
-            hitungJarak = 0;
-        } else {
-            hitungJarak = (Math.round(jarakKm - 10) * 2500);
-        }
-
-        DecimalFormat df = new DecimalFormat("#.##");
-        String dx = df.format(hitungJarak);
-        hitungJarak = Double.parseDouble(dx);
-
-        binding.txtJarak.setText("± " + String.valueOf(Math.round(jarakKm)) + " Km");
-
-        if (hitungJarak == 0) {
-            binding.txtOngkir.setText("FREE ( < 10 Km )");
-        } else {
-            binding.txtOngkir.setText("Rp. " + nf.format(hitungJarak));
-        }
-
         cekDataUser();
         searchingCart();
 
@@ -246,7 +230,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
                     limitPlafon = (dataUser.getCreditLimit() == null ? 0 : Double.parseDouble(dataUser.getCreditLimit()));
                     sisaPlafon = dataUser.getSisaCreditLimit();
-                    piutangBelanja = Double.parseDouble(dataUser.getGrandTotalSo());
+                    piutangBelanja = Double.parseDouble(dataUser.getGrandTotalDebet());
 
                     Log.e(TAG, "onResponse LP: " + limitPlafon);
                     Log.e(TAG, "onResponse SP: " + sisaPlafon);
@@ -419,7 +403,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 checkoutBinding.txtMetodePembayaran.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ClipData clipData = ClipData.newPlainText("text", "011001013660537" );
+                        ClipData clipData = ClipData.newPlainText("text", "011001013660537");
                         clipboardManager.setPrimaryClip(clipData);
 
                         Toast.makeText(CartActivity.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
@@ -427,9 +411,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 });
             }
         }
-
-
-
 
 
         if (isUploadBuktiTransfer) {
@@ -470,7 +451,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         checkoutBinding.txtGrandTotal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ClipData clipData = ClipData.newPlainText("text", String.valueOf(grandTotal) );
+                ClipData clipData = ClipData.newPlainText("text", String.valueOf(grandTotal));
                 clipboardManager.setPrimaryClip(clipData);
 
                 Toast.makeText(CartActivity.this, "Berhasil copy total belanja !", Toast.LENGTH_SHORT).show();
@@ -817,10 +798,29 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
     }
 
     private void prosesPemilihanPayment(String kodeSo, String tipePayment, String imageString) {
+        ModelPayments dataPaymentDebit = null;
+
+        dataPaymentDebit = new ModelPayments(
+                "PAY_TYPE_PLAFON",
+                "PLAFON",
+                "PLAFON",
+                "0",
+                "0",
+                String.valueOf(grandTotal),
+                String.valueOf(grandTotal),
+                "PLAFON"
+        );
+
+        ModelPostSetPayment dataPostPayment = new ModelPostSetPayment(
+                kodeSo,
+                tipePayment,
+                imageString,
+                (tipePayment.equals("DEBIT") ? dataPaymentDebit : null)
+        );
 
         final ProgressDialog progressDialog = ProgressDialog.show(CartActivity.this, "Loading", "Setting Up Payment ...");
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-        Call<String> call = apiInterface.doSetPayment(kodeSo, tipePayment, imageString);
+        Call<String> call = apiInterface.doSetPayment(dataPostPayment);
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -1036,6 +1036,28 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
         binding.txtTotalQty.setText(String.valueOf(totalQty));
         binding.txtTotalBelanja.setText("Rp. " + nf.format(totalBeli));
+
+        if (totalBeli < 100000) {
+            hitungJarak = (Math.round(jarakKm) * 2000);
+        } else {
+            if (jarakKm < 10) {
+                hitungJarak = 0;
+            } else {
+                hitungJarak = (Math.round(jarakKm - 10) * 2000);
+            }
+        }
+
+        DecimalFormat df = new DecimalFormat("#.##");
+        String dx = df.format(hitungJarak);
+        hitungJarak = Double.parseDouble(dx);
+
+        binding.txtJarak.setText("± " + String.valueOf(Math.round(jarakKm)) + " Km");
+
+        if (hitungJarak == 0) {
+            binding.txtOngkir.setText("FREE ( < 10 Km )");
+        } else {
+            binding.txtOngkir.setText("Rp. " + nf.format(hitungJarak));
+        }
 
         grandTotal = (int) (totalBeli + hitungJarak);
 

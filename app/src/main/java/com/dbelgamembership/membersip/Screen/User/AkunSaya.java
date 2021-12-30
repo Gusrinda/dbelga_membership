@@ -202,7 +202,7 @@ public class AkunSaya extends AppCompatActivity {
 
                             limitPlafon = String.valueOf(limitAwal);
                             sisaPlafon = String.valueOf(dataUser.getSisaCreditLimit());
-                            piutangBelanja = String.valueOf(dataUser.getGrandTotalSo());
+                            piutangBelanja = String.valueOf(dataUser.getGrandTotalDebet());
 
                             poinMember = dataUser.getPoin();
 

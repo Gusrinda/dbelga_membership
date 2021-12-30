@@ -2,8 +2,12 @@ package com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -37,6 +41,7 @@ import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
 import com.dbelgamembership.membersip.Screen.Limit.BayarTagihan;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
@@ -46,10 +51,13 @@ import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.User.LimitPlafon;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipChoose;
 import com.dbelgamembership.membersip.databinding.FragmentAkunBinding;
+import com.dbelgamembership.membersip.databinding.PopupBarcodeMemberBinding;
 import com.developer.kalert.KAlertDialog;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.zxing.BarcodeFormat;
+import com.journeyapps.barcodescanner.BarcodeEncoder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,6 +73,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 
 public class AkunFragment extends Fragment {
 
@@ -80,10 +89,15 @@ public class AkunFragment extends Fragment {
 
     String limitPlafon, sisaPlafon, piutangBelanja;
     int poinMember;
+
+    ModelUser modelDatUser;
+
     //Menghitung limit plafon member
     private long limitAwal = 0;
     private long totalPenggunaanLimit = 0;
     private long limitSisa = 0;
+
+    ClipboardManager clipboardManager;
 
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 
@@ -106,6 +120,8 @@ public class AkunFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
 
         getDateServer();
+
+        clipboardManager = (ClipboardManager) requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
 
         binding.viewDetailTransaksi.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,7 +186,78 @@ public class AkunFragment extends Fragment {
             }
         });
 
+        binding.cardMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setupPopUpBarcode();
+            }
+        });
+
         return binding.getRoot();
+    }
+
+    PopupBarcodeMemberBinding popupBarcodeMemberBinding;
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog alertDialog;
+
+
+    private void setupPopUpBarcode() {
+
+//        int kodeStatus = (int) (1 + (Math.random() * 2));
+//        Random r = new Random();
+//        String randomNumber = String.format("%04d", Integer.valueOf(r.nextInt(1001)));
+//
+//        String kodeUser = "20210" + String.valueOf(kodeStatus) + randomNumber;
+        String kodeUser = modelDatUser.getMsgServer().get(0).getCode();
+//        Log.e(TAG, "setupPopUpBarcode: " + kodeUser);
+
+
+        popupBarcodeMemberBinding = PopupBarcodeMemberBinding.inflate(getLayoutInflater());
+        View view = popupBarcodeMemberBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(requireContext());
+
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+        popupBarcodeMemberBinding.txtBarcode.setText(kodeUser);
+
+        try {
+            BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
+            Bitmap bitmap = barcodeEncoder.encodeBitmap(kodeUser, BarcodeFormat.CODE_128, 300, 120);
+            popupBarcodeMemberBinding.outputBarcode.setImageBitmap(bitmap);
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "ERROR GENERATE BARCODE !", Toast.LENGTH_SHORT).show();
+        }
+
+        popupBarcodeMemberBinding.buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupBarcodeMemberBinding.buttonCopy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipData clipData = ClipData.newPlainText("text", kodeUser);
+                clipboardManager.setPrimaryClip(clipData);
+
+                Toast.makeText(requireContext(), "Berhasil copy kode member !", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+//        try {
+//            Thread.sleep(10000);
+//            alertDialog.dismiss();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+
     }
 
     private void getDateServer() {
@@ -242,7 +329,7 @@ public class AkunFragment extends Fragment {
         dialog1.setMessage("Harap Menunggu...");
         dialog1.show();
         RequestQueue mQueue = Volley.newRequestQueue(requireContext());
-        Log.e(TAG, "SetupDataAkun: " + url );
+        Log.e(TAG, "SetupDataAkun: " + url);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
@@ -256,6 +343,7 @@ public class AkunFragment extends Fragment {
                             com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListTransaction.getMsgServer().get(0);
 
                             try {
+                                modelDatUser = modelListTransaction;
                                 String status_member = dataUser.getStatusMember();
                                 String expiredMember = dataUser.getExpiredDate();
                                 String ulangTahun = dataUser.getDateBirth();
@@ -303,10 +391,9 @@ public class AkunFragment extends Fragment {
 
                                 limitPlafon = String.valueOf(limitAwal);
                                 sisaPlafon = String.valueOf(dataUser.getSisaCreditLimit());
-                                piutangBelanja = String.valueOf(dataUser.getGrandTotalSo());
+                                piutangBelanja = String.valueOf(dataUser.getGrandTotalDebet());
 
                                 poinMember = dataUser.getPoin();
-
 
                                 Log.e(TAG, "limit plafon: Rp. " + nf.format(Long.parseLong(limitPlafon)));
                                 Log.e(TAG, "sisa plafon: Rp. " + nf.format(Long.parseLong(sisaPlafon)));
