@@ -28,7 +28,7 @@ public class MsgServer implements Serializable, Parcelable
     private String namaGudang;
     @SerializedName("total_item")
     @Expose
-    private double totalItem;
+    private Integer totalItem;
     @SerializedName("total_qty")
     @Expose
     private String totalQty;
@@ -54,7 +54,7 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -8165707101030848236L;
+    private final static long serialVersionUID = -5407064219574064976L;
 
     protected MsgServer(android.os.Parcel in) {
         this.idCustomer = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -67,7 +67,34 @@ public class MsgServer implements Serializable, Parcelable
         in.readList(this.detailItemCart, (com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart.class.getClassLoader()));
     }
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
     public MsgServer() {
+    }
+
+    /**
+     * 
+     * @param totalItem
+     * @param totalQty
+     * @param namaGudang
+     * @param totalCart
+     * @param idGudang
+     * @param namaCustomer
+     * @param idCustomer
+     * @param detailItemCart
+     */
+    public MsgServer(Integer idCustomer, String namaCustomer, Integer idGudang, String namaGudang, Integer totalItem, String totalQty, String totalCart, List<DetailItemCart> detailItemCart) {
+        super();
+        this.idCustomer = idCustomer;
+        this.namaCustomer = namaCustomer;
+        this.idGudang = idGudang;
+        this.namaGudang = namaGudang;
+        this.totalItem = totalItem;
+        this.totalQty = totalQty;
+        this.totalCart = totalCart;
+        this.detailItemCart = detailItemCart;
     }
 
     public Integer getIdCustomer() {
@@ -102,11 +129,11 @@ public class MsgServer implements Serializable, Parcelable
         this.namaGudang = namaGudang;
     }
 
-    public double getTotalItem() {
+    public Integer getTotalItem() {
         return totalItem;
     }
 
-    public void setTotalItem(double totalItem) {
+    public void setTotalItem(Integer totalItem) {
         this.totalItem = totalItem;
     }
 

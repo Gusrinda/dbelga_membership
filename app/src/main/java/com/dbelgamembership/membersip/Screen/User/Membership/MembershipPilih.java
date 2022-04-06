@@ -5,10 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,11 +51,15 @@ import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MembershipPilih extends AppCompatActivity {
 
@@ -74,6 +81,7 @@ public class MembershipPilih extends AppCompatActivity {
     public static String selectedMembership = "";
     String pilihan = "";
 
+    NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +158,13 @@ public class MembershipPilih extends AppCompatActivity {
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("SLV" + sessionManager.getPID());
                     choosenMembership = "SILVER";
+
+
+                    binding.layoutDetailMembership.getBackground().setTint(view.getResources().getColor(R.color.grey_font));
+
+                    binding.inputNominalPlafon.setVisibility(View.GONE);
+                    binding.edInputNominalPlafon.setText("0");
+
                 } else if (yangDipilih.equals("Gold")) {
                     selectedMembership = "GOLD";
                     layoutDetail.setVisibility(View.VISIBLE);
@@ -162,6 +177,15 @@ public class MembershipPilih extends AppCompatActivity {
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("GLD" + sessionManager.getPID());
                     choosenMembership = "GOLD";
+
+
+                    binding.layoutDetailMembership.getBackground().setTint(view.getResources().getColor(R.color.material_yellow_800));
+
+                    binding.inputNominalPlafon.setVisibility(View.VISIBLE);
+                    binding.inputNominalPlafon.setErrorEnabled(true);
+                    binding.inputNominalPlafon.setError("Batas plafon : Rp. 500.000 - Rp. 2.000.000");
+                    binding.edInputNominalPlafon.setText("0");
+
                 } else {
                     selectedMembership = "PLATINUM";
                     layoutDetail.setVisibility(View.VISIBLE);
@@ -174,6 +198,14 @@ public class MembershipPilih extends AppCompatActivity {
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("PLT" + sessionManager.getPID());
                     choosenMembership = "PLATINUM";
+
+
+                    binding.layoutDetailMembership.getBackground().setTint(view.getResources().getColor(R.color.black));
+
+                    binding.inputNominalPlafon.setVisibility(View.VISIBLE);
+                    binding.inputNominalPlafon.setErrorEnabled(true);
+                    binding.inputNominalPlafon.setError("Batas plafon : Rp. 2.000.000 - Rp. 5.000.000");
+                    binding.edInputNominalPlafon.setText("0");
                 }
             }
 
@@ -186,10 +218,31 @@ public class MembershipPilih extends AppCompatActivity {
         pilihMember.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                    Intent intent = new Intent(MembershipPilih.this, MembershipFoto.class);
-////                    Intent intent = new Intent(MembershipPilih.this, BoardingMemberDebet.class);
-//                    startActivity(intent);
-                registerUser();
+
+                int nominalPlafon = Integer.parseInt(binding.edInputNominalPlafon.getText().toString());
+
+                int min = 0;
+                int max = 0;
+
+                if (choosenMembership.equals("GOLD")) {
+                    min = 500000;
+                    max = 2000000;
+                } else if (choosenMembership.equals("PLATINUM")) {
+                    min = 2000000;
+                    max = 5000000;
+                }
+
+                if (nominalPlafon < min) {
+                    Toast.makeText(MembershipPilih.this, "Tidak bisa kurang dari minimal !", Toast.LENGTH_SHORT).show();
+                    binding.edInputNominalPlafon.setText(String.valueOf(min));
+                } else if (nominalPlafon > max) {
+                    Toast.makeText(MembershipPilih.this, "Tidak bisa lebih dari maksimal !", Toast.LENGTH_SHORT).show();
+                    binding.edInputNominalPlafon.setText(String.valueOf(max));
+                } else {
+                    registerUser();
+                }
+
+
             }
         });
 
@@ -286,7 +339,19 @@ public class MembershipPilih extends AppCompatActivity {
                                 deadlinePayment = deadlen;
                                 expiredMembership = expDate;
 
+                                String jatuhTempo = "";
+
+                                if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 0) {
+                                    jatuhTempo = "1";
+                                } else if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 1) {
+                                    jatuhTempo = "15";
+                                } else if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 2) {
+                                    jatuhTempo = "30";
+                                }
+
                                 postData.put("status_member", choosenMembership);
+                                postData.put("nominal_plafon", binding.edInputNominalPlafon.getText().toString());
+                                postData.put("jatuh_tempo", jatuhTempo);
                                 postData.put("expired_date", expiredMembership);
                                 postData.put("pay_date", deadlinePayment);
 
@@ -312,7 +377,6 @@ public class MembershipPilih extends AppCompatActivity {
                     }
                 })
                 .show();
-
     }
 
     private void SimpanPost(JSONObject postData) {

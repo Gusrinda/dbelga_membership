@@ -71,7 +71,10 @@ import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncBluetoothEscPosPrint;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncEscPosPrinter;
+import com.dbelgamembership.membersip.Model.modelListTransaksi.DetailKekurangan;
+import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarang;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
 import com.dbelgamembership.membersip.Helper.Http;
@@ -82,8 +85,10 @@ import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaks
 
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListPembatalan;
 import com.dbelgamembership.membersip.databinding.ActivityBuktibayarNewBinding;
 import com.dbelgamembership.membersip.databinding.PopupMetodePembayaranBinding;
+import com.dbelgamembership.membersip.databinding.PopupPembatalanTransaksiBinding;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
@@ -109,7 +114,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 public class
-PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang.AdapterDetailbarangCallback {
+PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang.AdapterDetailbarangCallback, AdapterListPembatalan.AdapterListGudangCallback {
     public final static int QRcodeWidth = 500;
     protected static final String TAG = "TAG";
     private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -119,7 +124,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     public static ArrayList<HashMap<String, String>> arrayDetail = new ArrayList<HashMap<String, String>>();
     public static String idTransaksi, soCode, sales, costumer, alamatKostumer, alamatKirim, nomorKostumer, tanggalKirim, ongkosKirimText;
     public static float grandTotal;
-    public static int ongkosKirim, totalDiskonan, totalBelanja;
+    public static double ongkosKirim, totalDiskonan, totalBelanja;
     Button mDisc;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothDevice mBluetoothDevice;
@@ -269,7 +274,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
             @Override
             public void onClick(View v) {
                 if (takeorder) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), NewMainActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
@@ -347,6 +352,13 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
             }
         });
 
+        binding.contentBuktiBayar.layoutBtnPembatalan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popOutPembatalanBelanja();
+            }
+        });
+
     }
 
     @Override
@@ -373,6 +385,109 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         }
     }
 
+    private PopupPembatalanTransaksiBinding popupPembatalanTransaksiBinding;
+
+    private void popOutPembatalanBelanja() {
+        popupPembatalanTransaksiBinding = PopupPembatalanTransaksiBinding.inflate(getLayoutInflater());
+        View view = popupPembatalanTransaksiBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+
+        List<DetailKekurangan> daftarItemKekurangan = new ArrayList<>();
+        popupPembatalanTransaksiBinding.rvItemPembatalan.setAdapter(null);
+
+        daftarItemKekurangan = b.getDetailKekurangan();
+        AdapterListPembatalan adapterListPembatalan = new AdapterListPembatalan(PrintActivity.this, daftarItemKekurangan, PrintActivity.this);
+        popupPembatalanTransaksiBinding.rvItemPembatalan.setAdapter(adapterListPembatalan);
+
+        popupPembatalanTransaksiBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupPembatalanTransaksiBinding.layoutBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(PrintActivity.this);
+                builder1.setTitle("Konfirmasi");
+                builder1.setMessage("Lanjut batalkan transaksi " + b.getCode() + " ?");
+                builder1.setCancelable(false);
+                builder1.setNegativeButton(
+                        "Tidak",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+                builder1.setPositiveButton("Ya", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+//                        url = Http.server + "transaction/cancel?code=" + b.get(finalI).getCode();
+//                        Log.e(TAG, "onClick: YES" + url);
+//                        SimpanPost(null);
+                        dialog.dismiss();
+                        methodCancelTransaksi();
+                    }
+                });
+                final AlertDialog alert11 = builder1.create();
+                alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface dialogInterface) {
+                        alert11.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                        alert11.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    }
+                });
+
+                alert11.show();
+            }
+        });
+
+
+    }
+
+    private void methodCancelTransaksi() {
+        final ProgressDialog progressDialog = ProgressDialog.show(PrintActivity.this, "Loading", "Canceling Transaction ...");
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ResponseCancel> call = apiInterface.doCancelTransaksi(b.getCode(), b.getPembayaranCode());
+
+        call.enqueue(new Callback<ResponseCancel>() {
+            @Override
+            public void onResponse(Call<ResponseCancel> call, retrofit2.Response<ResponseCancel> response) {
+                try {
+                    progressDialog.dismiss();
+                    if (response != null) {
+                        ResponseCancel object = response.body();
+                        if (object.getDescription().equals("Update success!")) {
+                            Toast.makeText(getApplicationContext(), "Berhasil", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            Log.e(TAG, "onResponse: " + object.getDescription());
+                            Toast.makeText(PrintActivity.this, object.getDescription(), Toast.LENGTH_SHORT).show();
+                            finish();
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "onResponse: " + e.getMessage() + Arrays.toString(e.getStackTrace()));
+                    Toast.makeText(PrintActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseCancel> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+    }
 
     private PopupMetodePembayaranBinding popupMetodePembayaranBinding;
 
@@ -380,7 +495,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 
         popupMetodePembayaranBinding = PopupMetodePembayaranBinding.inflate(getLayoutInflater());
         View view = popupMetodePembayaranBinding.getRoot();
-
 
         dialogBuilder = new AlertDialog.Builder(this);
 
@@ -392,7 +506,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         popupMetodePembayaranBinding.txtGrandTotal.setText("Rp. " + nf.format(grandTotal));
 
         popupMetodePembayaranBinding.radioGroup.check(popupMetodePembayaranBinding.radioCOD.getId());
-
 
         popupMetodePembayaranBinding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -503,7 +616,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                 try {
 
-                    Log.e(TAG, "onResponse: " + response.toString() );
+                    Log.e(TAG, "onResponse: " + response.toString());
 
                     if (response != null) {
                         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
@@ -513,8 +626,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             @Override
                             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                                 progressDialog.dismiss();
-                                Log.e(TAG, "onResponse: " + response.toString() );
-                                Toast.makeText(PrintActivity.this, "Pilih metode pembayaran selesai , tunggu konfirmasi admin dan barang akan segera dikirim kurir Dbelga", Toast.LENGTH_LONG).show();
+                                Log.e(TAG, "onResponse: " + response.toString());
+                                Toast.makeText(PrintActivity.this, "Pilih metode pembayaran selesai , tunggu konfirmasi admin dan barang akan segera dikirim kurir dBelga", Toast.LENGTH_LONG).show();
                                 finish();
                             }
 
@@ -530,11 +643,10 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                     }
 
 
-                } catch ( Exception e) {
+                } catch (Exception e) {
                     Toast.makeText(PrintActivity.this, "ERROR !", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "onResponse Error message : " + e.getLocalizedMessage() );
+                    Log.e(TAG, "onResponse Error message : " + e.getLocalizedMessage());
                 }
-
 
 
             }
@@ -555,6 +667,9 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP);
     }
 
+    ModelListTransaksi modelListTransaction;
+    Datum b;
+
     //batas awal api access
     private void accessWebService() {
         String url = Http.server + "transaction/list?code=" + dataSO;
@@ -568,8 +683,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                         try {
                             Log.e(TAG, "Response : " + response);
                             Gson gson = new Gson();
-                            ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
-                            Datum b = modelListTransaction.getData().getData().get(0);
+                            modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
+                            b = modelListTransaction.getData().getData().get(0);
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = Float.parseFloat(String.valueOf(b.getGrandtotal()));
                             ongkosKirim = 0;
@@ -581,7 +696,6 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                     binding.contentBuktiBayar.txtNamaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
                                 }
                             }
-
 
 
                             if (b.getOngkosKirim() != 0) {
@@ -609,12 +723,11 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 alamatKirim = b.getAlamatPengiriman().toString();
                             }
 
-
-//                            if (b.getStatus().equals("payment")) {
-//                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.VISIBLE);
-//                            } else {
-//                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.GONE);
-//                            }
+                            if (b.getStatus().equals("cancel approval")) {
+                                binding.contentBuktiBayar.layoutBtnPembatalan.setVisibility(View.VISIBLE);
+                            } else {
+                                binding.contentBuktiBayar.layoutBtnPembatalan.setVisibility(View.GONE);
+                            }
 
                             nomorKostumer = b.getNomorCustomer();
                             tanggalKirim = b.getTanggalKirim();
@@ -626,7 +739,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                             } else {
                                 viewGarisTotal.setVisibility(View.VISIBLE);
                                 linearOngkir.setVisibility(View.VISIBLE);
-                                txtOngkosKirim.setText("Rp. " + nf.format(Integer.parseInt(ongkosKirimText)));
+                                txtOngkosKirim.setText("Rp. " + nf.format(Double.parseDouble(ongkosKirimText)));
                                 Log.e(TAG, "Ongkos Kirim : " + ongkosKirimText);
                             }
 
@@ -636,7 +749,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 
                             tvKembalian.setVisibility(View.GONE);
                             noSoStatus.setText(b.getStatus().toUpperCase());
-                            tvKembalian.setText("Rp." + nf.format(Integer.parseInt(String.valueOf(b.getGrandtotal()))));
+                            tvKembalian.setText("Rp." + nf.format(Double.parseDouble(String.valueOf(b.getGrandtotal()))));
 
                             btnQR.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -676,7 +789,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 hashMap.put("Code", barang.getCodeProduct() + "");
                                 Log.e(TAG, "Masuk5: " + barang.getCodeProduct());
 
-                                belanjaBarang = Integer.parseInt(barang.getTotal());
+                                belanjaBarang = Double.parseDouble(barang.getRealPrice()) * Double.parseDouble(barang.getQtyOutlet());
                                 Log.e(TAG, "Belanja Barang : " + belanjaBarang);
 
                                 double totalDiskon = Double.parseDouble(barang.getTotalDiskon() == null ? "0" : barang.getTotalDiskon());
@@ -688,11 +801,14 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                     diskonBarang = 0;
                                     hashMap.put("total", barang.getTotalSetelahDiskon() + "");
                                 }
+
+                                double totalDiskonMembership = Double.parseDouble(barang.getTotalDiskonMembership() == null ? "0" : barang.getTotalDiskonMembership());
                                 Log.e(TAG, "Cek diskon barang : " + barang.getTotalDiskon());
+                                Log.e(TAG, "Cek diskon membership : " + totalDiskonMembership);
                                 hashMap.put("diskon", String.valueOf(diskonBarang));
                                 totalBelanja += belanjaBarang;
                                 Log.e(TAG, "Total Belanja : " + totalBelanja);
-                                totalDiskonan += diskonBarang;
+                                totalDiskonan += (diskonBarang + totalDiskonMembership);
                                 arrayDetail.add(hashMap);
                                 Log.e(TAG, "Tambah " +
                                         " detail: " + arrayDetail);
@@ -709,6 +825,25 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 linearBelanja.setVisibility(View.VISIBLE);
                                 txtBelanja.setText("Rp. " + nf.format(totalBelanja));
                             }
+
+
+                            if (b.getVoucher() != null) {
+                                if (b.getVoucher()) {
+                                    binding.contentBuktiBayar.linearVoucher.setVisibility(View.VISIBLE);
+                                    binding.contentBuktiBayar.txtKodeVoucher.setText("VOC : " + b.getVoucherCode());
+                                    binding.contentBuktiBayar.txtNominalVoucher.setText("- Rp. " + nf.format(Double.parseDouble(b.getVoucherNominal())));
+                               }
+                            }
+
+                            if (b.getVoucherSuplier() != null) {
+                                if (b.getVoucherSuplier()) {
+                                    binding.contentBuktiBayar.linearVoucherSuplier.setVisibility(View.VISIBLE);
+                                    binding.contentBuktiBayar.txtKodeVoucherSuplier.setText("VOC SP : " + b.getVoucherCodeSuplier());
+                                    binding.contentBuktiBayar.txtNominalVoucherSuplier.setText("- Rp. " + nf.format(Double.parseDouble(b.getVoucherNominalSuplier())));
+                                }
+                            }
+
+                            binding.contentBuktiBayar.grandTotal.setText("Rp. " + nf.format(b.getGrandtotal()));
 
                             Log.e(TAG, "Total Diskon : " + totalDiskonan);
                             Log.e(TAG, "onCreate:COK " + arrayDetail.size());
@@ -733,7 +868,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), NewMainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -916,8 +1051,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
             String discount = arrayDetail.get(i).get("diskon");
 
             String jumlahUnit = "X " + qtyUnit;
-            String hargaUnit = "@ " + nf.format(Integer.parseInt(hargaBarang));
-            int totalHargaUnit = Integer.parseInt(qtyUnit) * Integer.parseInt(hargaBarang);
+            String hargaUnit = "@ " + nf.format(Double.parseDouble(hargaBarang));
+            double totalHargaUnit = Double.parseDouble(qtyUnit) * Double.parseDouble(hargaBarang);
 
             dataBarang.append("[L]<font size='small'>" + kodeBarang + " # " + namaBarang + "</font>\n");
             dataBarang.append("[L]<font size='small'>" + jumlahUnit + " " + hargaUnit + "[R]" + nf.format(totalHargaUnit) + "</font>\n");
@@ -1026,6 +1161,11 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
 
     @Override
     public void run() {
+
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 }

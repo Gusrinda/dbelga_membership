@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Screen.HomeActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.AlamatPengiriman;
+import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
@@ -48,9 +49,14 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -83,6 +89,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
     private SessionManager sessionManager;
     ProgressDialog progressDialog;
     public static List<ModelGudang> modelGudangs = new ArrayList<>();
+    public static List<ModelGudang> daftarGudangToko = new ArrayList<>();
     public static HashMap<String, String> daftarGudang = new HashMap<String, String>();
     public static double jarak;
     ModelResponseCart modelResponseCart;
@@ -233,12 +240,72 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
             }
 
             binding.txtHi.setText("Hi there, " + sessionManager.getName());
+
+            sendTokenUser();
+
+
         } else {
             binding.btnKeluar.setVisibility(View.GONE);
             binding.btnLoginRegister.setVisibility(View.VISIBLE);
         }
 
         setupListGudang();
+    }
+
+    private void sendTokenUser() {
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        Log.d(TAG, token);
+                        setTokenCustomer(token);
+//                        Toast.makeText(GudangActivity.this, token, Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void setTokenCustomer(String s) {
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<String> call = apiInterface.doSetTokenCustomer(
+                sessionManager.getPID(),
+                s
+        );
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+
+                if (response.body() != null) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(response.body());
+                        JsonObject root = new JsonParser().parse(String.valueOf(response.body())).getAsJsonObject();
+                        boolean check = root.get("success").getAsBoolean();
+                        if (!check) {
+                            Toast.makeText(GudangActivity.this, jsonObject.getString("msgServer"), Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.e(TAG, "onResponse: " + response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+//                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void setupListGudang() {
@@ -254,15 +321,23 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                 StringBuilder locDestinations = new StringBuilder();
 
                 modelGudangs.clear();
+                daftarGudangToko.clear();
 
                 for (int i = 0; i < response.body().getMsgServer().size(); i++) {
                     MsgServer dataGudang = response.body().getMsgServer().get(i);
+
+                    daftarGudangToko.add(new ModelGudang(
+                            dataGudang.getName(),
+                            dataGudang.getAddress(),
+                            dataGudang.getId().toString(),
+                            dataGudang.getGeoLat(),
+                            dataGudang.getGeoLng(),
+                            "", 0));
 
                     if (dataGudang.getId() == 8 || dataGudang.getId() == 9) {
                         String desti = dataGudang.getGeoLat() + "," + dataGudang.getGeoLng() + "|";
 
                         locDestinations.append(desti);
-
                         modelGudangs.add(new ModelGudang(
                                 dataGudang.getName(),
                                 dataGudang.getAddress(),
@@ -567,6 +642,9 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
+
+                                            fusedClient = LocationServices.getFusedLocationProviderClient(GudangActivity.this);
+
                                             fusedClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
                                         }
                                     });
@@ -579,11 +657,11 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                                     });
                             alertDialog.show();
 
-
                         }
                     }
                 });
     }
+
 
     @Override
     public void AdapterListGudang(int position) {

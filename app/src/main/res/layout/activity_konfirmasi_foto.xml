@@ -76,7 +76,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="a/n Dbelga Mart Tulungagung"
+                        android:text="a/n dBelga Mart Tulungagung"
                         android:textAlignment="center"
                         android:textColor="@color/black"
                         android:textSize="12dp" />

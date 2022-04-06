@@ -65,14 +65,17 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Datum item = list.get(position);
         holder.kodeBelanja.setText(item.getCode());
-        holder.tanggalBelanja.setText(item.getCreatedAt());
+        holder.tanggalBelanja.setText(item.getDate());
 
         String status = item.getStatus();
         if (status.equals("approval")) {
             status = "Transaksi Dalam Approval Admin";
             holder.statusBelanja.setTextColor(context.getColor(R.color.prangeBelha));
+        } else if (status.equals("cancel approval")) {
+            status = "Transaksi menunggu pembatalan dari anda";
+            holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
         } else if (status.equals("cancel")) {
-            status = "Transaksi dicancel";
+            status = "Transaksi dibatalkan";
             holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
         } else if (status.equals("confirmation")) {
             status = "Pembayaran dalam proses konfirmasi";
@@ -98,8 +101,8 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
 
         holder.statusBelanja.setText(status);
         holder.totalBelanja.setText("Rp. " + nf.format(item.getGrandtotal()));
-        int totalBelanja = item.getGrandtotal();
-        int totalPoin = totalBelanja / 10000;
+        double totalBelanja = item.getGrandtotal();
+        int totalPoin = (int) (totalBelanja / 10000);
         holder.poinBelanja.setText("+ " + totalPoin + " Poin");
 
         holder.cardLayout.setOnClickListener(new View.OnClickListener() {

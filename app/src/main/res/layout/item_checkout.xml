@@ -71,7 +71,7 @@
                     <TextView
                         android:id="@+id/txt_hargaBarang"
                         android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/merahBelga"
+                        android:textColor="@color/black"
                         android:textSize="16sp"
                         android:maxLines="1"
                         android:ellipsize="end"
@@ -96,6 +96,41 @@
                         android:text="Rp. 30.000"
                         android:textColor="@color/black"
                         android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/layoutDiskonBarang"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+
+                        android:id="@+id/txtPotonganDiskon"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/merahBelga"
+                        android:textSize="10sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 8.000"/>
+
+                    <TextView
+                        android:fontFamily="@font/hammer_font"
+                        android:layout_marginLeft="4dp"
+                        android:id="@+id/txtTotalDiskonBarang"
+                        android:gravity="end"
+                        android:text="Rp. 30.000"
+                        android:textColor="@color/merahBelga"
+                        android:textSize="10sp"
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"/>

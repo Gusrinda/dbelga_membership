@@ -1,16 +1,25 @@
 package com.dbelgamembership.membersip.Helper.API;
 
+import com.dbelgamembership.membersip.Model.ModelBannerPromo.ModelBannerPromo;
+import com.dbelgamembership.membersip.Model.ModelDataLimit.DetailLimitUser;
 import com.dbelgamembership.membersip.Model.ModelGetKategori.ModelGetKategori;
 import com.dbelgamembership.membersip.Model.ModelGetSlider.ModelGetSlider;
+import com.dbelgamembership.membersip.Model.ModelListBank.ModelListBank;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.ModelListTagihan;
 import com.dbelgamembership.membersip.Model.ModelResponseCS.ModelResponseCS;
 import com.dbelgamembership.membersip.Model.ModelResponseCart.ModelResponseCart;
 import com.dbelgamembership.membersip.Model.ModelResponseDistance.ModelResponseDistance;
+import com.dbelgamembership.membersip.Model.ModelSearchVoucher.ModelSearchVoucher;
+import com.dbelgamembership.membersip.Model.ModelTagihanUser.ModelTagihanUser;
 import com.dbelgamembership.membersip.Model.ModelToko.ModelToko;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
 import com.dbelgamembership.membersip.Model.ModelWish.ModelWish;
 import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
+import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
+import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.ModelPelunasan;
 import com.google.gson.JsonElement;
 
 import java.util.HashMap;
@@ -22,10 +31,26 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface APIInterface {
+
+    @FormUrlEncoded
+    @POST("set-token-user")
+    Call<String> doSetTokenUser(
+            @Field("user_id") String userID,
+            @Field("firebase_token") String firebaseToken
+    );
+
+    @FormUrlEncoded
+    @POST("set-token-customer")
+    Call<String> doSetTokenCustomer(
+            @Field("user_id") String userID,
+            @Field("firebase_token") String firebaseToken
+    );
+
 
     @Headers("Content-Type: application/json")
     @GET("search-kategori")
@@ -82,6 +107,22 @@ public interface APIInterface {
            @Url String url
     );
 
+    @GET("get-data-limit")
+    Call<DetailLimitUser> doGetDetailLimitUser(
+            @Query("user_id") String idMember
+    );
+
+    @GET("get-tagihan")
+    Call<ModelTagihanUser> doGetTagihanPeriodeIni(
+            @Query("user_id") String idMember
+    );
+
+    @GET("get-list-tagihan")
+    Call<ModelListTagihan> doGetListTagihanUser(
+            @Query("user_id") String idMember,
+            @Query("periode") String periode
+    );
+
     @GET("search-customer")
     Call<JsonElement> doGetUser();
 
@@ -93,6 +134,8 @@ public interface APIInterface {
             @Field("id_item") String idItem,
             @Field("barcode") String barcodeItem,
             @Field("qty_item") double qtyItem
+//            @Field("type_diskon") String tipeDiskon,
+//            @Field("qty_diskon") double qtyDiskon
     );
 
     @FormUrlEncoded
@@ -116,12 +159,6 @@ public interface APIInterface {
     Call<String> doEmptyCart(
             @Query("id_member") String idMember);
 
-
-
-    //https://maps.googleapis.com/maps/api/distancematrix/json?
-    // origins=-8.054128666081018,%20111.88958097097624
-    // &destinations=-8.059757105603692,%20111.90123544028516|-8.06831360533196,%20111.90231540541888&mode=driving&key=AIzaSyC0NMGZYXcRkiWqPGU5hJZ2wOi4Vl7DtRY
-
     @GET("distancematrix/json?")
     Call<ModelResponseDistance> doGetDistance(
             @Query("origins") String origins,
@@ -139,9 +176,10 @@ public interface APIInterface {
             @Field("status_update") String statusUpdate
     );
 
-    @POST("transaction/set-payment")
-    Call<String> doSetPayment(
-            @Body ModelPostSetPayment json
+    @GET("transaction/cancel")
+    Call<ResponseCancel> doCancelTransaksi(
+            @Query("code") String codeTransaksi,
+            @Query("faktur") String kodeFaktur
     );
 
     @FormUrlEncoded
@@ -169,16 +207,72 @@ public interface APIInterface {
     Call<ResponseCekVerifikasi> doCekVerifikasiUser(
             @Query("id_user") String idMember);
 
-
-
     @GET("search-katalog")
     Call<JsonElement> doGetKatalogPromo(
             @Query("gudang") String idGudang,
-            @Query("name") String textPencarian
-
+            @Query("name") String textPencarian,
+            @Query("kode_promo") String promoCode
     );
 
+    @GET("list-slider-promo")
+    Call<ModelBannerPromo> doGetBannerPromo();
 
+    @GET("list-voucher")
+    Call<ModelSearchVoucher> doGetListVoucher();
 
+    @GET("customer-voucher")
+    Call<ModelVoucherCustomer> doGetVoucherMember(
+            @Query("customer") String idCustomer
+    );
+
+    @FormUrlEncoded
+    @POST
+    Call<JsonElement> doClaimVoucher(
+            @Url String url,
+            @Field("id_member") String idMember,
+            @Field("code_voucher") String kodeVoucher
+    );
+
+    @FormUrlEncoded
+    @POST
+    Call<JsonElement> doRedeemVoucher(
+            @Url String url,
+            @Field("id_member") String idMember,
+            @Field("unique_code") String uniqueKode,
+            @Field("voucher_code") String voucherKode
+    );
+
+    @GET("list-detail-voucher")
+    Call<JsonElement> doGetVoucherCustomer(
+            @Query("unik_code") String code
+    );
+
+    @GET("banks")
+    Call<ModelListBank> doGetListBankTagihan();
+
+    @POST("transaction/set-payment")
+    Call<String> doSetPayment(
+            @Body ModelPostSetPayment json
+    );
+
+    @POST("pelunasan-debet/store")
+    Call<String> doPelunasanTagihan(
+            @Body ModelPelunasan json
+    );
+
+    @GET("search-katalog-terlaris")
+    Call<JsonElement> doSearchBarangTerlaris(
+            @Query("id_gudang") String idGudang
+    );
+
+    @GET("list-tagihan-user/{id}")
+    Call<JsonElement> doDaftarTagihanUser(
+            @Path("id") String id
+    );
+
+    @GET("riwayat-pelunasan-tagihan/{id}")
+    Call<JsonElement> doRiwayatPelunasanTagihan(
+            @Path("id") String id
+    );
 
 }

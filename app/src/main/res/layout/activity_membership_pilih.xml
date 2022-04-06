@@ -12,162 +12,221 @@
 
         <ImageView
             android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="16sp"
             android:layout_marginTop="16sp"
             android:src="@drawable/ic_baseline_arrow_back_24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             app:tint="@color/black" />
 
         <LinearLayout
-            android:orientation="vertical"
             android:id="@+id/header"
-            android:layout_marginTop="32dp"
-            android:layout_marginLeft="48dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="48dp"
+            android:layout_marginTop="20dp"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="100dp"
                 android:layout_height="60dp"
                 android:src="@drawable/dbelga" />
 
-            <TextView
-                android:textStyle="bold|italic"
-                android:text="Pilih membership yang cocok dengan anda"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_marginTop="12sp"
-            android:layout_below="@id/header"
-            android:layout_above="@id/btnPilihMembership"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_above="@id/btnPilihMembership"
+            android:layout_below="@id/header"
+            android:layout_marginTop="12sp"
+            android:orientation="vertical">
 
-            <Spinner
-                android:layout_marginHorizontal="32dp"
-                android:padding="8sp"
-                android:entries="@array/status_membership"
-                android:id="@+id/spinnerMembership"
+            <LinearLayout
+
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pilih membership"
+                        android:textStyle="bold|italic" />
+
+                    <Spinner
+                        android:id="@+id/spinnerMembership"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/status_membership"
+                        android:padding="8sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Pilih tanggal jatuh tempo"
+                        android:textStyle="bold|italic" />
+
+                    <Spinner
+                        android:id="@+id/spinnerTanggalJatuhTempo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:entries="@array/tanggal_jatuh_tempo"
+                        android:padding="8sp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputNominalPlafon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="8sp"
+                android:visibility="gone"
+                app:hintTextColor="@color/darkBiruBelga">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ed_inputNominalPlafon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:hint="Nominal plafon yang diinginkan"
+                    android:inputType="number"
+                    android:maxLength="16"
+                    android:selectAllOnFocus="true"
+                    android:textColor="@color/darkBiruBelga"
+                    android:textSize="14dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardMember"
-                android:layout_marginHorizontal="32dp"
-                android:layout_marginVertical="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="172dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="8dp"
                 app:cardCornerRadius="8dp"
                 app:cardElevation="0dp"
                 app:cardMaxElevation="0dp">
 
                 <RelativeLayout
-                    android:background="@drawable/card_member_silver"
-                    android:padding="16dp"
                     android:id="@+id/layoutCardMember"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="@drawable/card_member_silver"
+                    android:padding="16dp">
 
                     <LinearLayout
-                        android:layout_marginTop="40dp"
                         android:id="@+id/headerCard"
-                        android:weightSum="3"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="40dp"
+                        android:weightSum="3">
 
                         <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_weight="2"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:textSize="8sp"
-                                android:text="NAMA MEMBER"
-                                android:textStyle="bold"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="NAMA MEMBER"
+                                android:textSize="8sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/txtNamaMember"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="NAMA MEMBER ADALAH"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
-                                android:text="NAMA MEMBER ADALAH"
-                                android:textStyle="bold"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
-
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_marginTop="8dp"
-                        android:layout_below="@id/headerCard"
                         android:id="@+id/bodyCard"
-                        android:weightSum="2"
-                        android:orientation="horizontal"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
-
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/headerCard"
+                        android:layout_marginTop="8dp"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:textSize="8sp"
-                                android:text="NOMOR MEMBERSHIP"
-                                android:textStyle="bold"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="NOMOR MEMBERSHIP"
+                                android:textSize="8sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/txtNomorMember"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="1111"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
-                                android:text="1111"
-                                android:textStyle="bold"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
                         <LinearLayout
                             android:id="@+id/layoutExpired"
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
                             <TextView
-                                android:textSize="8sp"
-                                android:text="EXP DATE"
-                                android:textStyle="bold"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:text="EXP DATE"
+                                android:textSize="8sp"
+                                android:textStyle="bold" />
 
                             <TextView
                                 android:id="@+id/txtExpDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="11/2021"
                                 android:textColor="@color/black"
                                 android:textSize="14sp"
-                                android:text="11/2021"
-                                android:textStyle="bold"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
                     </LinearLayout>
-
 
                 </RelativeLayout>
 
@@ -175,155 +234,156 @@
 
             <LinearLayout
                 android:id="@+id/layoutDetailMembership"
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="16sp"
                 android:background="@drawable/background_ship"
-                android:layout_marginHorizontal="32dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:orientation="vertical">
 
                 <TextView
-                    android:layout_marginTop="8dp"
                     android:id="@+id/namaMembership"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:text="MEMBER SILVER"
-                    android:textStyle="bold"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center_horizontal" />
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_horizontal"
+                    android:text="MEMBER SILVER"
+                    android:textAlignment="center"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <ScrollView
-                        android:layout_above="@id/infoLanjut"
-                        android:visibility="gone"
                         android:id="@+id/infoMemberReguler"
-                        android:scrollbars="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/infoLanjut"
+                        android:scrollbars="vertical"
+                        android:visibility="gone">
 
                         <LinearLayout
-                            android:padding="8sp"
-                            android:orientation="vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="8sp">
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Biaya registrasi gratis !"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Keuntungan mendapatkan diskon khusus member Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Keuntungan mendapatkan diskon khusus member dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Mendapatkan poin tiap belanja yang dapat diturkan dengan beberapa keuntungan lainnya"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Undian dengan hadiah besar setiap bulan"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Berbagai macam keuntungan member lainnya"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Berbagai macam keuntungan member lainnya"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
@@ -332,223 +392,223 @@
                     </ScrollView>
 
                     <ScrollView
-                        android:layout_above="@id/infoLanjut"
-                        android:visibility="visible"
                         android:id="@+id/infoMemberGold"
-                        android:scrollbars="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+                        android:layout_above="@id/infoLanjut"
+                        android:scrollbars="vertical"
+                        android:visibility="visible">
 
                         <LinearLayout
-                            android:padding="8sp"
-                            android:orientation="vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent">
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="8sp">
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Biaya member 50.000 / bulan"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Mendapatkan plafon belanja dan asuransi dari Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Mendapatkan plafon belanja dan asuransi dari dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Mendapatkan plafon belanja dan asuransi dari Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Mendapatkan plafon belanja dan asuransi dari dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Mendapatkan plafon belanja dan asuransi dari Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Mendapatkan plafon belanja dan asuransi dari dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Mendapatkan plafon belanja dan asuransi dari Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Mendapatkan plafon belanja dan asuransi dari dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Keuntungan mendapatkan diskon khusus member Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Keuntungan mendapatkan diskon khusus member dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Mendapatkan poin tiap belanja yang dapat diturkan dengan beberapa keuntungan lainnya"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
                                     android:text="Undian dengan hadiah besar setiap bulan"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
                             <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_marginVertical="4dp"
                                 android:gravity="center_vertical"
-                                android:orientation="horizontal"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:orientation="horizontal">
 
                                 <ImageView
-                                    android:layout_marginLeft="8sp"
-                                    android:src="@drawable/ic_arrow"
                                     android:layout_width="20dp"
-                                    android:layout_height="20dp"/>
+                                    android:layout_height="20dp"
+                                    android:layout_marginLeft="8sp"
+                                    android:src="@drawable/ic_arrow" />
 
                                 <TextView
-                                    android:layout_marginLeft="4dp"
-                                    android:textSize="14sp"
-                                    android:textColor="@color/white"
-                                    android:text="Mendapatkan plafon belanja dan asuransi dari Dbelga group"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"/>
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="4dp"
+                                    android:text="Mendapatkan plafon belanja dan asuransi dari dBelga group"
+                                    android:textColor="@color/white"
+                                    android:textSize="14sp" />
 
                             </LinearLayout>
 
@@ -556,41 +616,38 @@
 
                     </ScrollView>
 
-
                     <TextView
-                        android:visibility="gone"
                         android:id="@+id/infoLanjut"
-                        android:layout_alignParentBottom="true"
-                        android:elevation="4dp"
-                        android:textColor="@color/darkBiruBelga"
-                        android:textStyle="bold|italic"
-                        android:padding="16dp"
-                        android:textAlignment="center"
-                        android:text="Informasi Lebih Lanjut Klik Disini"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal" />
+                        android:layout_alignParentBottom="true"
+                        android:elevation="4dp"
+                        android:gravity="center_horizontal"
+                        android:padding="16dp"
+                        android:text="Informasi Lebih Lanjut Klik Disini"
+                        android:textAlignment="center"
+                        android:textColor="@color/darkBiruBelga"
+                        android:textStyle="bold|italic"
+                        android:visibility="gone" />
 
                 </RelativeLayout>
 
 
-
-
             </LinearLayout>
 
-    </LinearLayout>
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/btnPilihMembership"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/button_round_theme"
-        android:textColor="@color/white"
-        android:text="Pilih Membership"
-        android:layout_marginHorizontal="36dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btnPilihMembership"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/button_round_theme"
+            android:text="Pilih Membership"
+            android:textColor="@color/white" />
 
-</RelativeLayout>
+    </RelativeLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

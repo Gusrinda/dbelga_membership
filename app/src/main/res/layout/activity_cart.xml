@@ -40,110 +40,110 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
 
         <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginVertical="4dp"
-            android:layout_above="@id/layoutOngkir"
-            tools:listitem="@layout/item_cart"
             android:id="@+id/rv_itemCart"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@id/layoutOngkir"
+            android:layout_marginVertical="4dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_cart" />
 
 
         <LinearLayout
             android:id="@+id/layoutOngkir"
-            android:layout_above="@id/layoutTotalBelanja"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="64dp">
+            android:layout_height="48dp"
+            android:layout_above="@id/layoutTotalBelanja"
+            android:orientation="vertical">
 
             <View
-                android:background="#C1C1C1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
 
             <LinearLayout
-                android:layout_marginHorizontal="16dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:layout_weight="5"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:textSize="12sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Total Ongkir"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Total Ongkir"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txt_Ongkir"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Rp. 10.000"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/hammer_font"
+                        android:maxLines="1"
+                        android:text="Rp. 10.000"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_weight="5"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:orientation="horizontal">
 
                     <LinearLayout
-                        android:gravity="center_vertical"
-                        android:orientation="vertical"
-
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent">
+                        android:layout_height="match_parent"
+
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:textSize="12sp"
-                            android:fontFamily="@font/hammer_font"
-                            android:textColor="@color/black"
-                            android:text="Total Jarak"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Total Jarak"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
 
                         <TextView
                             android:id="@+id/txt_Jarak"
-                            android:textSize="16sp"
-                            android:fontFamily="@font/hammer_font"
-                            android:textColor="@color/black"
-                            android:text="+- 5 Km"
-                            android:maxLines="1"
-                            android:ellipsize="end"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/hammer_font"
+                            android:maxLines="1"
+                            android:text="+- 5 Km"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
 
                     </LinearLayout>
 
                     <RelativeLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:layout_height="match_parent">
+                        android:orientation="vertical">
 
                         <Button
                             android:id="@+id/btnAlamatPengiriman"
@@ -156,13 +156,12 @@
                             android:text="Alamat\nPengiriman"
                             android:textAllCaps="false"
                             android:textColor="@android:color/holo_orange_dark"
-                            android:textSize="10dp" />
+                            android:textSize="8dp" />
 
 
                     </RelativeLayout>
 
                 </LinearLayout>
-
 
 
             </LinearLayout>
@@ -172,77 +171,77 @@
 
         <LinearLayout
             android:id="@+id/layoutTotalBelanja"
-            android:layout_above="@id/layoutMetodePembayaran"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="56dp">
+            android:layout_height="48dp"
+            android:layout_above="@id/layoutVoucherSuplier"
+            android:orientation="vertical">
 
             <View
-                android:background="#C1C1C1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
 
             <LinearLayout
-                android:layout_marginHorizontal="16dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:layout_weight="5"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:textSize="12sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Total Belanja"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Total Belanja"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txt_totalBelanja"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Rp. 10.000"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/hammer_font"
+                        android:maxLines="1"
+                        android:text="Rp. 10.000"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
 
 
                 <LinearLayout
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:layout_weight="5"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:textSize="12sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Total Qty Item"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Total Qty Item"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txt_totalQty"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="5"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/hammer_font"
+                        android:maxLines="1"
+                        android:text="5"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
@@ -253,71 +252,267 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layoutMetodePembayaran"
-            android:layout_above="@id/layoutBottom"
-            android:orientation="vertical"
+            android:id="@+id/layoutVoucherSuplier"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_above="@id/layoutVoucher"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <View
-                android:background="#C1C1C1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="64dp">
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_marginHorizontal="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:layout_weight="75"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_weight="75"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtJudulVoucherSuplier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Ambil Voucher"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txtDeskripsiVOucherSuplier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/hammer_font"
+                            android:maxLines="1"
+                            android:text="Anda memiliki voucher yang bisa digunakan"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/btnDeleteVoucherSuplier"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_baseline_delete_24"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/btnAmbilVoucherSuplier"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="25"
+                    android:background="@color/material_orange_800"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_baseline_voucher"
+                        app:tint="@color/white" />
 
                     <TextView
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Metode Pembayaran"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Voucher"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutVoucher"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/layoutMetodePembayaran"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_weight="75"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txt_judulVoucher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Ambil Voucher"
+                            android:textColor="@color/black"
+                            android:textSize="12sp" />
+
+                        <TextView
+                            android:id="@+id/txt_deskripsiVoucher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:ellipsize="end"
+                            android:fontFamily="@font/hammer_font"
+                            android:maxLines="1"
+                            android:text="Anda memiliki voucher yang bisa digunakan"
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/btnDeleteVoucher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="2dp"
+                        android:src="@drawable/ic_baseline_delete_24"
+                        android:visibility="gone" />
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/btn_ambilVoucher"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="25"
+                    android:background="@color/material_green_400"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/iconBtnVoucher"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_baseline_voucher"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        android:id="@+id/textBtnVoucher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Voucher"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutMetodePembayaran"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/layoutBottom"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_weight="75"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Metode Pembayaran"
+                        android:textColor="@color/black"
+                        android:textSize="12sp" />
 
                     <TextView
                         android:id="@+id/txtMetode"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="metode belum dipilih"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/hammer_font"
+                        android:maxLines="1"
+                        android:text="metode belum dipilih"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
 
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_metodePembayaran"
-                    android:gravity="center"
-                    android:background="@color/material_orange_400"
-                    android:orientation="vertical"
-                    android:layout_weight="25"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="25"
+                    android:background="@color/material_orange_400"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageView
-                        android:src="@drawable/bg_payment"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp" />
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/bg_payment" />
 
                     <TextView
-                        android:text="Pembayaran"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/white"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Pembayaran"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -327,70 +522,72 @@
 
         <LinearLayout
             android:id="@+id/layoutBottom"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
 
             <View
-                android:background="#C1C1C1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp" />
+                android:layout_height="1dp"
+                android:background="#C1C1C1" />
 
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="64dp">
+                android:layout_height="48dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_marginHorizontal="16dp"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical"
-                    android:layout_weight="75"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_weight="75"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="SubTotal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="SubTotal"
+                        android:textColor="@color/black"
+                        android:textSize="12dp" />
 
                     <TextView
                         android:id="@+id/txtGrandTotal"
-                        android:textSize="20sp"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/black"
-                        android:text="Rp. 800.000 ( x item )"
-                        android:maxLines="1"
-                        android:ellipsize="end"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/hammer_font"
+                        android:maxLines="1"
+                        android:text="Rp. 800.000 ( x item )"
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
 
 
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/btn_Checkout"
-                    android:gravity="center"
-                    android:background="@color/greyBelha"
-                    android:orientation="vertical"
-                    android:layout_weight="25"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="25"
+                    android:background="@color/greyBelha"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
                     <ImageView
-                        android:src="@drawable/ic_baseline_shopping_cart_24"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp" />
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_baseline_shopping_cart_24" />
 
                     <TextView
-                        android:text="Checkout"
-                        android:fontFamily="@font/hammer_font"
-                        android:textColor="@color/white"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="Checkout"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 

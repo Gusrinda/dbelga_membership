@@ -40,7 +40,7 @@ public class Item implements Serializable, Parcelable
     private String totalDiskon;
     @SerializedName("total_setelah_diskon")
     @Expose
-    private Integer totalSetelahDiskon;
+    private String totalSetelahDiskon;
     @SerializedName("qty_outlet")
     @Expose
     private String qtyOutlet;
@@ -49,16 +49,34 @@ public class Item implements Serializable, Parcelable
     private String qtyStore;
     @SerializedName("indent")
     @Expose
-    private String indent;
+    private Boolean indent;
     @SerializedName("indent_value")
     @Expose
     private Integer indentValue;
     @SerializedName("so_code")
     @Expose
     private String soCode;
-    @SerializedName("sales")
+    @SerializedName("diskon")
     @Expose
-    private int sales;
+    private String diskon;
+    @SerializedName("qty_diskon")
+    @Expose
+    private String qtyDiskon;
+    @SerializedName("type_diskon")
+    @Expose
+    private String typeDiskon;
+    @SerializedName("kode_promo")
+    @Expose
+    private String kodePromo;
+    @SerializedName("is_diskon_membership")
+    @Expose
+    private Boolean isDiskonMembership;
+    @SerializedName("presentase_diskon_membership")
+    @Expose
+    private String presentaseDiskonMembership;
+    @SerializedName("total_diskon_membership")
+    @Expose
+    private String totalDiskonMembership;
     public final static Creator<Item> CREATOR = new Creator<Item>() {
 
 
@@ -75,7 +93,7 @@ public class Item implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -4311325415928016610L;
+    private final static long serialVersionUID = 7077297467916522447L;
 
     protected Item(android.os.Parcel in) {
         this.orderId = ((String) in.readValue((String.class.getClassLoader())));
@@ -86,13 +104,19 @@ public class Item implements Serializable, Parcelable
         this.persentaseDiskon = ((String) in.readValue((String.class.getClassLoader())));
         this.total = ((String) in.readValue((String.class.getClassLoader())));
         this.totalDiskon = ((String) in.readValue((String.class.getClassLoader())));
-        this.totalSetelahDiskon = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.totalSetelahDiskon = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyOutlet = ((String) in.readValue((String.class.getClassLoader())));
         this.qtyStore = ((String) in.readValue((String.class.getClassLoader())));
-        this.indent = ((String) in.readValue((String.class.getClassLoader())));
+        this.indent = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.indentValue = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
-        this.sales = ((int) in.readValue((int.class.getClassLoader())));
+        this.diskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.typeDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.kodePromo = ((String) in.readValue((String.class.getClassLoader())));
+        this.isDiskonMembership = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.presentaseDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
+        this.totalDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Item() {
@@ -162,11 +186,11 @@ public class Item implements Serializable, Parcelable
         this.totalDiskon = totalDiskon;
     }
 
-    public Integer getTotalSetelahDiskon() {
+    public String getTotalSetelahDiskon() {
         return totalSetelahDiskon;
     }
 
-    public void setTotalSetelahDiskon(Integer totalSetelahDiskon) {
+    public void setTotalSetelahDiskon(String totalSetelahDiskon) {
         this.totalSetelahDiskon = totalSetelahDiskon;
     }
 
@@ -186,11 +210,11 @@ public class Item implements Serializable, Parcelable
         this.qtyStore = qtyStore;
     }
 
-    public String getIndent() {
+    public Boolean getIndent() {
         return indent;
     }
 
-    public void setIndent(String indent) {
+    public void setIndent(Boolean indent) {
         this.indent = indent;
     }
 
@@ -210,17 +234,60 @@ public class Item implements Serializable, Parcelable
         this.soCode = soCode;
     }
 
-    public int getSales() {
-        return sales;
+    public String getDiskon() {
+        return diskon;
     }
 
-    public void setSales(int sales) {
-        this.sales = sales;
+    public void setDiskon(String diskon) {
+        this.diskon = diskon;
     }
 
-    public Item withSales(int sales) {
-        this.sales = sales;
-        return this;
+    public String getQtyDiskon() {
+        return qtyDiskon;
+    }
+
+    public void setQtyDiskon(String qtyDiskon) {
+        this.qtyDiskon = qtyDiskon;
+    }
+
+    public String getTypeDiskon() {
+        return typeDiskon;
+    }
+
+    public void setTypeDiskon(String typeDiskon) {
+        this.typeDiskon = typeDiskon;
+    }
+
+    public String getKodePromo() {
+        return kodePromo;
+    }
+
+    public void setKodePromo(String kodePromo) {
+        this.kodePromo = kodePromo;
+    }
+
+    public Boolean getIsDiskonMembership() {
+        return isDiskonMembership;
+    }
+
+    public void setIsDiskonMembership(Boolean isDiskonMembership) {
+        this.isDiskonMembership = isDiskonMembership;
+    }
+
+    public String getPresentaseDiskonMembership() {
+        return presentaseDiskonMembership;
+    }
+
+    public void setPresentaseDiskonMembership(String presentaseDiskonMembership) {
+        this.presentaseDiskonMembership = presentaseDiskonMembership;
+    }
+
+    public String getTotalDiskonMembership() {
+        return totalDiskonMembership;
+    }
+
+    public void setTotalDiskonMembership(String totalDiskonMembership) {
+        this.totalDiskonMembership = totalDiskonMembership;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -238,7 +305,13 @@ public class Item implements Serializable, Parcelable
         dest.writeValue(indent);
         dest.writeValue(indentValue);
         dest.writeValue(soCode);
-        dest.writeValue(sales);
+        dest.writeValue(diskon);
+        dest.writeValue(qtyDiskon);
+        dest.writeValue(typeDiskon);
+        dest.writeValue(kodePromo);
+        dest.writeValue(isDiskonMembership);
+        dest.writeValue(presentaseDiskonMembership);
+        dest.writeValue(totalDiskonMembership);
     }
 
     public int describeContents() {

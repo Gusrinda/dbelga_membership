@@ -31,11 +31,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListTransaksiPayment;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Screen.MainActivity;
-import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
 import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
 import com.dbelgamembership.membersip.Screen.Transaksi.PrintFakturActivity;
 import com.dbelgamembership.membersip.R;
@@ -118,10 +119,19 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
     }
 
     private void getDataUser() {
+        pastVisisbleItems = 0;
+        visibleItemsCount = 0;
+        totalItemsCount = 0;
+        previous_totals = 0;
+        page_number = 1;
+        page = 0;
+        urlNextPage = "";
+
+
         idUser = sessionManager.getPID();
         Log.e(TAG, "ID USER SEARCH : " + idUser);
         url = Http.server;
-        url = url + "payment/list?customer=" + sessionManager.getKeyUseridentitas();
+        url = url + "payment/list?customer=" + sessionManager.getKeyUseridentitas() + "&status=approved";
         getDataTransaksi();
     }
 
@@ -144,7 +154,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
 
                             if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
                                 if (modelListTransaction.getData().getNextPageUrl() != null) {
-                                    urlNextPage = String.valueOf(modelListTransaction.getData().getNextPageUrl()) + "&customer=" + sessionManager.getKeyUseridentitas();
+                                    urlNextPage = String.valueOf(modelListTransaction.getData().getNextPageUrl()) + "&customer=" + sessionManager.getKeyUseridentitas()+ "&status=approved";
                                     page = modelListTransaction.getData().getCurrentPage();
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }else {
@@ -155,17 +165,13 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                             List<Datum> itemlist = modelListTransaction.getData().getData();
 
                             if (itemlist.size() > 0) {
-                                for (int j = itemlist.size() - 1; j >= 0; j--) {
-                                    if (itemlist.get(j).getStatus().equals("closed")) {
-                                        itemlist.remove(j);
-                                    }
-                                }
                                 Log.e(TAG, "masuk Page 2");
                                 if (itemlist.size() != 0) {
                                     Collections.sort(itemlist, new Comparator<Datum>() {
                                         @Override
                                         public int compare(Datum datum, Datum t1) {
-                                            return t1.getDateTransaction().compareToIgnoreCase(datum.getDateTransaction());
+                                            return datum.getDateTransaction().compareToIgnoreCase(t1.getDateTransaction());
+//                                            return t1.getDateTransaction().compareToIgnoreCase(datum.getDateTransaction());
                                         }
 
                                     });
@@ -193,7 +199,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), NewMainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -267,26 +273,25 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-//                        Log.e(TAG, "onResponse: "+response);
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
                             Log.e(TAG, "masuk 1");
                             Log.e(TAG, "masuk 2");
                             if (response != null) {
-
                                 Log.e(TAG, "masuk 3");
                                 Gson gson = new Gson();
                                 ModelPayment modelListTransaction = gson.fromJson(String.valueOf(response), ModelPayment.class);
                                 Log.e(TAG, "masuk 4");
 
                                 if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
-                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl())) + "&customer=" + sessionManager.getKeyUseridentitas();
+                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl())) + "&customer=" + sessionManager.getKeyUseridentitas() + "&status=approved";
                                     page = modelListTransaction.getData().getCurrentPage();
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }
 
                                 List<Datum> itemlist = modelListTransaction.getData().getData();
                                 if (itemlist.size() > 0) {
+
                                     Log.e(TAG, "masuk 6");
                                     Collections.sort(itemlist, new Comparator<Datum>() {
                                         @Override
@@ -320,7 +325,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), NewMainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -437,7 +442,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                     if (page_number >= page && !urlNextPage.contains("null")) {
                         pagenation();
                     } else {
-                        Snack("Semua Transaksi Sudah Tampil");
+                        Snack("Semua Faktur Sudah Tampil");
                     }
                     isLoading = true;
                 }

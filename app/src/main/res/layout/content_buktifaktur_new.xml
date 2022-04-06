@@ -136,6 +136,7 @@
                 android:layout_above="@id/aa"
                 android:orientation="vertical">
 
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -167,6 +168,49 @@
                         android:textStyle="bold" />
 
                 </RelativeLayout>
+
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/layoutVoucher"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/colorPrimary" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp">
+
+                        <TextView
+                            android:id="@+id/txtKodeVoucher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Voucher kirim"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/txtNominalVoucher"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Rp. 0"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"

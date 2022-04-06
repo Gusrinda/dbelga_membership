@@ -1,7 +1,6 @@
 package com.dbelgamembership.membersip.Screen.Katalog;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,6 +24,7 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -44,15 +44,15 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Model.ModelResponseDistance.ModelResponseDistance;
 import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
-import com.dbelgamembership.membersip.Model.ModelToko.ModelToko;
-import com.dbelgamembership.membersip.Model.ModelToko.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.DaftarVoucher;
+import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPayments;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayBarangSuplier;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayVoucherSuplierBelanja;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
-import com.dbelgamembership.membersip.Screen.SplashActivity;
-import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
-import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
+import com.dbelgamembership.membersip.Screen.Voucher.Dummy.AdapterListVoucherMember;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCart;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCheckout;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
@@ -63,11 +63,13 @@ import com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart;
 import com.dbelgamembership.membersip.Model.ModelResponseCart.ModelResponseCart;
 import com.dbelgamembership.membersip.Model.modelTransaksiStore.ModelTransaksiStore;
 import com.dbelgamembership.membersip.R;
-import com.dbelgamembership.membersip.app.Adapter.AdapterListGudang;
+import com.dbelgamembership.membersip.app.Adapter.AdapterVoucherSuplier;
 import com.dbelgamembership.membersip.databinding.ActivityCartBinding;
 import com.dbelgamembership.membersip.databinding.PopupCheckoutBinding;
-import com.dbelgamembership.membersip.databinding.PopupMetodePembayaranBinding;
+import com.dbelgamembership.membersip.databinding.PopupDaftarVoucherBinding;
 import com.dbelgamembership.membersip.databinding.PopupPilihPembayaranBinding;
+import com.dbelgamembership.membersip.databinding.PopupVoucherSuplierBinding;
+import com.developer.kalert.KAlertDialog;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -78,6 +80,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -90,6 +95,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,10 +110,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.alamatPengirimanPengguna;
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.daftarGudang;
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.jarak;
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
 
-public class CartActivity extends AppCompatActivity implements AdapterListCart.AdapterListGudangCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class CartActivity extends AppCompatActivity implements AdapterListCart.AdapterListGudangCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AdapterListVoucherMember.AdapterListVoucherDummyCallback, AdapterVoucherSuplier.AdapterVoucherSuplierCallback {
 
     private static final String TAG = "CartActivity";
     private ActivityCartBinding binding;
@@ -127,7 +134,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
     private double jarakKm = jarak;
     private double hitungJarak = 0;
-    private int grandTotal = 0;
+    private double grandTotal = 0;
     private String idGudang = "0";
 
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
@@ -135,11 +142,18 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
     private boolean isPaymentSelected = false;
     private boolean isCOD = true;
     private boolean isDebit = false;
+
+    private boolean isPunyaTagihanDenda = false;
+
     private boolean IS_MEMBER_DEBIT = false;
     Bitmap bitmap;
     double limitPlafon, sisaPlafon, piutangBelanja;
     private String imageString = "";
     private Uri ImageUri;
+
+    DaftarVoucher voucherDipilih = new DaftarVoucher();
+    private boolean isUsingVoucher = false;
+    private boolean isUsingVoucherSuplier = false;
 
     ClipboardManager clipboardManager;
 
@@ -211,6 +225,182 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
 
+        binding.btnAmbilVoucher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popUpPilihVoucher();
+            }
+        });
+
+        binding.btnDeleteVoucher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog dialogAlert = new AlertDialog.Builder(CartActivity.this).create();
+                dialogAlert.setCanceledOnTouchOutside(false);
+                dialogAlert.setTitle("Hapus data voucher yang dipilih ? ");
+                dialogAlert.setMessage("Data cart anda akan diupdate berdasarkan voucher yang dihapus");
+                dialogAlert.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                setupPenghapusanVoucher();
+                            }
+                        });
+                dialogAlert.setButton(DialogInterface.BUTTON_NEGATIVE, "TIDAK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+                dialogAlert.show();
+            }
+        });
+
+    }
+
+    private void setupPenghapusanVoucher() {
+        if (isUsingVoucher && voucherDipilih != null) {
+            isUsingVoucher = false;
+            voucherDipilih = null;
+        }
+
+        hitungHitung(modelResponseCart);
+    }
+
+    public static List<DaftarVoucher> voucherMember = new ArrayList<>();
+
+    private void getDataVoucherMember() {
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelVoucherCustomer> call = apiInterface.doGetVoucherMember(sessionManager.getPID());
+
+        call.enqueue(new Callback<ModelVoucherCustomer>() {
+            @Override
+            public void onResponse(Call<ModelVoucherCustomer> call, retrofit2.Response<ModelVoucherCustomer> response) {
+                try {
+                    voucherMember.clear();
+                    Log.e(TAG, "onResponse: " + response);
+                    ModelVoucherCustomer modelVoucher = response.body();
+                    com.dbelgamembership.membersip.Model.ModelVoucherCustomer.MsgServer mVoucher = modelVoucher.getMsgServer().get(0);
+
+                    for (int i = 0; i < mVoucher.getDaftarVoucher().size(); i++) {
+
+                        boolean isVoucherExpired = false;
+
+                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        final Calendar baru = Calendar.getInstance();
+
+
+                        Date tanggalNow = baru.getTime();
+                        Date tanggalAkhir = formatter.parse(mVoucher.getDaftarVoucher().get(i).getExpiredDate());
+
+                        long mlNow = tanggalNow.getTime();
+                        long mlAkhir = tanggalAkhir.getTime();
+
+                        if (mlNow <= mlAkhir) {
+                            isVoucherExpired = false;
+                        } else {
+                            isVoucherExpired = true;
+                        }
+
+                        if (!mVoucher.getDaftarVoucher().get(i).getFlagPakai() && !isVoucherExpired) {
+                            voucherMember.add(mVoucher.getDaftarVoucher().get(i));
+                        }
+                    }
+//                    voucherMember = mVoucher.getDaftarVoucher();
+
+                    if (voucherMember.size() > 0) {
+                        binding.layoutVoucher.setVisibility(View.VISIBLE);
+                    } else {
+                        binding.layoutVoucher.setVisibility(View.GONE);
+                    }
+
+                } catch (Exception e) {
+                    Log.e(TAG, "onResponse: Error " + e);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelVoucherCustomer> call, Throwable t) {
+                Toast.makeText(CartActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+            }
+        });
+
+    }
+
+    private PopupDaftarVoucherBinding popupDaftarVoucherBinding;
+
+    private void popUpPilihVoucher() {
+        popupDaftarVoucherBinding = popupDaftarVoucherBinding.inflate(getLayoutInflater());
+        final View view = popupDaftarVoucherBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+
+        AdapterListVoucherMember adapterPengambilanVoucherOmset = new AdapterListVoucherMember(CartActivity.this, voucherMember, false, CartActivity.this);
+        popupDaftarVoucherBinding.rvVoucherPengguna.setAdapter(adapterPengambilanVoucherOmset);
+
+        popupDaftarVoucherBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+    }
+
+    @Override
+    public void onRowDaftarVoucher(DaftarVoucher item, int posisi) {
+
+        boolean isVoucherToko = false;
+
+        for (int i = 0; i < item.getGudang().size(); i++) {
+
+            if (String.valueOf(item.getGudang().get(i)).equals(idGudang)) {
+                isVoucherToko = true;
+            }
+        }
+
+
+        if (isVoucherToko) {
+            if (((Double.parseDouble(item.getMinimalBelanja())) > pengecekanTotalUntukVoucher)) {
+                Toast.makeText(CartActivity.this, "Voucher bisa digunakan minimal belanja : Rp. " + nf.format(Double.parseDouble(item.getMinimalBelanja())), Toast.LENGTH_SHORT).show();
+            } else {
+                new KAlertDialog(CartActivity.this, KAlertDialog.WARNING_TYPE)
+                        .setTitleText("Pakai Voucher")
+                        .setContentText("Anda yakin memakai voucher ini ?")
+                        .setConfirmText("Ya")
+                        .confirmButtonColor(R.color.biruBelga, CartActivity.this)
+                        .cancelButtonColor(R.color.grey_font, CartActivity.this)
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                alertDialog.dismiss();
+                                voucherDipilih = item;
+                                isUsingVoucher = true;
+                                hitungHitung(modelResponseCart);
+                            }
+                        })
+                        .setCancelText("Tidak")
+                        .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+            }
+        } else {
+            Toast.makeText(CartActivity.this, "Voucher tidak bisa digunakan di toko ini !", Toast.LENGTH_SHORT).show();
+        }
+
+
+
     }
 
     private void cekDataUser() {
@@ -236,7 +426,20 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                     Log.e(TAG, "onResponse SP: " + sisaPlafon);
                     Log.e(TAG, "onResponse PB: " + piutangBelanja);
 
+                    if (dataUser.getFlagDenda().equals("true")) {
+                        isPunyaTagihanDenda = true;
+
+                        Toast.makeText(CartActivity.this, "ANDA PUNYA DENDA TAGIHAN, DEBIT SEMENTARA TIDAK BISA DIGUNAKAN", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        isPunyaTagihanDenda = false;
+                    }
+
                 }
+
+                getDataVoucherMember();
+
+
             }
 
             @Override
@@ -259,7 +462,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.show();
 
-        if (IS_MEMBER_DEBIT) {
+        if (IS_MEMBER_DEBIT && !isPunyaTagihanDenda) {
             popupPilihPembayaranBinding.radioDebitMember.setVisibility(View.VISIBLE);
         } else {
             popupPilihPembayaranBinding.radioDebitMember.setVisibility(View.GONE);
@@ -356,7 +559,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
     private PopupCheckoutBinding checkoutBinding;
     private boolean isUploadBuktiTransfer = false;
 
-
     private void checkoutPop() {
         checkoutBinding = PopupCheckoutBinding.inflate(getLayoutInflater());
         final View view = checkoutBinding.getRoot();
@@ -395,7 +597,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 checkoutBinding.btnUploadBuktiTransfer.setVisibility(View.GONE);
                 isUploadBuktiTransfer = true;
             } else {
-                checkoutBinding.txtMetodePembayaran.setText("TRANSFER\nBCA - 0110-01-013660-53-7");
+                checkoutBinding.txtMetodePembayaran.setText("TRANSFER\nBCA - 048 977 6768");
                 checkoutBinding.txtMetodePembayaran.setTextSize(14);
                 checkoutBinding.btnUploadBuktiTransfer.setVisibility(View.VISIBLE);
                 isUploadBuktiTransfer = false;
@@ -403,7 +605,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 checkoutBinding.txtMetodePembayaran.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ClipData clipData = ClipData.newPlainText("text", "011001013660537");
+                        ClipData clipData = ClipData.newPlainText("text", "0489776768");
                         clipboardManager.setPrimaryClip(clipData);
 
                         Toast.makeText(CartActivity.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
@@ -469,169 +671,326 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             @Override
             public void onClick(View view) {
                 // Setting Min Date to today date
-                Calendar min_date_c = Calendar.getInstance();
-
-                datePickerDialog = DatePickerDialog.newInstance(CartActivity.this, Year, Month, Day);
-                datePickerDialog.setThemeDark(false);
-                datePickerDialog.showYearPickerFirst(false);
-                datePickerDialog.setTitle("Pilih Tanggal Pengiriman");
-
-                datePickerDialog.setMinDate(min_date_c);
-
-                // Setting Max Date to next 2 years
-                Calendar max_date_c = Calendar.getInstance();
-                max_date_c.set(Calendar.YEAR, Year + 2);
-                datePickerDialog.setMaxDate(max_date_c);
-                SimpleDateFormat tanggalLoop = new SimpleDateFormat("yyyy-MM-dd");
-
-                datePickerDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
-
-                    @Override
-                    public void onCancel(DialogInterface dialogInterface) {
-                        Toast.makeText(CartActivity.this, "Datepicker Canceled", Toast.LENGTH_SHORT).show();
-                        checkoutBinding.edTanggalPengiriman.setText(af.format(cal.getTime()));
-                    }
-                });
-
-                datePickerDialog.show(getSupportFragmentManager(), "Date Picker");
-
+                openDialogTime();
             }
         });
 
         checkoutBinding.layoutBtnCheckout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JSONObject jsonObject = new JSONObject();
 
-                try {
+                APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+                Call<JsonElement> call = apiInterface.doGetDateServer();
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                        if (response != null) {
+                            String responseX = String.valueOf(response.body());
+                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                            boolean success = root.get("success").getAsBoolean();
+                            Log.e("", "Test : " + success);
+                            if (!success) {
+                                Toast.makeText(CartActivity.this, "ERROR :: " + root.get("msgServer").getAsString(), Toast.LENGTH_SHORT).show();
+                            } else {
 
-                    int totalDiskonSO = 0;
-                    ArrayList<HashMap<String, String>> detail_order = new ArrayList<HashMap<String, String>>();
-                    for (int i = 0; i < listItem.size(); i++) {
-                        HashMap<String, String> map_order = new HashMap<String, String>();
+                                boolean bisaOrder = false;
+                                try {
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String tanggalServer = root.get("msgServer").getAsString();
+                                    Date checkJamServer = formatter.parse(tanggalServer);
+                                    Log.e(TAG, "onResponse TANGGAL SERVER : " + formatter.format(checkJamServer).toString());
 
-                        DetailItemCart item = listItem.get(i);
+                                    final Calendar batasan = Calendar.getInstance();
+                                    batasan.set(Calendar.HOUR_OF_DAY, 8);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamBukaHariIni = batasan.getTime();
 
-                        int batasan1 = item.getHarga().getQtyHarga1();
-                        int batasan2 = item.getHarga().getQtyHarga2();
-                        int batasan3 = item.getHarga().getQtyHarga3();
+                                    batasan.set(Calendar.HOUR_OF_DAY, 20);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamTutupHariIni = batasan.getTime();
 
-                        String harga1 = item.getHarga().getHarga();
-                        String harga2 = item.getHarga().getQtyHarga2() == null ? "0" : item.getHarga().getHargaDua();
-                        String harga3 = item.getHarga().getQtyHarga3() == null ? "0" : item.getHarga().getHargaTiga();
+                                    Log.e(TAG, "onResponse BATAS JAM BUKA SERVER :  " + formatter.format(jamBukaHariIni).toString());
+                                    Log.e(TAG, "onResponse BATAS JAM TUTUP SERVER :  " + formatter.format(jamTutupHariIni).toString());
 
-                        double qty = Double.parseDouble(item.getQty());
+                                    if (checkJamServer.getTime() >= jamBukaHariIni.getTime() && checkJamServer.getTime() <= jamTutupHariIni.getTime()) {
 
-                        double jumlahBarangDibeli = qty;
-                        String hargaFix = "0";
+                                        JSONObject jsonObject = new JSONObject();
 
-                        if (batasan1 == batasan2) {
-//                            Log.e(TAG, "TambahkanKeListBarang: " + pm.getHarga_barang());
-                            hargaFix = harga1;
-                        } else {
-                            if (jumlahBarangDibeli < batasan2) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
-                                hargaFix = harga1;
-                            } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
-                                hargaFix = harga2;
-                            } else if (jumlahBarangDibeli >= batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
-                                hargaFix = harga3;
+                                        try {
+
+                                            int totalDiskonSO = 0;
+                                            ArrayList<HashMap<String, String>> detail_order = new ArrayList<HashMap<String, String>>();
+                                            for (int i = 0; i < listItem.size(); i++) {
+                                                HashMap<String, String> map_order = new HashMap<String, String>();
+
+                                                DetailItemCart item = listItem.get(i);
+
+                                                int batasan1 = item.getHarga().getQtyHarga1();
+                                                int batasan2 = item.getHarga().getQtyHarga2();
+                                                int batasan3 = item.getHarga().getQtyHarga3();
+
+                                                String harga1 = item.getHarga().getHarga();
+                                                String harga2 = item.getHarga().getQtyHarga2() == null ? "0" : item.getHarga().getHargaDua();
+                                                String harga3 = item.getHarga().getQtyHarga3() == null ? "0" : item.getHarga().getHargaTiga();
+
+                                                double qty = Double.parseDouble(item.getQty());
+
+                                                double jumlahBarangDibeli = qty;
+                                                String hargaFix = "0";
+
+                                                double jumlahBarangDiskon = 0;
+                                                double diskon = 0;
+                                                boolean cekTanggal = false;
+
+                                                if (item.getProdukPromo()) {
+
+//                                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                                    final Calendar baru = Calendar.getInstance();
+
+                                                    try {
+                                                        Date tanggalNow = baru.getTime();
+                                                        Date tanggalAkhir = formatter.parse(item.getAkhirPromo());
+
+                                                        long mlNow = tanggalNow.getTime();
+                                                        long mlAkhir = tanggalAkhir.getTime();
+
+                                                        if (mlNow <= mlAkhir) {
+                                                            cekTanggal = true;
+                                                        } else {
+                                                            cekTanggal = false;
+                                                        }
+
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                    }
+
+                                                }
+
+                                                String tipeDiskon = "";
+                                                if (item.getProdukPromo() && item.getStokPromo() > 0 && cekTanggal) {
+                                                    Log.e(TAG, "MASUK PROMO");
+                                                    double hargaNormal = Double.parseDouble(item.getHarga().getHarga());
+                                                    double hargaPromo = Double.parseDouble(item.getPricePromo());
+
+                                                    diskon = hargaNormal - hargaPromo;
+
+                                                    if (jumlahBarangDibeli <= item.getStokPromo()) {
+                                                        jumlahBarangDiskon = jumlahBarangDibeli;
+                                                    } else if (jumlahBarangDibeli > item.getStokPromo()) {
+                                                        jumlahBarangDiskon = item.getStokPromo();
+                                                    }
+
+                                                    tipeDiskon = "PROMO";
+
+                                                } else {
+                                                    tipeDiskon = "HARGA123";
+                                                    if (batasan1 == batasan2) {
+                                                        hargaFix = harga1;
+                                                    } else {
+                                                        if (jumlahBarangDibeli < batasan2) {
+                                                            hargaFix = harga1;
+                                                        } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
+                                                            hargaFix = harga2;
+                                                        } else if (jumlahBarangDibeli >= batasan3) {
+                                                            hargaFix = harga3;
+                                                        }
+                                                    }
+                                                    diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
+                                                    jumlahBarangDiskon = jumlahBarangDibeli;
+                                                }
+
+
+                                                map_order.put("code", item.getCode());
+                                                map_order.put("id", String.valueOf(item.getId()));
+                                                map_order.put("price", hargaFix);
+                                                map_order.put("real_price", harga1);
+
+
+                                                double totalDiskon = (int) (jumlahBarangDiskon * diskon);
+                                                double totalNormal = (int) (Double.parseDouble(harga1) * qty);
+//
+//
+//                                                if (totalDiskon > 0) {
+//                                                    if (item.getProdukPromo()) {
+//                                                        tipeDiskon = "PROMO";
+//                                                    } else {
+//                                                        tipeDiskon = "HARGA123";
+//                                                    }
+//                                                }
+
+
+                                                map_order.put("kode_promo", item.getKodePromo() == null ? "" : item.getKodePromo());
+                                                map_order.put("qty_store", "0");
+                                                map_order.put("qty_outlet", String.valueOf(item.getQty()));
+                                                map_order.put("indent", "false");
+                                                map_order.put("indent_value", "0");
+                                                map_order.put("persentase_diskon", "0");
+                                                map_order.put("type_diskon", tipeDiskon);
+                                                map_order.put("qty_diskon", (totalDiskon == 0 ? "0" : df.format(jumlahBarangDiskon)));
+                                                map_order.put("potongan_diskon", String.valueOf(diskon));
+                                                map_order.put("total_diskon", String.valueOf(totalDiskon));
+                                                map_order.put("total_normal", String.valueOf(totalNormal));
+
+
+                                                double totalDiskonMember = 0;
+                                                double persenDiskonMember = 0;
+                                                double diskonMember = 0;
+
+                                                if (item.getProdukPromoMember()) {
+
+                                                    if (sessionManager.getMembership().equals("SILVER")) {
+                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberSilver());
+                                                    } else if (sessionManager.getMembership().equals("GOLD")) {
+                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberGold());
+                                                    } else if (sessionManager.getMembership().equals("PLATINUM")) {
+                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberPlatinum());
+                                                    }
+
+
+                                                    double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+                                                    diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
+
+                                                    totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+                                                    map_order.put("is_diskon_membership", "true");
+                                                    map_order.put("persentase_diskon_membership", String.valueOf(persenDiskonMember));
+                                                    map_order.put("total_diskon_membership", String.format("%.2f", totalDiskonMember));
+                                                } else {
+                                                    map_order.put("is_diskon_membership", "false");
+                                                    map_order.put("persentase_diskon_membership", "0");
+                                                    map_order.put("total_diskon_membership", "0");
+                                                }
+
+
+                                                map_order.put("total_setelah_diskon", String.valueOf(totalNormal - totalDiskon - totalDiskonMember));
+
+                                                detail_order.add(map_order);
+                                                totalDiskonSO += totalDiskon;
+                                            }
+
+                                            jsonObject.put("createuser", "0");
+                                            jsonObject.put("id_gudang", idGudang);
+
+                                            if (idGudang.equals("8")) {
+                                                jsonObject.put("topic" , "order_dm1");
+                                            } else if (idGudang.equals("9")) {
+                                                jsonObject.put("topic" , "order_dm3");
+                                            }
+
+                                            jsonObject.put("customer", sessionManager.getName());
+                                            jsonObject.put("alamat_customer", sessionManager.getKeyAlamatMember());
+                                            jsonObject.put("id_spv", "");
+                                            jsonObject.put("id_member", sessionManager.getPID());
+                                            jsonObject.put("alamat_pengiriman", sessionManager.getKeyAlamatPengiriman());
+                                            jsonObject.put("flagKirim", true);
+                                            jsonObject.put("online", true);
+                                            jsonObject.put("identitas_customer", sessionManager.getKeyUseridentitas());
+//                    jsonObject.put("identitas_customer", sessionManager.getPID());
+                                            jsonObject.put("nomor_customer", sessionManager.getKeyTelefonMember());
+                                            jsonObject.put("ongkos_kirim", String.valueOf(hitungJarak));
+                                            jsonObject.put("tanggal_kirim", checkoutBinding.edTanggalPengiriman.getText().toString());
+
+                                            jsonObject.put("grandtotal", String.valueOf(grandTotal));
+
+                                            if (isUsingVoucher) {
+                                                jsonObject.put("is_voucher", true);
+                                                jsonObject.put("voucher_code", voucherDipilih.getUnikCode());
+                                                jsonObject.put("voucher_id", voucherDipilih.getIdVoucher());
+                                                jsonObject.put("voucher_nominal", realNominalVoucher);
+                                            } else {
+                                                jsonObject.put("is_voucher", false);
+                                                jsonObject.put("voucher_code", null);
+                                                jsonObject.put("voucher_id", null);
+                                                jsonObject.put("voucher_nominal", null);
+                                            }
+
+                                            if (nominalVoucherDipilihSuplier > 0) {
+                                                jsonObject.put("is_voucher_supplier", true);
+                                                jsonObject.put("voucher_code_supplier", voucherSuplierDipilih.getKodeVoucher());
+                                                jsonObject.put("voucher_nominal_supplier", voucherSuplierDipilih.getPotonganBelanjaSuplier());
+                                            } else {
+                                                jsonObject.put("is_voucher_supplier", false);
+                                                jsonObject.put("voucher_code_supplier", null);
+                                                jsonObject.put("voucher_nominal_supplier", null);
+                                            }
+
+                                            jsonObject.put("subtotal", String.valueOf(grandTotal - hitungJarak + realNominalVoucher + realNominalVoucherSuplier));
+                                            jsonObject.put("total_diskon_so", String.valueOf(totalDiskonSO));
+
+                                            JSONArray array_order = new JSONArray(detail_order);
+
+                                            if (detail_order.size() > 0) {
+                                                jsonObject.put("detail", array_order);
+                                            } else {
+                                                jsonObject.put("detail", "");
+                                            }
+
+                                            Log.e(TAG, "POST DATA: " + jsonObject);
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Log.e(TAG, "ERROR CREATE DATA : " + e.getLocalizedMessage());
+                                        }
+
+                                        android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(CartActivity.this);
+                                        builder1.setTitle("Konfirmasi");
+                                        builder1.setMessage("Anda yakin checkout dengan pesanan anda ?");
+                                        builder1.setCancelable(false);
+                                        builder1.setPositiveButton("YA", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.cancel();
+                                                if (isUploadBuktiTransfer) {
+                                                    //sending DATA
+                                                    sendingData(jsonObject);
+                                                } else {
+                                                    Toast.makeText(CartActivity.this, "Anda harus upload bukti transfer terlebih dahulu !", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                                        builder1.setNegativeButton("TIDAK", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.cancel();
+                                            }
+                                        });
+                                        final android.app.AlertDialog alert11 = builder1.create();
+                                        alert11.setOnShowListener(new DialogInterface.OnShowListener() {
+                                            @Override
+                                            public void onShow(DialogInterface dialogInterface) {
+                                                alert11.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+                                                alert11.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                                            }
+                                        });
+                                        alert11.show();
+                                    } else {
+                                        Toast.makeText(CartActivity.this, "Tidak bisa pesan, melebihi jam pelayanan !", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
-
-                        int diskon = (int) (Double.parseDouble(harga1) - Double.parseDouble(hargaFix));
-
-                        map_order.put("code", item.getCode());
-                        map_order.put("id", String.valueOf(item.getId()));
-                        map_order.put("price", hargaFix);
-                        map_order.put("real_price", harga1);
-
-
-                        int totalDiskon = (int) (qty * diskon);
-                        int totalNormal = (int) (Double.parseDouble(harga1) * qty);
-
-                        map_order.put("qty_store", "0");
-                        map_order.put("qty_outlet", String.valueOf(item.getQty()));
-                        map_order.put("indent", "false");
-                        map_order.put("indent_value", "0");
-                        map_order.put("persentase_diskon", "0");
-                        map_order.put("potongan_diskon", String.valueOf(diskon));
-                        map_order.put("total_diskon", String.valueOf(totalDiskon));
-                        map_order.put("total_normal", String.valueOf(totalNormal));
-                        map_order.put("total_setelah_diskon", String.valueOf(totalNormal - totalDiskon));
-                        detail_order.add(map_order);
-                        totalDiskonSO += totalDiskon;
                     }
 
-                    jsonObject.put("createuser", "0");
-                    jsonObject.put("id_gudang", idGudang);
-                    jsonObject.put("customer", sessionManager.getName());
-                    jsonObject.put("alamat_customer", sessionManager.getKeyAlamatMember());
-                    jsonObject.put("id_spv", "");
-                    jsonObject.put("id_member", sessionManager.getPID());
-                    jsonObject.put("alamat_pengiriman", sessionManager.getKeyAlamatPengiriman());
-                    jsonObject.put("flagKirim", true);
-                    jsonObject.put("online", true);
-                    jsonObject.put("identitas_customer", sessionManager.getKeyUseridentitas());
-//                    jsonObject.put("identitas_customer", sessionManager.getPID());
-                    jsonObject.put("nomor_customer", sessionManager.getKeyTelefonMember());
-                    jsonObject.put("ongkos_kirim", String.valueOf(hitungJarak));
-                    jsonObject.put("tanggal_kirim", checkoutBinding.edTanggalPengiriman.getText().toString());
-                    jsonObject.put("grandtotal", String.valueOf(grandTotal));
-                    jsonObject.put("total_diskon_so", String.valueOf(totalDiskonSO));
-
-                    JSONArray array_order = new JSONArray(detail_order);
-
-                    if (detail_order.size() > 0) {
-                        jsonObject.put("detail", array_order);
-                    } else {
-                        jsonObject.put("detail", "");
-                    }
-
-                    Log.e(TAG, "POST DATA: " + jsonObject);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "ERROR CREATE DATA : " + e.getLocalizedMessage());
-                }
-
-                android.app.AlertDialog.Builder builder1 = new android.app.AlertDialog.Builder(CartActivity.this);
-                builder1.setTitle("Konfirmasi");
-                builder1.setMessage("Anda yakin checkout dengan pesanan anda ?");
-                builder1.setCancelable(false);
-                builder1.setPositiveButton("YA", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                        if (isUploadBuktiTransfer) {
-                            sendingData(jsonObject);
-                        } else {
-                            Toast.makeText(CartActivity.this, "Anda harus upload bukti transfer terlebih dahulu !", Toast.LENGTH_SHORT).show();
-                        }
-
+                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                        Toast.makeText(CartActivity.this, "Error :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-                builder1.setNegativeButton("TIDAK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                });
-                final android.app.AlertDialog alert11 = builder1.create();
-                alert11.setOnShowListener(new DialogInterface.OnShowListener() {
-                    @Override
-                    public void onShow(DialogInterface dialogInterface) {
-                        alert11.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
-                        alert11.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
-                    }
-                });
-                alert11.show();
+
             }
         });
 
     }
+
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     private void sendingData(JSONObject postData) {
         String url = Http.server;
@@ -798,12 +1157,15 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
     }
 
     private void prosesPemilihanPayment(String kodeSo, String tipePayment, String imageString) {
+
+        List<ModelPayments> daftarPayment = new ArrayList<>();
+
         ModelPayments dataPaymentDebit = null;
 
         dataPaymentDebit = new ModelPayments(
                 "PAY_TYPE_PLAFON",
-                "PLAFON",
-                "PLAFON",
+                "MEMBER",
+                sessionManager.getMembership(),
                 "0",
                 "0",
                 String.valueOf(grandTotal),
@@ -811,11 +1173,13 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 "PLAFON"
         );
 
+        daftarPayment.add(dataPaymentDebit);
+
         ModelPostSetPayment dataPostPayment = new ModelPostSetPayment(
                 kodeSo,
                 tipePayment,
                 imageString,
-                (tipePayment.equals("DEBIT") ? dataPaymentDebit : null)
+                (tipePayment.equals("DEBIT") ? daftarPayment : null)
         );
 
         final ProgressDialog progressDialog = ProgressDialog.show(CartActivity.this, "Loading", "Setting Up Payment ...");
@@ -904,7 +1268,8 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                         binding.rvItemCart.setAdapter(adapterListCart);
 
                         if (modelResponseCart.getMsgServer().getDetailItemCart().size() > 0) {
-                            hitungHitung(modelResponseCart);
+                            checkingVoucherAndSuplier(modelResponseCart);
+
                         }
 
                         listItem.addAll(modelResponseCart.getMsgServer().getDetailItemCart());
@@ -967,7 +1332,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                         binding.rvItemCart.setAdapter(adapterListCart);
 
                         if (modelResponseCart.getMsgServer().getDetailItemCart().size() > 0) {
-                            hitungHitung(modelResponseCart);
+                            checkingVoucherAndSuplier(modelResponseCart);
 
                         }
 
@@ -994,11 +1359,356 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         });
     }
 
+    List<modelArrayBarangSuplier> mergedList = new ArrayList<>();
+    List<modelArrayVoucherSuplierBelanja> mergedVoucherSuplier = new ArrayList<>();
+
+    private void checkingVoucherAndSuplier(ModelResponseCart modelResponseCart) {
+
+        List<modelArrayBarangSuplier> newMergedList = new ArrayList<>();
+        List<modelArrayVoucherSuplierBelanja> newMergedVoucherSuplier = new ArrayList<>();
+
+        List<modelArrayBarangSuplier> barangListSuplier = new ArrayList<>();
+        List<modelArrayVoucherSuplierBelanja> daftarVoucherSuplier = new ArrayList<>();
+
+        List<DetailItemCart> itemBarangList = modelResponseCart.getMsgServer().getDetailItemCart();
+
+        for (int i = 0; i < itemBarangList.size(); i++) {
+
+            if (itemBarangList.get(i).getProdukVoucherSupplier()) {
+                daftarVoucherSuplier.add(new modelArrayVoucherSuplierBelanja(
+                        itemBarangList.get(i).getKodeVoucherSupplier(),
+                        itemBarangList.get(i).getTipeVoucher(),
+                        itemBarangList.get(i).getSupplier().get(0),
+                        itemBarangList.get(i).getPotonganVoucherSuplier(),
+                        itemBarangList.get(i).getMinimalBelanja(),
+                        itemBarangList.get(i).getQtyKelipatan(),
+                        itemBarangList.get(i).getStokVoucher()
+
+                ));
+            }
+
+            double totalBarangIni = Double.parseDouble(itemBarangList.get(i).getHarga().getHarga()) * Double.parseDouble(itemBarangList.get(i).getQty());
+
+            barangListSuplier.add(
+                    new modelArrayBarangSuplier(
+                            itemBarangList.get(i).getSupplier().get(0),
+                            Double.parseDouble(itemBarangList.get(i).getQty()),
+                            totalBarangIni
+                    )
+            );
+
+        }
+
+        for (modelArrayVoucherSuplierBelanja p : daftarVoucherSuplier) {
+            int index = newMergedVoucherSuplier.indexOf(p);
+            if (index != -1) {
+                newMergedVoucherSuplier.set(index, newMergedVoucherSuplier.get(index).merge(p));
+            } else {
+                newMergedVoucherSuplier.add(p);
+            }
+        }
+
+
+        for (modelArrayBarangSuplier p : barangListSuplier) {
+            int index = newMergedList.indexOf(p);
+            if (index != -1) {
+                newMergedList.set(index, newMergedList.get(index).merge(p));
+            } else {
+                newMergedList.add(p);
+            }
+        }
+
+        for (int i = 0; i < newMergedList.size(); i++) {
+            Log.e(TAG, "\n");
+            Log.e(TAG, "\n");
+            Log.e(TAG, "BARANG SUPLIER: " + i + " SUPPLIER  :: " + newMergedList.get(i).getSupplier());
+            Log.e(TAG, "BARANG SUPLIER: " + i + " QTY   :: " + newMergedList.get(i).getQty());
+            Log.e(TAG, "BARANG SUPLIER: " + i + " TOTAL :: " + newMergedList.get(i).getTotal());
+            Log.e(TAG, "\n");
+            Log.e(TAG, "\n");
+        }
+
+        for (int i = 0; i < newMergedVoucherSuplier.size(); i++) {
+            Log.e(TAG, "\n");
+            Log.e(TAG, "\n");
+            Log.e(TAG, "VOUCHER SUPLIER: " + i + " KODE  :: " + newMergedVoucherSuplier.get(i).getKodeVoucher());
+            Log.e(TAG, "VOUCHER SUPLIER: " + i + " TIPE   :: " + newMergedVoucherSuplier.get(i).getTipeVoucher());
+            Log.e(TAG, "VOUCHER SUPLIER: " + i + " STOK :: " + newMergedVoucherSuplier.get(i).getStokVoucher());
+            Log.e(TAG, "\n");
+            Log.e(TAG, "\n");
+        }
+
+        mergedList = new ArrayList<>(newMergedList);
+        mergedVoucherSuplier = new ArrayList<>(newMergedVoucherSuplier);
+
+        setupCheckingVoucherSuplierIsOkay(modelResponseCart);
+
+    }
+
+    private modelArrayVoucherSuplierBelanja voucherSuplierDipilih;
+
+    private void setupCheckingVoucherSuplierIsOkay(ModelResponseCart modelResponseCart) {
+
+        List<modelArrayVoucherSuplierBelanja> daftarVoucherSuplierYangBisaDigunakan = new ArrayList<>();
+        List<DetailItemCart> itemBarangList = modelResponseCart.getMsgServer().getDetailItemCart();
+        //LOOPING VOUCHER SUPLIER DULU
+        for (int i = 0; i < mergedVoucherSuplier.size(); i++) {
+
+            String tipeVoucher = mergedVoucherSuplier.get(i).getTipeVoucher();
+            int kodeTipe = 0;
+
+            if (tipeVoucher.equals("semua_dari_supplier")) {
+                kodeTipe = 1;
+            } else if (tipeVoucher.equals("tertentu_supplier")) {
+                kodeTipe = 2;
+            } else if (tipeVoucher.equals("tertentu_kelipatan")) {
+                kodeTipe = 3;
+            }
+
+            //LOOPING PENGECEKAN BARANG !!!
+
+            //SEMUA BARANG DARI SUPLIER
+            if (kodeTipe == 1) {
+                for (int j = 0; j < mergedList.size(); j++) {
+
+                    boolean suplierSama = (mergedVoucherSuplier.get(i).getNamaSuplierVoucher().equals(mergedList.get(j).getSupplier()));
+                    boolean isMelebihiNominal = (mergedList.get(j).getTotal() >= mergedVoucherSuplier.get(i).getMinimalVoucher());
+
+                    if (suplierSama && isMelebihiNominal) {
+
+                        if (mergedVoucherSuplier.get(i).getStokVoucher() > 0) {
+                            Log.e(TAG, "ADD TIPE 1 :: " + mergedList.get(j).getTotal());
+                            daftarVoucherSuplierYangBisaDigunakan.add(mergedVoucherSuplier.get(i));
+                        }
+
+                    }
+
+                }
+            }
+            //BARANG TERTENTU DARI SUPLIER
+            else if (kodeTipe == 2) {
+
+                int totalBarangUntukVoucher = 0;
+
+                for (int j = 0; j < itemBarangList.size(); j++) {
+
+                    if (itemBarangList.get(j).getKodeVoucherSupplier() != null) {
+                        if (itemBarangList.get(j).getKodeVoucherSupplier().equals(mergedVoucherSuplier.get(i).getKodeVoucher())) {
+                            double totalBarangIni = Double.parseDouble(itemBarangList.get(i).getHarga().getHarga()) * Double.parseDouble(itemBarangList.get(i).getQty());
+                            totalBarangUntukVoucher += totalBarangIni;
+                        }
+                    }
+
+                }
+
+                if (totalBarangUntukVoucher >= mergedVoucherSuplier.get(i).getMinimalVoucher()) {
+                    if (mergedVoucherSuplier.get(i).getStokVoucher() > 0) {
+                        daftarVoucherSuplierYangBisaDigunakan.add(mergedVoucherSuplier.get(i));
+                    }
+                }
+
+            }
+            //BARANG TERTENTU DAN KELIPATAN
+            else if (kodeTipe == 3) {
+
+                int totalBarangUntukVoucher = 0;
+
+                for (int j = 0; j < itemBarangList.size(); j++) {
+
+                    if (itemBarangList.get(j).getKodeVoucherSupplier() != null) {
+                        if (itemBarangList.get(j).getKodeVoucherSupplier().equals(mergedVoucherSuplier.get(i).getKodeVoucher())) {
+                            if (Double.parseDouble(itemBarangList.get(j).getQty()) >= itemBarangList.get(j).getQtyKelipatan()) {
+                                double totalBarangIni = Double.parseDouble(itemBarangList.get(i).getHarga().getHarga()) * Double.parseDouble(itemBarangList.get(i).getQty());
+                                totalBarangUntukVoucher += totalBarangIni;
+                            }
+                        }
+                    }
+
+                }
+
+                if (totalBarangUntukVoucher >= mergedVoucherSuplier.get(i).getMinimalVoucher()) {
+                    if (mergedVoucherSuplier.get(i).getStokVoucher() > 0) {
+                        daftarVoucherSuplierYangBisaDigunakan.add(mergedVoucherSuplier.get(i));
+                    }
+                }
+            }
+        }
+
+
+        Log.e(TAG, "SETELAH PENGECEKAN UNTUK VOUCHER SUPLIER !!!");
+        Log.e(TAG, "SIZE VOUCHER SUPLIER YANG BISA DIAMBIL :: " + daftarVoucherSuplierYangBisaDigunakan.size());
+
+        if (daftarVoucherSuplierYangBisaDigunakan.size() > 0) {
+            Log.e(TAG, "VOUCHER SUPLIER TERDIRI DARI !!!");
+            for (int i = 0; i < daftarVoucherSuplierYangBisaDigunakan.size(); i++) {
+                Log.e(TAG, "VOUCHER SUPLIER " + i + " :: " + daftarVoucherSuplierYangBisaDigunakan.get(i).getKodeVoucher());
+                Log.e(TAG, "NAMA SUPLIER " + i + " :: " + daftarVoucherSuplierYangBisaDigunakan.get(i).getNamaSuplierVoucher());
+            }
+
+            if (voucherSuplierDipilih != null) {
+
+                boolean isThereStillVoucher = false;
+
+                for (int i = 0; i < daftarVoucherSuplierYangBisaDigunakan.size(); i++) {
+                    if (voucherSuplierDipilih.getKodeVoucher().equals(daftarVoucherSuplierYangBisaDigunakan.get(i).getKodeVoucher())) {
+                        isThereStillVoucher = true;
+                    }
+                }
+
+                if (!isThereStillVoucher) {
+                    voucherSuplierDipilih = null;
+                    binding.layoutVoucherSuplier.setVisibility(View.VISIBLE);
+                    binding.txtDeskripsiVOucherSuplier.setText(daftarVoucherSuplierYangBisaDigunakan.size() + " Voucher Suplier");
+                }
+
+            } else {
+                binding.layoutVoucherSuplier.setVisibility(View.VISIBLE);
+                binding.txtDeskripsiVOucherSuplier.setText(daftarVoucherSuplierYangBisaDigunakan.size() + " Voucher Suplier");
+            }
+
+
+            binding.btnAmbilVoucherSuplier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popUpVoucherSuplier(daftarVoucherSuplierYangBisaDigunakan);
+                }
+            });
+
+            binding.btnDeleteVoucherSuplier.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AlertDialog dialogAlert = new AlertDialog.Builder(CartActivity.this).create();
+                    dialogAlert.setCanceledOnTouchOutside(false);
+                    dialogAlert.setTitle("Hapus data voucher yang dipilih ? ");
+                    dialogAlert.setMessage("Data cart anda akan diupdate berdasarkan voucher yang dihapus");
+                    dialogAlert.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    setupHapusVoucherSuplier();
+                                }
+                            });
+                    dialogAlert.setButton(DialogInterface.BUTTON_NEGATIVE, "TIDAK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    });
+                    dialogAlert.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialogInterface) {
+                            ;
+                            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+                            // Set the dialog to focusable again.
+                            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE);
+
+                        }
+                    });
+                    dialogAlert.show();
+                }
+            });
+
+        } else {
+            binding.layoutVoucherSuplier.setVisibility(View.GONE);
+            voucherSuplierDipilih = null;
+            isUsingVoucherSuplier = false;
+            nominalVoucherDipilihSuplier = 0;
+            realNominalVoucherSuplier = 0;
+            binding.txtJudulVoucherSuplier.setText("Voucher Suplier");
+            binding.txtDeskripsiVOucherSuplier.setText("");
+        }
+
+        //HARUS ADA DAN TIDAK BOLEH DIBUANG
+        hitungHitung(modelResponseCart);
+
+    }
+
+    private void setupHapusVoucherSuplier() {
+        if (voucherSuplierDipilih != null) {
+            alertDialog.dismiss();
+            voucherSuplierDipilih = null;
+            isUsingVoucherSuplier = false;
+            checkingVoucherAndSuplier(modelResponseCart);
+        }
+    }
+
+    private PopupVoucherSuplierBinding popupVoucherSuplierBinding;
+
+    private void popUpVoucherSuplier(List<modelArrayVoucherSuplierBelanja> daftarVoucherSuplierYangBisaDigunakan) {
+        popupVoucherSuplierBinding = PopupVoucherSuplierBinding.inflate(getLayoutInflater());
+        View view = popupVoucherSuplierBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        popupVoucherSuplierBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupVoucherSuplierBinding.rvVoucherSuplier.setAdapter(null);
+
+        AdapterVoucherSuplier adapterVoucherSuplier = new AdapterVoucherSuplier(CartActivity.this, daftarVoucherSuplierYangBisaDigunakan, CartActivity.this);
+        popupVoucherSuplierBinding.rvVoucherSuplier.setAdapter(adapterVoucherSuplier);
+
+    }
+
+    @Override
+    public void onRowDaftarVoucher(modelArrayVoucherSuplierBelanja item, int posisi) {
+        AlertDialog alertDialogVoucherSuplier = new AlertDialog.Builder(CartActivity.this).create();
+        alertDialogVoucherSuplier.setTitle("Peringatan");
+        alertDialogVoucherSuplier.setMessage("Ambil voucher ini ?");
+        alertDialogVoucherSuplier.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        alertDialog.dismiss();
+                        voucherSuplierDipilih = item;
+                        setupVoucherSuplier();
+                    }
+                });
+        alertDialogVoucherSuplier.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alertDialogVoucherSuplier.show();
+    }
+
+    private double nominalVoucherDipilihSuplier = 0;
+    private double realNominalVoucherSuplier = 0;
+
+    private void setupVoucherSuplier() {
+        if (voucherSuplierDipilih == null) {
+            isUsingVoucherSuplier = false;
+            nominalVoucherDipilihSuplier = 0;
+            realNominalVoucherSuplier = 0;
+            binding.txtJudulVoucherSuplier.setText("Voucher Suplier");
+        } else {
+            isUsingVoucherSuplier = true;
+            nominalVoucherDipilihSuplier = voucherSuplierDipilih.getPotonganBelanjaSuplier();
+            binding.txtJudulVoucherSuplier.setText(voucherSuplierDipilih.getKodeVoucher());
+            binding.txtDeskripsiVOucherSuplier.setText("- Rp. " + nf.format(nominalVoucherDipilihSuplier));
+        }
+
+        hitungHitung(modelResponseCart);
+    }
+
+    private double realNominalVoucher = 0;
+    private double pengecekanTotalUntukVoucher = 0;
+
     private void hitungHitung(ModelResponseCart modelResponseCart) {
 
         double totalItem = modelResponseCart.getMsgServer().getTotalItem();
         double totalQty = Double.parseDouble(modelResponseCart.getMsgServer().getTotalQty());
         double totalBeli = 0;
+        double potonganVoucher = 0;
+
 
         for (int i = 0; i < modelResponseCart.getMsgServer().getDetailItemCart().size(); i++) {
             DetailItemCart detailItemCart = modelResponseCart.getMsgServer().getDetailItemCart().get(i);
@@ -1011,31 +1721,98 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             String harga3 = detailItemCart.getHarga().getQtyHarga3() == null ? "0" : detailItemCart.getHarga().getHargaTiga();
 
             double jumlahBarangDibeli = Double.parseDouble(detailItemCart.getQty());
+            double jumlahBarangDiskon = 0;
             String hargaFix = "0";
 
-            if (batasan1 == batasan2) {
-//                            Log.e(TAG, "TambahkanKeListBarang: " + pm.getHarga_barang());
-                hargaFix = harga1;
-            } else {
-                if (jumlahBarangDibeli < batasan2) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
-                    hargaFix = harga1;
-                } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
-                    hargaFix = harga2;
-                } else if (jumlahBarangDibeli >= batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
-                    hargaFix = harga3;
+            double diskon = 0;
+            boolean cekTanggal = false;
+
+            if (detailItemCart.getProdukPromo()) {
+
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                final Calendar baru = Calendar.getInstance();
+
+                try {
+                    Date tanggalNow = baru.getTime();
+                    Date tanggalAkhir = formatter.parse(detailItemCart.getAkhirPromo());
+
+                    long mlNow = tanggalNow.getTime();
+                    long mlAkhir = tanggalAkhir.getTime();
+
+                    if (mlNow <= mlAkhir) {
+                        cekTanggal = true;
+                    } else {
+                        cekTanggal = false;
+                    }
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
+
+            }
+            if (detailItemCart.getProdukPromo() && detailItemCart.getStokPromo() > 0 && cekTanggal) {
+                Log.e(TAG, "MASUK PROMO");
+                double hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
+                double hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
+
+                diskon = hargaNormal - hargaPromo;
+
+                if (jumlahBarangDibeli <= detailItemCart.getStokPromo()) {
+                    jumlahBarangDiskon = jumlahBarangDibeli;
+                } else if (jumlahBarangDibeli > detailItemCart.getStokPromo()) {
+                    jumlahBarangDiskon = detailItemCart.getStokPromo();
+                }
+
+            } else {
+                if (batasan1 == batasan2) {
+                    hargaFix = harga1;
+                } else {
+                    if (jumlahBarangDibeli < batasan2) {
+                        hargaFix = harga1;
+                    } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
+                        hargaFix = harga2;
+                    } else if (jumlahBarangDibeli >= batasan3) {
+                        hargaFix = harga3;
+                    }
+                }
+
+                diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
+                jumlahBarangDiskon = jumlahBarangDibeli;
             }
 
-//            int diskon = (int) (Double.parseDouble(harga1) - Double.parseDouble(hargaFix));
 
-            totalBeli += Double.parseDouble(hargaFix) * jumlahBarangDibeli;
+            double totalDiskonMember = 0;
+            double persenDiskonMember = 0;
+            double diskonMember = 0;
+
+            if (detailItemCart.getProdukPromoMember()) {
+
+                if (sessionManager.getMembership().equals("SILVER")) {
+                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
+                } else if (sessionManager.getMembership().equals("GOLD")) {
+                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
+                } else if (sessionManager.getMembership().equals("PLATINUM")) {
+                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
+                }
+
+
+                double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+                diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
+
+                totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+
+            }
+
+            double totalNormal = Double.parseDouble(detailItemCart.getHarga().getHarga()) * jumlahBarangDibeli;
+            double totalDiskon = jumlahBarangDiskon * diskon;
+            totalBeli += (totalNormal - totalDiskon - totalDiskonMember);
         }
 
         binding.txtTotalQty.setText(String.valueOf(totalQty));
         binding.txtTotalBelanja.setText("Rp. " + nf.format(totalBeli));
+
+        pengecekanTotalUntukVoucher = totalBeli;
 
         if (totalBeli < 100000) {
             hitungJarak = (Math.round(jarakKm) * 2000);
@@ -1059,9 +1836,81 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             binding.txtOngkir.setText("Rp. " + nf.format(hitungJarak));
         }
 
-        grandTotal = (int) (totalBeli + hitungJarak);
 
-        binding.txtGrandTotal.setText("Rp. " + nf.format(grandTotal) + " ( " + totalItem + " ) Item");
+        if (isUsingVoucher) {
+            binding.btnDeleteVoucher.setVisibility(View.VISIBLE);
+            binding.txtJudulVoucher.setText("Voucher " + voucherDipilih.getTipe());
+
+            if (((Double.parseDouble(voucherDipilih.getMinimalBelanja())) > pengecekanTotalUntukVoucher)) {
+                setupPenghapusanVoucher();
+            } else {
+                if (voucherDipilih.getTipe().equals("POTONGAN")) {
+                    potonganVoucher = voucherDipilih.getNominal();
+
+                    if (potonganVoucher >= totalBeli) {
+                        realNominalVoucher = totalBeli;
+                    } else {
+                        realNominalVoucher = potonganVoucher;
+                    }
+                    binding.txtDeskripsiVoucher.setText("- Rp. " + nf.format(realNominalVoucher));
+                    grandTotal = Math.ceil(totalBeli + hitungJarak - realNominalVoucher);
+                } else if (voucherDipilih.getTipe().equals("DISKON")) {
+                    potonganVoucher = voucherDipilih.getNominal();
+
+                    double totalPotonganDiskon = Math.floor(totalBeli * potonganVoucher / 100);
+                    realNominalVoucher = totalPotonganDiskon;
+                    binding.txtDeskripsiVoucher.setText("- Rp. " + nf.format(totalPotonganDiskon) + " ( " + potonganVoucher + " % )");
+                    grandTotal = Math.ceil(totalBeli + hitungJarak - totalPotonganDiskon);
+                } else if (voucherDipilih.getTipe().equals("ONGKIR")) {
+                    potonganVoucher = voucherDipilih.getNominal();
+                    double ongkirAkhir = 0;
+
+                    if (potonganVoucher >= hitungJarak) {
+                        realNominalVoucher = hitungJarak;
+                    } else {
+                        realNominalVoucher = potonganVoucher;
+                    }
+
+                    ongkirAkhir = hitungJarak - realNominalVoucher;
+
+                    if (ongkirAkhir < 0) {
+                        ongkirAkhir = 0;
+                    }
+
+                    binding.txtDeskripsiVoucher.setText("- Rp. " + nf.format(realNominalVoucher) + " ( ongkir )");
+                    grandTotal = Math.ceil(totalBeli + ongkirAkhir);
+
+                }
+            }
+
+        } else {
+            realNominalVoucher = 0;
+            binding.txtJudulVoucher.setText("Voucher");
+            binding.txtDeskripsiVoucher.setText("-");
+            binding.btnDeleteVoucher.setVisibility(View.GONE);
+            grandTotal = Math.ceil(totalBeli + hitungJarak);
+        }
+
+        if (isUsingVoucherSuplier) {
+            binding.btnDeleteVoucherSuplier.setVisibility(View.VISIBLE);
+            binding.txtJudulVoucherSuplier.setText("Voucher " + voucherSuplierDipilih.getKodeVoucher());
+
+            realNominalVoucherSuplier = voucherSuplierDipilih.getPotonganBelanjaSuplier();
+
+            if (realNominalVoucherSuplier > pengecekanTotalUntukVoucher) {
+                realNominalVoucherSuplier = pengecekanTotalUntukVoucher;
+            }
+
+            binding.txtDeskripsiVOucherSuplier.setText("- Rp. " + nf.format(realNominalVoucherSuplier));
+
+        } else {
+            realNominalVoucherSuplier = 0;
+            binding.txtJudulVoucherSuplier.setText("Voucher Suplier");
+            binding.btnDeleteVoucher.setVisibility(View.GONE);
+        }
+
+        grandTotal = Math.ceil(totalBeli + hitungJarak - realNominalVoucher - realNominalVoucherSuplier);
+        binding.txtGrandTotal.setText("Rp. " + nf.format(grandTotal) + " ( " + totalItem + " Item )");
 
     }
 
@@ -1286,13 +2135,17 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 true);
 
         timePickerDialog.setTitle("Pilih Waktu");
+        timePickerDialog.setMinTime(mHour, mMinute, 0);
+        timePickerDialog.setMaxTime(20, 30, 0);
+
         timePickerDialog.show(getSupportFragmentManager(), "TimePicker");
+
     }
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
         Log.e(TAG, "String tanggal : " + checkoutBinding.edTanggalPengiriman.getText().toString());
-        String waktuPengiriman = checkoutBinding.edTanggalPengiriman.getText().toString();
+        String waktuPengiriman = checkoutBinding.edTanggalPengiriman.getText().toString().substring(0, 10);
 
 //        Toast.makeText(this, String.format("Waktu yang anda pilih : %02d:%02d:%02d", hourOfDay, minute, second), Toast.LENGTH_SHORT).show();
         waktuPengiriman = waktuPengiriman + String.format(" %02d:%02d:%02d", hourOfDay, minute, second);
@@ -1530,4 +2383,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
     }
+
+
 }

@@ -293,7 +293,7 @@
                                     android:textAlignment="center"
                                     android:textColor="#7F302E2E"
                                     android:textStyle="bold|italic"
-                                    android:text="Dapatkan keuntungan plafon dan saldo piutang belanja dengan bergabung menjadi member 'DEBET' Dbelga"
+                                    android:text="Dapatkan keuntungan plafon dan saldo piutang belanja dengan bergabung menjadi member 'DEBET' dBelga"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:gravity="center_horizontal" />
@@ -613,6 +613,7 @@
                                     android:layout_height="wrap_content" />
 
                                 <TextView
+                                    android:visibility="gone"
                                     android:id="@+id/text_jumlahVoucherMember"
                                     android:textColor="@color/darkBiruBelga"
                                     android:text="0"
@@ -642,6 +643,7 @@
                                     android:layout_height="wrap_content" />
 
                                 <TextView
+                                    android:visibility="gone"
                                     android:id="@+id/text_jumlahVoucherKlaim"
                                     android:textColor="@color/darkBiruBelga"
                                     android:text="0"
@@ -651,7 +653,7 @@
                                 <TextView
                                     android:textSize="12sp"
                                     android:textColor="#7F302E2E"
-                                    android:text="Voucher Yang Dapat Diklaim"
+                                    android:text="Voucher Yang\nDapat Diklaim"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
 

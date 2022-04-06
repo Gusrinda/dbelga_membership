@@ -33,8 +33,8 @@ public class ModelSearchVoucher implements Serializable, Parcelable
             return (new ModelSearchVoucher[size]);
         }
 
-    }
-    ;
+    };
+
     private final static long serialVersionUID = -7852337565823761641L;
 
     protected ModelSearchVoucher(Parcel in) {

@@ -277,6 +277,8 @@ public class RegistrasiNext extends AppCompatActivity {
                 } catch (Exception e) {
                     Log.e(TAG, "onResponse: " + e.getMessage() + Arrays.toString(e.getStackTrace()));
                     Snack(e.getMessage());
+
+                    finish();
                 }
             }
 

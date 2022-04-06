@@ -31,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListTransaksi;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
@@ -48,7 +49,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class SoFragment extends Fragment implements AdapterListTransaksi.AdapterListTransactionCallback {
 
@@ -72,9 +72,6 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     private boolean isOnCreate = true;
 
 
-    private String mParam1;
-    private String mParam2;
-
     //PAGENATION
     SwipeRefreshLayout swipeRefreshLayout;
     private int pastVisisbleItems, visibleItemsCount, totalItemsCount, previous_totals = 0;
@@ -88,19 +85,8 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     int current_index = 0;
     //PAGENATION
 
-
     public SoFragment() {
         // Required empty public constructor
-    }
-
-
-    public static SoFragment newInstance(String param1, String param2) {
-        SoFragment fragment = new SoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
@@ -109,11 +95,8 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
         sessionManager = new SessionManager(this.getContext());
         layoutManager = new LinearLayoutManager(this.getContext());
         getDataUser();
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
+        Log.e(TAG, "onCreate: ULANG ULANG" );
     }
 
     @Override
@@ -126,7 +109,10 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
     }
 
     private void pagenation() {
+
+        urlNextPage = urlNextPage +  "&customer=" + sessionManager.getPID();
         Log.e(TAG, "URL : " + urlNextPage);
+
         final ProgressDialog dialog1 = new ProgressDialog(getActivity());
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -152,6 +138,9 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                 }
                             }
 
+                            int beforeSize = itemlist.size();
+                            int afterSize = 0;
+
                             if (modelListTransaction.getData().getData().size() > 0) {
 
                                 for (int i = 0; i < modelListTransaction.getData().getData().size(); i++) {
@@ -162,9 +151,20 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                     }
                                 }
 
+                                afterSize = itemlist.size();
+
+                                if (afterSize == beforeSize) {
+                                    isLoading = false;
+                                }
+
+                                Log.e(TAG, "onResponse: PAGENATION IS LOADING :: " + isLoading );
+                                Log.e(TAG, "onResponse: TOTAL ITEM COUNT :: " + totalItemsCount );
+                                Log.e(TAG, "onResponse: VISIBLE ITEM COUNT :: " + visibleItemsCount );
+                                Log.e(TAG, "onResponse: PAST VISIBLE ITEMS :: " + pastVisisbleItems );
+                                Log.e(TAG, "onResponse: VIEW THRESHOLD :: " + view_threshold );
+
                                 adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
                                 rvTransaksi.setAdapter(adapterListTransaksi);
-
 
                             } else {
                                 Snack("Data Terakhir !");
@@ -187,7 +187,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), NewMainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -251,13 +251,23 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
 
     }
 
-
     private void getDataUser() {
+
+        pastVisisbleItems = 0;
+        visibleItemsCount = 0;
+        totalItemsCount = 0;
+        previous_totals = 0;
+        page_number = 1;
+        page = 0;
+        urlNextPage = "";
+        itemlist.clear();
+
         idUser = sessionManager.getPID();
         Log.e(TAG, "ID USER SEARCH : " + idUser);
          url = Http.server;
         url = url + "transaction/list?customer=" + sessionManager.getPID();
         getDataTransaksi();
+
     }
 
     private void getDataTransaksi() {
@@ -285,7 +295,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                 Log.e(TAG, "masuk 4");
 
                                 if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
-                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl())) + "&customer=" + sessionManager.getPID();
+                                    urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl()));
                                     page = modelListTransaction.getData().getCurrentPage();
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }
@@ -299,6 +309,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                             itemlist.add(modelListTransaction.getData().getData().get(i));
                                         }
                                     }
+
 
                                     adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
                                     rvTransaksi.setAdapter(adapterListTransaksi);
@@ -326,7 +337,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
                     sessionManager.destroySession();
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    Intent intent = new Intent(getActivity(), NewMainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -412,7 +423,8 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_so, container, false);
 
-//        txt_CariTransaksi = view.findViewById(R.id.edt_cariTransaksi);
+        Log.e(TAG, "onCreateView: ULANG ULANG" );
+
         rvTransaksi = view.findViewById(R.id.rv_Transaksi);
         rvTransaksi.setLayoutManager(layoutManager);
         rvTransaksi.setHasFixedSize(false);
@@ -433,13 +445,15 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 }
                 if (!isLoading && (totalItemsCount - visibleItemsCount)
                         <= (pastVisisbleItems + view_threshold)) {
+                    // End has been reached
 
                     Log.i("Yaeye!", "end called");
+
                     page_number++;
                     Log.e(TAG, "onScrolled: page terakhir " + page);
                     Log.e(TAG, "onScrolled: urlNext " + urlNextPage);
                     Log.e(TAG, "onScrolled: page dituju " + page_number);
-                    if (page_number >= page && !urlNextPage.contains("null")) {
+                    if (page_number >= page && !urlNextPage.equals("null")) {
                         pagenation();
                     } else {
                         Snack("Semua Transaksi Sudah Tampil");

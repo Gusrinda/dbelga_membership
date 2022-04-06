@@ -25,7 +25,7 @@ public class AddItem implements Serializable, Parcelable
     private Integer produk;
     @SerializedName("qty")
     @Expose
-    private double qty;
+    private String qty;
     @SerializedName("customer_price")
     @Expose
     private String customerPrice;
@@ -40,7 +40,7 @@ public class AddItem implements Serializable, Parcelable
     private String total;
     @SerializedName("indent_pos")
     @Expose
-    private String indentPos;
+    private Object indentPos;
     @SerializedName("indent_value_pos")
     @Expose
     private Integer indentValuePos;
@@ -49,13 +49,40 @@ public class AddItem implements Serializable, Parcelable
     private String createdAt;
     @SerializedName("updated_at")
     @Expose
-    private String updatedAt;
+    private Object updatedAt;
     @SerializedName("so_code")
     @Expose
     private String soCode;
     @SerializedName("diskon")
     @Expose
     private String diskon;
+    @SerializedName("total_setelah_diskon")
+    @Expose
+    private String totalSetelahDiskon;
+    @SerializedName("total_diskon")
+    @Expose
+    private String totalDiskon;
+    @SerializedName("real_price")
+    @Expose
+    private String realPrice;
+    @SerializedName("qty_diskon")
+    @Expose
+    private String qtyDiskon;
+    @SerializedName("type_diskon")
+    @Expose
+    private String typeDiskon;
+    @SerializedName("kode_promo")
+    @Expose
+    private String kodePromo;
+    @SerializedName("is_diskon_membership")
+    @Expose
+    private Boolean isDiskonMembership;
+    @SerializedName("presentase_diskon_membership")
+    @Expose
+    private String presentaseDiskonMembership;
+    @SerializedName("total_diskon_membership")
+    @Expose
+    private String totalDiskonMembership;
     @SerializedName("code_product")
     @Expose
     private String codeProduct;
@@ -65,11 +92,7 @@ public class AddItem implements Serializable, Parcelable
     @SerializedName("total_sebelum_diskon")
     @Expose
     private String totalSebelumDiskon;
-    @SerializedName("total_diskon")
-    @Expose
-    private String totalDiskon;
     public final static Creator<AddItem> CREATOR = new Creator<AddItem>() {
-
 
         @SuppressWarnings({
             "unchecked"
@@ -82,29 +105,37 @@ public class AddItem implements Serializable, Parcelable
             return (new AddItem[size]);
         }
 
-    }
-    ;
-    private final static long serialVersionUID = -21352132529101564L;
+    };
+
+    private final static long serialVersionUID = 3648740688613509579L;
 
     protected AddItem(android.os.Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.produk = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.qty = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qty = ((String) in.readValue((String.class.getClassLoader())));
         this.customerPrice = ((String) in.readValue((String.class.getClassLoader())));
         this.diskonPotongan = ((String) in.readValue((String.class.getClassLoader())));
         this.diskonPersen = ((String) in.readValue((String.class.getClassLoader())));
         this.total = ((String) in.readValue((String.class.getClassLoader())));
-        this.indentPos = ((String) in.readValue((String.class.getClassLoader())));
+        this.indentPos = ((Object) in.readValue((Object.class.getClassLoader())));
         this.indentValuePos = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
-        this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
+        this.updatedAt = ((Object) in.readValue((Object.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
         this.diskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.totalSetelahDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.totalDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.realPrice = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.typeDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.kodePromo = ((String) in.readValue((String.class.getClassLoader())));
+        this.isDiskonMembership = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.presentaseDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
+        this.totalDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
         this.codeProduct = ((String) in.readValue((String.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.totalSebelumDiskon = ((String) in.readValue((String.class.getClassLoader())));
-        this.totalDiskon = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public AddItem() {
@@ -134,11 +165,11 @@ public class AddItem implements Serializable, Parcelable
         this.produk = produk;
     }
 
-    public double getQty() {
+    public String getQty() {
         return qty;
     }
 
-    public void setQty(double qty) {
+    public void setQty(String qty) {
         this.qty = qty;
     }
 
@@ -174,11 +205,11 @@ public class AddItem implements Serializable, Parcelable
         this.total = total;
     }
 
-    public String getIndentPos() {
+    public Object getIndentPos() {
         return indentPos;
     }
 
-    public void setIndentPos(String indentPos) {
+    public void setIndentPos(Object indentPos) {
         this.indentPos = indentPos;
     }
 
@@ -198,11 +229,11 @@ public class AddItem implements Serializable, Parcelable
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public Object getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(Object updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -220,6 +251,78 @@ public class AddItem implements Serializable, Parcelable
 
     public void setDiskon(String diskon) {
         this.diskon = diskon;
+    }
+
+    public String getTotalSetelahDiskon() {
+        return totalSetelahDiskon;
+    }
+
+    public void setTotalSetelahDiskon(String totalSetelahDiskon) {
+        this.totalSetelahDiskon = totalSetelahDiskon;
+    }
+
+    public String getTotalDiskon() {
+        return totalDiskon;
+    }
+
+    public void setTotalDiskon(String totalDiskon) {
+        this.totalDiskon = totalDiskon;
+    }
+
+    public String getRealPrice() {
+        return realPrice;
+    }
+
+    public void setRealPrice(String realPrice) {
+        this.realPrice = realPrice;
+    }
+
+    public String getQtyDiskon() {
+        return qtyDiskon;
+    }
+
+    public void setQtyDiskon(String qtyDiskon) {
+        this.qtyDiskon = qtyDiskon;
+    }
+
+    public String getTypeDiskon() {
+        return typeDiskon;
+    }
+
+    public void setTypeDiskon(String typeDiskon) {
+        this.typeDiskon = typeDiskon;
+    }
+
+    public String getKodePromo() {
+        return kodePromo;
+    }
+
+    public void setKodePromo(String kodePromo) {
+        this.kodePromo = kodePromo;
+    }
+
+    public Boolean getIsDiskonMembership() {
+        return isDiskonMembership;
+    }
+
+    public void setIsDiskonMembership(Boolean isDiskonMembership) {
+        this.isDiskonMembership = isDiskonMembership;
+    }
+
+    public String getPresentaseDiskonMembership() {
+        return presentaseDiskonMembership;
+    }
+
+    public void setPresentaseDiskonMembership(String presentaseDiskonMembership) {
+        this.presentaseDiskonMembership = presentaseDiskonMembership;
+    }
+
+    public String getTotalDiskonMembership() {
+        return totalDiskonMembership;
+    }
+
+    public void setTotalDiskonMembership(String totalDiskonMembership) {
+        this.totalDiskonMembership = totalDiskonMembership;
     }
 
     public String getCodeProduct() {
@@ -246,14 +349,6 @@ public class AddItem implements Serializable, Parcelable
         this.totalSebelumDiskon = totalSebelumDiskon;
     }
 
-    public String getTotalDiskon() {
-        return totalDiskon;
-    }
-
-    public void setTotalDiskon(String totalDiskon) {
-        this.totalDiskon = totalDiskon;
-    }
-
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
@@ -269,10 +364,18 @@ public class AddItem implements Serializable, Parcelable
         dest.writeValue(updatedAt);
         dest.writeValue(soCode);
         dest.writeValue(diskon);
+        dest.writeValue(totalSetelahDiskon);
+        dest.writeValue(totalDiskon);
+        dest.writeValue(realPrice);
+        dest.writeValue(qtyDiskon);
+        dest.writeValue(typeDiskon);
+        dest.writeValue(kodePromo);
+        dest.writeValue(isDiskonMembership);
+        dest.writeValue(presentaseDiskonMembership);
+        dest.writeValue(totalDiskonMembership);
         dest.writeValue(codeProduct);
         dest.writeValue(name);
         dest.writeValue(totalSebelumDiskon);
-        dest.writeValue(totalDiskon);
     }
 
     public int describeContents() {

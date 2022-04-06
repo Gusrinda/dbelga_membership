@@ -62,6 +62,24 @@ public class Detail implements Serializable, Parcelable
     @SerializedName("potongan_diskon")
     @Expose
     private String potonganDiskon;
+    @SerializedName("qty_diskon")
+    @Expose
+    private String qtyDiskon;
+    @SerializedName("type_diskon")
+    @Expose
+    private String typeDiskon;
+    @SerializedName("kode_promo")
+    @Expose
+    private String kodePromo;
+    @SerializedName("is_diskon_membership")
+    @Expose
+    private Boolean isDiskonMembership;
+    @SerializedName("presentase_diskon_membership")
+    @Expose
+    private String presentaseDiskonMembership;
+    @SerializedName("total_diskon_membership")
+    @Expose
+    private String totalDiskonMembership;
     public final static Creator<Detail> CREATOR = new Creator<Detail>() {
 
 
@@ -78,7 +96,7 @@ public class Detail implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 4207253769792826173L;
+    private final static long serialVersionUID = -2631589429797341948L;
 
     protected Detail(android.os.Parcel in) {
         this.orderId = ((String) in.readValue((String.class.getClassLoader())));
@@ -97,6 +115,12 @@ public class Detail implements Serializable, Parcelable
         this.indentValue = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.soCode = ((String) in.readValue((String.class.getClassLoader())));
         this.potonganDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.typeDiskon = ((String) in.readValue((String.class.getClassLoader())));
+        this.kodePromo = ((String) in.readValue((String.class.getClassLoader())));
+        this.isDiskonMembership = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.presentaseDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
+        this.totalDiskonMembership = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Detail() {
@@ -230,6 +254,54 @@ public class Detail implements Serializable, Parcelable
         this.potonganDiskon = potonganDiskon;
     }
 
+    public String getQtyDiskon() {
+        return qtyDiskon;
+    }
+
+    public void setQtyDiskon(String qtyDiskon) {
+        this.qtyDiskon = qtyDiskon;
+    }
+
+    public String getTypeDiskon() {
+        return typeDiskon;
+    }
+
+    public void setTypeDiskon(String typeDiskon) {
+        this.typeDiskon = typeDiskon;
+    }
+
+    public String getKodePromo() {
+        return kodePromo;
+    }
+
+    public void setKodePromo(String kodePromo) {
+        this.kodePromo = kodePromo;
+    }
+
+    public Boolean getIsDiskonMembership() {
+        return isDiskonMembership;
+    }
+
+    public void setIsDiskonMembership(Boolean isDiskonMembership) {
+        this.isDiskonMembership = isDiskonMembership;
+    }
+
+    public String getPresentaseDiskonMembership() {
+        return presentaseDiskonMembership;
+    }
+
+    public void setPresentaseDiskonMembership(String presentaseDiskonMembership) {
+        this.presentaseDiskonMembership = presentaseDiskonMembership;
+    }
+
+    public String getTotalDiskonMembership() {
+        return totalDiskonMembership;
+    }
+
+    public void setTotalDiskonMembership(String totalDiskonMembership) {
+        this.totalDiskonMembership = totalDiskonMembership;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(orderId);
         dest.writeValue(codeProduct);
@@ -247,6 +319,12 @@ public class Detail implements Serializable, Parcelable
         dest.writeValue(indentValue);
         dest.writeValue(soCode);
         dest.writeValue(potonganDiskon);
+        dest.writeValue(qtyDiskon);
+        dest.writeValue(typeDiskon);
+        dest.writeValue(kodePromo);
+        dest.writeValue(isDiskonMembership);
+        dest.writeValue(presentaseDiskonMembership);
+        dest.writeValue(totalDiskonMembership);
     }
 
     public int describeContents() {

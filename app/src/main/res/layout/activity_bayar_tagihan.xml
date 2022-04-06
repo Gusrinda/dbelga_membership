@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -29,32 +28,72 @@
                 app:title="Pembayaran Tagihan"
                 tools:ignore="HardcodedText">
 
+                <LinearLayout
+                    android:id="@+id/btnHubungiAdmin"
+                    android:padding="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/btnAmbilUangTunai"
+                        android:src="@drawable/whatsapp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        app:tint="@color/white" />
+
+
+                    <TextView
+                        android:visibility="visible"
+                        android:layout_gravity="end"
+                        android:id="@+id/txtNamaKasir"
+                        android:text="Admin"
+                        android:textSize="10sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+
             </androidx.appcompat.widget.Toolbar>
 
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <ImageView
+            android:id="@+id/imageTransfer"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/layoutInfo"
-            android:layout_alignParentTop="true"
-            android:paddingHorizontal="16sp"
-            android:background="@color/mdtp_white"
             android:layout_width="match_parent"
-            android:layout_height="256dp">
+            android:layout_height="186dp"
+            android:background="@color/mdtp_white"
+            android:paddingHorizontal="16sp">
 
             <ImageView
-                android:layout_marginTop="48dp"
-                android:layout_centerHorizontal="true"
                 android:id="@+id/img"
-                android:src="@drawable/pay"
-                android:layout_width="86dp"
-                android:layout_height="86dp"/>
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="24sp"
+                android:src="@drawable/pay" />
 
             <TextView
                 android:id="@+id/txt_totalTagihan"
@@ -63,8 +102,8 @@
                 android:layout_below="@id/img"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="16sp"
-                android:text="Rp. 300.000"
-                android:textSize="28dp"
+                android:text="Rp. 0"
+                android:textSize="24dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -77,28 +116,184 @@
                 android:text="Tagihan Periode : "
                 android:textSize="12sp" />
 
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/txt_jikaAdaTagihanWaiting"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/txt_statusTagihan"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:text="Tagihan Waiting Approval : "
+                android:textSize="12sp" />
+
         </RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:visibility="visible"
+            android:paddingVertical="4dp"
+            android:id="@+id/layoutTabTagihan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/btn_BayarTagihan"
-            android:layout_below="@+id/layoutInfo"
-            android:layout_marginHorizontal="16sp"
-            tools:listitem="@layout/item_riwayat_sub" />
+            android:layout_marginHorizontal="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:fontFamily="@font/hammer_font"
+                android:id="@+id/txt_totalTabTagihan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TOTAL TAGIHAN : " />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginBottom="8dp"
+                android:id="@+id/rv_listTagihan"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_above="@id/btn_BayarTagihan"
+                android:layout_below="@+id/layoutInfo"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_riwayat_sub" />
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/layoutKosongTagihan"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_marginTop="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/iconempty"
+                    android:src="@drawable/empty_icon"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"/>
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iconempty"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/hammer_font"
+                    android:text="Tidak ada tagihan . . . "
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+
+            <Button
+                android:visibility="visible"
+                android:id="@+id/btnLunasiTagihan"
+                android:text="LUNASI TAGIHAN TRANSAKSI PERIODE"
+                android:background="@color/material_red_500"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:paddingVertical="4dp"
+            android:id="@+id/layoutTabDenda"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:fontFamily="@font/hammer_font"
+                android:id="@+id/txt_totalTabDenda"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TOTAL DENDA : " />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_marginBottom="8dp"
+                android:id="@+id/rv_listDenda"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:layout_above="@id/btn_BayarTagihan"
+                android:layout_below="@+id/layoutInfo"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_riwayat_sub" />
+
+            <RelativeLayout
+                android:visibility="gone"
+                android:id="@+id/layoutKosongDenda"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_marginTop="100dp"
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/iconemptyDenda"
+                    android:src="@drawable/empty_icon"
+                    android:layout_width="128dp"
+                    android:layout_height="128dp"/>
+
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iconemptyDenda"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/hammer_font"
+                    android:text="Tidak ada tagihan . . . "
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnLunasiTagihanDenda"
+                android:text="LUNASI TAGIHAN TRANSAKSI DENDA"
+                android:background="@color/material_red_500"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
 
         <Button
-            android:textAllCaps="false"
-            android:text="Lunasi Tagihan Limit"
-            android:background="@color/merahBelga"
-            android:textColor="@color/white"
-            android:layout_marginHorizontal="16sp"
             android:id="@+id/btn_BayarTagihan"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="32dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginHorizontal="16sp"
+            android:layout_marginBottom="32dp"
+            android:background="@color/merahBelga"
+            android:text="Lunasi Tagihan Limit"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:visibility="gone" />
 
-    </RelativeLayout>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

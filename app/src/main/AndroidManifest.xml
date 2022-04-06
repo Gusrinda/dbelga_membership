@@ -39,14 +39,20 @@
     <application
         android:allowBackup="true"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/dbelga"
+        android:icon="@drawable/icon_membership"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@drawable/dbelga"
+        android:roundIcon="@drawable/icon_membership"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".Screen.Voucher.DaftarVoucherMember"
+            android:exported="false" />
+        <activity
+            android:name=".Screen.Voucher.VoucherActivity"
+            android:exported="false" />
         <activity
             android:name=".Screen.Limit.DetailTagihan"
             android:exported="false" />
@@ -117,7 +123,7 @@
         <activity android:name=".Screen.Limit.BayarTagihan" />
         <activity android:name=".Screen.Limit.RiwayatTagihan" />
         <activity android:name=".Screen.Limit.DaftarTagihan" />
-        <activity android:name=".Screen.User.LimitPlafon" />
+        <activity android:name=".Screen.Limit.LimitPlafon" />
         <activity android:name=".Screen.User.ResetPassword" />
         <activity android:name=".Screen.Setting.ForgotPassword" />
         <activity android:name=".Screen.User.VoucherMember" />
@@ -206,7 +212,7 @@
             android:resource="@color/colorAccent" /> <!-- [END fcm_default_icon] -->
         <!-- [START firebase_service] -->
         <service
-            android:name=".Screen.MyFirebaseInstanceIDService"
+            android:name=".Screen.Notifikasi.MyFirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

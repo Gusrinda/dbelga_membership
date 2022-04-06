@@ -67,16 +67,28 @@ public class AdapterDetailbarang extends
         double totalDiskon =  Double.parseDouble(item.getTotalDiskon() == null ? "0" : item.getTotalDiskon());
 
         if (totalDiskon > 0) {
+            double qtyDiskon = Double.parseDouble(item.getQtyDiskon());
+            double potonganDiskon =  (totalDiskon / qtyDiskon);
 
-            double potonganDiskon =  (totalDiskon / qty);
-
-            holder.tvDiskonan.setText("Rp. " + nf.format(totalDiskon) + " ( " + qty + " x " + nf.format(potonganDiskon) + ")");
+            holder.tvDiskonan.setText("Rp. " + nf.format(totalDiskon) + " ( " + nf.format(qtyDiskon) + " x " + nf.format(potonganDiskon) + " )");
             holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotalSetelahDiskon())));
             holder.layoutDiskonPrint.setVisibility(View.VISIBLE);
         } else {
             holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotalSetelahDiskon() == null ? item.getTotal() : item.getTotalSetelahDiskon())));
             holder.layoutDiskonPrint.setVisibility(View.GONE);
         }
+        if (item.getIsDiskonMembership() != null) {
+            if (item.getIsDiskonMembership()) {
+                holder.layoutDiskonPrintMember.setVisibility(View.VISIBLE);
+                double persenDiskon = Double.parseDouble(item.getPresentaseDiskonMembership());
+                holder.tvDiskonanMember.setText("Rp. " + nf.format(Double.parseDouble(item.getTotalDiskonMembership())) + " ( " +  nf.format(qty) + " x " + nf.format(persenDiskon) + "% )");
+            } else {
+                holder.layoutDiskonPrintMember.setVisibility(View.GONE);
+            }
+        } else {
+            holder.layoutDiskonPrintMember.setVisibility(View.GONE);
+        }
+
     }
 
     public void addItems(List<Detail> items) {
@@ -124,6 +136,11 @@ public class AdapterDetailbarang extends
         TextView tvDiskonan;
         @BindView(R.id.layoutDiskonPrint)
         LinearLayout layoutDiskonPrint;
+
+        @BindView(R.id.tvDiskonanMember)
+        TextView tvDiskonanMember;
+        @BindView(R.id.layoutDiskonPrintMember)
+        LinearLayout layoutDiskonPrintMember;
 
         public ViewHolder(View itemView) {
             super(itemView);

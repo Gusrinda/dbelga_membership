@@ -79,6 +79,9 @@ public class NewMainActivity extends AppCompatActivity {
 
         if (sessionManager.isLoggedIn()) {
             if (!sessionManager.getImage().equals("")) {
+
+                Log.d(TAG, "setupUser: IMAGE USER :: " + sessionManager.getImage());
+
                 Glide.with(NewMainActivity.this).asBitmap().load(sessionManager.getImage()).centerCrop().into(binding.ppUser);
             } else {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
@@ -269,7 +272,6 @@ public class NewMainActivity extends AppCompatActivity {
 
                 }
 
-
                 return true;
             }
         });
@@ -325,6 +327,15 @@ public class NewMainActivity extends AppCompatActivity {
                 namaKategori = pair.getValue();
                 sessionManager.setKeySetGudangPencarian(idKategori);
                 getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, new MainFragment()).commit();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // call the invalidate()
+                        bottomNavigationView.setSelectedItemId(R.id.mainFragment);
+                    }
+                });
+
             }
         }
 
@@ -365,6 +376,7 @@ public class NewMainActivity extends AppCompatActivity {
                 dialogInterface.dismiss();
                 Intent intent = new Intent(NewMainActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         alert.setNegativeButton("REGISTER", new DialogInterface.OnClickListener() {
@@ -373,6 +385,7 @@ public class NewMainActivity extends AppCompatActivity {
                 dialog.dismiss();
                 Intent intent = new Intent(NewMainActivity.this, RegisterActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         alert.setNeutralButton("Tutup", new DialogInterface.OnClickListener() {

@@ -35,6 +35,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelResponseCart.ModelResponseCart;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
+import com.dbelgamembership.membersip.Model.ModelUser.MsgServer;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
@@ -44,6 +47,7 @@ import com.dbelgamembership.membersip.Screen.User.Verifikasi.MembershipFoto;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipChooseBinding;
 import com.developer.kalert.KAlertDialog;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -122,6 +126,9 @@ public class MembershipChoose extends AppCompatActivity {
                     binding.layoutExpired.setVisibility(View.GONE);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("SLV_" + sessionManager.getPID());
+
+                    binding.inputNominalPlafon.setVisibility(View.GONE);
+
                 } else if (yangDipilih.equals("Gold")) {
                     choosenMembership = "GOLD";
                     cardMember.setVisibility(View.VISIBLE);
@@ -132,6 +139,9 @@ public class MembershipChoose extends AppCompatActivity {
                     binding.txtExpDate.setText(deadlen);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("GLD_" + sessionManager.getPID());
+                    binding.inputNominalPlafon.setVisibility(View.VISIBLE);
+                    binding.inputNominalPlafon.setErrorEnabled(true);
+                    binding.inputNominalPlafon.setError("Batas plafon : Rp. 500.000 - Rp. 2.000.000");
                 } else {
                     choosenMembership = "PLATINUM";
                     cardMember.setVisibility(View.VISIBLE);
@@ -142,6 +152,10 @@ public class MembershipChoose extends AppCompatActivity {
                     binding.txtExpDate.setText(deadlen);
                     binding.txtNamaMember.setText(sessionManager.getName().toUpperCase());
                     binding.txtNomorMember.setText("PLT_" + sessionManager.getPID());
+
+                    binding.inputNominalPlafon.setVisibility(View.VISIBLE);
+                    binding.inputNominalPlafon.setErrorEnabled(true);
+                    binding.inputNominalPlafon.setError("Batas plafon : Rp. 2.000.000 - Rp. 5.000.000");
                 }
             }
 
@@ -156,15 +170,34 @@ public class MembershipChoose extends AppCompatActivity {
             public void onClick(View view) {
                 if (sessionManager.getMembership().equals(choosenMembership)) {
                     Snack("Anda telah menjadi member dengan status yang dipilih !");
-                }
-//                else if (choosenMembership.equals("DEBET")) {
-//                    Intent intent = new Intent(MembershipChoose.this, BoardingMemberDebet.class);
-//                    startActivity(intent);
-//                }
-                else {
-                    url = Http.server;
-                    url = url + "update-status/" + sessionManager.getPID();
-                    updateDataUser();
+                } else {
+
+                    int nominalPlafon = Integer.parseInt(binding.edInputNominalPlafon.getText().toString());
+
+                    int min = 0;
+                    int max = 0;
+
+                    if (choosenMembership.equals("GOLD")) {
+                        min = 500000;
+                        max = 2000000;
+                    } else if (choosenMembership.equals("PLATINUM")) {
+                        min = 2000000;
+                        max = 5000000;
+                    }
+
+                    if (nominalPlafon < min) {
+                        Toast.makeText(MembershipChoose.this, "Tidak bisa kurang dari minimal !", Toast.LENGTH_SHORT).show();
+                        binding.edInputNominalPlafon.setText(String.valueOf(min));
+                    } else if (nominalPlafon > max) {
+                        Toast.makeText(MembershipChoose.this, "Tidak bisa lebih dari maksimal !", Toast.LENGTH_SHORT).show();
+                        binding.edInputNominalPlafon.setText(String.valueOf(max));
+                    } else {
+                        url = Http.server;
+                        url = url + "update-status/" + sessionManager.getPID();
+                        updateDataUser();
+                    }
+
+
                 }
             }
         });
@@ -217,10 +250,25 @@ public class MembershipChoose extends AppCompatActivity {
                             Date expiredDate = expiredMember.getTime();
                             String expDate = formatExpDate.format(expiredDate);
 
+
+                            String jatuhTempo = "";
+
+                            if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 0) {
+                                jatuhTempo = "1";
+                            } else if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 1) {
+                                jatuhTempo = "15";
+                            } else if (binding.spinnerTanggalJatuhTempo.getSelectedItemPosition() == 2) {
+                                jatuhTempo = "30";
+                            }
+
+
                             try {
                                 postData.put("status_member", choosenMembership);
                                 postData.put("expired_date", expDate);
                                 postData.put("pay_date", paydate);
+                                postData.put("nominal_plafon", binding.edInputNominalPlafon.getText().toString());
+                                postData.put("jatuh_tempo", jatuhTempo);
+
                             } catch (Exception e) {
                                 e.getMessage();
                             }
@@ -344,12 +392,17 @@ public class MembershipChoose extends AppCompatActivity {
                                 JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
                                 boolean success = root.get("success").getAsBoolean();
                                 Log.e("", "Test : " + success);
-                                if (success == false) {
+                                if (!success) {
                                     Toast.makeText(MembershipChoose.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
                                 } else {
-                                    JSONObject jsonObject = response.getJSONObject("msgServer");
-                                    String status_member = jsonObject.getString("status_member");
-                                    String updated_at = jsonObject.getString("updated_at");
+
+                                    Gson gson = new Gson();
+                                    ModelUser modelUser = gson.fromJson(String.valueOf(response), ModelUser.class);
+
+                                    MsgServer detailUser = modelUser.getMsgServer().get(0);
+
+                                    String status_member = detailUser.getStatusMember();
+                                    String updated_at = detailUser.getUpdatedAt();
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     Date created = formatter.parse(updated_at);
                                     Calendar cal = Calendar.getInstance();
@@ -364,6 +417,20 @@ public class MembershipChoose extends AppCompatActivity {
 
                                     sessionManager.setMembership(status_member);
                                     sessionManager.setExpiredDate(updated_at);
+
+                                    if (detailUser.getCreditLimit() != null) {
+                                        binding.edInputNominalPlafon.setText(detailUser.getCreditLimit());
+                                    }
+
+
+                                    if (status_member.equals("SILVER")) {
+                                        binding.spinnerMembership.setSelection(0);
+                                    } else if (status_member.equals("GOLD")) {
+                                        binding.spinnerMembership.setSelection(1);
+                                    } else {
+                                        binding.spinnerMembership.setSelection(2);
+                                    }
+
                                 }
                             } catch (JSONException | ParseException e) {
                                 e.printStackTrace();

@@ -6,10 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -20,7 +22,11 @@ import com.dbelgamembership.membersip.R;
 
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,7 +58,7 @@ public class AdapterListBarang extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         sessionManager = new SessionManager(context);
         member = sessionManager.getMembership();
-        Log.e(TAG, "Status Membership : " + member );
+        Log.e(TAG, "Status Membership : " + member);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_barang,
                 parent, false);
         return new ViewHolder(view);
@@ -63,11 +69,12 @@ public class AdapterListBarang extends
         try {
             final ModelKatalog item = list.get(position);
             boolean isClickable = true;
-            Log.e(TAG, "onBindViewHolder ADAPTER IMAGE : " + item.getImages() );
+            Log.e(TAG, "onBindViewHolder ADAPTER IMAGE : " + item.getImages());
 
             Glide.with(context)
                     .asBitmap()
                     .load(item.getImages())
+                    .error(R.drawable.not_found)
                     .into(holder.imageBarang);
 
             if (item.getNama_barang().length() > 0) {
@@ -92,58 +99,111 @@ public class AdapterListBarang extends
 
             double cekStok = Double.parseDouble(item.getStok());
 
-
             if (cekStok > 0 && cekStok < 10) {
                 holder.tvStokOutlet.setText(" < 10 " + item.getSatuan_kemasan());
             } else if (cekStok >= 10 && cekStok < 25) {
                 holder.tvStokOutlet.setText(" < 25 " + item.getSatuan_kemasan());
             } else if (cekStok >= 25 && cekStok < 50) {
-                holder.tvStokOutlet.setText(" < 50 "+ item.getSatuan_kemasan());
+                holder.tvStokOutlet.setText(" < 50 " + item.getSatuan_kemasan());
             } else if (cekStok >= 50) {
-                holder.tvStokOutlet.setText(" > 50 "+ item.getSatuan_kemasan());
-            } else if (cekStok == 0 || cekStok < 0){
+                holder.tvStokOutlet.setText(" > 50 " + item.getSatuan_kemasan());
+            } else if (cekStok == 0 || cekStok < 0) {
                 holder.tvStokOutlet.setText("KOSONG");
                 isClickable = false;
             }
 
-
-            Log.e(TAG, "NAMA BARANG : " + item.getNama_barang() );
-            Log.e(TAG, "STOK : " + cekStok );
+            Log.e(TAG, "NAMA BARANG : " + item.getNama_barang());
+            Log.e(TAG, "STOK : " + cekStok);
 
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
-            if (holder.tvStokOutlet.getText().toString().equals("KOSONG") || item.getHarga_barang() == null ) {
+            if (holder.tvStokOutlet.getText().toString().equals("KOSONG") || item.getHarga_barang() == null) {
                 isClickable = false;
                 Double hargaBarang = Double.parseDouble(item.getHarga_barang() == null ? "0" : item.getHarga_barang());
-                Double hargaBarang2 = Double.parseDouble(item.getHarga_2() == null ? "0" : item.getHarga_2());
+                Log.e(TAG, "onBindViewHolder: " + hargaBarang );
+                holder.hargaBarang.setText("?\n(Harga Akhir : " + nf.format(hargaBarang) + " )");
+                holder.hargaBarang.setTextColor(ContextCompat.getColor(context, R.color.grey_font));
 
-                if (member.equals("REGULER")) {
-                    holder.hargaBarang.setText("? (Harga Stok Akhir : " + nf.format(hargaBarang) +" )");
-                } else {
-                    holder.hargaBarang.setText("? (Harga Stok Akhir : " +  nf.format(hargaBarang2)  +" )");
-                }
                 holder.hargaBarang2.setVisibility(View.GONE);
                 holder.hargaBarang3.setVisibility(View.GONE);
                 holder.tvStokOutlet.setText("KOSONG");
             } else {
 
                 Log.e(TAG, "MASUK 6");
-                double hargaBarang =  Double.parseDouble(item.getHarga_barang());
-                double hargaBarang2 =  Double.parseDouble(item.getHarga_2());
-                double hargaBarang3 =  Double.parseDouble(item.getHarga_3());
 
-                String testHarga = "Rp. " + nf.format(hargaBarang)+" [1]";
-                String testHarga2 = "Rp. " + nf.format(hargaBarang2)+" ["+ item.getBatasan2() +"]";
-                String testHarga3 = "Rp. " + nf.format(hargaBarang3)+" ["+ item.getBatasan3() +"]";
-                holder.hargaBarang.setText(testHarga);
-                holder.hargaBarang2.setText(testHarga2);
-                holder.hargaBarang3.setText(testHarga3);
-                holder.hargaDiskonBarang.setText(testHarga2);
+                boolean cekTanggal = false;
 
-                if (item.getBatasan1().equals(item.getBatasan2())) {
+                if (item.getIsPromo() == 1) {
+
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    final Calendar baru = Calendar.getInstance();
+
+                    try {
+                        Date tanggalNow = baru.getTime();
+                        Date tanggalAkhir = formatter.parse(item.getAkhirPromo());
+
+                        long mlNow = tanggalNow.getTime();
+                        long mlAkhir = tanggalAkhir.getTime();
+
+                        if (mlNow <= mlAkhir) {
+                            cekTanggal = true;
+                        } else {
+                            cekTanggal = false;
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
+                if (item.getIsPromo() == 1 && item.getStokPromo() > 0 && cekTanggal) {
+                    Log.e(TAG, "MASUK PROMO");
+                    double hargaNormal = Double.parseDouble(item.getHarga_barang());
+                    double hargaPromo = Double.parseDouble(item.getHarga_promo());
+
+                    String testHargaNormal = "Rp. " + nf.format(hargaNormal);
+                    String testHargaPromo = "Rp. " + nf.format(hargaPromo);
+
+                    holder.hargaDiskonBarang.setVisibility(View.VISIBLE);
+                    holder.hargaDiskonBarang.setText(testHargaNormal);
+                    holder.hargaBarang.setText(testHargaPromo);
                     holder.hargaBarang2.setVisibility(View.GONE);
                     holder.hargaBarang3.setVisibility(View.GONE);
+                    holder.layoutStokPromo.setVisibility(View.VISIBLE);
+                    holder.tvStokPromo.setText(nf.format(item.getStokPromo()));
+
+                } else {
+                    Log.e(TAG, "MASUK NON PROMO");
+                    double hargaBarang = Double.parseDouble(item.getHarga_barang());
+                    double hargaBarang2 = Double.parseDouble(item.getHarga_2());
+                    double hargaBarang3 = Double.parseDouble(item.getHarga_3());
+
+                    String testHarga = "Rp. " + nf.format(hargaBarang) + " [1]";
+                    String testHarga2 = "Rp. " + nf.format(hargaBarang2) + " [" + item.getBatasan2() + "]";
+                    String testHarga3 = "Rp. " + nf.format(hargaBarang3) + " [" + item.getBatasan3() + "]";
+                    holder.hargaBarang.setText(testHarga);
+                    holder.hargaBarang2.setText(testHarga2);
+                    holder.hargaBarang3.setText(testHarga3);
+                    holder.hargaDiskonBarang.setText(testHarga2);
+
+                    if (item.getBatasan1().equals(item.getBatasan2())) {
+                        holder.hargaBarang2.setVisibility(View.GONE);
+                        holder.hargaBarang3.setVisibility(View.GONE);
+                    }
                 }
+
+                if (item.getPromoMember() == 1) {
+                    holder.layoutPromoMembership.setVisibility(View.VISIBLE);
+                    double persenSilver = item.getPromoMemberPersenSilver();
+                    double persenGold = item.getPromoMemberPersenGold();
+                    double persenPlatinum = item.getPromoMemberPersenPlatinum();
+
+                    String txtDiskonMembership = "S " + nf.format(persenSilver) + "% | " + "G " + nf.format(persenGold) + "% | " + "P " + nf.format(persenPlatinum) + "% | ";
+                    holder.tvDiskonMembership.setText(txtDiskonMembership);
+                }
+
 
             }
 
@@ -151,13 +211,7 @@ public class AdapterListBarang extends
             holder.barangItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    
-                    if (finalIsClickable) {
-                        
                     mAdapterCallback.AdapterListBarangClicked(item);
-                    } else {
-                        Toast.makeText(context, "Barang tidak bisa dibeli !", Toast.LENGTH_SHORT).show();
-                    }
                 }
             });
 
@@ -222,6 +276,18 @@ public class AdapterListBarang extends
         TextView tvBarcodeBarang;
         @BindView(R.id.tvUri)
         TextView tvUri;
+
+
+        @BindView(R.id.layoutStokPromo)
+        LinearLayout layoutStokPromo;
+        @BindView(R.id.textStokPromo)
+        TextView tvStokPromo;
+
+        @BindView(R.id.layoutPromoMember)
+        LinearLayout layoutPromoMembership;
+        @BindView(R.id.textDiskonMembership)
+        TextView tvDiskonMembership;
+
 
         public ViewHolder(View itemView) {
             super(itemView);

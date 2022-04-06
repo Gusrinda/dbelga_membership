@@ -10,13 +10,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.dbelgamembership.membersip.Model.ModelPayment.Item;
 import com.dbelgamembership.membersip.Model.modelArrayDetailBarangOrder;
 import com.dbelgamembership.membersip.R;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,12 +27,12 @@ public class AdapterDetailbarangFak extends
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
 
     private Context context;
-//    public static List<Item> list;
+    //    public static List<Item> list;
     public static List<modelArrayDetailBarangOrder> list;
     private AdapterDetailbarangCallback mAdapterCallback;
     private int result = -1;
 
-    public AdapterDetailbarangFak(Context context, int result,  List<modelArrayDetailBarangOrder> list, AdapterDetailbarangCallback adapterCallback) {
+    public AdapterDetailbarangFak(Context context, int result, List<modelArrayDetailBarangOrder> list, AdapterDetailbarangCallback adapterCallback) {
         this.context = context;
         this.list = list;
         this.mAdapterCallback = adapterCallback;
@@ -53,26 +50,56 @@ public class AdapterDetailbarangFak extends
     public void onBindViewHolder(ViewHolder holder, int position) {
         modelArrayDetailBarangOrder item = list.get(position);
 
+        if (!item.isBarangTebus()) {
+            holder.tvNama.setText(item.getNamaBrg());
 
+            holder.tvCode.setText(item.getCode());
+            holder.tvHargaBarang.setText("Rp. " + nf.format(Double.parseDouble(item.getHarga())));
+            double qty = item.getQty();
+            Log.e(TAG, "onBindViewHolder: " + qty);
+            holder.tvQty.setText(String.valueOf(nf.format((int) qty)));
+            Log.e(TAG, "onBindViewHolder: " + item.getTotal());
+            holder.tvKeterangan.setVisibility(View.GONE);
+            if (Double.parseDouble(item.getNominal_diskon()) != 0) {
+                double qtyDiskon = item.getQtyDiskon();
+                holder.layoutDiskon.setVisibility(View.VISIBLE);
+                double totalDiskon = Double.parseDouble(item.getNominal_diskon());
+                double diskonPerBarang = totalDiskon / qtyDiskon;
+                holder.tvDiskon.setText("Rp. " + nf.format(totalDiskon) + " ( " + nf.format(diskonPerBarang) + " x " + nf.format(qtyDiskon) + " )");
+            } else {
+                holder.layoutDiskon.setVisibility(View.GONE);
+            }
 
-        holder.tvNama.setText(item.getNamaBrg());
+            double totalDiskonMember = 0;
 
-        holder.tvCode.setText(item.getCode());
-        holder.tvHargaBarang.setText("Rp. " + nf.format(Double.parseDouble(item.getHarga())));
-        double qty = item.getQty();
-        Log.e(TAG, "onBindViewHolder: " + qty );
-        holder.tvQty.setText(String.valueOf(nf.format((int) qty)));
-        holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotal()) - Double.parseDouble(item.getNominal_diskon())));
-        Log.e(TAG, "onBindViewHolder: " + item.getTotal() );
-        holder.tvKeterangan.setVisibility(View.GONE);
-        if (Double.parseDouble(item.getNominal_diskon()) != 0) {
-            holder.layoutDiskon.setVisibility(View.VISIBLE);
-            double totalDiskon =  Double.parseDouble(item.getNominal_diskon());
-            double diskonPerBarang = totalDiskon / qty;
-            holder.tvDiskon.setText( "Rp. " + nf.format(totalDiskon) +" ( "  +String.valueOf(diskonPerBarang) + " x " + qty  +   " )");
+            if (item.isDiskonMembership()) {
+                holder.layoutDiskonPrintMember.setVisibility(View.VISIBLE);
+                double persenDiskon = item.getPersenDiskonMemberhsip();
+                totalDiskonMember = item.getTotalDiskonMembership();
+                holder.tvDiskonanMember.setText("Rp. " + nf.format(item.getTotalDiskonMembership()) + " ( " + nf.format(persenDiskon) + "% x " + nf.format(qty) + " )");
+            } else {
+                holder.layoutDiskonPrintMember.setVisibility(View.GONE);
+            }
+
+            holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotal()) - Double.parseDouble(item.getNominal_diskon()) - totalDiskonMember));
         } else {
-            holder.layoutDiskon.setVisibility(View.GONE);
+
+            holder.tvNama.setText(item.getNamaBrg());
+            holder.tvCode.setText(item.getCode());
+            holder.tvHargaBarang.setText("Rp. " + nf.format(Double.parseDouble(item.getHarga())));
+            holder.tvQty.setText("1");
+            holder.tvKeterangan.setText("BARANG TEBUS");
+
+            double totalDiskon = Double.parseDouble(item.getPotongan_diskon());
+            holder.layoutDiskon.setVisibility(View.VISIBLE);
+            holder.layoutDiskonPrintMember.setVisibility(View.GONE);
+            holder.tvDiskon.setText("Rp. " + nf.format(totalDiskon) + " ( " + nf.format(totalDiskon) + " x 1 )");
+
+            holder.tvTotal.setText("Rp. " + nf.format(Double.parseDouble(item.getTotal())));
+
         }
+
+
     }
 
     public void addItems(List<modelArrayDetailBarangOrder> items) {
@@ -120,6 +147,11 @@ public class AdapterDetailbarangFak extends
         TextView tvDiskon;
         @BindView(R.id.layoutDiskonPrint)
         LinearLayout layoutDiskon;
+
+        @BindView(R.id.tvDiskonanMember)
+        TextView tvDiskonanMember;
+        @BindView(R.id.layoutDiskonPrintMember)
+        LinearLayout layoutDiskonPrintMember;
 
         public ViewHolder(View itemView) {
             super(itemView);

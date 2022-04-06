@@ -1,15 +1,14 @@
 
 package com.dbelgamembership.membersip.Model.modelBarang;
 
-import android.os.Parcelable;
-
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 import java.util.List;
-
 import javax.annotation.Generated;
+import android.os.Parcelable;
+import android.os.Parcelable.Creator;
+import android.os.Parcelable.Creator;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 @Generated("jsonschema2pojo")
 public class MsgServer implements Serializable, Parcelable
@@ -61,7 +60,7 @@ public class MsgServer implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -1838252875466300534L;
+    private final static long serialVersionUID = -5228128806518690249L;
 
     protected MsgServer(android.os.Parcel in) {
         this.currentPage = ((Integer) in.readValue((Integer.class.getClassLoader())));
@@ -76,7 +75,38 @@ public class MsgServer implements Serializable, Parcelable
         this.total = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
     public MsgServer() {
+    }
+
+    /**
+     * 
+     * @param path
+     * @param total
+     * @param nextPageUrl
+     * @param perPage
+     * @param data
+     * @param lastPage
+     * @param from
+     * @param to
+     * @param currentPage
+     * @param prevPageUrl
+     */
+    public MsgServer(Integer currentPage, List<Datum> data, Integer from, Integer lastPage, String nextPageUrl, String path, Integer perPage, String prevPageUrl, Integer to, Integer total) {
+        super();
+        this.currentPage = currentPage;
+        this.data = data;
+        this.from = from;
+        this.lastPage = lastPage;
+        this.nextPageUrl = nextPageUrl;
+        this.path = path;
+        this.perPage = perPage;
+        this.prevPageUrl = prevPageUrl;
+        this.to = to;
+        this.total = total;
     }
 
     public Integer getCurrentPage() {

@@ -26,7 +26,9 @@
                 android:background="@color/biruBelga"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="Katalog Promo"
-                tools:ignore="HardcodedText"></androidx.appcompat.widget.Toolbar>
+                tools:ignore="HardcodedText">
+
+            </androidx.appcompat.widget.Toolbar>
 
             <ru.nikartm.support.ImageBadgeView
                 android:id="@+id/icon_Keranjang"
@@ -44,15 +46,9 @@
                 app:ibv_fixedBadgeRadius="10dp"
                 app:ibv_maxBadgeValue="99" />
 
-
         </RelativeLayout>
 
-
-
-
     </com.google.android.material.appbar.AppBarLayout>
-
-
 
     <LinearLayout
         android:orientation="vertical"
@@ -69,7 +65,6 @@
             android:src="@drawable/promo_2" />
 
         <LinearLayout
-            android:weightSum="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -105,17 +100,17 @@
                     android:textSize="14dp" />
 
                 <ImageView
-                    android:id="@+id/imageBtn"
-                    android:layout_width="0dp"
-                    android:layout_height="20dp"
+                    android:padding="2dp"
+                    android:id="@+id/btnSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="2dp"
-                    android:layout_weight="0.1"
                     android:src="@drawable/ic_search_black_24dp" />
 
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/layoutFilter"
                 android:orientation="vertical"
                 android:gravity="center"
@@ -138,6 +133,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/layoutSort"
                 android:orientation="vertical"
                 android:gravity="center"

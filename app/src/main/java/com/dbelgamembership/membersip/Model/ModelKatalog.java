@@ -4,22 +4,80 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ModelKatalog implements Parcelable {
-
-    public String getHarga_promo() {
-        return harga_promo;
-    }
-
-    public void setHarga_promo(String harga_promo) {
-        this.harga_promo = harga_promo;
-    }
-
-    String id, nama_barang, merk_barang, kategori_barang, harga_diskon, harga_barang,harga_promo, kode_barang, stok, barcode, images, deskripsi, harga_2, harga_3 , satuan_kemasan  ;
+    String id,
+            nama_barang,
+            merk_barang,
+            kategori_barang,
+            harga_diskon,
+            harga_barang,
+            kode_barang,
+            stok,
+            barcode,
+            images,
+            deskripsi,
+            harga_2,
+            harga_3 ,
+            satuan_kemasan  ;
     String batasan1;
     String batasan2;
     String batasan3;
+    int isPromo;
+    String akhirPromo;
+    String harga_promo;
+    double stokPromo;
+    int PromoMember;
+    String PromoMemberKode;
+    String PromoMemberAkhir;
+    double PromoMemberPersenSilver;
+    double PromoMemberPersenGold;
+    double PromoMemberPersenPlatinum;
+    double jumlahTerjual;
 
     public ModelKatalog() {
     }
+
+    protected ModelKatalog(Parcel in) {
+        id = in.readString();
+        nama_barang = in.readString();
+        merk_barang = in.readString();
+        kategori_barang = in.readString();
+        harga_diskon = in.readString();
+        harga_barang = in.readString();
+        kode_barang = in.readString();
+        stok = in.readString();
+        barcode = in.readString();
+        images = in.readString();
+        deskripsi = in.readString();
+        harga_2 = in.readString();
+        harga_3 = in.readString();
+        satuan_kemasan = in.readString();
+        batasan1 = in.readString();
+        batasan2 = in.readString();
+        batasan3 = in.readString();
+        isPromo = in.readInt();
+        akhirPromo = in.readString();
+        harga_promo = in.readString();
+        stokPromo = in.readDouble();
+        PromoMember = in.readInt();
+        PromoMemberKode = in.readString();
+        PromoMemberAkhir = in.readString();
+        PromoMemberPersenSilver = in.readDouble();
+        PromoMemberPersenGold = in.readDouble();
+        PromoMemberPersenPlatinum = in.readDouble();
+        jumlahTerjual = in.readDouble();
+    }
+
+    public static final Creator<ModelKatalog> CREATOR = new Creator<ModelKatalog>() {
+        @Override
+        public ModelKatalog createFromParcel(Parcel in) {
+            return new ModelKatalog(in);
+        }
+
+        @Override
+        public ModelKatalog[] newArray(int size) {
+            return new ModelKatalog[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -43,6 +101,14 @@ public class ModelKatalog implements Parcelable {
 
     public void setMerk_barang(String merk_barang) {
         this.merk_barang = merk_barang;
+    }
+
+    public String getKategori_barang() {
+        return kategori_barang;
+    }
+
+    public void setKategori_barang(String kategori_barang) {
+        this.kategori_barang = kategori_barang;
     }
 
     public String getHarga_diskon() {
@@ -93,28 +159,12 @@ public class ModelKatalog implements Parcelable {
         this.images = images;
     }
 
-    public String getKategori_barang() {
-        return kategori_barang;
-    }
-
-    public void setKategori_barang(String kategori_barang) {
-        this.kategori_barang = kategori_barang;
-    }
-
     public String getDeskripsi() {
         return deskripsi;
     }
 
     public void setDeskripsi(String deskripsi) {
         this.deskripsi = deskripsi;
-    }
-
-    public String getSatuan_kemasan() {
-        return satuan_kemasan;
-    }
-
-    public void setSatuan_kemasan(String satuan_kemasan) {
-        this.satuan_kemasan = satuan_kemasan;
     }
 
     public String getHarga_2() {
@@ -133,6 +183,13 @@ public class ModelKatalog implements Parcelable {
         this.harga_3 = harga_3;
     }
 
+    public String getSatuan_kemasan() {
+        return satuan_kemasan;
+    }
+
+    public void setSatuan_kemasan(String satuan_kemasan) {
+        this.satuan_kemasan = satuan_kemasan;
+    }
 
     public String getBatasan1() {
         return batasan1;
@@ -158,63 +215,128 @@ public class ModelKatalog implements Parcelable {
         this.batasan3 = batasan3;
     }
 
+    public int getIsPromo() {
+        return isPromo;
+    }
+
+    public void setIsPromo(int isPromo) {
+        this.isPromo = isPromo;
+    }
+
+    public String getAkhirPromo() {
+        return akhirPromo;
+    }
+
+    public void setAkhirPromo(String akhirPromo) {
+        this.akhirPromo = akhirPromo;
+    }
+
+    public String getHarga_promo() {
+        return harga_promo;
+    }
+
+    public void setHarga_promo(String harga_promo) {
+        this.harga_promo = harga_promo;
+    }
+
+    public double getStokPromo() {
+        return stokPromo;
+    }
+
+    public void setStokPromo(double stokPromo) {
+        this.stokPromo = stokPromo;
+    }
+
+    public int getPromoMember() {
+        return PromoMember;
+    }
+
+    public void setPromoMember(int promoMember) {
+        PromoMember = promoMember;
+    }
+
+    public String getPromoMemberKode() {
+        return PromoMemberKode;
+    }
+
+    public void setPromoMemberKode(String promoMemberKode) {
+        PromoMemberKode = promoMemberKode;
+    }
+
+    public String getPromoMemberAkhir() {
+        return PromoMemberAkhir;
+    }
+
+    public void setPromoMemberAkhir(String promoMemberAkhir) {
+        PromoMemberAkhir = promoMemberAkhir;
+    }
+
+    public double getPromoMemberPersenSilver() {
+        return PromoMemberPersenSilver;
+    }
+
+    public void setPromoMemberPersenSilver(double promoMemberPersenSilver) {
+        PromoMemberPersenSilver = promoMemberPersenSilver;
+    }
+
+    public double getPromoMemberPersenGold() {
+        return PromoMemberPersenGold;
+    }
+
+    public void setPromoMemberPersenGold(double promoMemberPersenGold) {
+        PromoMemberPersenGold = promoMemberPersenGold;
+    }
+
+    public double getPromoMemberPersenPlatinum() {
+        return PromoMemberPersenPlatinum;
+    }
+
+    public void setPromoMemberPersenPlatinum(double promoMemberPersenPlatinum) {
+        PromoMemberPersenPlatinum = promoMemberPersenPlatinum;
+    }
+
+    public double getJumlahTerjual() {
+        return jumlahTerjual;
+    }
+
+    public void setJumlahTerjual(double jumlahTerjual) {
+        this.jumlahTerjual = jumlahTerjual;
+    }
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.id);
-        dest.writeString(this.nama_barang);
-        dest.writeString(this.merk_barang);
-        dest.writeString(this.harga_diskon);
-        dest.writeString(this.kategori_barang);
-        dest.writeString(this.harga_barang);
-        dest.writeString(this.harga_promo);
-        dest.writeString(this.kode_barang);
-        dest.writeString(this.stok);
-        dest.writeString(this.barcode);
-        dest.writeString(this.images);
-        dest.writeString(this.deskripsi);
-        dest.writeString(this.harga_2);
-        dest.writeString(this.harga_3);
-        dest.writeString(this.satuan_kemasan);
-        dest.writeString(this.batasan1);
-        dest.writeString(this.batasan2);
-        dest.writeString(this.batasan3);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(nama_barang);
+        parcel.writeString(merk_barang);
+        parcel.writeString(kategori_barang);
+        parcel.writeString(harga_diskon);
+        parcel.writeString(harga_barang);
+        parcel.writeString(kode_barang);
+        parcel.writeString(stok);
+        parcel.writeString(barcode);
+        parcel.writeString(images);
+        parcel.writeString(deskripsi);
+        parcel.writeString(harga_2);
+        parcel.writeString(harga_3);
+        parcel.writeString(satuan_kemasan);
+        parcel.writeString(batasan1);
+        parcel.writeString(batasan2);
+        parcel.writeString(batasan3);
+        parcel.writeInt(isPromo);
+        parcel.writeString(akhirPromo);
+        parcel.writeString(harga_promo);
+        parcel.writeDouble(stokPromo);
+        parcel.writeInt(PromoMember);
+        parcel.writeString(PromoMemberKode);
+        parcel.writeString(PromoMemberAkhir);
+        parcel.writeDouble(PromoMemberPersenSilver);
+        parcel.writeDouble(PromoMemberPersenGold);
+        parcel.writeDouble(PromoMemberPersenPlatinum);
+        parcel.writeDouble(jumlahTerjual);
     }
-
-    protected ModelKatalog(Parcel in) {
-        this.id = in.readString();
-        this.nama_barang = in.readString();
-        this.merk_barang = in.readString();
-        this.harga_diskon = in.readString();
-        this.harga_barang = in.readString();
-        this.kategori_barang = in.readString();
-        this.harga_promo = in.readString();
-        this.kode_barang = in.readString();
-        this.stok = in.readString();
-        this.barcode = in.readString();
-        this.images = in.readString();
-        this.deskripsi = in.readString();
-        this.harga_2 = in.readString();
-        this.harga_3 = in.readString();
-        this.satuan_kemasan = in.readString();
-        this.batasan1 = in.readString();
-        this.batasan2 = in.readString();
-        this.batasan3 = in.readString();
-    }
-
-    public static final Creator<ModelKatalog> CREATOR = new Creator<ModelKatalog>() {
-        @Override
-        public ModelKatalog createFromParcel(Parcel source) {
-            return new ModelKatalog(source);
-        }
-
-        @Override
-        public ModelKatalog[] newArray(int size) {
-            return new ModelKatalog[size];
-        }
-    };
 }

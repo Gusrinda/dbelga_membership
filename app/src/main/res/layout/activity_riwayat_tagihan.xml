@@ -23,10 +23,10 @@
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                app:elevation="0dp"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/biruBelga"
-                app:title="Riwayat Tagihan Saya"
+                app:elevation="0dp"
+                app:title="Riwayat Pelunasan Tagihan"
                 tools:ignore="HardcodedText">
 
             </androidx.appcompat.widget.Toolbar>
@@ -46,6 +46,8 @@
             android:id="@+id/rv_Tagihan"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_riwayat" />
 
     </RelativeLayout>

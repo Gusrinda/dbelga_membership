@@ -36,6 +36,7 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.databinding.ActivityUbahPasswordBinding;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -244,7 +245,7 @@ public class UbahPassword extends AppCompatActivity {
                                     Snack(response.getJSONArray("msgServer").toString());
                                 } else {
                                     Toast.makeText(UbahPassword.this, "Ubah password berhasil !", Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(UbahPassword.this, MainActivity.class);
+                                    Intent intent = new Intent(UbahPassword.this, NewMainActivity.class);
                                     startActivity(intent);
                                 }
                             }

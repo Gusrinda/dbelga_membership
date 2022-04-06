@@ -715,7 +715,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                     Log.e("", "membership: " + membership);
                                     Log.e(TAG, "status payment: " + statusPAY);
                                     if (statusPAY.equals("TRUE")) {
-                                        Intent intent = new Intent(KonfirmasiMembership.this, MainActivity.class);
+                                        Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
                                         startActivity(intent);
                                         finish();
                                     } else {

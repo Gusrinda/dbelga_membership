@@ -12,8 +12,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 @Generated("jsonschema2pojo")
-public class Datum implements Serializable, Parcelable
-{
+public class Datum implements Serializable, Parcelable {
 
     @SerializedName("id")
     @Expose
@@ -29,10 +28,10 @@ public class Datum implements Serializable, Parcelable
     private String customer;
     @SerializedName("total_payment_paid")
     @Expose
-    private Integer totalPaymentPaid;
+    private String totalPaymentPaid;
     @SerializedName("change")
     @Expose
-    private Integer change;
+    private String change;
     @SerializedName("date_transaction")
     @Expose
     private String dateTransaction;
@@ -50,7 +49,7 @@ public class Datum implements Serializable, Parcelable
     private String nomorCustomer;
     @SerializedName("ongkos_kirim")
     @Expose
-    private Integer ongkosKirim;
+    private String ongkosKirim;
     @SerializedName("tanggal_kirim")
     @Expose
     private String tanggalKirim;
@@ -90,20 +89,66 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("gudang")
     @Expose
     private Integer gudang;
+    @SerializedName("is_voucher")
+    @Expose
+    private Boolean isVoucher;
+    @SerializedName("voucher_code")
+    @Expose
+    private String voucherCode;
+    @SerializedName("voucher_id")
+    @Expose
+    private Integer voucherId;
+    @SerializedName("voucher_nominal")
+    @Expose
+    private String voucherNominal;
+
+
+    @SerializedName("is_voucher_supplier")
+    @Expose
+    private Boolean isVoucherSuplier;
+    @SerializedName("voucher_code_supplier")
+    @Expose
+    private String voucherCodeSuplier;
+    @SerializedName("voucher_nominal_supplier")
+    @Expose
+    private String voucherNominalSuplier;
+
+    @SerializedName("is_ambil_uang")
+    @Expose
+    private Boolean isAmbilUang;
+
+    @SerializedName("nominal_ambil_uang")
+    @Expose
+    private String nominalAmbilUang;
+
+
+    @SerializedName("is_belanja_shopee")
+    @Expose
+    private Boolean isBelanjaShopee;
+
     @SerializedName("order_detail")
     @Expose
     private List<OrderDetail> orderDetail = null;
     @SerializedName("payment_detail")
     @Expose
     private List<PaymentDetail> paymentDetail = null;
+
     @SerializedName("add_item")
     @Expose
     private List<AddItem> addItem = null;
+
+
+    @SerializedName("detail_barang_tebus")
+    @Expose
+    private List<DetailBarangTebu> detailBarangTebus = null;
+
+
+
     public final static Creator<Datum> CREATOR = new Creator<Datum>() {
 
 
         @SuppressWarnings({
-            "unchecked"
+                "unchecked"
         })
         public Datum createFromParcel(android.os.Parcel in) {
             return new Datum(in);
@@ -113,8 +158,7 @@ public class Datum implements Serializable, Parcelable
             return (new Datum[size]);
         }
 
-    }
-    ;
+    };
     private final static long serialVersionUID = 5915672117313461996L;
 
     protected Datum(android.os.Parcel in) {
@@ -122,14 +166,14 @@ public class Datum implements Serializable, Parcelable
         this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
         this.createuser = ((String) in.readValue((String.class.getClassLoader())));
         this.customer = ((String) in.readValue((String.class.getClassLoader())));
-        this.totalPaymentPaid = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.change = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.totalPaymentPaid = ((String) in.readValue((Integer.class.getClassLoader())));
+        this.change = ((String) in.readValue((Integer.class.getClassLoader())));
         this.dateTransaction = ((String) in.readValue((String.class.getClassLoader())));
         this.status = ((String) in.readValue((String.class.getClassLoader())));
         this.identitasCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.alamatCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.nomorCustomer = ((String) in.readValue((String.class.getClassLoader())));
-        this.ongkosKirim = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.ongkosKirim = ((String) in.readValue((Integer.class.getClassLoader())));
         this.tanggalKirim = ((String) in.readValue((String.class.getClassLoader())));
         this.flagDp = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.alamatCustomerPos = ((String) in.readValue((String.class.getClassLoader())));
@@ -144,9 +188,23 @@ public class Datum implements Serializable, Parcelable
         this.rtCode = ((String) in.readValue((String.class.getClassLoader())));
         this.gudang = ((Integer) in.readValue((String.class.getClassLoader())));
 
+        this.isVoucher = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voucherCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.voucherId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.voucherNominal = ((String) in.readValue((String.class.getClassLoader())));
+
+        this.isVoucherSuplier = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voucherCodeSuplier = ((String) in.readValue((String.class.getClassLoader())));
+        this.voucherNominalSuplier = ((String) in.readValue((String.class.getClassLoader())));
+
+        this.isAmbilUang = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.nominalAmbilUang = ((String) in.readValue((String.class.getClassLoader())));
+
+        this.isBelanjaShopee= ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         in.readList(this.orderDetail, (com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail.class.getClassLoader()));
         in.readList(this.paymentDetail, (com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail.class.getClassLoader()));
         in.readList(this.addItem, (com.dbelgamembership.membersip.Model.ModelPayment.AddItem.class.getClassLoader()));
+        in.readList(this.detailBarangTebus, (com.dbelgamembership.membersip.Model.ModelPayment.DetailBarangTebu.class.getClassLoader()));
     }
 
     public Datum() {
@@ -184,19 +242,19 @@ public class Datum implements Serializable, Parcelable
         this.customer = customer;
     }
 
-    public Integer getTotalPaymentPaid() {
+    public String getTotalPaymentPaid() {
         return totalPaymentPaid;
     }
 
-    public void setTotalPaymentPaid(Integer totalPaymentPaid) {
+    public void setTotalPaymentPaid(String totalPaymentPaid) {
         this.totalPaymentPaid = totalPaymentPaid;
     }
 
-    public Integer getChange() {
+    public String getChange() {
         return change;
     }
 
-    public void setChange(Integer change) {
+    public void setChange(String change) {
         this.change = change;
     }
 
@@ -240,11 +298,11 @@ public class Datum implements Serializable, Parcelable
         this.nomorCustomer = nomorCustomer;
     }
 
-    public Integer getOngkosKirim() {
+    public String getOngkosKirim() {
         return ongkosKirim;
     }
 
-    public void setOngkosKirim(Integer ongkosKirim) {
+    public void setOngkosKirim(String ongkosKirim) {
         this.ongkosKirim = ongkosKirim;
     }
 
@@ -343,7 +401,6 @@ public class Datum implements Serializable, Parcelable
     public void setRtCode(String rtCode) {
         this.rtCode = rtCode;
     }
-
     public Integer getGudang() {
         return gudang;
     }
@@ -376,6 +433,94 @@ public class Datum implements Serializable, Parcelable
         this.addItem = addItem;
     }
 
+    public Boolean getVoucher() {
+        return isVoucher;
+    }
+
+    public void setVoucher(Boolean voucher) {
+        isVoucher = voucher;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
+
+    public Integer getVoucherId() {
+        return voucherId;
+    }
+
+    public void setVoucherId(Integer voucherId) {
+        this.voucherId = voucherId;
+    }
+
+    public String getVoucherNominal() {
+        return voucherNominal;
+    }
+
+    public void setVoucherNominal(String voucherNominal) {
+        this.voucherNominal = voucherNominal;
+    }
+
+    public Boolean getVoucherSuplier() {
+        return isVoucherSuplier;
+    }
+
+    public void setVoucherSuplier(Boolean voucherSuplier) {
+        isVoucherSuplier = voucherSuplier;
+    }
+
+    public String getVoucherCodeSuplier() {
+        return voucherCodeSuplier;
+    }
+
+    public void setVoucherCodeSuplier(String voucherCodeSuplier) {
+        this.voucherCodeSuplier = voucherCodeSuplier;
+    }
+
+    public String getVoucherNominalSuplier() {
+        return voucherNominalSuplier;
+    }
+
+    public void setVoucherNominalSuplier(String voucherNominalSuplier) {
+        this.voucherNominalSuplier = voucherNominalSuplier;
+    }
+
+    public Boolean getAmbilUang() {
+        return isAmbilUang;
+    }
+
+    public void setAmbilUang(Boolean ambilUang) {
+        isAmbilUang = ambilUang;
+    }
+
+    public String getNominalAmbilUang() {
+        return nominalAmbilUang;
+    }
+
+    public void setNominalAmbilUang(String nominalAmbilUang) {
+        this.nominalAmbilUang = nominalAmbilUang;
+    }
+
+    public Boolean getBelanjaShopee() {
+        return isBelanjaShopee;
+    }
+
+    public void setBelanjaShopee(Boolean belanjaShopee) {
+        isBelanjaShopee = belanjaShopee;
+    }
+
+    public List<DetailBarangTebu> getDetailBarangTebus() {
+        return detailBarangTebus;
+    }
+
+    public void setDetailBarangTebus(List<DetailBarangTebu> detailBarangTebus) {
+        this.detailBarangTebus = detailBarangTebus;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(pembayaranCode);
@@ -401,14 +546,25 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(totalBelanja);
         dest.writeValue(updatedAt);
         dest.writeValue(rtCode);
+        dest.writeValue(isVoucher);
+        dest.writeValue(voucherCode);
         dest.writeValue(gudang);
+        dest.writeValue(voucherId);
+        dest.writeValue(voucherNominal);
+        dest.writeValue(isVoucherSuplier);
+        dest.writeValue(voucherCodeSuplier);
+        dest.writeValue(voucherNominalSuplier);
+        dest.writeValue(isAmbilUang);
+        dest.writeValue(nominalAmbilUang);
+        dest.writeValue(isBelanjaShopee);
         dest.writeList(orderDetail);
         dest.writeList(paymentDetail);
         dest.writeList(addItem);
+        dest.writeList(detailBarangTebus);
     }
 
     public int describeContents() {
-        return  0;
+        return 0;
     }
 
 }

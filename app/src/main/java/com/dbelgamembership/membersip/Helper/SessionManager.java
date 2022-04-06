@@ -10,6 +10,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 public class SessionManager {
     public static final String IS_LOGGEDIN = "isLoggedIn";
     public static final String MEMBERCODE = "MemberCode";

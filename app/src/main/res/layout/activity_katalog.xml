@@ -26,8 +26,7 @@
                 android:background="@color/biruBelga"
                 app:popupTheme="@style/AppTheme.PopupOverlay"
                 app:title="Katalog Barang"
-                tools:ignore="HardcodedText">
-            </androidx.appcompat.widget.Toolbar>
+                tools:ignore="HardcodedText"></androidx.appcompat.widget.Toolbar>
 
             <ru.nikartm.support.ImageBadgeView
                 android:id="@+id/icon_whislist"
@@ -36,7 +35,6 @@
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="16sp"
                 android:layout_toLeftOf="@id/icon_Keranjang"
-
                 android:src="@drawable/ic_like"
                 app:ibv_badgeColor="#F44336"
                 app:ibv_badgeLimitValue="false"

@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -49,6 +48,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Model.modelBarang.Datum;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListBarang;
 import com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragment;
 import com.dbelgamembership.membersip.Fragment.bottomSheet.BottomSheetFilterFragmentUrutkan;
@@ -62,8 +62,6 @@ import com.dbelgamembership.membersip.Model.ModelResponseCart.ModelResponseCart;
 import com.dbelgamembership.membersip.Model.ModelKatalog;
 
 import com.dbelgamembership.membersip.Model.ModelSearchWish.ModelSearchWish;
-import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
-import com.dbelgamembership.membersip.Model.modelBarang.Datum;
 import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.databinding.ActivityKatalogBinding;

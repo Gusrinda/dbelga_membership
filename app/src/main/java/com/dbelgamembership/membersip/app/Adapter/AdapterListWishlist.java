@@ -73,6 +73,7 @@ public class AdapterListWishlist extends
                 Glide.with(context)
                         .asBitmap()
                         .load(item.getGambar())
+                        .error(R.drawable.not_found)
                         .into(holder.imageBarang);
             } else {
                 image = context.getResources().getDrawable(R.drawable.not_found);

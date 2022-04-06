@@ -11,18 +11,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.databinding.ItemCartBinding;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
@@ -37,6 +43,7 @@ public class AdapterListCart extends
     private List<DetailItemCart> list;
     private AdapterListGudangCallback mAdapterCallback;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+    private SessionManager sessionManager;
 
     public AdapterListCart(Context context, List<DetailItemCart> list, AdapterListGudangCallback adapterCallback) {
         this.context = context;
@@ -47,6 +54,9 @@ public class AdapterListCart extends
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemCartBinding itemBinding = ItemCartBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+
+        sessionManager = new SessionManager(context.getApplicationContext());
+
         return new ViewHolder(itemBinding);
     }
 
@@ -65,6 +75,7 @@ public class AdapterListCart extends
         double stokMax = detailItemCart.getStok();
         double qty = Double.parseDouble(holder.edtQty.getText().toString());
 
+
         int batasan1 = detailItemCart.getHarga().getQtyHarga1();
         int batasan2 = detailItemCart.getHarga().getQtyHarga2();
         int batasan3 = detailItemCart.getHarga().getQtyHarga3();
@@ -82,39 +93,113 @@ public class AdapterListCart extends
         }
 
         double jumlahBarangDibeli = qty;
+        double jumlahBarangDiskon = 0;
+        double totalDiskon = 0;
         String hargaFix = "0";
 
-        if (batasan1 == batasan2) {
-//                            Log.e(TAG, "TambahkanKeListBarang: " + pm.getHarga_barang());
-            hargaFix = harga1;
-        } else {
-            if (jumlahBarangDibeli < batasan2) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga1());
-                hargaFix = harga1;
-            } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga2());
-                hargaFix = harga2;
-            } else if (jumlahBarangDibeli >= batasan3) {
-//                            mapArray.setPrice(itemBarangList.get(i).getHarga3());
-                hargaFix = harga3;
+        double diskon = 0;
+        boolean cekTanggal = false;
+
+        if (detailItemCart.getProdukPromo()) {
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            final Calendar baru = Calendar.getInstance();
+
+            try {
+                Date tanggalNow = baru.getTime();
+                Date tanggalAkhir = formatter.parse(detailItemCart.getAkhirPromo());
+
+                long mlNow = tanggalNow.getTime();
+                long mlAkhir = tanggalAkhir.getTime();
+
+                if (mlNow <= mlAkhir) {
+                    cekTanggal = true;
+                } else {
+                    cekTanggal = false;
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+
         }
 
-        int diskon = (int) (Double.parseDouble(harga1) - Double.parseDouble(hargaFix));
+        if (detailItemCart.getProdukPromo() && detailItemCart.getStokPromo() > 0 && cekTanggal) {
+            Log.e(TAG, "MASUK PROMO");
+            double hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
+            double hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
+
+            diskon = hargaNormal - hargaPromo;
+
+            if (jumlahBarangDibeli <= detailItemCart.getStokPromo()) {
+                jumlahBarangDiskon = jumlahBarangDibeli;
+            } else if (jumlahBarangDibeli > detailItemCart.getStokPromo()) {
+                jumlahBarangDiskon = detailItemCart.getStokPromo();
+            }
+
+        } else {
+            if (batasan1 == batasan2) {
+                hargaFix = harga1;
+            } else {
+                if (jumlahBarangDibeli < batasan2) {
+                    hargaFix = harga1;
+                } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
+                    hargaFix = harga2;
+                } else if (jumlahBarangDibeli >= batasan3) {
+                    hargaFix = harga3;
+                }
+            }
+            diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
+            jumlahBarangDiskon = jumlahBarangDibeli;
+        }
+
+        totalDiskon = diskon * jumlahBarangDiskon;
 
         if (diskon > 0) {
-            holder.hargaReal.setVisibility(View.VISIBLE);
-            holder.hargaReal.setText("Rp. " + nf.format(Double.parseDouble(harga1)));
-            holder.hargaItem.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+            holder.layoutDiskonBarang.setVisibility(View.VISIBLE);
+            holder.textDiskonBarang.setText("Rp. " + nf.format(diskon) + " x " + nf.format(jumlahBarangDiskon));
+            holder.textTotalDiskonBarang.setText("- Rp. " + nf.format(totalDiskon));
         } else {
-            holder.hargaReal.setVisibility(View.GONE);
-            holder.hargaReal.setText("0");
-            holder.hargaItem.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+            holder.layoutDiskonBarang.setVisibility(View.GONE);
         }
 
-        holder.totalBarang.setText("Rp. " + nf.format(qty * Double.parseDouble(hargaFix)));
+        double totalDiskonMember = 0;
+        double persenDiskonMember = 0;
+        double diskonMember = 0;
 
-        holder.stokItem.setText(" ( " + String.valueOf(detailItemCart.getStok()) + " stok )");
+        if (detailItemCart.getProdukPromoMember()) {
+            holder.layoutDiskonMembership.setVisibility(View.VISIBLE);
+
+            if (sessionManager.getMembership().equals("SILVER")) {
+                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
+            } else if (sessionManager.getMembership().equals("GOLD")) {
+                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
+            } else if (sessionManager.getMembership().equals("PLATINUM")) {
+                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
+            }
+
+            holder.textDiskonMembership.setText(nf.format(persenDiskonMember) + "% x " + nf.format(jumlahBarangDibeli));
+
+            double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+            diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
+
+            totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+            holder.textTotalDiskonMembership.setText("- Rp. " + nf.format(totalDiskonMember));
+
+        } else {
+            holder.layoutDiskonMembership.setVisibility(View.GONE);
+        }
+
+
+        holder.totalBarang.setText("Rp. " + nf.format(qty * Double.parseDouble(harga1)));
+
+        if (detailItemCart.getProdukPromo()) {
+            holder.stokItem.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ( " + nf.format(detailItemCart.getStokPromo()) + " promo )]");
+        } else {
+            holder.stokItem.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ]");
+        }
+
         Glide.with(context).load(detailItemCart.getImages()).into(holder.gambarItem);
 
         holder.btnTambah.setOnClickListener(new View.OnClickListener() {
@@ -238,7 +323,6 @@ public class AdapterListCart extends
         void deleteBarang(DetailItemCart detailItemCart);
 
         void updateQtyBarang(DetailItemCart detailItemCart, double qtyItem);
-
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -256,6 +340,13 @@ public class AdapterListCart extends
         Button btnKurang;
         ImageView btnDelete;
         ConstraintLayout constraintLayout;
+        LinearLayout layoutDiskonBarang;
+        TextView textDiskonBarang;
+        TextView textTotalDiskonBarang;
+
+        LinearLayout layoutDiskonMembership;
+        TextView textDiskonMembership;
+        TextView textTotalDiskonMembership;
 
 
         public ViewHolder(ItemCartBinding binding) {
@@ -273,6 +364,13 @@ public class AdapterListCart extends
             btnTambah = binding.increment;
             btnKurang = binding.decrement;
             btnDelete = binding.btnDeleteBarang;
+            layoutDiskonBarang = binding.layoutDiskonBarang;
+            ;
+            textDiskonBarang = binding.txtPotonganDiskon;
+            textTotalDiskonBarang = binding.txtTotalDiskonBarang;
+            layoutDiskonMembership = binding.layoutDiskonMembership;
+            textDiskonMembership = binding.txtPotonganDiskonMembership;
+            textTotalDiskonMembership = binding.txtTotalDiskonMembership;
 //            edtQty.addTextChangedListener(this);
         }
     }

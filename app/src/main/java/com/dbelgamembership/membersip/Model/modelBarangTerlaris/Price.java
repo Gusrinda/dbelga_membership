@@ -1,32 +1,43 @@
 
-package com.dbelgamembership.membersip.Model.modelBarangTerlaris;
+package com.dbelgamembership.membersip.Model.ModelBarangTerlaris;
 
 import java.io.Serializable;
-import android.os.Parcel;
+import javax.annotation.Generated;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Generated("jsonschema2pojo")
 public class Price implements Serializable, Parcelable
 {
 
     @SerializedName("harga")
     @Expose
-    private int harga;
+    private String harga;
     @SerializedName("harga_dua")
     @Expose
-    private int hargaDua;
+    private String hargaDua;
     @SerializedName("harga_tiga")
     @Expose
-    private int hargaTiga;
-    public final static Parcelable.Creator<Price> CREATOR = new Creator<Price>() {
+    private String hargaTiga;
+    @SerializedName("qty_harga_1")
+    @Expose
+    private Integer qtyHarga1;
+    @SerializedName("qty_harga_2")
+    @Expose
+    private Integer qtyHarga2;
+    @SerializedName("qty_harga_3")
+    @Expose
+    private Integer qtyHarga3;
+    public final static Creator<Price> CREATOR = new Creator<Price>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public Price createFromParcel(Parcel in) {
+        public Price createFromParcel(android.os.Parcel in) {
             return new Price(in);
         }
 
@@ -36,60 +47,75 @@ public class Price implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 398952638556200386L;
+    private final static long serialVersionUID = 1319655554255255021L;
 
-    protected Price(Parcel in) {
-        this.harga = ((int) in.readValue((int.class.getClassLoader())));
-        this.hargaDua = ((int) in.readValue((int.class.getClassLoader())));
-        this.hargaTiga = ((int) in.readValue((int.class.getClassLoader())));
+    protected Price(android.os.Parcel in) {
+        this.harga = ((String) in.readValue((String.class.getClassLoader())));
+        this.hargaDua = ((String) in.readValue((String.class.getClassLoader())));
+        this.hargaTiga = ((String) in.readValue((String.class.getClassLoader())));
+        this.qtyHarga1 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga2 = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.qtyHarga3 = ((Integer) in.readValue((Integer.class.getClassLoader())));
     }
 
     public Price() {
     }
 
-    public int getHarga() {
+    public String getHarga() {
         return harga;
     }
 
-    public void setHarga(int harga) {
+    public void setHarga(String harga) {
         this.harga = harga;
     }
 
-    public Price withHarga(int harga) {
-        this.harga = harga;
-        return this;
-    }
-
-    public int getHargaDua() {
+    public String getHargaDua() {
         return hargaDua;
     }
 
-    public void setHargaDua(int hargaDua) {
+    public void setHargaDua(String hargaDua) {
         this.hargaDua = hargaDua;
     }
 
-    public Price withHargaDua(int hargaDua) {
-        this.hargaDua = hargaDua;
-        return this;
-    }
-
-    public int getHargaTiga() {
+    public String getHargaTiga() {
         return hargaTiga;
     }
 
-    public void setHargaTiga(int hargaTiga) {
+    public void setHargaTiga(String hargaTiga) {
         this.hargaTiga = hargaTiga;
     }
 
-    public Price withHargaTiga(int hargaTiga) {
-        this.hargaTiga = hargaTiga;
-        return this;
+    public Integer getQtyHarga1() {
+        return qtyHarga1;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void setQtyHarga1(Integer qtyHarga1) {
+        this.qtyHarga1 = qtyHarga1;
+    }
+
+    public Integer getQtyHarga2() {
+        return qtyHarga2;
+    }
+
+    public void setQtyHarga2(Integer qtyHarga2) {
+        this.qtyHarga2 = qtyHarga2;
+    }
+
+    public Integer getQtyHarga3() {
+        return qtyHarga3;
+    }
+
+    public void setQtyHarga3(Integer qtyHarga3) {
+        this.qtyHarga3 = qtyHarga3;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(harga);
         dest.writeValue(hargaDua);
         dest.writeValue(hargaTiga);
+        dest.writeValue(qtyHarga1);
+        dest.writeValue(qtyHarga2);
+        dest.writeValue(qtyHarga3);
     }
 
     public int describeContents() {

@@ -29,10 +29,13 @@ public class Datum implements Serializable, Parcelable
     private String customer;
     @SerializedName("grandtotal")
     @Expose
-    private Integer grandtotal;
+    private double grandtotal;
     @SerializedName("createuser")
     @Expose
     private Integer createuser;
+    @SerializedName("createuser_name")
+    @Expose
+    private String createuserName;
     @SerializedName("identitas_customer")
     @Expose
     private String identitasCustomer;
@@ -56,7 +59,7 @@ public class Datum implements Serializable, Parcelable
     private String nomorCustomer;
     @SerializedName("ongkos_kirim")
     @Expose
-    private Integer ongkosKirim;
+    private double ongkosKirim;
     @SerializedName("tanggal_kirim")
     @Expose
     private String tanggalKirim;
@@ -96,9 +99,47 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("total_diskon_so")
     @Expose
     private String totalDiskonSo;
+    @SerializedName("pembayaran_code")
+    @Expose
+    private String pembayaranCode;
+    @SerializedName("catatan_payment")
+    @Expose
+    private String catatanPayment;
+
+    @SerializedName("is_voucher")
+    @Expose
+    private Boolean isVoucher;
+    @SerializedName("voucher_code")
+    @Expose
+    private String voucherCode;
+    @SerializedName("voucher_id")
+    @Expose
+    private Integer voucherId;
+    @SerializedName("voucher_nominal")
+    @Expose
+    private String voucherNominal;
+
+    @SerializedName("is_voucher_supplier")
+    @Expose
+    private Boolean isVoucherSuplier;
+    @SerializedName("voucher_code_supplier")
+    @Expose
+    private String voucherCodeSuplier;
+    @SerializedName("voucher_nominal_supplier")
+    @Expose
+    private String voucherNominalSuplier;
+
+
+
     @SerializedName("detail")
     @Expose
     private List<Detail> detail = null;
+    @SerializedName("is_kekurangan")
+    @Expose
+    private Boolean isKekurangan;
+    @SerializedName("detail_kekurangan")
+    @Expose
+    private List<DetailKekurangan> detailKekurangan = null;
     public final static Creator<Datum> CREATOR = new Creator<Datum>() {
 
 
@@ -115,15 +156,16 @@ public class Datum implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = -200440775296658315L;
+    private final static long serialVersionUID = 687273061280705201L;
 
     protected Datum(android.os.Parcel in) {
         this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.idCustomer = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.customer = ((String) in.readValue((String.class.getClassLoader())));
-        this.grandtotal = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.grandtotal = ((double) in.readValue((double.class.getClassLoader())));
         this.createuser = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.createuserName = ((String) in.readValue((String.class.getClassLoader())));
         this.identitasCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.alamatCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.alamatPengiriman = ((String) in.readValue((String.class.getClassLoader())));
@@ -131,7 +173,7 @@ public class Datum implements Serializable, Parcelable
         this.statusPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         this.catatanPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         this.nomorCustomer = ((String) in.readValue((String.class.getClassLoader())));
-        this.ongkosKirim = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.ongkosKirim = ((double) in.readValue((double.class.getClassLoader())));
         this.tanggalKirim = ((String) in.readValue((String.class.getClassLoader())));
         this.flagKirim = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.date = ((String) in.readValue((String.class.getClassLoader())));
@@ -145,31 +187,25 @@ public class Datum implements Serializable, Parcelable
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.gudang = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.totalDiskonSo = ((String) in.readValue((String.class.getClassLoader())));
+        this.pembayaranCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.catatanPayment = ((String) in.readValue((String.class.getClassLoader())));
+        this.isVoucher = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voucherCode = ((String) in.readValue((String.class.getClassLoader())));
+        this.voucherId = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.voucherNominal = ((String) in.readValue((String.class.getClassLoader())));
+        this.isVoucherSuplier = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.voucherCodeSuplier = ((String) in.readValue((String.class.getClassLoader())));
+        this.voucherNominalSuplier = ((String) in.readValue((String.class.getClassLoader())));
+
         in.readList(this.detail, (com.dbelgamembership.membersip.Model.modelListTransaksi.Detail.class.getClassLoader()));
+        this.isKekurangan = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        in.readList(this.detailKekurangan, (com.dbelgamembership.membersip.Model.modelListTransaksi.DetailKekurangan.class.getClassLoader()));
     }
 
     public Datum() {
     }
 
-    public Datum(int id, String code, String customer, int grandtotal, int createuser, String identitasCustomer, String alamatCustomer, String alamatPengiriman, String nomorCustomer, int ongkosKirim, String tanggalKirim, String date, String status, String createdAt, List<Detail> detail) {
-        this.id = id;
-        this.code = code;
-        this.customer = customer;
-        this.grandtotal = grandtotal;
-        this.createuser = createuser;
-        this.identitasCustomer = identitasCustomer;
-        this.alamatCustomer = alamatCustomer;
-        this.alamatPengiriman = alamatPengiriman;
-        this.nomorCustomer = nomorCustomer;
-        this.ongkosKirim = ongkosKirim;
-        this.tanggalKirim = tanggalKirim;
-        this.date = date;
-        this.status = status;
-        this.createdAt = createdAt;
-        this.detail = detail;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -201,11 +237,11 @@ public class Datum implements Serializable, Parcelable
         this.customer = customer;
     }
 
-    public Integer getGrandtotal() {
+    public double getGrandtotal() {
         return grandtotal;
     }
 
-    public void setGrandtotal(Integer grandtotal) {
+    public void setGrandtotal(double grandtotal) {
         this.grandtotal = grandtotal;
     }
 
@@ -215,6 +251,14 @@ public class Datum implements Serializable, Parcelable
 
     public void setCreateuser(Integer createuser) {
         this.createuser = createuser;
+    }
+
+    public String getCreateuserName() {
+        return createuserName;
+    }
+
+    public void setCreateuserName(String createuserName) {
+        this.createuserName = createuserName;
     }
 
     public String getIdentitasCustomer() {
@@ -273,11 +317,11 @@ public class Datum implements Serializable, Parcelable
         this.nomorCustomer = nomorCustomer;
     }
 
-    public Integer getOngkosKirim() {
+    public double getOngkosKirim() {
         return ongkosKirim;
     }
 
-    public void setOngkosKirim(Integer ongkosKirim) {
+    public void setOngkosKirim(double ongkosKirim) {
         this.ongkosKirim = ongkosKirim;
     }
 
@@ -385,12 +429,108 @@ public class Datum implements Serializable, Parcelable
         this.totalDiskonSo = totalDiskonSo;
     }
 
+    public String getPembayaranCode() {
+        return pembayaranCode;
+    }
+
+    public void setPembayaranCode(String pembayaranCode) {
+        this.pembayaranCode = pembayaranCode;
+    }
+
+    public String getCatatanPayment() {
+        return catatanPayment;
+    }
+
+    public void setCatatanPayment(String catatanPayment) {
+        this.catatanPayment = catatanPayment;
+    }
+
     public List<Detail> getDetail() {
         return detail;
     }
 
     public void setDetail(List<Detail> detail) {
         this.detail = detail;
+    }
+
+    public Boolean getIsKekurangan() {
+        return isKekurangan;
+    }
+
+    public void setIsKekurangan(Boolean isKekurangan) {
+        this.isKekurangan = isKekurangan;
+    }
+
+    public List<DetailKekurangan> getDetailKekurangan() {
+        return detailKekurangan;
+    }
+
+    public void setDetailKekurangan(List<DetailKekurangan> detailKekurangan) {
+        this.detailKekurangan = detailKekurangan;
+    }
+
+    public Boolean getVoucher() {
+        return isVoucher;
+    }
+
+    public void setVoucher(Boolean voucher) {
+        isVoucher = voucher;
+    }
+
+    public String getVoucherCode() {
+        return voucherCode;
+    }
+
+    public void setVoucherCode(String voucherCode) {
+        this.voucherCode = voucherCode;
+    }
+
+    public Integer getVoucherId() {
+        return voucherId;
+    }
+
+    public void setVoucherId(Integer voucherId) {
+        this.voucherId = voucherId;
+    }
+
+    public String getVoucherNominal() {
+        return voucherNominal;
+    }
+
+    public void setVoucherNominal(String voucherNominal) {
+        this.voucherNominal = voucherNominal;
+    }
+
+    public Boolean getKekurangan() {
+        return isKekurangan;
+    }
+
+    public void setKekurangan(Boolean kekurangan) {
+        isKekurangan = kekurangan;
+    }
+
+    public Boolean getVoucherSuplier() {
+        return isVoucherSuplier;
+    }
+
+    public void setVoucherSuplier(Boolean voucherSuplier) {
+        isVoucherSuplier = voucherSuplier;
+    }
+
+    public String getVoucherCodeSuplier() {
+        return voucherCodeSuplier;
+    }
+
+    public void setVoucherCodeSuplier(String voucherCodeSuplier) {
+        this.voucherCodeSuplier = voucherCodeSuplier;
+    }
+
+    public String getVoucherNominalSuplier() {
+        return voucherNominalSuplier;
+    }
+
+    public void setVoucherNominalSuplier(String voucherNominalSuplier) {
+        this.voucherNominalSuplier = voucherNominalSuplier;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -400,6 +540,7 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(customer);
         dest.writeValue(grandtotal);
         dest.writeValue(createuser);
+        dest.writeValue(createuserName);
         dest.writeValue(identitasCustomer);
         dest.writeValue(alamatCustomer);
         dest.writeValue(alamatPengiriman);
@@ -421,7 +562,18 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(updatedAt);
         dest.writeValue(gudang);
         dest.writeValue(totalDiskonSo);
+        dest.writeValue(pembayaranCode);
+        dest.writeValue(catatanPayment);
         dest.writeList(detail);
+        dest.writeValue(isVoucher);
+        dest.writeValue(voucherCode);
+        dest.writeValue(voucherId);
+        dest.writeValue(voucherNominal);
+        dest.writeValue(isVoucherSuplier);
+        dest.writeValue(voucherCodeSuplier);
+        dest.writeValue(voucherNominalSuplier);
+        dest.writeValue(isKekurangan);
+        dest.writeList(detailKekurangan);
     }
 
     public int describeContents() {

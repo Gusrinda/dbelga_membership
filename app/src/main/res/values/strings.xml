@@ -1,5 +1,8 @@
 <resources>
-    <string name="app_name">Dbelga Membership</string>
+    <string name="app_name">dbelga Membership</string>
+
+    <string name="default_notification_channel_id">677332011367-tgu6cnu274uthjshm3mfhkeoemish1fl.apps.googleusercontent.com</string>
+
 
     <string name="tos">
 
@@ -74,6 +77,12 @@
     </string-array>
 
 
+    <string-array name="tanggal_jatuh_tempo">
+        <item>Tanggal 1</item>
+        <item>Tanggal 15</item>
+        <item>Tanggal 30</item>
+    </string-array>
+
     <string-array name="tanggal_transaksi">
         <item>Semua Tanggal</item>
         <item>30 Hari Terakhir</item>
@@ -135,5 +144,7 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="title_activity_set_alamat_rumah">SetAlamatRumah</string>
 
+
+    <string name="nomor_wa_admin_1">+6281559584297</string>
 
 </resources>

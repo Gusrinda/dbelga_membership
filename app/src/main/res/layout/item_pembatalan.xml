@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        app:cardElevation="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:paddingVertical="12dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_marginHorizontal="8dp"
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/txt_namaBarang"
+                    android:fontFamily="@font/hammer_font"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Mama lemon 300 VL xdc"/>
+
+                <TextView
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/txt_kodeBarang"
+                    android:fontFamily="@font/hammer_font"
+                    android:textColor="@color/greyBelha"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="867588768890"/>
+
+                <LinearLayout
+                    android:layout_marginTop="8dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/txt_hargaBarang"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 8.000"/>
+
+                    <TextView
+                        android:fontFamily="@font/hammer_font"
+                        android:layout_marginLeft="4dp"
+                        android:id="@+id/txt_stokBarang"
+                        android:text="( 20 Stok)"
+                        android:textSize="12sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:fontFamily="@font/hammer_font"
+                        android:layout_marginLeft="4dp"
+                        android:id="@+id/txt_totalBarang"
+                        android:gravity="end"
+                        android:text="Rp. 30.000"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/layoutDiskonBarang"
+                    android:gravity="bottom"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+
+                        android:id="@+id/txtPotonganDiskon"
+                        android:fontFamily="@font/hammer_font"
+                        android:textColor="@color/hijauBelga"
+                        android:textSize="10sp"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rp. 8.000"/>
+
+                    <TextView
+                        android:fontFamily="@font/hammer_font"
+                        android:layout_marginLeft="4dp"
+                        android:id="@+id/txtTotalDiskonBarang"
+                        android:gravity="end"
+                        android:text="Rp. 30.000"
+                        android:textColor="@color/merahBelga"
+                        android:textSize="10sp"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+
+                <TextView
+                    android:layout_marginTop="2dp"
+                    android:id="@+id/txt_alasanPembatalan"
+                    android:fontFamily="@font/hammer_font"
+                    android:textColor="@color/merahBelga"
+                    android:textSize="12sp"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="karena barang ini kurang sejumlah X"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</RelativeLayout>

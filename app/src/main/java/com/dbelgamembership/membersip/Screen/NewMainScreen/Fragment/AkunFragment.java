@@ -41,15 +41,19 @@ import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
 import com.dbelgamembership.membersip.R;
-import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
 import com.dbelgamembership.membersip.Screen.Limit.BayarTagihan;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
-import com.dbelgamembership.membersip.Screen.User.LimitPlafon;
+import com.dbelgamembership.membersip.Screen.Limit.LimitPlafon;
+import com.dbelgamembership.membersip.Screen.User.AkunSaya;
+import com.dbelgamembership.membersip.Screen.User.ListVoucher;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipChoose;
+import com.dbelgamembership.membersip.Screen.User.VoucherMember;
+import com.dbelgamembership.membersip.Screen.Voucher.DaftarVoucherMember;
+import com.dbelgamembership.membersip.Screen.Voucher.VoucherActivity;
 import com.dbelgamembership.membersip.databinding.FragmentAkunBinding;
 import com.dbelgamembership.membersip.databinding.PopupBarcodeMemberBinding;
 import com.developer.kalert.KAlertDialog;
@@ -72,8 +76,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class AkunFragment extends Fragment {
 
@@ -84,13 +87,13 @@ public class AkunFragment extends Fragment {
 
     private FragmentAkunBinding binding;
 
-
     String todayString, todayBirthday, birthday;
 
     String limitPlafon, sisaPlafon, piutangBelanja;
     int poinMember;
 
     ModelUser modelDatUser;
+    private boolean isHavingDenda = false;
 
     //Menghitung limit plafon member
     private long limitAwal = 0;
@@ -100,8 +103,6 @@ public class AkunFragment extends Fragment {
     ClipboardManager clipboardManager;
 
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
-
-//    private static boolean isAlreadyLoad = false;
 
     public AkunFragment() {
     }
@@ -150,8 +151,33 @@ public class AkunFragment extends Fragment {
             public void onClick(View view) {
 
                 if (sessionManager.isLoggedIn()) {
-                    Intent intent = new Intent(requireContext(), MembershipChoose.class);
-                    startActivity(intent);
+
+                    if (isHavingDenda) {
+                        AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+                        alert.setIcon(R.drawable.dbelga);
+                        alert.setTitle("Attention!");
+                        alert.setMessage("Anda harus melunasi piutang anda terlebih dahulu !");
+                        alert.setPositiveButton("LUNASI", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                Intent intent = new Intent(requireActivity(), BayarTagihan.class);
+                                startActivity(intent);
+                            }
+                        });
+                        alert.setNeutralButton("TUTUP", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        alert.show();
+                    } else {
+                        Intent intent = new Intent(requireContext(), MembershipChoose.class);
+                        startActivity(intent);
+                    }
+
+
                 } else {
                     AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
                     alert.setIcon(R.drawable.dbelga);
@@ -163,6 +189,7 @@ public class AkunFragment extends Fragment {
                             dialogInterface.dismiss();
                             Intent intent = new Intent(requireActivity(), LoginActivity.class);
                             startActivity(intent);
+                            getActivity().finish();
                         }
                     });
                     alert.setNegativeButton("REGISTER", new DialogInterface.OnClickListener() {
@@ -171,6 +198,7 @@ public class AkunFragment extends Fragment {
                             dialog.dismiss();
                             Intent intent = new Intent(requireActivity(), RegisterActivity.class);
                             startActivity(intent);
+                            getActivity().finish();
                         }
                     });
                     alert.setNeutralButton("Tutup", new DialogInterface.OnClickListener() {
@@ -193,24 +221,33 @@ public class AkunFragment extends Fragment {
             }
         });
 
+        binding.lnVoucherMember.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireContext(), DaftarVoucherMember.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.lnVoucherKlaim.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(requireContext(), VoucherActivity.class);
+                startActivity(intent);
+            }
+        });
+
         return binding.getRoot();
+
     }
 
     PopupBarcodeMemberBinding popupBarcodeMemberBinding;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog alertDialog;
 
-
     private void setupPopUpBarcode() {
 
-//        int kodeStatus = (int) (1 + (Math.random() * 2));
-//        Random r = new Random();
-//        String randomNumber = String.format("%04d", Integer.valueOf(r.nextInt(1001)));
-//
-//        String kodeUser = "20210" + String.valueOf(kodeStatus) + randomNumber;
         String kodeUser = modelDatUser.getMsgServer().get(0).getCode();
-//        Log.e(TAG, "setupPopUpBarcode: " + kodeUser);
-
 
         popupBarcodeMemberBinding = PopupBarcodeMemberBinding.inflate(getLayoutInflater());
         View view = popupBarcodeMemberBinding.getRoot();
@@ -248,14 +285,6 @@ public class AkunFragment extends Fragment {
                 Toast.makeText(requireContext(), "Berhasil copy kode member !", Toast.LENGTH_SHORT).show();
             }
         });
-
-
-//        try {
-//            Thread.sleep(10000);
-//            alertDialog.dismiss();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
 
 
     }
@@ -346,12 +375,19 @@ public class AkunFragment extends Fragment {
                                 modelDatUser = modelListTransaction;
                                 String status_member = dataUser.getStatusMember();
                                 String expiredMember = dataUser.getExpiredDate();
+
+                                String lastUpdate = dataUser.getUpdatedAt();
+
                                 String ulangTahun = dataUser.getDateBirth();
                                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                 SimpleDateFormat formatEXP = new SimpleDateFormat("yyyy-MM-dd");
                                 SimpleDateFormat formatHariIni = new SimpleDateFormat("dd-MM-yyyy");
                                 Date birth = null;
                                 birth = formatEXP.parse(ulangTahun);
+
+
+                                Date terakhirUpdate = formatter.parse(lastUpdate);
+
 
                                 Date todayDate = formatHariIni.parse(todayString);
                                 SimpleDateFormat formatToday = new SimpleDateFormat("MM-dd");
@@ -390,10 +426,14 @@ public class AkunFragment extends Fragment {
                                 }
 
                                 limitPlafon = String.valueOf(limitAwal);
-                                sisaPlafon = String.valueOf(dataUser.getSisaCreditLimit());
+                                sisaPlafon = String.valueOf((int) dataUser.getSisaCreditLimit());
                                 piutangBelanja = String.valueOf(dataUser.getGrandTotalDebet());
 
-                                poinMember = dataUser.getPoin();
+                                poinMember = (int) Math.floor(dataUser.getPoin());
+
+                                if (poinMember < 0) {
+                                    poinMember = 0;
+                                }
 
                                 Log.e(TAG, "limit plafon: Rp. " + nf.format(Long.parseLong(limitPlafon)));
                                 Log.e(TAG, "sisa plafon: Rp. " + nf.format(Long.parseLong(sisaPlafon)));
@@ -401,9 +441,26 @@ public class AkunFragment extends Fragment {
                                 Log.e(TAG, "Poin Belanja : " + poinMember);
 
                                 binding.textCreditLimit.setText("Rp. " + nf.format(Long.parseLong(limitPlafon)));
-                                binding.textSisaLimit.setText("Rp. " + nf.format(Long.parseLong(sisaPlafon)));
-                                binding.textPiutangBelanja.setText("Rp. " + nf.format(Long.parseLong(String.valueOf((int) Double.parseDouble(piutangBelanja)))));
+                                binding.textSisaLimit.setText("Rp. " + nf.format(Math.floor(Double.parseDouble(sisaPlafon))));
+                                binding.textPiutangBelanja.setText("Rp. " + nf.format(Math.ceil(Double.parseDouble(piutangBelanja))));
                                 binding.txtTotalPoin.setText(poinMember + " Poin");
+
+
+                                if (dataUser.getFlagDenda().equals("true")) {
+                                    isHavingDenda = true;
+                                } else {
+                                    isHavingDenda = false;
+                                }
+
+
+                                long longHari = todayDate.getTime() - terakhirUpdate.getTime();
+                                int jumlahHari = (int) TimeUnit.DAYS.convert(longHari, TimeUnit.MILLISECONDS);
+
+                                if (jumlahHari < 30) {
+                                    binding.btnMembershipPlan.setVisibility(View.GONE);
+                                } else {
+                                    binding.btnMembershipPlan.setVisibility(View.VISIBLE);
+                                }
 
                                 cekMember();
 
@@ -495,7 +552,38 @@ public class AkunFragment extends Fragment {
                                 ModelVoucherCustomer modelListItem = gson.fromJson(response, ModelVoucherCustomer.class);
                                 com.dbelgamembership.membersip.Model.ModelVoucherCustomer.MsgServer modelVoucher = modelListItem.getMsgServer().get(0);
 
-                                jumlahVoucher = modelVoucher.getDaftarVoucher().size();
+
+                                for (int i = 0; i < modelVoucher.getDaftarVoucher().size(); i++) {
+
+                                    boolean isVoucherExpired = false;
+
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    final Calendar baru = Calendar.getInstance();
+
+
+                                    Date tanggalNow = baru.getTime();
+                                    Date tanggalAkhir = formatter.parse(modelVoucher.getDaftarVoucher().get(i).getExpiredDate());
+
+                                    long mlNow = tanggalNow.getTime();
+                                    long mlAkhir = tanggalAkhir.getTime();
+
+                                    if (mlNow <= mlAkhir) {
+                                        isVoucherExpired = false;
+                                    } else {
+                                        isVoucherExpired = true;
+                                    }
+
+                                    if (!modelVoucher.getDaftarVoucher().get(i).getFlagPakai() && !isVoucherExpired) {
+                                        jumlahVoucher++;
+                                    }
+
+
+//                                    if (!modelVoucher.getDaftarVoucher().get(i).getFlagPakai()) {
+//                                       jumlahVoucher++;
+//                                    }
+                                }
+
+//                                jumlahVoucher = modelVoucher.getDaftarVoucher().size();
 
                             }
 
@@ -608,6 +696,7 @@ public class AkunFragment extends Fragment {
                                 Log.e(TAG, "SIZE 2 : " + modelVoucher.size());
 
                                 binding.textJumlahVoucherKlaim.setText(String.valueOf(modelVoucher.size()) + " Voucher");
+
                             }
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: Error " + e);

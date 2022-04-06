@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/popup_round"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:layout_margin="20dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/produk_close"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_above="@id/layoutTotalBelanja"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/produk_kategori"
+            android:layout_centerHorizontal="true"
+            android:text="PEMBATALAN BELANJA"
+            android:fontFamily="@font/hammer_font"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/produk_image"
+            android:src="@drawable/ic_baseline_cancel_24"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            app:tint="@color/merahBelga" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Transaksi anda tidak bisa dilanjutkan,\nlihat detail untuk alasan pembatalan !"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Daftar Item"
+            android:textStyle="bold|italic"
+            android:textColor="@color/black"
+            android:layout_marginTop="8dp"/>
+
+
+        <ScrollView
+            android:id="@+id/scrollViewCheckOut"
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_itemPembatalan"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    android:orientation="vertical"
+                    tools:listitem="@layout/item_pembatalan"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginVertical="2dp"
+        android:id="@+id/layoutTotalBelanja"
+        android:layout_above="@id/layoutBottom"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:textColor="@color/merahBelga"
+                android:text="BATALKAN TRANSAKSI"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:textSize="12sp"
+                android:fontFamily="@font/hammer_font"
+                android:textColor="@color/black"
+                android:text="dan silahkan order pesanan baru lagi"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginVertical="2dp"
+        android:id="@+id/layoutBottom"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+
+            android:layout_marginStart="4dp"
+            android:id="@+id/layout_btnCheckout"
+            android:paddingVertical="12sp"
+            android:gravity="center"
+            android:background="@drawable/button_round_theme"
+            android:backgroundTint="@color/merahBelga"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_weight="0"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_baseline_cancel_24"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:text="Batalkan Order"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

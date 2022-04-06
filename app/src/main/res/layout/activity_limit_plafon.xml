@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Screen.User.LimitPlafon">
+    tools:context=".Screen.Limit.LimitPlafon">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
@@ -27,7 +27,7 @@
                 app:elevation="0dp"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/biruBelga"
-                app:title="Limit Member Dbelga"
+                app:title="Limit Member dBelga"
                 tools:ignore="HardcodedText">
 
             </androidx.appcompat.widget.Toolbar>
@@ -198,7 +198,7 @@
 
                                     <TextView
                                         android:layout_marginVertical="4dp"
-                                        android:text="Tagihan Limit Bulan Ini"
+                                        android:text="Tagihan Anda !"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"/>
 
@@ -256,7 +256,6 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content">
 
-
                                     <ImageView
                                         android:src="@drawable/ic_baseline_list_alt_24"
                                         android:layout_width="48dp"
@@ -266,11 +265,9 @@
                                     <TextView
                                         android:layout_marginLeft="8dp"
                                         android:layout_marginVertical="4dp"
-                                        android:text="Tagihan Saya"
+                                        android:text="Riwayat Tagihan"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"/>
-
-
 
                                 </LinearLayout>
 
@@ -289,7 +286,6 @@
                                 android:background="@color/biruBelga"
                                 android:layout_width="match_parent"
                                 android:layout_height="2dp"/>
-
 
                         </LinearLayout>
 
@@ -320,7 +316,7 @@
                                     <TextView
                                         android:layout_marginLeft="8dp"
                                         android:layout_marginVertical="4dp"
-                                        android:text="Riwayat Limit"
+                                        android:text="Riwayat Pembayaran Limit"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"/>
 

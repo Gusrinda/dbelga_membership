@@ -23,13 +23,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ImageView
+
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/produk_image"
-        android:src="@drawable/not_found"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="32dp"
         android:layout_width="match_parent"
-        android:layout_height="240dp" />
+        android:layout_height="240dp"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_centerHorizontal="true"
+        android:padding="2dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/not_found" />
 
     <TextView
         android:layout_below="@id/produk_image"
@@ -95,36 +99,89 @@
 
     </LinearLayout>
 
-
     <LinearLayout
-        android:id="@+id/layout_Stok"
+        android:visibility="gone"
+        android:layout_marginVertical="4dp"
+        android:gravity="center_vertical"
         android:layout_below="@id/layout_harga"
+        android:id="@+id/layoutDiskonMembership"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_marginTop="4dp"
-            android:layout_marginLeft="16sp"
-            android:text="Stok Produk :"
-            android:textSize="12sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginLeft="16sp"
+                android:text="DISKON MEMBERSHIP : "
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_marginTop="4dp"
-            android:id="@+id/produk_stok"
-            android:layout_marginLeft="4dp"
-            android:text="0 Produk"
-            android:textSize="12sp"
+            <TextView
+                android:id="@+id/keterangan_diskon_membership"
+                android:layout_marginLeft="4dp"
+                android:text="0 Produk"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@id/layoutDiskonMembership"
+        android:id="@+id/layoutStok"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/layout_Stok"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="16sp"
+                android:text="Stok Produk :"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/produk_stok"
+                android:layout_marginLeft="4dp"
+                android:text="0 Produk"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/layout_Stok_Promo"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/stokPromo"
+                android:layout_marginLeft="4dp"
+                android:text="[ 0 Promo ]"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_marginTop="16dp"
-        android:layout_below="@id/layout_Stok"
+        android:layout_below="@id/layoutStok"
         android:paddingVertical="12sp"
         android:gravity="center"
         android:id="@+id/layout_pesanStok"
@@ -166,7 +223,6 @@
             android:textColor="#FFF"
             android:textSize="17dp"
             android:textStyle="bold" />
-
 
     </LinearLayout>
 

@@ -35,14 +35,29 @@ public class ModelResponseCart implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 9067649130988569208L;
+    private final static long serialVersionUID = 7532783610094808422L;
 
     protected ModelResponseCart(android.os.Parcel in) {
         this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.msgServer = ((MsgServer) in.readValue((MsgServer.class.getClassLoader())));
     }
 
+    /**
+     * No args constructor for use in serialization
+     * 
+     */
     public ModelResponseCart() {
+    }
+
+    /**
+     * 
+     * @param success
+     * @param msgServer
+     */
+    public ModelResponseCart(Boolean success, MsgServer msgServer) {
+        super();
+        this.success = success;
+        this.msgServer = msgServer;
     }
 
     public Boolean getSuccess() {

@@ -41,6 +41,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
@@ -188,23 +189,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                            return;
-                        }
-
-                        // Get new FCM registration token
-                        String token = task.getResult();
-
-                        // Log and toast
-                        Log.d(TAG, token);
-                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-                    }
-                });
 
 
     }
@@ -265,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         mQueue.add(jsonObjectRequest);
-
     }
 
     private void getDataUser() {
@@ -870,7 +853,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e("", "expired membership: " + dateExpired);
                                     sessionManager.setMembership(membership);
                                     if (statusPayment.equals("TRUE")) {
-                                        Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                                        Intent intent = new Intent(MainActivity.this, NewMainActivity.class);
                                         startActivity(intent);
                                         finish();
                                     } else {

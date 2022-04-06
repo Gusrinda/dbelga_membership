@@ -73,14 +73,14 @@ public class LoginActivity extends AppCompatActivity {
         findId();
         getSession();
 
-        logoBelga.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-            }
-        });
+//        logoBelga.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                Intent intent = new Intent(LoginActivity.this, NewMainActivity.class);
+//                startActivity(intent);
+//            }
+//        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,6 +178,9 @@ public class LoginActivity extends AppCompatActivity {
                                 if (modelUser.getMsgServer().getEmailVerification()) {
                                     finish();
                                     Intent intent = new Intent(LoginActivity.this, SplashActivity.class);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 } else {
 //                                    sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
@@ -219,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
     public void getSession() {
         Log.e("", "sessionCondition: Username Login? " + sessionManager.isLoggedIn());
         if (sessionManager.isLoggedIn()) {
-//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, NewMainActivity.class);
             Intent intent = new Intent(LoginActivity.this, GudangActivity.class);
             startActivity(intent);
             cekPreAccess = true;

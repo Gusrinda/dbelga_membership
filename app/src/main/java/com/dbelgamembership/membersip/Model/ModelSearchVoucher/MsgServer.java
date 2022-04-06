@@ -2,6 +2,8 @@
 package com.dbelgamembership.membersip.Model.ModelSearchVoucher;
 
 import java.io.Serializable;
+import java.util.List;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
@@ -38,6 +40,15 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("tipe_member")
     @Expose
     private String tipeMember;
+
+    @SerializedName("minimal_belanja")
+    @Expose
+    private String minimalBelanja;
+    @SerializedName("gudang")
+    @Expose
+    private List<Integer> gudang = null;
+
+
     public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -66,6 +77,8 @@ public class MsgServer implements Serializable, Parcelable
         this.stok = ((int) in.readValue((int.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
         this.tipeMember = ((String) in.readValue((String.class.getClassLoader())));
+        this.minimalBelanja = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.gudang, (java.lang.Integer.class.getClassLoader()));
     }
 
     public MsgServer() {
@@ -188,6 +201,24 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
+    public String getMinimalBelanja() {
+        return minimalBelanja;
+    }
+
+    public void setMinimalBelanja(String minimalBelanja) {
+        this.minimalBelanja = minimalBelanja;
+    }
+
+
+    public List<Integer> getGudang() {
+        return gudang;
+    }
+
+    public void setGudang(List<Integer> gudang) {
+        this.gudang = gudang;
+    }
+
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(name);
         dest.writeValue(code);
@@ -198,6 +229,8 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(stok);
         dest.writeValue(deskripsi);
         dest.writeValue(tipeMember);
+        dest.writeValue(minimalBelanja);
+        dest.writeList(gudang);
     }
 
     public int describeContents() {

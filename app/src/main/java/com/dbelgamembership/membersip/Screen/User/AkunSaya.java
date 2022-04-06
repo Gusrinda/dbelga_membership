@@ -33,6 +33,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Screen.Limit.LimitPlafon;
 import com.dbelgamembership.membersip.Screen.Setting.EditAkun;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
@@ -201,10 +202,10 @@ public class AkunSaya extends AppCompatActivity {
                             }
 
                             limitPlafon = String.valueOf(limitAwal);
-                            sisaPlafon = String.valueOf(dataUser.getSisaCreditLimit());
+                            sisaPlafon = String.valueOf((int) dataUser.getSisaCreditLimit());
                             piutangBelanja = String.valueOf(dataUser.getGrandTotalDebet());
 
-                            poinMember = dataUser.getPoin();
+                            poinMember = (int) Math.floor(dataUser.getPoin());
 
 
                             Log.e(TAG, "limit plafon: Rp. " + nf.format(Long.parseLong(limitPlafon)));

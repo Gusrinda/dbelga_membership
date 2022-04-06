@@ -1,23 +1,122 @@
 package com.dbelgamembership.membersip.Screen.Limit;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager2.widget.ViewPager2;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import com.ceylonlabs.imageviewpopup.ImagePopup;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
+import com.dbelgamembership.membersip.Helper.Http;
+import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelDataLimit.DetailLimitUser;
+import com.dbelgamembership.membersip.Model.ModelListBank.Datum;
+import com.dbelgamembership.membersip.Model.ModelListBank.ModelListBank;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.DaftarTagihanDenda;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.DaftarTagihanPeriode;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.ModelListTagihan;
+import com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart;
+import com.dbelgamembership.membersip.Model.ModelTagihanUser.ModelTagihanUser;
+import com.dbelgamembership.membersip.Model.ModelTagihanUser.MsgServer;
+import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
+import com.dbelgamembership.membersip.Screen.Limit.Dummy.AdapterListDummyTagihan;
+import com.dbelgamembership.membersip.Screen.Limit.Dummy.ModelItemBayarTagihan;
+import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.DetailTagihan;
+import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.ModelPelunasan;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintFakturActivity;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
+import com.dbelgamembership.membersip.Screen.Voucher.VoucherActivity;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListDenda;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListTagihan;
 import com.dbelgamembership.membersip.databinding.ActivityBayarTagihanBinding;
+import com.dbelgamembership.membersip.databinding.FrameFotoBinding;
+import com.dbelgamembership.membersip.databinding.PopupPilihPelunasanBinding;
+import com.dbelgamembership.membersip.databinding.PopupPilihPembayaranBinding;
+import com.developer.kalert.KAlertDialog;
+import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
-public class BayarTagihan extends AppCompatActivity {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class BayarTagihan extends AppCompatActivity implements AdapterListTagihan.AdapterListTransactionCallback, AdapterListDenda.AdapterListTransactionCallback {
+
+    private final String TAG = this.getClass().getSimpleName();
     private ActivityBayarTagihanBinding bayarTagihanBinding;
+    private SessionManager sessionManager;
+
+    NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
+    Bitmap bitmap;
+    private String imageString = "";
+    private Uri ImageUri;
+
+    private boolean isUploadBuktiTransfer = false;
+    ClipboardManager clipboardManager;
+    private ImagePopup imagePopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bayarTagihanBinding = ActivityBayarTagihanBinding.inflate(getLayoutInflater());
         View view = bayarTagihanBinding.getRoot();
+        sessionManager = new SessionManager(this);
         setContentView(view);
+
+        clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
 
         bayarTagihanBinding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         bayarTagihanBinding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -27,5 +126,1113 @@ public class BayarTagihan extends AppCompatActivity {
             }
         });
 
+        getDataTagihanPeriode();
+        getDaftarBankTagihan();
+
+        bayarTagihanBinding.btnBayarTagihan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                popUpPelunasanTagihan();
+            }
+        });
+
+        bayarTagihanBinding.tabLayout.addTab(bayarTagihanBinding.tabLayout.newTab().setText("Tagihan"));
+        bayarTagihanBinding.tabLayout.addTab(bayarTagihanBinding.tabLayout.newTab().setText("Denda"));
+
+        bayarTagihanBinding.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getPosition() == 0) {
+                    bayarTagihanBinding.layoutTabTagihan.setVisibility(View.VISIBLE);
+                    bayarTagihanBinding.layoutTabDenda.setVisibility(View.GONE);
+                } else {
+                    bayarTagihanBinding.layoutTabTagihan.setVisibility(View.GONE);
+                    bayarTagihanBinding.layoutTabDenda.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        bayarTagihanBinding.btnLunasiTagihan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+                Call<JsonElement> call = apiInterface.doGetDateServer();
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                        if (response != null) {
+                            String responseX = String.valueOf(response.body());
+                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                            boolean success = root.get("success").getAsBoolean();
+                            Log.e("", "Test : " + success);
+                            if (!success) {
+                                Toast.makeText(BayarTagihan.this, "ERROR :: " + root.get("msgServer").getAsString(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String tanggalServer = root.get("msgServer").getAsString();
+                                    Date checkJamServer = formatter.parse(tanggalServer);
+                                    assert checkJamServer != null;
+                                    Log.e(TAG, "onResponse TANGGAL SERVER : " + formatter.format(checkJamServer).toString());
+
+                                    final Calendar batasan = Calendar.getInstance();
+                                    batasan.set(Calendar.HOUR_OF_DAY, 8);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamBukaHariIni = batasan.getTime();
+
+                                    batasan.set(Calendar.HOUR_OF_DAY, 20);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamTutupHariIni = batasan.getTime();
+
+                                    Log.e(TAG, "onResponse BATAS JAM BUKA SERVER :  " + formatter.format(jamBukaHariIni).toString());
+                                    Log.e(TAG, "onResponse BATAS JAM TUTUP SERVER :  " + formatter.format(jamTutupHariIni).toString());
+
+                                    if (checkJamServer.getTime() >= jamBukaHariIni.getTime() && checkJamServer.getTime() <= jamTutupHariIni.getTime()) {
+                                        popUpPelunasanTagihanAkhir(daftarTagihan);
+                                    } else {
+                                        Toast.makeText(BayarTagihan.this, "Tidak bisa pelunasan, tidak dalam jam pelayanan !", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                        Toast.makeText(BayarTagihan.this, "Error :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+
+            }
+        });
+
+        bayarTagihanBinding.btnLunasiTagihanDenda.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+                Call<JsonElement> call = apiInterface.doGetDateServer();
+                call.enqueue(new Callback<JsonElement>() {
+                    @Override
+                    public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                        if (response != null) {
+                            String responseX = String.valueOf(response.body());
+                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                            boolean success = root.get("success").getAsBoolean();
+                            Log.e("", "Test : " + success);
+                            if (!success) {
+                                Toast.makeText(BayarTagihan.this, "ERROR :: " + root.get("msgServer").getAsString(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                try {
+                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                    String tanggalServer = root.get("msgServer").getAsString();
+                                    Date checkJamServer = formatter.parse(tanggalServer);
+                                    assert checkJamServer != null;
+                                    Log.e(TAG, "onResponse TANGGAL SERVER : " + formatter.format(checkJamServer).toString());
+
+                                    final Calendar batasan = Calendar.getInstance();
+                                    batasan.set(Calendar.HOUR_OF_DAY, 8);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamBukaHariIni = batasan.getTime();
+
+                                    batasan.set(Calendar.HOUR_OF_DAY, 20);
+                                    batasan.set(Calendar.MINUTE, 30);
+                                    batasan.set(Calendar.SECOND, 0);
+                                    batasan.set(Calendar.MILLISECOND, 0);
+                                    Date jamTutupHariIni = batasan.getTime();
+
+                                    Log.e(TAG, "onResponse BATAS JAM BUKA SERVER :  " + formatter.format(jamBukaHariIni).toString());
+                                    Log.e(TAG, "onResponse BATAS JAM TUTUP SERVER :  " + formatter.format(jamTutupHariIni).toString());
+
+                                    if (checkJamServer.getTime() >= jamBukaHariIni.getTime() && checkJamServer.getTime() <= jamTutupHariIni.getTime()) {
+                                        popUpPelunasanDendaAkhir(daftarTagihanDendas);
+                                    } else {
+                                        Toast.makeText(BayarTagihan.this, "Tidak bisa pelunasan, tidak dalam jam pelayanan !", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<JsonElement> call, Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                        Toast.makeText(BayarTagihan.this, "Error :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
+        });
+
+        bayarTagihanBinding.btnHubungiAdmin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mobileNumber = getResources().getString(R.string.nomor_wa_admin_1);
+                String message = "Halo saya adalah Member Belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName();
+                boolean installed = appInstalledOrNot("com.whatsapp");
+                if (installed) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + mobileNumber + "&text=" + message));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(BayarTagihan.this, "Whats app not installed on your device", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    //Create method appInstalledOrNot
+    private boolean appInstalledOrNot(String url) {
+        PackageManager packageManager = getPackageManager();
+        boolean app_installed;
+        try {
+            packageManager.getPackageInfo(url, PackageManager.GET_ACTIVITIES);
+            app_installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            app_installed = false;
+        }
+        return app_installed;
+    }
+
+    List<Datum> daftarBank = new ArrayList<>();
+
+    private void getDaftarBankTagihan() {
+
+//        '12','175','176','20','23','18', '25'
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelListBank> call = apiInterface.doGetListBankTagihan();
+
+        call.enqueue(new Callback<ModelListBank>() {
+            @Override
+            public void onResponse(Call<ModelListBank> call, Response<ModelListBank> response) {
+
+                if (response.code() == 200) {
+
+                    ModelListBank dataResponse = response.body();
+
+                    if (dataResponse.getData().size() > 0) {
+
+                        for (int i = 0; i < dataResponse.getData().size(); i++) {
+                            Datum dataBank = dataResponse.getData().get(i);
+
+                            int idCOA = dataBank.getIdCoa();
+
+                            if (idCOA == 12 || idCOA == 175 || idCOA == 176 || idCOA == 20 || idCOA == 23 || idCOA == 18 || idCOA == 25) {
+                                daftarBank.add(dataBank);
+                            }
+
+                        }
+
+                        Log.e(TAG, "SIZE BANK :: " + daftarBank.size());
+
+
+                    }
+
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ModelListBank> call, Throwable t) {
+                Toast.makeText(BayarTagihan.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+            }
+        });
+
+    }
+
+    ProgressDialog progressDialog = null;
+
+    private void getDataTagihanPeriode() {
+
+        progressDialog = ProgressDialog.show(BayarTagihan.this, "Getting Data . . .", "Please Wait...");
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelTagihanUser> callTagihan = apiInterface.doGetTagihanPeriodeIni(sessionManager.getPID());
+
+        callTagihan.enqueue(new Callback<ModelTagihanUser>() {
+            @Override
+            public void onResponse(Call<ModelTagihanUser> call, Response<ModelTagihanUser> response) {
+                if (response.code() == 200) {
+
+                    ModelTagihanUser modelTagihanUser = response.body();
+
+                    if (modelTagihanUser.getSuccess()) {
+
+                        MsgServer dataTagihanUser = modelTagihanUser.getMsgServer();
+
+                        getListTagihan();
+
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(BayarTagihan.this, "Error :: TIDAK SUKSES", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    progressDialog.dismiss();
+                    Toast.makeText(BayarTagihan.this, "Error :: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelTagihanUser> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(BayarTagihan.this, "Error :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + " :: " + t.getStackTrace());
+            }
+        });
+    }
+
+    List<DaftarTagihanPeriode> daftarTagihan = new ArrayList<>();
+    List<DaftarTagihanDenda> daftarTagihanDendas = new ArrayList<>();
+
+    List<DaftarTagihanPeriode> daftarTagihanFinal = new ArrayList<>();
+    List<DaftarTagihanDenda> daftarDendaFinal = new ArrayList<>();
+
+    private void getListTagihan() {
+        Calendar c = Calendar.getInstance();
+        int month = c.get(Calendar.MONTH) + 1;
+        int dayNow = c.get(Calendar.DAY_OF_MONTH);
+
+        if (dayNow > 25) {
+            month += 1;
+        }
+
+        Log.e(TAG, "getListTagihan HARI SEKARANG TANGGAL : " + dayNow);
+
+        SimpleDateFormat tanggalPeriode = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat tanggalBiarJelas = new SimpleDateFormat("dd-MM-yyyy");
+
+        String tanggalSekarang = tanggalPeriode.format(c.getTime());
+        String tanggalSekarangJelas = tanggalBiarJelas.format(c.getTime());
+
+        bayarTagihanBinding.txtStatusTagihan.setText("Tagihan : Periode " + tanggalSekarangJelas + "");
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelListTagihan> callListTagihan = apiInterface.doGetListTagihanUser(sessionManager.getPID(), tanggalSekarang);
+
+        callListTagihan.enqueue(new Callback<ModelListTagihan>() {
+            @Override
+            public void onResponse(Call<ModelListTagihan> call, Response<ModelListTagihan> response) {
+                progressDialog.dismiss();
+                if (response.code() == 200) {
+
+                    ModelListTagihan modelDaftarTagihan = response.body();
+                    bayarTagihanBinding.rvListTagihan.setAdapter(null);
+
+                    boolean isThereIsWaiting = false;
+                    double tagihanWaiting = 0;
+
+                    if (modelDaftarTagihan.getSuccess()) {
+
+                        if (modelDaftarTagihan.getMsgServer().getDaftarTagihanPeriode().size() > 0) {
+
+                            daftarTagihan = modelDaftarTagihan.getMsgServer().getDaftarTagihanPeriode();
+
+
+                            for (int i = 0; i < daftarTagihan.size(); i++) {
+
+                                if (daftarTagihan.get(i).getStatusPayment() != null) {
+
+                                    if (daftarTagihan.get(i).getStatusPayment().equals("WAITING")) {
+                                        isThereIsWaiting = true;
+                                        tagihanWaiting += Double.parseDouble(daftarTagihan.get(i).getTotal());
+                                    } else {
+                                        daftarTagihanFinal.add(daftarTagihan.get(i));
+                                    }
+                                } else {
+                                    daftarTagihanFinal.add(daftarTagihan.get(i));
+                                }
+
+                            }
+
+                            AdapterListTagihan adapterListDummyTagihan = new AdapterListTagihan(BayarTagihan.this, daftarTagihanFinal, BayarTagihan.this);
+                            bayarTagihanBinding.rvListTagihan.setAdapter(adapterListDummyTagihan);
+
+                            if (daftarTagihanFinal.size() > 0) {
+                                bayarTagihanBinding.rvListTagihan.setVisibility(View.VISIBLE);
+                                bayarTagihanBinding.btnLunasiTagihan.setVisibility(View.VISIBLE);
+                                bayarTagihanBinding.layoutKosongTagihan.setVisibility(View.GONE);
+                            } else {
+                                bayarTagihanBinding.txtTotalTabTagihan.setText("Total Tagihan : 0");
+                                bayarTagihanBinding.rvListTagihan.setVisibility(View.GONE);
+                                bayarTagihanBinding.btnLunasiTagihan.setVisibility(View.GONE);
+                                bayarTagihanBinding.layoutKosongTagihan.setVisibility(View.VISIBLE);
+                            }
+
+                        } else {
+                            bayarTagihanBinding.txtTotalTabTagihan.setText("Total Tagihan : 0");
+                            bayarTagihanBinding.rvListTagihan.setVisibility(View.GONE);
+                            bayarTagihanBinding.btnLunasiTagihan.setVisibility(View.GONE);
+                            bayarTagihanBinding.layoutKosongTagihan.setVisibility(View.VISIBLE);
+                        }
+
+                        if (modelDaftarTagihan.getMsgServer().getDaftarTagihanDenda().size() > 0) {
+                            daftarTagihanDendas = modelDaftarTagihan.getMsgServer().getDaftarTagihanDenda();
+
+                            for (int i = 0; i < daftarTagihanDendas.size(); i++) {
+
+                                if (daftarTagihanDendas.get(i).getStatusPayment() != null) {
+
+                                    if (daftarTagihanDendas.get(i).getStatusPayment().equals("WAITING")) {
+                                        isThereIsWaiting = true;
+                                        tagihanWaiting += (Double.parseDouble(daftarTagihanDendas.get(i).getTotal()) + daftarTagihanDendas.get(i).getTotalDenda());
+                                    } else {
+                                        daftarDendaFinal.add(daftarTagihanDendas.get(i));
+                                    }
+                                } else {
+                                    daftarDendaFinal.add(daftarTagihanDendas.get(i));
+                                }
+                            }
+
+                            AdapterListDenda adapterListTagihanDenda = new AdapterListDenda(BayarTagihan.this, daftarDendaFinal, BayarTagihan.this);
+                            bayarTagihanBinding.rvListDenda.setAdapter(adapterListTagihanDenda);
+
+                            if (daftarDendaFinal.size() > 0) {
+                                bayarTagihanBinding.rvListDenda.setVisibility(View.VISIBLE);
+                                bayarTagihanBinding.btnLunasiTagihanDenda.setVisibility(View.VISIBLE);
+                                bayarTagihanBinding.layoutKosongDenda.setVisibility(View.GONE);
+                            } else {
+                                bayarTagihanBinding.txtTotalTabDenda.setText("Total Denda : 0");
+                                bayarTagihanBinding.rvListDenda.setVisibility(View.GONE);
+                                bayarTagihanBinding.btnLunasiTagihanDenda.setVisibility(View.GONE);
+                                bayarTagihanBinding.layoutKosongDenda.setVisibility(View.VISIBLE);
+                            }
+
+                        } else {
+                            bayarTagihanBinding.txtTotalTabDenda.setText("Total Denda : 0");
+                            bayarTagihanBinding.rvListDenda.setVisibility(View.GONE);
+                            bayarTagihanBinding.btnLunasiTagihanDenda.setVisibility(View.GONE);
+                            bayarTagihanBinding.layoutKosongDenda.setVisibility(View.VISIBLE);
+                        }
+
+                        bayarTagihanBinding.txtTotalTagihan.setText("Rp. " + nf.format(modelDaftarTagihan.getMsgServer().getLimitPenggunaan() + modelDaftarTagihan.getMsgServer().getTagihanDenda()));
+
+                        if (isThereIsWaiting) {
+                            bayarTagihanBinding.txtJikaAdaTagihanWaiting.setVisibility(View.VISIBLE);
+                            bayarTagihanBinding.txtJikaAdaTagihanWaiting.setText("PEMBAYARAN WAITING APPROVAL : Rp. " + nf.format(tagihanWaiting));
+
+                        }
+
+                    } else {
+                        Toast.makeText(BayarTagihan.this, "Error :: TIDAK SUKSES", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+
+                    Toast.makeText(BayarTagihan.this, "Error :: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelListTagihan> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(BayarTagihan.this, "ERROR :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                finish();
+            }
+        });
+
+    }
+
+    private AlertDialog.Builder dialogBuilder;
+    private AlertDialog alertDialog;
+
+    private AlertDialog.Builder dialogBuilderFoto;
+    private AlertDialog alertDialogFoto;
+
+    private PopupPilihPelunasanBinding popupPilihPelunasanBinding;
+    private FrameFotoBinding frameFotoBinding;
+
+
+    ArrayAdapter<String> adapterBankPelunasan;
+    Datum selectedBank;
+
+    private void popUpPelunasanTagihanAkhir(List<DaftarTagihanPeriode> itemTagihan) {
+        popupPilihPelunasanBinding = PopupPilihPelunasanBinding.inflate(getLayoutInflater());
+        final View view = popupPilihPelunasanBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+        frameFotoBinding = FrameFotoBinding.inflate(getLayoutInflater());
+        final View viewFoto = frameFotoBinding.getRoot();
+
+        dialogBuilderFoto = new AlertDialog.Builder(BayarTagihan.this);
+
+        dialogBuilderFoto.setView(viewFoto);
+        alertDialogFoto = dialogBuilderFoto.create();
+        alertDialogFoto.setCanceledOnTouchOutside(false);
+
+        List<String> listSpinnerBank = new ArrayList<String>();
+
+
+        for (int i = 0; i < daftarBank.size(); i++) {
+            listSpinnerBank.add(daftarBank.get(i).getName() + " [ " + daftarBank.get(i).getDescription() + " ]");
+        }
+
+
+        Log.e(TAG, "popUpPelunasanDenda SIZE BANK :: " + listSpinnerBank.size());
+
+        adapterBankPelunasan = new ArrayAdapter<String>(BayarTagihan.this,
+                android.R.layout.simple_spinner_item, listSpinnerBank);
+
+        adapterBankPelunasan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        popupPilihPelunasanBinding.spinnerBank.setAdapter(adapterBankPelunasan);
+
+
+        popupPilihPelunasanBinding.spinnerBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedBank = daftarBank.get(i);
+
+                String nomorRekening = selectedBank.getAccount().replaceAll("[^0-9]", "");
+
+                popupPilihPelunasanBinding.txtNomorRekeningDipilih.setText("NO REK : " + nomorRekening);
+
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getName());
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getIdCoa());
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getAccount());
+
+                popupPilihPelunasanBinding.txtNomorRekeningDipilih.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ClipData clipData = ClipData.newPlainText("text", nomorRekening);
+                        clipboardManager.setPrimaryClip(clipData);
+
+                        Toast.makeText(BayarTagihan.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        double tagihanTransaksi = 0;
+        double tagihanDenda = 0;
+        double totalTagihan = 0;
+
+        for (int i = 0; i < daftarTagihan.size(); i++) {
+
+            tagihanTransaksi += Double.parseDouble(daftarTagihan.get(i).getTotalBersih());
+            totalTagihan += (Double.parseDouble(daftarTagihan.get(i).getTotalBersih()));
+
+        }
+
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN TRANSAKSI :: " + tagihanTransaksi);
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN DENDA :: " + tagihanDenda);
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN TOTAL :: " + totalTagihan);
+
+        popupPilihPelunasanBinding.txtNominalTagihan.setText("Rp. " + nf.format(totalTagihan));
+
+        popupPilihPelunasanBinding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == popupPilihPelunasanBinding.radioCOD.getId()) {
+                    popupPilihPelunasanBinding.radioCOD.setChecked(true);
+                    popupPilihPelunasanBinding.radioTransfer.setChecked(false);
+                } else {
+                    popupPilihPelunasanBinding.radioTransfer.setChecked(true);
+                    popupPilihPelunasanBinding.radioCOD.setChecked(false);
+                }
+            }
+        });
+
+        popupPilihPelunasanBinding.radioCOD.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    popupPilihPelunasanBinding.layoutLangsung.setVisibility(View.VISIBLE);
+                } else {
+                    popupPilihPelunasanBinding.layoutLangsung.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        popupPilihPelunasanBinding.radioTransfer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    popupPilihPelunasanBinding.layoutTransfer.setVisibility(View.VISIBLE);
+                } else {
+                    popupPilihPelunasanBinding.layoutTransfer.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        popupPilihPelunasanBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupPilihPelunasanBinding.btnUploadBuktiTransfer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImagePicker.Companion.with(BayarTagihan.this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+//                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(100);
+            }
+        });
+
+        popupPilihPelunasanBinding.txtLihatFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isUploadBuktiTransfer) {
+                    alertDialogFoto.show();
+                }
+            }
+        });
+
+        frameFotoBinding.closeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogFoto.dismiss();
+            }
+        });
+
+        popupPilihPelunasanBinding.layoutBtnBayar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new KAlertDialog(BayarTagihan.this, KAlertDialog.WARNING_TYPE)
+                        .setTitleText("Lihat Transaksi")
+                        .setContentText("Lunasi tagihan anda ?")
+                        .setConfirmText("Ya")
+                        .confirmButtonColor(R.color.material_deep_orange_600, BayarTagihan.this)
+                        .cancelButtonColor(R.color.merahBelga, BayarTagihan.this)
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                if (popupPilihPelunasanBinding.radioCOD.isChecked()) {
+                                    pelunasanTagihan("LANGSUNG", daftarTagihan);
+                                } else {
+                                    pelunasanTagihan("TRANSFER", daftarTagihan);
+                                }
+                            }
+                        })
+                        .setCancelText("Tidak")
+                        .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+
+            }
+        });
+
+    }
+
+
+    private void popUpPelunasanDendaAkhir(List<DaftarTagihanDenda> daftarTagihanDendas) {
+        popupPilihPelunasanBinding = PopupPilihPelunasanBinding.inflate(getLayoutInflater());
+        final View view = popupPilihPelunasanBinding.getRoot();
+
+        dialogBuilder = new AlertDialog.Builder(this);
+
+        dialogBuilder.setView(view);
+        alertDialog = dialogBuilder.create();
+        alertDialog.setCanceledOnTouchOutside(false);
+        alertDialog.show();
+
+        frameFotoBinding = FrameFotoBinding.inflate(getLayoutInflater());
+        final View viewFoto = frameFotoBinding.getRoot();
+
+        dialogBuilderFoto = new AlertDialog.Builder(BayarTagihan.this);
+
+        dialogBuilderFoto.setView(viewFoto);
+        alertDialogFoto = dialogBuilderFoto.create();
+        alertDialogFoto.setCanceledOnTouchOutside(false);
+
+
+        List<String> listSpinnerBank = new ArrayList<String>();
+
+
+        for (int i = 0; i < daftarBank.size(); i++) {
+            listSpinnerBank.add(daftarBank.get(i).getName() + " [ " + daftarBank.get(i).getDescription() + " ]");
+        }
+
+
+        Log.e(TAG, "popUpPelunasanDenda SIZE BANK :: " + listSpinnerBank.size());
+
+        adapterBankPelunasan = new ArrayAdapter<String>(BayarTagihan.this,
+                android.R.layout.simple_spinner_item, listSpinnerBank);
+
+        adapterBankPelunasan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        popupPilihPelunasanBinding.spinnerBank.setAdapter(adapterBankPelunasan);
+
+
+        double tagihanTransaksi = 0;
+        double tagihanDenda = 0;
+        double totalTagihan = 0;
+
+        for (int i = 0; i < daftarTagihanDendas.size(); i++) {
+
+            tagihanTransaksi += Double.parseDouble(daftarTagihanDendas.get(i).getTotalBersih());
+            tagihanDenda += daftarTagihanDendas.get(i).getTotalDenda();
+
+            totalTagihan += (Double.parseDouble(daftarTagihanDendas.get(i).getTotalBersih()) + daftarTagihanDendas.get(i).getTotalDenda());
+
+        }
+
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN TRANSAKSI :: " + tagihanTransaksi);
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN DENDA :: " + tagihanDenda);
+        Log.e(TAG, "popUpPelunasanDendaAkhir :: TAGIHAN TOTAL :: " + totalTagihan);
+
+        popupPilihPelunasanBinding.txtNominalTagihan.setText("Rp. " + nf.format(totalTagihan));
+
+        popupPilihPelunasanBinding.radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                if (i == popupPilihPelunasanBinding.radioCOD.getId()) {
+                    popupPilihPelunasanBinding.radioCOD.setChecked(true);
+                    popupPilihPelunasanBinding.radioTransfer.setChecked(false);
+                } else {
+                    popupPilihPelunasanBinding.radioTransfer.setChecked(true);
+                    popupPilihPelunasanBinding.radioCOD.setChecked(false);
+                }
+            }
+        });
+
+
+        popupPilihPelunasanBinding.spinnerBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedBank = daftarBank.get(i);
+
+                String nomorRekening = selectedBank.getAccount().replaceAll("[^0-9]", "");
+
+
+                popupPilihPelunasanBinding.txtNomorRekeningDipilih.setText("NO REK : " + nomorRekening);
+
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getName());
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getIdCoa());
+                Log.e(TAG, "ON SPINNER BANK SELECTED :: " + selectedBank.getAccount());
+
+                popupPilihPelunasanBinding.txtNomorRekeningDipilih.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ClipData clipData = ClipData.newPlainText("text", nomorRekening);
+                        clipboardManager.setPrimaryClip(clipData);
+
+                        Toast.makeText(BayarTagihan.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+        popupPilihPelunasanBinding.radioCOD.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    popupPilihPelunasanBinding.layoutLangsung.setVisibility(View.VISIBLE);
+                } else {
+                    popupPilihPelunasanBinding.layoutLangsung.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        popupPilihPelunasanBinding.radioTransfer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    popupPilihPelunasanBinding.layoutTransfer.setVisibility(View.VISIBLE);
+                } else {
+                    popupPilihPelunasanBinding.layoutTransfer.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        popupPilihPelunasanBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        popupPilihPelunasanBinding.btnUploadBuktiTransfer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ImagePicker.Companion.with(BayarTagihan.this)
+                        .crop()                    //Crop image(Optional), Check Customization for more option
+                        .compress(1024)            //Final image size will be less than 1 MB(Optional)
+//                        .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                        .start(100);
+            }
+        });
+
+        popupPilihPelunasanBinding.txtLihatFoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isUploadBuktiTransfer) {
+                    alertDialogFoto.show();
+                }
+            }
+        });
+
+        frameFotoBinding.closeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogFoto.dismiss();
+            }
+        });
+
+        popupPilihPelunasanBinding.layoutBtnBayar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                new KAlertDialog(BayarTagihan.this, KAlertDialog.WARNING_TYPE)
+                        .setTitleText("Lihat Transaksi")
+                        .setContentText("Lunasi tagihan anda ?")
+                        .setConfirmText("Ya")
+                        .confirmButtonColor(R.color.material_deep_orange_600, BayarTagihan.this)
+                        .cancelButtonColor(R.color.merahBelga, BayarTagihan.this)
+                        .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog sDialog) {
+                                sDialog.dismissWithAnimation();
+                                if (popupPilihPelunasanBinding.radioCOD.isChecked()) {
+                                    pelunasanTagihanDenda("LANGSUNG", daftarTagihanDendas);
+                                } else {
+                                    if (isUploadBuktiTransfer) {
+                                        pelunasanTagihanDenda("TRANSFER", daftarTagihanDendas);
+                                    } else {
+                                        Toast.makeText(BayarTagihan.this, "Upload bukti transfer pelunasan terlebih dahulu !", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        })
+                        .setCancelText("Tidak")
+                        .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                            @Override
+                            public void onClick(KAlertDialog kAlertDialog) {
+                                kAlertDialog.dismissWithAnimation();
+                            }
+                        })
+                        .show();
+
+            }
+        });
+
+    }
+
+    private void pelunasanTagihanDenda(String caraBayar, List<DaftarTagihanDenda> daftarTagihanDendas) {
+
+        ModelPelunasan modelPelunasanTagihan = new ModelPelunasan();
+
+        String buktiGambar = imageString;
+        modelPelunasanTagihan.setId_customer(sessionManager.getPID());
+        modelPelunasanTagihan.setTipe_payment(caraBayar);
+        modelPelunasanTagihan.setTipe_pelunasan("denda");
+
+        if (caraBayar.equals("LANGSUNG")) {
+            modelPelunasanTagihan.setId_bank(null);
+            modelPelunasanTagihan.setNama_bank(null);
+            modelPelunasanTagihan.setCoa_bank(null);
+            modelPelunasanTagihan.setString_bukti(null);
+        } else {
+            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
+            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
+            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
+            modelPelunasanTagihan.setString_bukti(buktiGambar);
+        }
+
+
+        List<DetailTagihan> detailTagihansList = new ArrayList<>();
+
+        double tagihanTransaksi = 0;
+        double tagihanDenda = 0;
+        double totalTagihan = 0;
+
+        for (int i = 0; i < daftarTagihanDendas.size(); i++) {
+            DetailTagihan detailTagihan = new DetailTagihan();
+
+            detailTagihan.setId_transaksi(String.valueOf(daftarTagihanDendas.get(i).getId()));
+            detailTagihan.setCode_transaksi(daftarTagihanDendas.get(i).getPembayaranCode());
+            detailTagihan.setTotal_transaksi(daftarTagihanDendas.get(i).getTotalBersih());
+            detailTagihan.setTotal_denda(String.valueOf(daftarTagihanDendas.get(i).getTotalDenda()));
+
+            tagihanTransaksi += Double.parseDouble(daftarTagihanDendas.get(i).getTotalBersih());
+            tagihanDenda += daftarTagihanDendas.get(i).getTotalDenda();
+            totalTagihan += (Double.parseDouble(daftarTagihanDendas.get(i).getTotalBersih()) + daftarTagihanDendas.get(i).getTotalDenda());
+
+            detailTagihan.setGrand_total(String.valueOf(Double.parseDouble(daftarTagihanDendas.get(i).getTotalBersih()) + daftarTagihanDendas.get(i).getTotalDenda()));
+
+            detailTagihansList.add(detailTagihan);
+        }
+
+        modelPelunasanTagihan.setDetail(detailTagihansList);
+        modelPelunasanTagihan.setTotal_tagihan(tagihanTransaksi);
+        modelPelunasanTagihan.setTotal_denda(tagihanDenda);
+        modelPelunasanTagihan.setGrand_total(totalTagihan);
+
+        sendDataPelunasanTagihan(modelPelunasanTagihan);
+
+
+    }
+
+
+    private void pelunasanTagihan(String caraBayar, List<DaftarTagihanPeriode> daftarTagihanPeriodes) {
+
+        ModelPelunasan modelPelunasanTagihan = new ModelPelunasan();
+
+        String buktiGambar = imageString;
+        modelPelunasanTagihan.setId_customer(sessionManager.getPID());
+        modelPelunasanTagihan.setTipe_payment(caraBayar);
+        modelPelunasanTagihan.setTipe_pelunasan("tagihan");
+
+        if (caraBayar.equals("LANGSUNG")) {
+            modelPelunasanTagihan.setId_bank(null);
+            modelPelunasanTagihan.setNama_bank(null);
+            modelPelunasanTagihan.setCoa_bank(null);
+            modelPelunasanTagihan.setString_bukti(null);
+        } else {
+            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
+            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
+            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
+            modelPelunasanTagihan.setString_bukti(buktiGambar);
+        }
+
+
+        List<DetailTagihan> detailTagihansList = new ArrayList<>();
+
+        double tagihanTransaksi = 0;
+        double tagihanDenda = 0;
+        double totalTagihan = 0;
+
+        for (int i = 0; i < daftarTagihan.size(); i++) {
+            DetailTagihan detailTagihan = new DetailTagihan();
+
+            detailTagihan.setId_transaksi(String.valueOf(daftarTagihan.get(i).getId()));
+            detailTagihan.setCode_transaksi(daftarTagihan.get(i).getPembayaranCode());
+            detailTagihan.setTotal_transaksi(daftarTagihan.get(i).getTotalBersih());
+
+            tagihanTransaksi += Double.parseDouble(daftarTagihan.get(i).getTotalBersih());
+            tagihanDenda += 0;
+            totalTagihan += (Double.parseDouble(daftarTagihan.get(i).getTotalBersih()) + 0);
+
+            detailTagihan.setTotal_denda("0");
+            detailTagihan.setGrand_total(String.valueOf(Double.parseDouble(daftarTagihan.get(i).getTotalBersih()) + 0));
+
+            detailTagihansList.add(detailTagihan);
+        }
+
+        modelPelunasanTagihan.setDetail(detailTagihansList);
+        modelPelunasanTagihan.setTotal_tagihan(tagihanTransaksi);
+        modelPelunasanTagihan.setTotal_denda(tagihanDenda);
+        modelPelunasanTagihan.setGrand_total(totalTagihan);
+
+        sendDataPelunasanTagihan(modelPelunasanTagihan);
+
+    }
+
+    private void sendDataPelunasanTagihan(ModelPelunasan modelPelunasan) {
+
+
+        try {
+
+            String jsonInString = new Gson().toJson(modelPelunasan);
+            JSONObject mJSONObject = new JSONObject(jsonInString);
+
+            Writer output = null;
+            File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File pdfFile = new File(folder, "contohPostDataTagihan.json");
+            output = new BufferedWriter(new FileWriter(pdfFile));
+            output.write(mJSONObject.toString());
+            output.close();
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        final ProgressDialog progressDialog = ProgressDialog.show(BayarTagihan.this, "Loading", "Setting Up Payment ...");
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<String> call = apiInterface.doPelunasanTagihan(modelPelunasan);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, retrofit2.Response<String> response) {
+                try {
+                    progressDialog.dismiss();
+                    alertDialog.dismiss();
+                    finish();
+                    Log.e(TAG, "onResponse: " + response.toString());
+
+                } catch (Exception e) {
+                    progressDialog.dismiss();
+                    alertDialog.dismiss();
+                    finish();
+                    Toast.makeText(BayarTagihan.this, "ERROR !", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onResponse Error message : " + e.getLocalizedMessage());
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                progressDialog.dismiss();
+                alertDialog.dismiss();
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        bitmap = null;
+        try {
+            if (requestCode == 100) {
+                if (resultCode == Activity.RESULT_OK) {
+//            Log.e("TAG", "Path:" + ImagePicker.Companion.getFilePath(data));
+                    Uri uri = data.getData();
+                    ImageUri = uri;
+                    try {
+                        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
+                        imageString = imageToString(bitmap);
+                        isUploadBuktiTransfer = true;
+                        popupPilihPelunasanBinding.txtLihatFoto.setVisibility(View.VISIBLE);
+                        frameFotoBinding.fotoBuktiTransfer.setImageBitmap(bitmap);
+                        Log.e(TAG, "onActivityResult: " + bitmap);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                    Toast.makeText(this, ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "onActivityResult: Exception " + e.getMessage());
+        }
+    }
+
+    private String imageToString(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+        return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP);
+    }
+
+    @Override
+    public void onRowLunasi(DaftarTagihanPeriode item) {
+//        popUpPelunasanTagihan(item);
+    }
+
+    @Override
+    public void onRowDetailTransaksi(DaftarTagihanPeriode item) {
+        new KAlertDialog(BayarTagihan.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Lihat Transaksi")
+                .setContentText("Anda ingin melihat detail transaksi " + item.getPembayaranCode() + " ?\n\n")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.material_deep_orange_600, BayarTagihan.this)
+                .cancelButtonColor(R.color.merahBelga, BayarTagihan.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        Intent intent = new Intent(BayarTagihan.this, PrintFakturActivity.class);
+                        String DataOOS = item.getPembayaranCode();
+                        Log.e(TAG, "onRowAdapterListTransactionClicked: " + DataOOS);
+                        intent.putExtra("DATAPRINT", DataOOS);
+                        intent.putExtra("FAKTUR", true);
+                        startActivity(intent);
+                    }
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onRowLunasi(DaftarTagihanDenda item) {
+//        popUpPelunasanDenda(item);
+    }
+
+    @Override
+    public void onRowDetailTransaksi(DaftarTagihanDenda item) {
+        new KAlertDialog(BayarTagihan.this, KAlertDialog.WARNING_TYPE)
+                .setTitleText("Lihat Transaksi")
+                .setContentText("Anda ingin melihat detail transaksi " + item.getPembayaranCode() + " ?\n\n")
+                .setConfirmText("Ya")
+                .confirmButtonColor(R.color.material_deep_orange_600, BayarTagihan.this)
+                .cancelButtonColor(R.color.merahBelga, BayarTagihan.this)
+                .setConfirmClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog sDialog) {
+                        sDialog.dismissWithAnimation();
+                        Intent intent = new Intent(BayarTagihan.this, PrintFakturActivity.class);
+                        String DataOOS = item.getPembayaranCode();
+                        Log.e(TAG, "onRowAdapterListTransactionClicked: " + DataOOS);
+                        intent.putExtra("DATAPRINT", DataOOS);
+                        intent.putExtra("FAKTUR", true);
+                        startActivity(intent);
+                    }
+                })
+                .setCancelText("Tidak")
+                .setCancelClickListener(new KAlertDialog.KAlertClickListener() {
+                    @Override
+                    public void onClick(KAlertDialog kAlertDialog) {
+                        kAlertDialog.dismissWithAnimation();
+                    }
+                })
+                .show();
     }
 }

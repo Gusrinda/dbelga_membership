@@ -130,7 +130,7 @@ public class ListVoucher extends AppCompatActivity implements AdapterListVoucher
                                 MsgServer dataMember = modelMember.getMsgServer().get(0);
                                 getNamaMember = dataMember.getName();
                                 getStatusMember = dataMember.getStatusMember();
-                                getPoinMember = dataMember.getPoin();
+                                getPoinMember = (int) Math.floor(dataMember.getPoin());
                                 getImageURL = dataMember.getImageCustomer();
                                 Log.e(TAG, "onResponse Member\nNama : " + getNamaMember + "\nStatus : " + getStatusMember  + "\nPoin : " + getPoinMember);
                                 placeDataUser();

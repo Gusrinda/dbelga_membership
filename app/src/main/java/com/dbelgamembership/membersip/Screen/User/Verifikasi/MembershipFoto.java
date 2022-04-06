@@ -8,15 +8,18 @@ import androidx.exifinterface.media.ExifInterface;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,6 +39,7 @@ import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
@@ -43,6 +47,7 @@ import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipFotoBinding;
 import com.developer.kalert.KAlertDialog;
+import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -85,6 +90,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import android.hardware.Camera;
+
+
 public class MembershipFoto extends AppCompatActivity {
 
     private static final String TAG = "MEMBERSHIP FOTO";
@@ -114,6 +122,8 @@ public class MembershipFoto extends AppCompatActivity {
     boolean flagAlamatRumah = false;
 
     private FusedLocationProviderClient fusedClient;
+
+    boolean isHaveCamera = true;
 
     @Override
     public void onBackPressed() {
@@ -152,6 +162,21 @@ public class MembershipFoto extends AppCompatActivity {
 
         try {
             permissionRequest();
+
+
+            int numCameras = Camera.getNumberOfCameras();
+
+            Log.e(TAG, "CAMERA JUMLAH :  " + numCameras);
+
+            if (numCameras > 0) {
+                isHaveCamera = true;
+            } else {
+                isHaveCamera = false;
+            }
+
+            Log.e(TAG, "IS HAVE CAMERA : " + isHaveCamera);
+
+
         } catch (Exception e) {
             Toast.makeText(MembershipFoto.this, "Error : " + e.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e(TAG, "onCreate: " + Arrays.toString(e.getStackTrace()));
@@ -189,22 +214,44 @@ public class MembershipFoto extends AppCompatActivity {
         binding.btnUploadFotoIdentitas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
-                selfie = false;
-                intent.putExtra("kode_guide", 1);
-                startActivityForResult(intent, 101);
-//                startActivity(intent);
+
+                if (isHaveCamera) {
+                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    selfie = false;
+                    intent.putExtra("kode_guide", 1);
+                    startActivityForResult(intent, 101);
+                } else {
+                    ImagePicker.Companion.with(MembershipFoto.this)
+                            .galleryOnly()
+                            .crop()                    //Crop image(Optional), Check Customization for more option
+                            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                            .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                            .start(101);
+                }
+
+
             }
         });
 
         binding.btnUploadFotoWajah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
-                selfie = true;
-                intent.putExtra("kode_guide", 2);
+
+                if (isHaveCamera) {
+                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    selfie = true;
+                    intent.putExtra("kode_guide", 2);
 //                startActivity(intent);
-                startActivityForResult(intent, 102);
+                    startActivityForResult(intent, 102);
+                } else {
+                    ImagePicker.Companion.with(MembershipFoto.this)
+                            .galleryOnly()
+                            .crop()                    //Crop image(Optional), Check Customization for more option
+                            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                            .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                            .start(102);
+                }
+
 
             }
         });
@@ -212,22 +259,46 @@ public class MembershipFoto extends AppCompatActivity {
         binding.btnUploadFotoSelfie.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
-                selfie = true;
-                intent.putExtra("kode_guide", 3);
+
+                if (isHaveCamera) {
+                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    selfie = true;
+                    intent.putExtra("kode_guide", 3);
 //                startActivity(intent);
-                startActivityForResult(intent, 103);
+                    startActivityForResult(intent, 103);
+                } else {
+                    ImagePicker.Companion.with(MembershipFoto.this)
+                            .galleryOnly()
+                            .crop()                    //Crop image(Optional), Check Customization for more option
+                            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                            .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                            .start(103);
+                }
+
+
             }
         });
 
         binding.btnUploadFotoRumah.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
-                selfie = false;
-                intent.putExtra("kode_guide", 4);
+
+                if (isHaveCamera) {
+                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    selfie = false;
+                    intent.putExtra("kode_guide", 4);
 //                startActivity(intent);
-                startActivityForResult(intent, 104);
+                    startActivityForResult(intent, 104);
+                } else {
+                    ImagePicker.Companion.with(MembershipFoto.this)
+                            .galleryOnly()
+                            .crop()                    //Crop image(Optional), Check Customization for more option
+                            .compress(1024)            //Final image size will be less than 1 MB(Optional)
+                            .maxResultSize(1080, 1080)    //Final image resolution will be less than 1080 x 1080(Optional)
+                            .start(104);
+                }
+
+
             }
         });
 
@@ -521,7 +592,7 @@ public class MembershipFoto extends AppCompatActivity {
                     } else {
 //                        Toast.makeText(MembershipFoto.this, "Tunggu verifikasi admin dalam 1x24 jam !", Toast.LENGTH_SHORT).show();
 //                        finish();
-//                        Intent intent = new Intent(MembershipFoto.this, MainActivity.class);
+//                        Intent intent = new Intent(MembershipFoto.this, NewMainActivity.class);
 //                        startActivity(intent);
 
 //                        if (sessionManager.getMembership().equals("SILVER")) {
@@ -560,36 +631,89 @@ public class MembershipFoto extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (data != null) {
+
+            Uri uriGallery = data.getData();
+
+            boolean isThereOk = true;
+
             if (requestCode == 101) {
                 //CAMERA FOTO IDENTITAS
-                final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
-                Log.e(TAG, "onActivityResult: FOTO IDENTITAS  -> " + result);
-                Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
-                Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
-                uriFotoIdentitas = myUri;
+
+
+                if (isHaveCamera) {
+
+                    final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
+                    Log.e(TAG, "onActivityResult: FOTO IDENTITAS  -> " + result);
+                    Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+                    Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
+
+                    uriFotoIdentitas = myUri;
+                } else {
+
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        uriFotoIdentitas = uriGallery;
+                    } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                        isThereOk = false;
+                    } else {
+                        isThereOk = false;
+                    }
+
+                }
+
                 try {
-                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoIdentitas);
-                    fotoIdentitas = imageToString(thisFotoBitmap);
-                    save(fotoIdentitas, "fotoIdentitas");
-                    setView(101, thisFotoBitmap);
-                    flagFotoKTP = true;
+
+                    if (isThereOk) {
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoIdentitas);
+                        fotoIdentitas = imageToString(thisFotoBitmap);
+                        save(fotoIdentitas, "fotoIdentitas");
+                        setView(101, thisFotoBitmap);
+                        flagFotoKTP = true;
+                    } else {
+                        flagFotoKTP = false;
+                        Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } catch (IOException e) {
                     flagFotoKTP = false;
                     e.printStackTrace();
                 }
             } else if (requestCode == 102) {
                 //CAMERA SELFIE
-                final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
-                Log.e(TAG, "onActivityResult: FOTO SELFIE  -> " + result);
-                Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
-                Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
-                uriFotoWajah = myUri;
+                if (isHaveCamera) {
+                    final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
+                    Log.e(TAG, "onActivityResult: FOTO SELFIE  -> " + result);
+                    Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+                    Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
+                    uriFotoWajah = myUri;
+                } else {
+
+                    if (resultCode == Activity.RESULT_OK) {
+                        uriFotoWajah = uriGallery;
+                    } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                        isThereOk = false;
+                    } else {
+                        isThereOk = false;
+                    }
+
+                }
+
                 try {
-                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoWajah);
-                    fotoWajah = imageToString(thisFotoBitmap);
-                    save(fotoWajah, "fotoWajah");
-                    setView(102, thisFotoBitmap);
-                    flagFotoSelfie = true;
+
+                    if (isThereOk) {
+
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoWajah);
+                        fotoWajah = imageToString(thisFotoBitmap);
+                        save(fotoWajah, "fotoWajah");
+                        setView(102, thisFotoBitmap);
+                        flagFotoSelfie = true;
+                    } else {
+                        flagFotoSelfie = false;
+                        Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     flagFotoSelfie = false;
@@ -597,17 +721,37 @@ public class MembershipFoto extends AppCompatActivity {
 
             } else if (requestCode == 103) {
                 //CAMERA SELFIE WITH ID
-                final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
-                Log.e(TAG, "onActivityResult: FOTO SELFIE ID  -> " + result);
-                Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
-                Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
-                uriFotoSelfie = myUri;
+                if (isHaveCamera) {
+                    final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
+                    Log.e(TAG, "onActivityResult: FOTO SELFIE ID  -> " + result);
+                    Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+                    Log.e(TAG, "onActivityResult: URI FOTO  -> " + myUri);
+                    uriFotoSelfie = myUri;
+                } else {
+                    if (resultCode == Activity.RESULT_OK) {
+                        uriFotoSelfie = uriGallery;
+                    } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                        isThereOk = false;
+                    } else {
+                        isThereOk = false;
+                    }
+
+                }
+
                 try {
-                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoSelfie);
-                    fotoSelfie = imageToString(thisFotoBitmap);
-                    save(fotoSelfie, "fotoSelfie");
-                    setView(103, thisFotoBitmap);
-                    flagFotoSelfiedanKTP = true;
+
+                    if (isThereOk) {
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoSelfie);
+                        fotoSelfie = imageToString(thisFotoBitmap);
+                        save(fotoSelfie, "fotoSelfie");
+                        setView(103, thisFotoBitmap);
+                        flagFotoSelfiedanKTP = true;
+                    } else {
+                        flagFotoSelfiedanKTP = false;
+                        Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     flagFotoSelfiedanKTP = false;
@@ -615,17 +759,38 @@ public class MembershipFoto extends AppCompatActivity {
 
             } else if (requestCode == 104) {
                 //CAMERA SELFIE WITH ID
-                final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
-                Log.e(TAG, "onActivityResult: FOTO RUMAH ID  -> " + result);
-                Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
-                Log.e(TAG, "onActivityResult: URI FOTO RUMAH  -> " + myUri);
-                uriFotoRumah = myUri;
+                if (isHaveCamera) {
+                    final String result = data.getStringExtra(String.valueOf(CameraGuideline.EXTRA_DATA));
+                    Log.e(TAG, "onActivityResult: FOTO RUMAH ID  -> " + result);
+                    Uri myUri = Uri.parse(data.getStringExtra("imageUri"));
+                    Log.e(TAG, "onActivityResult: URI FOTO RUMAH  -> " + myUri);
+                    uriFotoRumah = myUri;
+                } else {
+                    if (resultCode == Activity.RESULT_OK) {
+
+                        uriFotoRumah = uriGallery;
+                    } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                        isThereOk = false;
+                    } else {
+                        isThereOk = false;
+                    }
+
+                }
+
                 try {
-                    Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoRumah);
-                    fotoRumah = imageToString(thisFotoBitmap);
-                    save(fotoRumah, "fotoSelfie");
-                    setView(104, thisFotoBitmap);
-                    flagFotoRumah = true;
+
+                    if (isThereOk) {
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoRumah);
+                        fotoRumah = imageToString(thisFotoBitmap);
+                        save(fotoRumah, "fotoSelfie");
+                        setView(104, thisFotoBitmap);
+                        flagFotoRumah = true;
+                    } else {
+                        flagFotoRumah = false;
+                        Toast.makeText(this, "Task Cancelled", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     flagFotoRumah = false;

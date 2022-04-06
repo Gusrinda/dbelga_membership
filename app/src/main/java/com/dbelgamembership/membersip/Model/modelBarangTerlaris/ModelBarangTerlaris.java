@@ -1,31 +1,31 @@
 
-package com.dbelgamembership.membersip.Model.modelBarangTerlaris;
+package com.dbelgamembership.membersip.Model.ModelBarangTerlaris;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import android.os.Parcel;
+import javax.annotation.Generated;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Generated("jsonschema2pojo")
 public class ModelBarangTerlaris implements Serializable, Parcelable
 {
 
     @SerializedName("success")
     @Expose
-    private boolean success;
+    private Boolean success;
     @SerializedName("msgServer")
     @Expose
-    private List<MsgServer> msgServer = new ArrayList<MsgServer>();
-    public final static Parcelable.Creator<ModelBarangTerlaris> CREATOR = new Creator<ModelBarangTerlaris>() {
+    private MsgServer msgServer;
+    public final static Creator<ModelBarangTerlaris> CREATOR = new Creator<ModelBarangTerlaris>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public ModelBarangTerlaris createFromParcel(Parcel in) {
+        public ModelBarangTerlaris createFromParcel(android.os.Parcel in) {
             return new ModelBarangTerlaris(in);
         }
 
@@ -35,45 +35,35 @@ public class ModelBarangTerlaris implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 302911170328571863L;
+    private final static long serialVersionUID = -247385238019054582L;
 
-    protected ModelBarangTerlaris(Parcel in) {
-        this.success = ((boolean) in.readValue((boolean.class.getClassLoader())));
-        in.readList(this.msgServer, (com.dbelgamembership.membersip.Model.modelBarangTerlaris.MsgServer.class.getClassLoader()));
+    protected ModelBarangTerlaris(android.os.Parcel in) {
+        this.success = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.msgServer = ((MsgServer) in.readValue((MsgServer.class.getClassLoader())));
     }
 
     public ModelBarangTerlaris() {
     }
 
-    public boolean isSuccess() {
+    public Boolean getSuccess() {
         return success;
     }
 
-    public void setSuccess(boolean success) {
+    public void setSuccess(Boolean success) {
         this.success = success;
     }
 
-    public ModelBarangTerlaris withSuccess(boolean success) {
-        this.success = success;
-        return this;
-    }
-
-    public List<MsgServer> getMsgServer() {
+    public MsgServer getMsgServer() {
         return msgServer;
     }
 
-    public void setMsgServer(List<MsgServer> msgServer) {
+    public void setMsgServer(MsgServer msgServer) {
         this.msgServer = msgServer;
     }
 
-    public ModelBarangTerlaris withMsgServer(List<MsgServer> msgServer) {
-        this.msgServer = msgServer;
-        return this;
-    }
-
-    public void writeToParcel(Parcel dest, int flags) {
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(success);
-        dest.writeList(msgServer);
+        dest.writeValue(msgServer);
     }
 
     public int describeContents() {

@@ -152,7 +152,7 @@
                     <TextView
                         android:layout_marginVertical="4dp"
                         android:fontFamily="@font/hammer_font"
-                        android:text="6. Lakukan pembayaran sesuai dengan grandtotal belanja pada kurir Dbelga"
+                        android:text="6. Lakukan pembayaran sesuai dengan grandtotal belanja pada kurir dBelga"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 
@@ -217,7 +217,7 @@
                         android:fontFamily="@font/hammer_font"
                         android:textSize="16sp"
                         android:textColor="@color/black"
-                        android:text="BCA\n0110-01-013660-53-7 "
+                        android:text="BCA\n048 977 6768 "
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
 

@@ -2,18 +2,21 @@
 package com.dbelgamembership.membersip.Model.ModelVoucherCustomer;
 
 import java.io.Serializable;
-import android.os.Parcel;
+import java.util.List;
+import javax.annotation.Generated;
 import android.os.Parcelable;
+import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+@Generated("jsonschema2pojo")
 public class DaftarVoucher implements Serializable, Parcelable
 {
 
     @SerializedName("id_voucher")
     @Expose
-    private int idVoucher;
+    private Integer idVoucher;
     @SerializedName("name")
     @Expose
     private String name;
@@ -28,17 +31,29 @@ public class DaftarVoucher implements Serializable, Parcelable
     private String deskripsi;
     @SerializedName("nominal")
     @Expose
-    private int nominal;
+    private Integer nominal;
     @SerializedName("expired_date")
     @Expose
     private String expiredDate;
-    public final static Parcelable.Creator<DaftarVoucher> CREATOR = new Creator<DaftarVoucher>() {
+    @SerializedName("flag_pakai")
+    @Expose
+    private Boolean flagPakai;
+    @SerializedName("minimal_belanja")
+    @Expose
+    private String minimalBelanja;
+    @SerializedName("unik_code")
+    @Expose
+    private String unikCode;
+    @SerializedName("gudang")
+    @Expose
+    private List<Integer> gudang = null;
+    public final static Creator<DaftarVoucher> CREATOR = new Creator<DaftarVoucher>() {
 
 
         @SuppressWarnings({
             "unchecked"
         })
-        public DaftarVoucher createFromParcel(Parcel in) {
+        public DaftarVoucher createFromParcel(android.os.Parcel in) {
             return new DaftarVoucher(in);
         }
 
@@ -48,32 +63,31 @@ public class DaftarVoucher implements Serializable, Parcelable
 
     }
     ;
-    private final static long serialVersionUID = 930347763499258752L;
+    private final static long serialVersionUID = 8667837875771167650L;
 
-    protected DaftarVoucher(Parcel in) {
-        this.idVoucher = ((int) in.readValue((int.class.getClassLoader())));
+    protected DaftarVoucher(android.os.Parcel in) {
+        this.idVoucher = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.tipe = ((String) in.readValue((String.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
-        this.nominal = ((int) in.readValue((int.class.getClassLoader())));
+        this.nominal = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.flagPakai = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.minimalBelanja = ((String) in.readValue((String.class.getClassLoader())));
+        this.unikCode = ((String) in.readValue((String.class.getClassLoader())));
+        in.readList(this.gudang, (java.lang.Integer.class.getClassLoader()));
     }
 
     public DaftarVoucher() {
     }
 
-    public int getIdVoucher() {
+    public Integer getIdVoucher() {
         return idVoucher;
     }
 
-    public void setIdVoucher(int idVoucher) {
+    public void setIdVoucher(Integer idVoucher) {
         this.idVoucher = idVoucher;
-    }
-
-    public DaftarVoucher withIdVoucher(int idVoucher) {
-        this.idVoucher = idVoucher;
-        return this;
     }
 
     public String getName() {
@@ -84,22 +98,12 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.name = name;
     }
 
-    public DaftarVoucher withName(String name) {
-        this.name = name;
-        return this;
-    }
-
     public String getCode() {
         return code;
     }
 
     public void setCode(String code) {
         this.code = code;
-    }
-
-    public DaftarVoucher withCode(String code) {
-        this.code = code;
-        return this;
     }
 
     public String getTipe() {
@@ -110,11 +114,6 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.tipe = tipe;
     }
 
-    public DaftarVoucher withTipe(String tipe) {
-        this.tipe = tipe;
-        return this;
-    }
-
     public String getDeskripsi() {
         return deskripsi;
     }
@@ -123,22 +122,12 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.deskripsi = deskripsi;
     }
 
-    public DaftarVoucher withDeskripsi(String deskripsi) {
-        this.deskripsi = deskripsi;
-        return this;
-    }
-
-    public int getNominal() {
+    public Integer getNominal() {
         return nominal;
     }
 
-    public void setNominal(int nominal) {
+    public void setNominal(Integer nominal) {
         this.nominal = nominal;
-    }
-
-    public DaftarVoucher withNominal(int nominal) {
-        this.nominal = nominal;
-        return this;
     }
 
     public String getExpiredDate() {
@@ -149,12 +138,39 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.expiredDate = expiredDate;
     }
 
-    public DaftarVoucher withExpiredDate(String expiredDate) {
-        this.expiredDate = expiredDate;
-        return this;
+    public Boolean getFlagPakai() {
+        return flagPakai;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
+    public void setFlagPakai(Boolean flagPakai) {
+        this.flagPakai = flagPakai;
+    }
+
+    public String getMinimalBelanja() {
+        return minimalBelanja;
+    }
+
+    public void setMinimalBelanja(String minimalBelanja) {
+        this.minimalBelanja = minimalBelanja;
+    }
+
+    public String getUnikCode() {
+        return unikCode;
+    }
+
+    public void setUnikCode(String unikCode) {
+        this.unikCode = unikCode;
+    }
+
+    public List<Integer> getGudang() {
+        return gudang;
+    }
+
+    public void setGudang(List<Integer> gudang) {
+        this.gudang = gudang;
+    }
+
+    public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(idVoucher);
         dest.writeValue(name);
         dest.writeValue(code);
@@ -162,6 +178,10 @@ public class DaftarVoucher implements Serializable, Parcelable
         dest.writeValue(deskripsi);
         dest.writeValue(nominal);
         dest.writeValue(expiredDate);
+        dest.writeValue(flagPakai);
+        dest.writeValue(minimalBelanja);
+        dest.writeValue(unikCode);
+        dest.writeList(gudang);
     }
 
     public int describeContents() {

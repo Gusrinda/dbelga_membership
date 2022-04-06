@@ -1,6 +1,7 @@
 package com.dbelgamembership.membersip.app.Adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum;
 import com.dbelgamembership.membersip.Model.ModelSearchVoucher.MsgServer;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Model.DummyPromo;
@@ -21,6 +25,11 @@ import com.dbelgamembership.membersip.databinding.ItemCardPromoBinding;
 import com.dbelgamembership.membersip.databinding.ItemCartBinding;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,11 +42,11 @@ public class AdapterListPromo extends
     private static final String TAG = AdapterListPromo.class.getSimpleName();
 
     private Context context;
-    private List<DummyPromo> list;
+    private List<Datum> list;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
     AdapterListPromo.AdapterListPromoCallback adapterListPromoCallback;
 
-    public AdapterListPromo(Context context, List<DummyPromo> list, AdapterListPromoCallback adapterListPromoCallback) {
+    public AdapterListPromo(Context context, List<Datum> list, AdapterListPromoCallback adapterListPromoCallback) {
         this.context = context;
         this.list = list;
         this.adapterListPromoCallback = adapterListPromoCallback;
@@ -50,22 +59,57 @@ public class AdapterListPromo extends
         return new AdapterListPromo.ViewHolder(itemBinding);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
 
-        DummyPromo dataDummy = list.get(position);
+        Datum dataPromo = list.get(position);
 
-        holder.gambarPromo.setImageResource(dataDummy.getAlamatGambar());
+        Glide.with(context)
+                .asBitmap()
+                .load(dataPromo.getImage())
+                .error(R.drawable.promo_banner_belga)
+                .into(holder.gambarPromo);
 
-        if (dataDummy.isBaru()) {
-            holder.isNew.setVisibility(View.VISIBLE);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        boolean isNew = false;
+
+        final Calendar baru = Calendar.getInstance();
+        try {
+            Date tanggalNow = baru.getTime();
+            Date tanggalCreated = formatter.parse(dataPromo.getCreatedAt());
+
+            long millisecondsDateNow = tanggalNow.getTime();
+            long millisecondsDateLast = tanggalCreated.getTime();
+
+            long count = millisecondsDateNow - millisecondsDateLast;
+
+            long days = count / (24 * 60 * 60 * 1000);
+
+            if (days <= 3) {
+                isNew = true;
+            }
+
+            Log.e(TAG, "onBindViewHolder: " + position + " :: " + isNew );
+
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        holder.tipePromo.setText(dataDummy.getTipePromo());
-        holder.berlaku.setText(dataDummy.getTanggalBerlaku());
+
+        if (isNew) {
+            holder.isNew.setVisibility(View.VISIBLE);
+        } else {
+            holder.isNew.setVisibility(View.GONE);
+        }
+
+        holder.tipePromo.setText(dataPromo.getKeterangan());
+        holder.berlaku.setText(dataPromo.getDateEnd().substring(0,10));
         holder.cardPromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                adapterListPromoCallback.AdapterListPromoClicked(dataDummy);
+                adapterListPromoCallback.AdapterListPromoClicked(dataPromo);
             }
         });
     }
@@ -81,7 +125,7 @@ public class AdapterListPromo extends
 
 
     public interface AdapterListPromoCallback {
-        void AdapterListPromoClicked(DummyPromo position);
+        void AdapterListPromoClicked(Datum data);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

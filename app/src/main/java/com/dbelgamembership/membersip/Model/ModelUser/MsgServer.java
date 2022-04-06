@@ -16,7 +16,7 @@ public class MsgServer implements Serializable, Parcelable
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Double id;
     @SerializedName("company_code")
     @Expose
     private String companyCode;
@@ -88,7 +88,7 @@ public class MsgServer implements Serializable, Parcelable
     private String mainCpBirthdate;
     @SerializedName("saldo_piutang")
     @Expose
-    private Integer saldoPiutang;
+    private Double saldoPiutang;
     @SerializedName("credit_limit")
     @Expose
     private String creditLimit;
@@ -136,10 +136,10 @@ public class MsgServer implements Serializable, Parcelable
     private String dptCode;
     @SerializedName("app_do")
     @Expose
-    private Integer appDo;
+    private Double appDo;
     @SerializedName("app_sj")
     @Expose
-    private Integer appSj;
+    private Double appSj;
     @SerializedName("password")
     @Expose
     private String password;
@@ -166,7 +166,7 @@ public class MsgServer implements Serializable, Parcelable
     private String dateMember;
     @SerializedName("poin")
     @Expose
-    private Integer poin;
+    private Double poin;
     @SerializedName("code_refferal")
     @Expose
     private String codeRefferal;
@@ -205,10 +205,16 @@ public class MsgServer implements Serializable, Parcelable
     private Boolean flagMember;
     @SerializedName("sisa_credit_limit")
     @Expose
-    private Integer sisaCreditLimit;
+    private double sisaCreditLimit;
     @SerializedName("grand_total_debet")
     @Expose
     private String grandTotalDebet;
+
+
+    @SerializedName("flag_denda")
+    @Expose
+    private String flagDenda;
+
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -228,7 +234,7 @@ public class MsgServer implements Serializable, Parcelable
     private final static long serialVersionUID = 5553300357197283451L;
 
     protected MsgServer(android.os.Parcel in) {
-        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.id = ((Double) in.readValue((Double.class.getClassLoader())));
         this.companyCode = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.accurateCode = ((String) in.readValue((String.class.getClassLoader())));
@@ -252,7 +258,7 @@ public class MsgServer implements Serializable, Parcelable
         this.mainCpTitle = ((String) in.readValue((String.class.getClassLoader())));
         this.mainCpJabatan = ((String) in.readValue((String.class.getClassLoader())));
         this.mainCpBirthdate = ((String) in.readValue((String.class.getClassLoader())));
-        this.saldoPiutang = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.saldoPiutang = ((Double) in.readValue((Double.class.getClassLoader())));
         this.creditLimit = ((String) in.readValue((String.class.getClassLoader())));
         this.creditLimitRemain = ((String) in.readValue((String.class.getClassLoader())));
         this.creditLimitDays = ((String) in.readValue((String.class.getClassLoader())));
@@ -268,8 +274,8 @@ public class MsgServer implements Serializable, Parcelable
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.alias = ((String) in.readValue((String.class.getClassLoader())));
         this.dptCode = ((String) in.readValue((String.class.getClassLoader())));
-        this.appDo = ((Integer) in.readValue((Integer.class.getClassLoader())));
-        this.appSj = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.appDo = ((Double) in.readValue((Double.class.getClassLoader())));
+        this.appSj = ((Double) in.readValue((Double.class.getClassLoader())));
         this.password = ((String) in.readValue((String.class.getClassLoader())));
         this.dateBirth = ((String) in.readValue((String.class.getClassLoader())));
         this.statusMember = ((String) in.readValue((String.class.getClassLoader())));
@@ -278,7 +284,7 @@ public class MsgServer implements Serializable, Parcelable
         this.imagePay = ((String) in.readValue((String.class.getClassLoader())));
         this.imageCustomer = ((String) in.readValue((String.class.getClassLoader())));
         this.dateMember = ((String) in.readValue((String.class.getClassLoader())));
-        this.poin = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.poin = ((Double) in.readValue((Double.class.getClassLoader())));
         this.codeRefferal = ((String) in.readValue((String.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
         this.otp = ((String) in.readValue((String.class.getClassLoader())));
@@ -291,18 +297,19 @@ public class MsgServer implements Serializable, Parcelable
         this.verifikasiFoto = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.identitas = ((String) in.readValue((String.class.getClassLoader())));
         this.flagMember = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
-        this.sisaCreditLimit = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.sisaCreditLimit = ((double) in.readValue((double.class.getClassLoader())));
         this.grandTotalDebet = ((String) in.readValue((String.class.getClassLoader())));
+        this.flagDenda = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
     }
 
-    public Integer getId() {
+    public Double getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Double id) {
         this.id = id;
     }
 
@@ -490,11 +497,11 @@ public class MsgServer implements Serializable, Parcelable
         this.mainCpBirthdate = mainCpBirthdate;
     }
 
-    public Integer getSaldoPiutang() {
+    public Double getSaldoPiutang() {
         return saldoPiutang;
     }
 
-    public void setSaldoPiutang(Integer saldoPiutang) {
+    public void setSaldoPiutang(Double saldoPiutang) {
         this.saldoPiutang = saldoPiutang;
     }
 
@@ -618,19 +625,19 @@ public class MsgServer implements Serializable, Parcelable
         this.dptCode = dptCode;
     }
 
-    public Integer getAppDo() {
+    public Double getAppDo() {
         return appDo;
     }
 
-    public void setAppDo(Integer appDo) {
+    public void setAppDo(Double appDo) {
         this.appDo = appDo;
     }
 
-    public Integer getAppSj() {
+    public Double getAppSj() {
         return appSj;
     }
 
-    public void setAppSj(Integer appSj) {
+    public void setAppSj(Double appSj) {
         this.appSj = appSj;
     }
 
@@ -698,11 +705,11 @@ public class MsgServer implements Serializable, Parcelable
         this.dateMember = dateMember;
     }
 
-    public Integer getPoin() {
+    public Double getPoin() {
         return poin;
     }
 
-    public void setPoin(Integer poin) {
+    public void setPoin(Double poin) {
         this.poin = poin;
     }
 
@@ -802,11 +809,11 @@ public class MsgServer implements Serializable, Parcelable
         this.flagMember = flagMember;
     }
 
-    public Integer getSisaCreditLimit() {
+    public double getSisaCreditLimit() {
         return sisaCreditLimit;
     }
 
-    public void setSisaCreditLimit(Integer sisaCreditLimit) {
+    public void setSisaCreditLimit(double sisaCreditLimit) {
         this.sisaCreditLimit = sisaCreditLimit;
     }
 
@@ -816,6 +823,14 @@ public class MsgServer implements Serializable, Parcelable
 
     public void setGrandTotalDebet(String grandTotalDebet) {
         this.grandTotalDebet = grandTotalDebet;
+    }
+
+    public String getFlagDenda() {
+        return flagDenda;
+    }
+
+    public void setFlagDenda(String flagDenda) {
+        this.flagDenda = flagDenda;
     }
 
     public void writeToParcel(android.os.Parcel dest, int flags) {
@@ -884,6 +899,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(flagMember);
         dest.writeValue(sisaCreditLimit);
         dest.writeValue(grandTotalDebet);
+        dest.writeValue(flagDenda);
     }
 
     public int describeContents() {
