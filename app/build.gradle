@@ -110,6 +110,11 @@ dependencies {
 
     implementation 'com.github.chathuralakmal:AndroidImagePopup:1.2.2'
 
+    implementation "com.airbnb.android:lottie:5.0.3"
+
+    //API MIDTRANS
+    implementation 'com.midtrans:uikit:1.28.0-SANDBOX'
+
 //    implementation files('libs/httpclient-4.5.jar')
 //    implementation files('libs/httpcore-4.4.1.jar')
 //    implementation files('libs/httpmime-4.5.jar')

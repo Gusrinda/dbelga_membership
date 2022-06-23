@@ -186,39 +186,56 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="4dp"
                         android:fontFamily="@font/hammer_font"
-                        android:text="2. Lakukan transfer sesuai dengan total checkout " />
+                        android:text="2. Tekan tombol lunasi tagihan, dan pilih metode transfer pembayaran pelunasan" />
+
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="4dp"
                         android:fontFamily="@font/hammer_font"
-                        android:text="Transfer ke rekening : " />
-
-                    <Spinner
-                        android:id="@+id/spinnerBank"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <TextView
-                        android:id="@+id/txtNomorRekeningDipilih"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="4dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
-                        android:fontFamily="@font/hammer_font"
-                        android:text="Nomor Rekening" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="4dp"
-                        android:fontFamily="@font/hammer_font"
-                        android:text="3. Selesaikan transfer dan upload foto bukti dengan menekan tombol upload di bawah" />
+                        android:text="3. Lakukan transfer sesuai dengan total checkout dan panduan pemabayaran" />
 
                     <LinearLayout
+                        android:id="@+id/layoutSpinnerBank"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="4dp"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Transfer ke rekening : " />
+
+                        <Spinner
+                            android:id="@+id/spinnerBank"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:id="@+id/txtNomorRekeningDipilih"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginVertical="4dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Nomor Rekening" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="4. Selesaikan transfer dan tunggu admin approve pembayaran anda" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutUploadBukti"
                         android:gravity="center_vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -260,14 +277,6 @@
 
 
                     </LinearLayout>
-
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="4dp"
-                        android:fontFamily="@font/hammer_font"
-                        android:text="4. Tekan tombol lunasi tagihan, dan tunggu admin konfirmasi pelunasan anda" />
 
 
                 </LinearLayout>

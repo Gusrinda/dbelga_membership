@@ -50,6 +50,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -93,15 +94,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-
-
         binding.buttonSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LatLng position = markerFinal.getPosition();
                 Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
-                try {
-                    List<Address> addresses = geocoder.getFromLocation(position.latitude, position.longitude, 1);
+
                     final AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
                     builder.setIcon(R.drawable.dbelga)
                             .setTitle("Peringatan !")
@@ -109,13 +107,33 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 public void onClick(final DialogInterface dialog, final int id) {
-                                    Intent intent = new Intent();
-                                    GudangActivity.alamatPengirimanPengguna = new AlamatPengiriman(position, addresses, binding.txtAlamatPengiriman.getText().toString());
-                                    sessionManager.setLatLong(String.valueOf(position.latitude), String.valueOf(position.longitude));
-                                    sessionManager.setAlamatPengiriman(addresses.get(0).getAddressLine(0));
-                                    intent.putExtra("hasSetAlamat", true);
-                                    setResult(RESULT_OK, intent);
-                                    finish();
+                                    try {
+                                        List<Address> addresses = geocoder.getFromLocation(position.latitude, position.longitude, 5);
+
+                                        Address selectedAddress = null;
+                                        boolean alreadySelected = false;
+
+                                        for (int i = 0; i < addresses.size(); i++) {
+                                            if (!alreadySelected) {
+                                                if (addresses.get(i).getThoroughfare() != null) {
+                                                    alreadySelected = true;
+                                                    selectedAddress = addresses.get(i);
+                                                }
+                                            }
+                                        }
+
+                                        Intent intent = new Intent();
+                                        GudangActivity.alamatPengirimanPengguna = new AlamatPengiriman(position, addresses, binding.txtAlamatPengiriman.getText().toString());
+                                        sessionManager.setLatLong(String.valueOf(position.latitude), String.valueOf(position.longitude));
+                                        assert selectedAddress != null;
+                                        sessionManager.setAlamatPengiriman(selectedAddress.getAddressLine(0));
+                                        intent.putExtra("hasSetAlamat", true);
+                                        setResult(RESULT_OK, intent);
+                                        finish();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -125,9 +143,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             });
                     final AlertDialog alert = builder.create();
                     alert.show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
             }
         });
@@ -155,9 +170,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                             try {
                                 progressDialog.dismiss();
-                                List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                                List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 5);
+
+                                Address selectedAddress = null;
+                                boolean alreadySelected = false;
+
+                                for (int i = 0; i < addresses.size(); i++) {
+                                    if (!alreadySelected) {
+                                        if (addresses.get(i).getThoroughfare() != null) {
+                                            alreadySelected = true;
+                                            selectedAddress = addresses.get(i);
+                                        }
+                                    }
+                                }
+
                                 Log.e(TAG, "onMapReady: " + addresses);
-                                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                                String address = selectedAddress.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                                 binding.txtAlamatPengiriman.setText(address);
                                 markerFinal.remove();
                                 markedLocationPengguna = new MarkerOptions().position(latLng).title("Pindah kesini");
@@ -166,7 +194,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-
 
                         } else {
                             progressDialog.dismiss();
@@ -204,12 +231,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                     });
                             alertDialog.show();
 
-
                         }
                     }
                 });
     }
-
 
     Marker markerFinal;
     MarkerOptions markedLocationPengguna = new MarkerOptions();
@@ -225,7 +250,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng lokasiSaatIni = new LatLng(lokasi.latitude, lokasi.longitude);
 
         Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
-
 
         for (int i = 0; i < GudangActivity.modelGudangs.size(); i++) {
 
@@ -265,9 +289,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Log.e(TAG, "onMapReady LAT 2 :: " + lat);
             Log.e(TAG, "onMapReady LON 2 :: " + lon);
 
-            List<Address> addresses = geocoder.getFromLocation(lat, lon, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            List<Address> addresses = geocoder.getFromLocation(lat, lon, 5); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
             Log.e(TAG, "onMapReady: " + addresses);
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
+            Address selectedAddress = null;
+            boolean alreadySelected = false;
+
+            for (int i = 0; i < addresses.size(); i++) {
+                if (!alreadySelected) {
+                    if (addresses.get(i).getThoroughfare() != null) {
+                        alreadySelected = true;
+                        selectedAddress = addresses.get(i);
+                    }
+                }
+            }
+
+            String address = selectedAddress.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
             markedLocationPengguna.position(lokasiSaatIni).title(address).draggable(true);
             markerFinal = mMap.addMarker(markedLocationPengguna);
@@ -281,9 +318,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                     // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                     try {
-                        List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                        List<Address> addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 5);
+
+                        Address selectedAddress = null;
+                        boolean alreadySelected = false;
+
+                        for (int i = 0; i < addresses.size(); i++) {
+                            if (!alreadySelected) {
+                                if (addresses.get(i).getThoroughfare() != null) {
+                                    alreadySelected = true;
+                                    selectedAddress = addresses.get(i);
+                                }
+                            }
+                        }
+
                         Log.e(TAG, "onMapReady: " + addresses);
-                        String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                        String address = selectedAddress.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
                         binding.txtAlamatPengiriman.setText(address);
                         markerFinal.remove();
                         markedLocationPengguna = new MarkerOptions().position(latLng).title("Pindah kesini");
@@ -340,7 +390,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return false;
                 }
             });
-
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -433,5 +482,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
 }

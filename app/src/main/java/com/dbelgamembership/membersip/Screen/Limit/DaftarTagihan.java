@@ -104,7 +104,6 @@ public class DaftarTagihan extends AppCompatActivity implements AdapterDaftarSem
 
                             });
 
-
                             AdapterDaftarSemuaTagihan adapterDaftarSemuaTagihan = new AdapterDaftarSemuaTagihan(DaftarTagihan.this, daftarTagihan, DaftarTagihan.this);
                             binding.rvTagihan.setAdapter(adapterDaftarSemuaTagihan);
 

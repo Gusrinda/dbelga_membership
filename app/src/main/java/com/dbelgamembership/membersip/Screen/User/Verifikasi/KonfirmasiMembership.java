@@ -50,6 +50,7 @@ import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelUser.MsgServer;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.databinding.ActivityKonfirmasiMembershipBinding;
 import com.developer.kalert.KAlertDialog;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
@@ -163,11 +164,13 @@ public class KonfirmasiMembership extends AppCompatActivity {
         handler.postDelayed(myRunnable, 2000);
     }
 
+    private ActivityKonfirmasiMembershipBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_konfirmasi_membership);
+        binding = ActivityKonfirmasiMembershipBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         sessionManager = new SessionManager(this);
         choosenMembership = sessionManager.getMembership();

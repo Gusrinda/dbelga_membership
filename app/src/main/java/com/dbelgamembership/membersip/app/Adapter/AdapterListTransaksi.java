@@ -81,7 +81,7 @@ public class AdapterListTransaksi extends RecyclerView.Adapter<AdapterListTransa
             status = "Pembayaran dalam proses konfirmasi";
             holder.statusBelanja.setTextColor(context.getColor(R.color.hijauBelga));
         } else if (status.equals("payment")) {
-            status = "Pilih metode pembayaran";
+            status = "Lakukan pelusanan transaksi";
             holder.statusBelanja.setTextColor(context.getColor(R.color.merahBelga));
         } else if (status.equals("shipment")) {
             status = "Sedang proses pengiriman";

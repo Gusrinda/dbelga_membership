@@ -147,6 +147,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        dialog1.dismiss();
                         try {
                             Gson gson = new Gson();
                             ModelPayment modelListTransaction = gson.fromJson(String.valueOf(response), ModelPayment.class);
@@ -191,7 +192,9 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                     }
                 }, new Response.ErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onErrorResponse(VolleyError error)
+            {
+                dialog1.dismiss();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);
@@ -258,7 +261,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
-        dialog1.dismiss();
+
     }
 
     private void getDataTransaksi() {
@@ -273,6 +276,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        dialog1.dismiss();
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
                             Log.e(TAG, "masuk 1");
@@ -318,6 +322,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                dialog1.dismiss();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);
@@ -385,7 +390,7 @@ public class  FakturFragment extends Fragment implements AdapterListTransaksiPay
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
-        dialog1.dismiss();
+
 
     }
 

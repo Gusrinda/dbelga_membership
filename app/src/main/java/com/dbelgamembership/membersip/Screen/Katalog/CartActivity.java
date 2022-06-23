@@ -52,6 +52,7 @@ import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayBarangSuplier;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayVoucherSuplierBelanja;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
 import com.dbelgamembership.membersip.Screen.Voucher.Dummy.AdapterListVoucherMember;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCart;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCheckout;
@@ -400,7 +401,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         }
 
 
-
     }
 
     private void cekDataUser() {
@@ -597,31 +597,32 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 checkoutBinding.btnUploadBuktiTransfer.setVisibility(View.GONE);
                 isUploadBuktiTransfer = true;
             } else {
-                checkoutBinding.txtMetodePembayaran.setText("TRANSFER\nBCA - 048 977 6768");
+//                checkoutBinding.txtMetodePembayaran.setText("TRANSFER\nBCA - 048 977 6768");
+                checkoutBinding.txtMetodePembayaran.setText("TRANSFER BANK");
                 checkoutBinding.txtMetodePembayaran.setTextSize(14);
-                checkoutBinding.btnUploadBuktiTransfer.setVisibility(View.VISIBLE);
-                isUploadBuktiTransfer = false;
+                isUploadBuktiTransfer = true;
+//                checkoutBinding.btnUploadBuktiTransfer.setVisibility(View.VISIBLE);
+//                isUploadBuktiTransfer = false;
 
-                checkoutBinding.txtMetodePembayaran.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ClipData clipData = ClipData.newPlainText("text", "0489776768");
-                        clipboardManager.setPrimaryClip(clipData);
-
-                        Toast.makeText(CartActivity.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
-                    }
-                });
+//                checkoutBinding.txtMetodePembayaran.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        ClipData clipData = ClipData.newPlainText("text", "0489776768");
+//                        clipboardManager.setPrimaryClip(clipData);
+//
+//                        Toast.makeText(CartActivity.this, "Berhasil copy nomor rekening !", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
             }
         }
 
-
-        if (isUploadBuktiTransfer) {
-            checkoutBinding.layoutBtnCheckout.setEnabled(true);
-            checkoutBinding.layoutBtnCheckout.setBackgroundColor(getResources().getColor(R.color.biruBelga));
-        } else {
-            checkoutBinding.layoutBtnCheckout.setEnabled(false);
-            checkoutBinding.layoutBtnCheckout.setBackgroundColor(getResources().getColor(R.color.greyBelha));
-        }
+//        if (isUploadBuktiTransfer) {
+//            checkoutBinding.layoutBtnCheckout.setEnabled(true);
+//            checkoutBinding.layoutBtnCheckout.setBackgroundColor(getResources().getColor(R.color.biruBelga));
+//        } else {
+//            checkoutBinding.layoutBtnCheckout.setEnabled(false);
+//            checkoutBinding.layoutBtnCheckout.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+//        }
 
         if (isDebit) {
             if (grandTotal > sisaPlafon) {
@@ -746,6 +747,18 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 double diskon = 0;
                                                 boolean cekTanggal = false;
 
+
+                                                boolean isPromo = false;
+                                                double stokPromo = 0;
+
+                                                if (item.getProdukPromo() != null) {
+                                                    if (item.getProdukPromo()) {
+                                                        isPromo = true;
+//                                stokPromo = Double.parseDouble(itemSaatIni.getStokPromo() == null ? "0" : String.valueOf(itemSaatIni.getStokPromo()));
+                                                        stokPromo = item.getStokPromo();
+                                                    }
+                                                }
+
                                                 if (item.getProdukPromo()) {
 
 //                                                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -770,11 +783,15 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
                                                 }
 
+                                                double hargaNormal = 0;
+                                                double hargaPromo = 0;
+
+
                                                 String tipeDiskon = "";
                                                 if (item.getProdukPromo() && item.getStokPromo() > 0 && cekTanggal) {
                                                     Log.e(TAG, "MASUK PROMO");
-                                                    double hargaNormal = Double.parseDouble(item.getHarga().getHarga());
-                                                    double hargaPromo = Double.parseDouble(item.getPricePromo());
+                                                     hargaNormal = Double.parseDouble(item.getHarga().getHarga());
+                                                     hargaPromo = Double.parseDouble(item.getPricePromo());
 
                                                     diskon = hargaNormal - hargaPromo;
 
@@ -800,6 +817,9 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                         }
                                                     }
                                                     diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
+
+                                                    hargaNormal = Double.parseDouble(harga1);
+                                                    hargaPromo = Double.parseDouble(hargaFix);
                                                     jumlahBarangDiskon = jumlahBarangDibeli;
                                                 }
 
@@ -836,34 +856,99 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 map_order.put("total_normal", String.valueOf(totalNormal));
 
 
-                                                double totalDiskonMember = 0;
-                                                double persenDiskonMember = 0;
                                                 double diskonMember = 0;
+                                                double totalDiskonMember = 0;
+                                                double diskonMemberWithPromo = 0;
+                                                double totalDiskonMemberWithPromo = 0;
+                                                double totalDiskonPromoMember = 0;
+                                                double persentaseDiskonMembership = 0;
 
                                                 if (item.getProdukPromoMember()) {
 
+
+
+
                                                     if (sessionManager.getMembership().equals("SILVER")) {
-                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberSilver());
+                                                        persentaseDiskonMembership = Double.parseDouble(item.getPersenPromoMemberSilver());
                                                     } else if (sessionManager.getMembership().equals("GOLD")) {
-                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberGold());
+                                                        persentaseDiskonMembership = Double.parseDouble(item.getPersenPromoMemberGold());
                                                     } else if (sessionManager.getMembership().equals("PLATINUM")) {
-                                                        persenDiskonMember = Double.parseDouble(item.getPersenPromoMemberPlatinum());
+                                                        persentaseDiskonMembership = Double.parseDouble(item.getPersenPromoMemberPlatinum());
                                                     }
 
 
-                                                    double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
-                                                    diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
+                                                    if (isPromo) {
 
-                                                    totalDiskonMember = diskonMember * jumlahBarangDibeli;
+                                                        Log.e(TAG, "MASUK KE BAGIAN CHECK ADA PROMO PERIODE");
 
-                                                    map_order.put("is_diskon_membership", "true");
-                                                    map_order.put("persentase_diskon_membership", String.valueOf(persenDiskonMember));
-                                                    map_order.put("total_diskon_membership", String.format("%.2f", totalDiskonMember));
-                                                } else {
+                                                        if (jumlahBarangDibeli <= item.getStokPromo()) {
+
+                                                            Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI IF");
+
+                                                            //Tentukan stok beli normal
+                                                            //jumlah Barang dibeli
+                                                            //Hitung diskon member persen dari harga nomral
+                                                            diskonMember = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+
+                                                            Log.e(TAG, "DISKON MEMBER :: " + diskonMember);
+
+                                                            //Hitung total diskonMember
+                                                            totalDiskonMember = diskonMember * jumlahBarangDibeli;
+                                                            Log.e(TAG, "TOTAL DISKON MEMBER :: " + totalDiskonMember);
+
+                                                            //jumlahkan hasil perhitungan diskon membership
+                                                            totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+
+                                                            Log.e(TAG, "TOTAL DISKON PROMO MEMBER :: " + totalDiskonPromoMember);
+                                                        } else if (jumlahBarangDibeli > item.getStokPromo()) {
+
+                                                            Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI ELSE IF");
+
+                                                            //Tentukan stok beli normal
+                                                            double jumlahNormal = jumlahBarangDibeli - item.getStokPromo();
+                                                            //Hitung diskon member persen dari harga nomral
+                                                            diskonMember = (double) (persentaseDiskonMembership * hargaNormal) / 100;
+                                                            //Hitung total diskonMember
+                                                            totalDiskonMember = diskonMember * jumlahNormal;
+
+                                                            //Tentukan stok beli promo
+                                                            double jumlahPromo = item.getStokPromo();
+                                                            //Hitung diskon member persen dari harga promo
+                                                            diskonMemberWithPromo = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+                                                            //Hitung total diskonMember promo
+                                                            totalDiskonMemberWithPromo = diskonMemberWithPromo * jumlahPromo;
+
+                                                            //jumlahkan hasil perhitungan diskon membership
+                                                            totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+                                                        }
+
+                                                        map_order.put("is_diskon_membership", "true");
+                                                        map_order.put("persentase_diskon_membership", String.valueOf(persentaseDiskonMembership));
+                                                        map_order.put("total_diskon_membership", String.format("%.2f", totalDiskonPromoMember));
+
+                                                    } else {
+
+                                                        double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+                                                        diskonMember = hargaBarangSetelahDiskon * persentaseDiskonMembership / 100;
+
+                                                        totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+                                                        map_order.put("is_diskon_membership", "true");
+                                                        map_order.put("persentase_diskon_membership", String.valueOf(persentaseDiskonMembership));
+                                                        map_order.put("total_diskon_membership", String.format("%.2f", totalDiskonMember));
+
+
+                                                    }
+
+
+
+
+                                                } else  {
                                                     map_order.put("is_diskon_membership", "false");
                                                     map_order.put("persentase_diskon_membership", "0");
                                                     map_order.put("total_diskon_membership", "0");
                                                 }
+
 
 
                                                 map_order.put("total_setelah_diskon", String.valueOf(totalNormal - totalDiskon - totalDiskonMember));
@@ -876,9 +961,9 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                             jsonObject.put("id_gudang", idGudang);
 
                                             if (idGudang.equals("8")) {
-                                                jsonObject.put("topic" , "order_dm1");
+                                                jsonObject.put("topic", "order_dm1");
                                             } else if (idGudang.equals("9")) {
-                                                jsonObject.put("topic" , "order_dm3");
+                                                jsonObject.put("topic", "order_dm3");
                                             }
 
                                             jsonObject.put("customer", sessionManager.getName());
@@ -917,6 +1002,11 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 jsonObject.put("voucher_code_supplier", null);
                                                 jsonObject.put("voucher_nominal_supplier", null);
                                             }
+
+                                            Log.e(TAG, "onResponse: GRANDTOTAL :: " + grandTotal );
+                                            Log.e(TAG, "onResponse: hitungJarak :: " + hitungJarak );
+                                            Log.e(TAG, "onResponse: realNominalVoucher :: " + realNominalVoucher );
+                                            Log.e(TAG, "onResponse: realNominalVoucherSuplier :: " + realNominalVoucherSuplier );
 
                                             jsonObject.put("subtotal", String.valueOf(grandTotal - hitungJarak + realNominalVoucher + realNominalVoucherSuplier));
                                             jsonObject.put("total_diskon_so", String.valueOf(totalDiskonSO));
@@ -1195,16 +1285,28 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
                     if (response != null) {
                         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-                        Call<String> callUpdate = apiInterface.doUpdateSO(kodeSo, "confirmation");
+                        Call<String> callUpdate = apiInterface.doUpdateSO(kodeSo, tipePayment.equals("TRANSFER") ? "payment" : "confirmation");
 
                         callUpdate.enqueue(new Callback<String>() {
                             @Override
                             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                                 progressDialog.dismiss();
                                 Log.e(TAG, "onResponse: " + response.toString());
-                                Toast.makeText(CartActivity.this, "Order berhasil, tunggu konfirmasi dari admin dan barang segera dikirim !", Toast.LENGTH_LONG).show();
                                 alertDialog.dismiss();
-                                finish();
+
+                                if (tipePayment.equals("TRANSFER")) {
+                                    Toast.makeText(CartActivity.this, "Order berhasil, Lakukan Pelunasan Transfer !", Toast.LENGTH_LONG).show();
+                                    Intent intent = new Intent(CartActivity.this, PrintActivity.class);
+                                    Log.e(TAG, "onRowAdapterListTransactionClicked: " + kodeSo);
+                                    intent.putExtra("DATAPRINT", kodeSo);
+                                    intent.putExtra("isPayment", true);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    Toast.makeText(CartActivity.this, "Order berhasil, tunggu konfirmasi dari admin dan barang segera dikirim !", Toast.LENGTH_LONG).show();
+                                    finish();
+                                }
+
                             }
 
                             @Override
@@ -1488,13 +1590,21 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             //BARANG TERTENTU DARI SUPLIER
             else if (kodeTipe == 2) {
 
+                Log.e(TAG, "setupCheckingVoucherSuplierIsOkay: MASUK TIPE 2");
+
                 int totalBarangUntukVoucher = 0;
 
                 for (int j = 0; j < itemBarangList.size(); j++) {
 
                     if (itemBarangList.get(j).getKodeVoucherSupplier() != null) {
+
+                        Log.e(TAG, "setupCheckingVoucherSuplierIsOkay: TIDAK NULL DAN KODE :: " + itemBarangList.get(j).getKodeVoucherSupplier());
+
                         if (itemBarangList.get(j).getKodeVoucherSupplier().equals(mergedVoucherSuplier.get(i).getKodeVoucher())) {
-                            double totalBarangIni = Double.parseDouble(itemBarangList.get(i).getHarga().getHarga()) * Double.parseDouble(itemBarangList.get(i).getQty());
+                            double totalBarangIni = Double.parseDouble(itemBarangList.get(j).getHarga().getHarga()) * Double.parseDouble(itemBarangList.get(j).getQty());
+
+                            Log.e(TAG, "setupCheckingVoucherSuplierIsOkay: TOTAL BARNAG INI :: " + totalBarangIni);
+
                             totalBarangUntukVoucher += totalBarangIni;
                         }
                     }
@@ -1533,7 +1643,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 }
             }
         }
-
 
         Log.e(TAG, "SETELAH PENGECEKAN UNTUK VOUCHER SUPLIER !!!");
         Log.e(TAG, "SIZE VOUCHER SUPLIER YANG BISA DIAMBIL :: " + daftarVoucherSuplierYangBisaDigunakan.size());
@@ -1726,6 +1835,18 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
             double diskon = 0;
             boolean cekTanggal = false;
+            boolean isPromo = false;
+            double stokPromo = 0;
+
+            if (detailItemCart.getProdukPromo() != null) {
+                if (detailItemCart.getProdukPromo()) {
+                    isPromo = true;
+//                                stokPromo = Double.parseDouble(itemSaatIni.getStokPromo() == null ? "0" : String.valueOf(itemSaatIni.getStokPromo()));
+                    stokPromo = detailItemCart.getStokPromo();
+                } else {
+                    isPromo = false;
+                }
+            }
 
             if (detailItemCart.getProdukPromo()) {
 
@@ -1750,10 +1871,15 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 }
 
             }
+
+            double hargaNormal = 0;
+            double hargaPromo = 0;
+
+
             if (detailItemCart.getProdukPromo() && detailItemCart.getStokPromo() > 0 && cekTanggal) {
                 Log.e(TAG, "MASUK PROMO");
-                double hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
-                double hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
+                hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
+                hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
 
                 diskon = hargaNormal - hargaPromo;
 
@@ -1776,41 +1902,106 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                     }
                 }
 
+                hargaNormal = Double.parseDouble(harga1);
+                hargaPromo = Double.parseDouble(hargaFix);
+
                 diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
                 jumlahBarangDiskon = jumlahBarangDibeli;
             }
 
 
-            double totalDiskonMember = 0;
-            double persenDiskonMember = 0;
             double diskonMember = 0;
+            double totalDiskonMember = 0;
+            double diskonMemberWithPromo = 0;
+            double totalDiskonMemberWithPromo = 0;
+            double totalDiskonPromoMember = 0;
+            double persentaseDiskonMembership = 0;
 
             if (detailItemCart.getProdukPromoMember()) {
 
                 if (sessionManager.getMembership().equals("SILVER")) {
-                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
+                    persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
                 } else if (sessionManager.getMembership().equals("GOLD")) {
-                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
+                    persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
                 } else if (sessionManager.getMembership().equals("PLATINUM")) {
-                    persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
+                    persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
+                }
+
+                if (isPromo) {
+
+                    Log.e(TAG, "MASUK KE BAGIAN CHECK ADA PROMO PERIODE");
+
+                    if (jumlahBarangDibeli <= detailItemCart.getStokPromo()) {
+
+                        Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI IF");
+
+                        //Tentukan stok beli normal
+                        //jumlah Barang dibeli
+                        //Hitung diskon member persen dari harga nomral
+                        diskonMember = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+
+                        Log.e(TAG, "DISKON MEMBER :: " + diskonMember);
+
+                        //Hitung total diskonMember
+                        totalDiskonMember = diskonMember * jumlahBarangDibeli;
+                        Log.e(TAG, "TOTAL DISKON MEMBER :: " + totalDiskonMember);
+
+                        //jumlahkan hasil perhitungan diskon membership
+                        totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+
+                        Log.e(TAG, "TOTAL DISKON PROMO MEMBER :: " + totalDiskonPromoMember);
+                    } else if (jumlahBarangDibeli > detailItemCart.getStokPromo()) {
+
+                        Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI ELSE IF");
+
+                        //Tentukan stok beli normal
+                        double jumlahNormal = jumlahBarangDibeli - detailItemCart.getStokPromo();
+                        //Hitung diskon member persen dari harga nomral
+                        diskonMember = (double) (persentaseDiskonMembership * hargaNormal) / 100;
+                        //Hitung total diskonMember
+                        totalDiskonMember = diskonMember * jumlahNormal;
+
+                        //Tentukan stok beli promo
+                        double jumlahPromo = detailItemCart.getStokPromo();
+                        //Hitung diskon member persen dari harga promo
+                        diskonMemberWithPromo = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+                        //Hitung total diskonMember promo
+                        totalDiskonMemberWithPromo = diskonMemberWithPromo * jumlahPromo;
+
+                        //jumlahkan hasil perhitungan diskon membership
+                        totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+                    }
+
+                    double totalNormal = Double.parseDouble(detailItemCart.getHarga().getHarga()) * jumlahBarangDibeli;
+                    double totalDiskon = jumlahBarangDiskon * diskon;
+                    totalBeli += (totalNormal - totalDiskon - totalDiskonPromoMember);
+
+                } else {
+
+
+                    double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+                    diskonMember = hargaBarangSetelahDiskon * persentaseDiskonMembership / 100;
+
+                    totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+                    double totalNormal = Double.parseDouble(detailItemCart.getHarga().getHarga()) * jumlahBarangDibeli;
+                    double totalDiskon = jumlahBarangDiskon * diskon;
+                    totalBeli += (totalNormal - totalDiskon - totalDiskonMember);
+
                 }
 
 
-                double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
-                diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
-
-                totalDiskonMember = diskonMember * jumlahBarangDibeli;
-
-
+            } else {
+                double totalNormal = Double.parseDouble(detailItemCart.getHarga().getHarga()) * jumlahBarangDibeli;
+                double totalDiskon = jumlahBarangDiskon * diskon;
+                totalBeli += (totalNormal - totalDiskon - totalDiskonMember);
             }
 
-            double totalNormal = Double.parseDouble(detailItemCart.getHarga().getHarga()) * jumlahBarangDibeli;
-            double totalDiskon = jumlahBarangDiskon * diskon;
-            totalBeli += (totalNormal - totalDiskon - totalDiskonMember);
+
         }
 
         binding.txtTotalQty.setText(String.valueOf(totalQty));
-        binding.txtTotalBelanja.setText("Rp. " + nf.format(totalBeli));
+        binding.txtTotalBelanja.setText("Rp. " + nf.format(Math.ceil(totalBeli)));
 
         pengecekanTotalUntukVoucher = totalBeli;
 
@@ -1991,7 +2182,14 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
     public void updateQtyBarang(DetailItemCart detailItemCart, double qtyItem) {
 
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+        View focusedView = this.getCurrentFocus();
+
+        if (focusedView != null) {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+
+
         binding.btnCheckout.setFocusable(true);
         binding.btnCheckout.hasFocus();
         binding.btnCheckout.requestFocus();

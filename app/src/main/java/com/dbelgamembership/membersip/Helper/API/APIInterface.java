@@ -275,4 +275,21 @@ public interface APIInterface {
             @Path("id") String id
     );
 
+
+    @FormUrlEncoded
+    @POST("update-status/{id}")
+    Call<JsonElement> doUpdateStatusMembership(
+            @Path("id") String id,
+            @Field("status_member") String statusMember,
+            @Field("pay_date") String payDate
+    );
+
+    @FormUrlEncoded
+    @POST("upload-payment/{id}")
+    Call<JsonElement> doUploadPayment(
+            @Path("id") String id,
+            @Field("image_pay") String image_pay,
+            @Field("code_refferal") String code_referral
+    );
+
 }

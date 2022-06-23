@@ -18,9 +18,9 @@
 
         <RelativeLayout
             android:id="@+id/cardCustomer"
-            android:layout_marginTop="32dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp">
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_customer"
@@ -29,10 +29,10 @@
 
 
             <LinearLayout
-                android:layout_marginLeft="12dp"
-                android:layout_centerVertical="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@id/img_customer"
                 android:orientation="vertical">

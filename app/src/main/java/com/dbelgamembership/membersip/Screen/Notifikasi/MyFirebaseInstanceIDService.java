@@ -21,6 +21,7 @@ import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Notifikasi.Model.DataNotifikasi;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -32,6 +33,8 @@ import com.google.gson.JsonParser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,23 +65,24 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         Log.e(TAG, "onMessageReceived: ID CONTEXT : " + object.getId());
         Log.e(TAG, "onMessageReceived: CODE CONTEXT : " + object.getCode());
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Title: " + remoteMessage.getNotification().getTitle());
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-
-        }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Title: " + remoteMessage.getNotification().getTitle());
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            sendNotificationTest(remoteMessage);
+            sendNotificationTest(remoteMessage, object);
         }
 
     }
 
-    private void sendNotificationTest(RemoteMessage remoteMessage) {
+    private void sendNotificationTest(RemoteMessage remoteMessage, DataNotifikasi object) {
+
+
+        Intent intent = new Intent(this, SplashActivity.class);
+        intent.putExtra("has_extra", true);
+        intent.putExtra("data_notifikasi", object);
+
+//        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
 
         String channelId = getString(R.string.default_notification_channel_id);
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -86,10 +90,11 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
         notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.dbelga)
-                        .setContentTitle(remoteMessage.getNotification().getTitle())
+                        .setContentTitle(Objects.requireNonNull(remoteMessage.getNotification()).getTitle())
                         .setContentText(remoteMessage.getNotification().getBody())
                         .setAutoCancel(true)
-                        .setSound(defaultSoundUri);
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -101,6 +106,7 @@ public class MyFirebaseInstanceIDService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(channel);
         }
         notificationManager.notify(1, notificationBuilder.build());
+
     }
 
 

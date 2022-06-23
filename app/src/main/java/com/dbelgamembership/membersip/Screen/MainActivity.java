@@ -42,6 +42,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
@@ -857,7 +858,8 @@ public class MainActivity extends AppCompatActivity {
                                         startActivity(intent);
                                         finish();
                                     } else {
-                                        Intent intent = new Intent(MainActivity.this, KonfirmasiMembership.class);
+//                                        Intent intent = new Intent(MainActivity.this, KonfirmasiMembership.class);
+                                        Intent intent = new Intent(MainActivity.this, PembayaranMembership.class);
                                         intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
                                         startActivity(intent);
                                         finish();

@@ -24,6 +24,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Printer;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -69,12 +70,15 @@ import com.dantsu.escposprinter.exceptions.EscPosParserException;
 
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
+import com.dbelgamembership.membersip.Helper.Constant;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncBluetoothEscPosPrint;
 import com.dbelgamembership.membersip.Helper.HelperPrintUniversal.AsyncEscPosPrinter;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.DetailKekurangan;
 import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
+import com.dbelgamembership.membersip.Screen.Limit.BayarTagihan;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarang;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
 import com.dbelgamembership.membersip.Helper.Http;
@@ -92,6 +96,13 @@ import com.dbelgamembership.membersip.databinding.PopupPembatalanTransaksiBindin
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
+import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
+import com.midtrans.sdk.corekit.core.MidtransSDK;
+import com.midtrans.sdk.corekit.core.TransactionRequest;
+import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
+import com.midtrans.sdk.corekit.models.CustomerDetails;
+import com.midtrans.sdk.corekit.models.snap.TransactionResult;
+import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
 
 import org.json.JSONObject;
 
@@ -114,7 +125,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 
 public class
-PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang.AdapterDetailbarangCallback, AdapterListPembatalan.AdapterListGudangCallback {
+PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDetailbarangCallback, AdapterListPembatalan.AdapterListGudangCallback {
     public final static int QRcodeWidth = 500;
     protected static final String TAG = "TAG";
     private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -253,8 +264,10 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     private List<Detail> listBarang = new ArrayList<>();
     private String dataSO;
     private Boolean takeorder = false;
+    private Boolean isDoingPayment = false;
 
     private ActivityBuktibayarNewBinding binding;
+    private boolean fromNotifikasi = false;
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
@@ -277,15 +290,13 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                     Intent intent = new Intent(getApplicationContext(), NewMainActivity.class);
                     startActivity(intent);
                     finish();
+                } else if (fromNotifikasi) {
+                    startActivity(new Intent(getApplicationContext(), SplashActivity.class));
                 } else {
                     finish();
                 }
             }
         });
-
-//        Paper.init(this);
-
-//        BD_ADDRESS = "BT:" + Paper.book().read(Address.bluetoothAddress);
 
         arrayDetailOrder.clear();
         arrayDetail.clear();
@@ -308,6 +319,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         if (getIntent().hasExtra("DATAPRINT")) {
             takeorder = getIntent().getBooleanExtra("TAKEORDER", false);
             dataSO = getIntent().getStringExtra("DATAPRINT");
+            isDoingPayment = getIntent().getBooleanExtra("isPayment", false);
+            fromNotifikasi = getIntent().getBooleanExtra("isFromNotifikasi", false);
             Log.e(TAG, "onCreate: " + dataSO);
             noSo.setText(dataSO.toUpperCase());
             final ProgressDialog dialog1 = new ProgressDialog(PrintActivity.this);
@@ -335,20 +348,15 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         }
 
         mScan = findViewById(R.id.scanbutton);
-        mPrint = findViewById(R.id.cetakbutton);
-        mPrint.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View mView) {
 
-                printBluetooth();
-
-            }
-        });
 
         binding.contentBuktiBayar.layoutPilihMetode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                popOutMetodePembayaran();
+//                popOutMetodePembayaran();
 //                Toast.makeText(PrintActivity.this, "Pilih metode pembayaran !", Toast.LENGTH_SHORT).show();
+                //OPEN WEBVIEW URL LARAVEL DOKU
+                setupOpenWebView();
             }
         });
 
@@ -358,6 +366,15 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                 popOutPembatalanBelanja();
             }
         });
+
+    }
+
+    private void setupOpenWebView() {
+
+        String urlWebView = "https://www.google.com/";
+        Intent intent = new Intent(PrintActivity.this, WebViewPembayaranActivity.class);
+        intent.putExtra("url", urlWebView);
+        startActivity(intent);
 
     }
 
@@ -832,7 +849,7 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                     binding.contentBuktiBayar.linearVoucher.setVisibility(View.VISIBLE);
                                     binding.contentBuktiBayar.txtKodeVoucher.setText("VOC : " + b.getVoucherCode());
                                     binding.contentBuktiBayar.txtNominalVoucher.setText("- Rp. " + nf.format(Double.parseDouble(b.getVoucherNominal())));
-                               }
+                                }
                             }
 
                             if (b.getVoucherSuplier() != null) {
@@ -855,6 +872,13 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
                                 lvListView1.setAdapter(adapterDetailbarang);
                             }
                             Log.e("idTransaksi: ", idTransaksi);
+
+
+                            if (b.getStatus().equals("payment")) {
+                                binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.VISIBLE);
+                            }
+
+
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage() + Arrays.toString(e.getStackTrace()));
                         }
@@ -929,218 +953,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
         mQueue.add(jsonObjectRequest);
 
     }
-    //batas akhir api access
-
-
-    //BatasNewPrint
-
-        /*==============================================================================================
-    ======================================BLUETOOTH PART============================================
-    ==============================================================================================*/
-
-    public static final int PERMISSION_BLUETOOTH = 1;
-
-    public void printBluetooth() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH}, PrintActivity.PERMISSION_BLUETOOTH);
-        } else {
-            // this.printIt(BluetoothPrintersConnections.selectFirstPaired());
-            new AsyncBluetoothEscPosPrint(this).execute(this.getAsyncEscPosPrinter(null));
-        }
-    }
-
-    @SuppressLint("MissingSuperCall")
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            switch (requestCode) {
-                case PrintActivity.PERMISSION_BLUETOOTH:
-                    this.printBluetooth();
-                    break;
-            }
-        }
-    }
-
-    /*==============================================================================================
-    ===================================ESC/POS PRINTER PART=========================================
-    ==============================================================================================*/
-
-
-    /**
-     * Synchronous printing
-     */
-    @SuppressLint("SimpleDateFormat")
-    public void printIt(DeviceConnection printerConnection) {
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss");
-            EscPosPrinter printer = new EscPosPrinter(printerConnection, 203, 48f, 32);
-            printer
-                    .printFormattedText(
-//                            "[C]<img>" + PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
-                            "[L]\n" +
-                                    "[C]<u><font size='big'>ORDER N°045</font></u>\n" +
-                                    "[C]<font size='small'>" + format.format(new Date()) + "</font>\n" +
-                                    "[L]\n" +
-                                    "[C]================================\n" +
-                                    "[L]\n" +
-                                    "[L]<b>BEAUTIFUL SHIRT</b>[R]9.99e\n" +
-                                    "[L]  + Size : S\n" +
-                                    "[L]\n" +
-                                    "[L]<b>AWESOME HAT</b>[R]24.99e\n" +
-                                    "[L]  + Size : 57/58\n" +
-                                    "[L]\n" +
-                                    "[C]--------------------------------\n" +
-                                    "[R]TOTAL PRICE :[R]34.98e\n" +
-                                    "[R]TAX :[R]4.23e\n" +
-                                    "[L]\n" +
-                                    "[C]================================\n" +
-                                    "[L]\n" +
-                                    "[L]<font size='tall'>Customer :</font>\n" +
-                                    "[L]Raymond DUPONT\n" +
-                                    "[L]5 rue des girafes\n" +
-                                    "[L]31547 PERPETES\n" +
-                                    "[L]Tel : +33801201456\n" +
-                                    "[L]\n" +
-                                    "[C]<qrcode size='20'>" + soCode + "</qrcode>"
-                    );
-        } catch (EscPosConnectionException e) {
-            e.printStackTrace();
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("Broken connection")
-                    .setMessage(e.getMessage())
-                    .show();
-        } catch (EscPosParserException e) {
-            e.printStackTrace();
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("Invalid formatted text")
-                    .setMessage(e.getMessage())
-                    .show();
-        } catch (EscPosEncodingException e) {
-            e.printStackTrace();
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("Bad selected encoding")
-                    .setMessage(e.getMessage())
-                    .show();
-        } catch (EscPosBarcodeException e) {
-            e.printStackTrace();
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("Invalid barcode")
-                    .setMessage(e.getMessage())
-                    .show();
-        }
-    }
-
-    /**
-     * Asynchronous printing
-     */
-    @SuppressLint("SimpleDateFormat")
-    public AsyncEscPosPrinter getAsyncEscPosPrinter(DeviceConnection printerConnection) {
-        SimpleDateFormat format = new SimpleDateFormat("'on' yyyy-MM-dd 'at' HH:mm:ss");
-        AsyncEscPosPrinter printer = new AsyncEscPosPrinter(printerConnection, 203, 48f, 32);
-
-        StringBuilder dataBarang = new StringBuilder();
-        StringBuilder dataDiskon = new StringBuilder();
-        StringBuilder dataOngkir = new StringBuilder();
-        long totalDiskon = 0;
-        for (int i = 0; i < arrayDetail.size(); i++) {
-            int j = 1;
-            String kodeBarang = arrayDetail.get(i).get("Code");
-            String namaBarang = arrayDetail.get(i).get("namaBrg");
-            String qtyUnit = arrayDetail.get(i).get("qty");
-            String hargaBarang = arrayDetail.get(i).get("harga");
-            String discount = arrayDetail.get(i).get("diskon");
-
-            String jumlahUnit = "X " + qtyUnit;
-            String hargaUnit = "@ " + nf.format(Double.parseDouble(hargaBarang));
-            double totalHargaUnit = Double.parseDouble(qtyUnit) * Double.parseDouble(hargaBarang);
-
-            dataBarang.append("[L]<font size='small'>" + kodeBarang + " # " + namaBarang + "</font>\n");
-            dataBarang.append("[L]<font size='small'>" + jumlahUnit + " " + hargaUnit + "[R]" + nf.format(totalHargaUnit) + "</font>\n");
-
-            if (!discount.equals("0")) {
-                dataBarang.append("[L]<font size='small'>Diskon. " + discount + "</font>\n");
-            }
-
-            totalDiskon += Long.parseLong(discount);
-        }
-
-        if (totalDiskon != 0) {
-            dataDiskon.append("[L]PROMO DISKON[R]Rp. " + nf.format(totalDiskon) + "\n");
-        } else if (totalDiskon == 0) {
-            dataDiskon.append("");
-        }
-
-        if (ongkosKirim != 0) {
-            dataOngkir.append("[L]BIAYA KIRIM[R]Rp. " + nf.format(ongkosKirim) + "\n");
-        } else if (ongkosKirim == 0) {
-            dataDiskon.append("");
-        }
-
-        return printer.setTextToPrint(
-//               PrinterTextParserImg.bitmapToHexadecimalString(printer, this.getApplicationContext().getResources().getDrawableForDensity(R.drawable.logo, DisplayMetrics.DENSITY_MEDIUM)) + "</img>\n" +
-                "[L]\n" +
-                        "[C]<u><font size='big'>SALES ORDER</font></u>\n" +
-                        "[C]<font size='small'>Pameran Belanja PGP</font>\n" +
-                        "[C]<font size='small'>SURABAYA</font>\n" +
-                        "[L]\n" +
-                        "[C]================================\n" +
-                        "[L]\n" +
-                        "[C]<b>__________ DATA SALES __________</b>\n" +
-                        "[L]<font size='small'>Nama Sales     : " + sales + "</font>\n" +
-                        "[L]<font size='small'>Nomor Order    : " + soCode + "</font>\n" +
-                        "[L]<font size='small'>Tanggal Order  : " + dateNow + "</font>\n" +
-                        "[L]\n" +
-                        "[C]<b>________ DATA PELANGGAN ________</b>\n" +
-                        "[L]<font size='small'>Nama Pelanggan : " + costumer + "</font>\n" +
-                        "[L]<font size='small'>Nomor Telepon  : " + nomorKostumer + "</font>\n" +
-                        "[L]<font size='small'>Alamat Kirim   : " + alamatKirim + "</font>\n" +
-                        "[L]<font size='small'>Tangaal Kirim  : " + tanggalKirim + "</font>\n" +
-                        "[L]\n" +
-                        "[C]================================\n" +
-                        "[L]Item[R][R]Total\n" +
-                        "[C]================================\n" +
-                        dataBarang.toString() +
-                        "[L]\n" +
-                        "[C]================================\n" +
-                        "[L]TOTAL BELANJA[R]Rp. " + nf.format(total) + "\n" +
-                        dataDiskon.toString() +
-                        dataOngkir.toString() +
-                        "[C]================================\n" +
-                        "[L]<font size='tall'>TOTAL : " + nf.format(grandTotal) + "</font>\n" +
-                        "[C]================================\n" +
-//                        "[L]\n" +
-//                        "<qrcode size='20'>" + soCode + "</qrcode>\n" +
-//                        "[C]" + soCode + "\n" +
-                        "[L]\n" +
-                        "[C]TERIMAKASIH TELAH BELANJA\n"
-        );
-    }
-
 
     //AkhirNewPrint
-
-
-    private Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            mBluetoothConnectProgressDialog.dismiss();
-            Toast.makeText(PrintActivity.this, "DeviceConnected", Toast.LENGTH_SHORT).show();
-            Toast.makeText(PrintActivity.this, bluetoothAddress, Toast.LENGTH_SHORT).show();
-        }
-    };
-
-
-    @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        try {
-            if (mBluetoothSocket != null)
-                mBluetoothSocket.close();
-        } catch (Exception e) {
-            Log.e("Tag", "Exe ", e);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -1151,6 +965,9 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
             Log.e("Tag", "Exe ", e);
         }
         setResult(RESULT_CANCELED);
+        if (fromNotifikasi) {
+            startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+        }
         finish();
     }
 
@@ -1160,12 +977,8 @@ PrintActivity extends AppCompatActivity implements Runnable, AdapterDetailbarang
     }
 
     @Override
-    public void run() {
-
-    }
-
-    @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
+
 }

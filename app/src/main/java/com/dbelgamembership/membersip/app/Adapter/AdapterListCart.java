@@ -100,6 +100,19 @@ public class AdapterListCart extends
         double diskon = 0;
         boolean cekTanggal = false;
 
+        boolean isPromo = false;
+        double stokPromo = 0;
+
+        if (detailItemCart.getProdukPromo() != null) {
+            if (detailItemCart.getProdukPromo()) {
+                isPromo = true;
+//                                stokPromo = Double.parseDouble(itemSaatIni.getStokPromo() == null ? "0" : String.valueOf(itemSaatIni.getStokPromo()));
+                stokPromo = detailItemCart.getStokPromo();
+            } else {
+                isPromo = false;
+            }
+        }
+
         if (detailItemCart.getProdukPromo()) {
 
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -124,10 +137,14 @@ public class AdapterListCart extends
 
         }
 
+        double hargaNormal = 0;
+        double hargaPromo = 0;
+
+
         if (detailItemCart.getProdukPromo() && detailItemCart.getStokPromo() > 0 && cekTanggal) {
             Log.e(TAG, "MASUK PROMO");
-            double hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
-            double hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
+             hargaNormal = Double.parseDouble(detailItemCart.getHarga().getHarga());
+             hargaPromo = Double.parseDouble(detailItemCart.getPricePromo());
 
             diskon = hargaNormal - hargaPromo;
 
@@ -150,6 +167,10 @@ public class AdapterListCart extends
                 }
             }
             diskon = Double.parseDouble(harga1) - Double.parseDouble(hargaFix);
+
+            hargaNormal = Double.parseDouble(harga1);
+            hargaPromo = Double.parseDouble(hargaFix);
+
             jumlahBarangDiskon = jumlahBarangDibeli;
         }
 
@@ -163,33 +184,92 @@ public class AdapterListCart extends
             holder.layoutDiskonBarang.setVisibility(View.GONE);
         }
 
-        double totalDiskonMember = 0;
-        double persenDiskonMember = 0;
         double diskonMember = 0;
+        double totalDiskonMember = 0;
+        double diskonMemberWithPromo = 0;
+        double totalDiskonMemberWithPromo = 0;
+        double totalDiskonPromoMember = 0;
+        double persentaseDiskonMembership = 0;
 
         if (detailItemCart.getProdukPromoMember()) {
+
             holder.layoutDiskonMembership.setVisibility(View.VISIBLE);
 
+
+
             if (sessionManager.getMembership().equals("SILVER")) {
-                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
+                persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberSilver());
             } else if (sessionManager.getMembership().equals("GOLD")) {
-                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
+                persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberGold());
             } else if (sessionManager.getMembership().equals("PLATINUM")) {
-                persenDiskonMember = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
+                persentaseDiskonMembership = Double.parseDouble(detailItemCart.getPersenPromoMemberPlatinum());
             }
 
-            holder.textDiskonMembership.setText(nf.format(persenDiskonMember) + "% x " + nf.format(jumlahBarangDibeli));
+            holder.textDiskonMembership.setText(nf.format(persentaseDiskonMembership) + "% x " + nf.format(jumlahBarangDibeli));
 
-            double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
-            diskonMember = hargaBarangSetelahDiskon * persenDiskonMember / 100;
+            if (isPromo) {
 
-            totalDiskonMember = diskonMember * jumlahBarangDibeli;
+                Log.e(TAG, "MASUK KE BAGIAN CHECK ADA PROMO PERIODE");
 
-            holder.textTotalDiskonMembership.setText("- Rp. " + nf.format(totalDiskonMember));
+                if (jumlahBarangDibeli <= detailItemCart.getStokPromo()) {
 
-        } else {
+                    Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI IF");
+
+                    //Tentukan stok beli normal
+                    //jumlah Barang dibeli
+                    //Hitung diskon member persen dari harga nomral
+                    diskonMember = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+
+                    Log.e(TAG, "DISKON MEMBER :: " + diskonMember);
+
+                    //Hitung total diskonMember
+                    totalDiskonMember = diskonMember * jumlahBarangDibeli;
+                    Log.e(TAG, "TOTAL DISKON MEMBER :: " + totalDiskonMember);
+
+                    //jumlahkan hasil perhitungan diskon membership
+                    totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+
+                    Log.e(TAG, "TOTAL DISKON PROMO MEMBER :: " + totalDiskonPromoMember);
+                } else if (jumlahBarangDibeli > detailItemCart.getStokPromo()) {
+
+                    Log.e(TAG, "setupTestPerulanganPenggantianMember MASUK JUMLAH BARANG DIBELI ELSE IF");
+
+                    //Tentukan stok beli normal
+                    double jumlahNormal = jumlahBarangDibeli - detailItemCart.getStokPromo();
+                    //Hitung diskon member persen dari harga nomral
+                    diskonMember = (double) (persentaseDiskonMembership * hargaNormal) / 100;
+                    //Hitung total diskonMember
+                    totalDiskonMember = diskonMember * jumlahNormal;
+
+                    //Tentukan stok beli promo
+                    double jumlahPromo = detailItemCart.getStokPromo();
+                    //Hitung diskon member persen dari harga promo
+                    diskonMemberWithPromo = (double) (persentaseDiskonMembership * hargaPromo) / 100;
+                    //Hitung total diskonMember promo
+                    totalDiskonMemberWithPromo = diskonMemberWithPromo * jumlahPromo;
+
+                    //jumlahkan hasil perhitungan diskon membership
+                    totalDiskonPromoMember = totalDiskonMember + totalDiskonMemberWithPromo;
+                }
+
+                holder.textTotalDiskonMembership.setText("- Rp. " + nf.format(totalDiskonPromoMember));
+
+            } else {
+
+
+                double hargaBarangSetelahDiskon = Double.parseDouble(harga1) - diskon;
+                diskonMember = hargaBarangSetelahDiskon * persentaseDiskonMembership / 100;
+
+                totalDiskonMember = diskonMember * jumlahBarangDibeli;
+
+                holder.textTotalDiskonMembership.setText("- Rp. " + nf.format(totalDiskonMember));
+
+            }
+
+        } else  {
             holder.layoutDiskonMembership.setVisibility(View.GONE);
         }
+
 
 
         holder.totalBarang.setText("Rp. " + nf.format(qty * Double.parseDouble(harga1)));

@@ -57,6 +57,7 @@ import com.dbelgamembership.membersip.Model.ModelPayment.DetailBarangTebu;
 import com.dbelgamembership.membersip.Model.ModelPayment.Item;
 import com.dbelgamembership.membersip.Model.modelArrayDetailBarangOrder;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarangFak;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
 import com.dbelgamembership.membersip.Helper.Http;
@@ -193,7 +194,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     private static String BD_ADDRESS = null, ALAMAT_KIRIM = "", NAMA_CUSTOMER;
     int ONGKIR_COK;
 
-
     Button mDisc;
     BluetoothAdapter mBluetoothAdapter;
     BluetoothDevice mBluetoothDevice;
@@ -273,8 +273,8 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
     private float amountAnotherPayment;
     private float pembayaranTunai;
 
-
     ActivityBuktifakturNewBinding binding;
+    private boolean fromNotifikasi = false;
 
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
@@ -293,6 +293,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (fromNotifikasi) {
+                    startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+                }
                 finish();
             }
         });
@@ -309,6 +312,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
         if (getIntent().hasExtra("DATAPRINT")) {
             if (getIntent().hasExtra("FAKTUR")) {
                 getSupportActionBar().setTitle("Detail Pembayaran");
+                fromNotifikasi = getIntent().getBooleanExtra("isFromNotifikasi", false);
                 contentCancel.setVisibility(View.GONE);
                 contentScan.setVisibility(View.GONE);
                 linearCharge.setVisibility(View.VISIBLE);
@@ -763,7 +767,6 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
 
     }
 
-
     private void Snack(String string) {
         Snackbar snackbar = Snackbar.make(binding.contentBuktiFaktur.linearContent, string, Snackbar.LENGTH_LONG)
                 .setAction("Action", null);
@@ -793,6 +796,9 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
             Log.e("Tag", "Exe ", e);
         }
         setResult(RESULT_CANCELED);
+        if (fromNotifikasi) {
+            startActivity(new Intent(getApplicationContext(), SplashActivity.class));
+        }
         finish();
     }
 

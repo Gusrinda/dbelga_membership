@@ -123,6 +123,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        dialog1.show();
                         try {
                             Gson gson = new Gson();
                             ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
@@ -180,6 +181,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                dialog1.show();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);
@@ -247,7 +249,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
-        dialog1.dismiss();
+//        dialog1.dismiss();
 
     }
 
@@ -282,6 +284,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        dialog1.show();
 //                        Log.e(TAG, "onResponse: "+response);
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
@@ -300,7 +303,6 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                     Log.e(TAG, "onResponse: " + urlNextPage);
                                 }
 
-
                                 if (modelListTransaction.getData().getData().size() > 0) {
 
                                     for (int i = 0; i < modelListTransaction.getData().getData().size(); i++) {
@@ -309,7 +311,6 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                             itemlist.add(modelListTransaction.getData().getData().get(i));
                                         }
                                     }
-
 
                                     adapterListTransaksi = new AdapterListTransaksi(getContext(), -1, itemlist, SoFragment.this::onRowAdapterListTransactionClicked);
                                     rvTransaksi.setAdapter(adapterListTransaksi);
@@ -330,6 +331,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                dialog1.show();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);
@@ -397,7 +399,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);
-        dialog1.dismiss();
+//        dialog1.dismiss();
 
     }
 

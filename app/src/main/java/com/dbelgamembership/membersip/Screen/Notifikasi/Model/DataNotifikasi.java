@@ -1,7 +1,10 @@
 package com.dbelgamembership.membersip.Screen.Notifikasi.Model;
 
 
-public class DataNotifikasi {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class DataNotifikasi implements Parcelable {
 
     private String tipe;
     private String context;
@@ -17,6 +20,25 @@ public class DataNotifikasi {
         this.id = id;
         this.code = code;
     }
+
+    protected DataNotifikasi(Parcel in) {
+        tipe = in.readString();
+        context = in.readString();
+        id = in.readString();
+        code = in.readString();
+    }
+
+    public static final Creator<DataNotifikasi> CREATOR = new Creator<DataNotifikasi>() {
+        @Override
+        public DataNotifikasi createFromParcel(Parcel in) {
+            return new DataNotifikasi(in);
+        }
+
+        @Override
+        public DataNotifikasi[] newArray(int size) {
+            return new DataNotifikasi[size];
+        }
+    };
 
     public String getTipe() {
         return tipe;
@@ -48,6 +70,19 @@ public class DataNotifikasi {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(tipe);
+        parcel.writeString(context);
+        parcel.writeString(id);
+        parcel.writeString(code);
     }
 }
 

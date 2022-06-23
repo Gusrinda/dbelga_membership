@@ -28,9 +28,13 @@ import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVer
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.Notifikasi.Model.DataNotifikasi;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintFakturActivity;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiFoto;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -92,7 +96,6 @@ public class SplashActivity extends AppCompatActivity {
                     e.printStackTrace();
                 } finally {
                     getSession();
-//                    getDataUser();
                 }
             }
         };
@@ -123,71 +126,6 @@ public class SplashActivity extends AppCompatActivity {
             }
         });
     }
-
-//    private void getDataUser() {
-//        url = Http.server;
-//        url = url + "search-customer/" + sessionManager.getPID();
-//        Log.e(TAG, "URL : " + url);
-//        RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-//                (Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        if (response != null) {
-//                            Log.e("", "onResponse: " + response);
-//                            String responseX = String.valueOf(response);
-//                            JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-//                            boolean success = root.get("success").getAsBoolean();
-//                            Log.e("", "Test : " + success);
-//                            if (!success) {
-////                                    Toast.makeText(SplashActivity.this, response.getJSONArray("msgServer").toString(), Toast.LENGTH_LONG).show();
-//                                Log.e(TAG, "onResponse: " + root.get("msgServer").getAsString());
-//                                sessionManager.destroySession();
-//                                getSession();
-//                            } else {
-//                                Gson gson = new Gson();
-//                                ModelUser modelMember = gson.fromJson(String.valueOf(response), ModelUser.class);
-//                                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataMember = modelMember.getMsgServer().get(0);
-//                                boolean status_pay = Boolean.parseBoolean(dataMember.getStatusPayment());
-//
-//                                if (dataMember.isEmailVerification()) {
-//                                    if (status_pay) {
-//                                        Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
-//                                        startActivity(intent);
-//                                        finish();
-//                                    } else {
-//                                        String deadlinePay = dataMember.getPayDate();
-//                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
-//                                        Log.e(TAG, "onResponse: " + deadlinePay);
-//                                        intent.putExtra("TANGGAL_DEADLINE", deadlinePay);
-//                                        startActivity(intent);
-//                                        finish();
-//                                    }
-//                                } else {
-//                                    Intent intent = new Intent(SplashActivity.this, VerificationActivity.class);
-//                                    startActivity(intent);
-//                                    finish();
-//                                }
-//                            }
-//                        } else {
-////                            Toast.makeText(HomeActivity.this, "Tidak ada response", Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // TODO: Handle error
-//
-////                        Toast.makeText(HomeActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//
-//        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
-//                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-//                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-//
-//        mQueue.add(jsonObjectRequest);
-//    }
 
     private void getDataSlider() {
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
@@ -316,13 +254,16 @@ public class SplashActivity extends AppCompatActivity {
                                     finish();
                                 } else {
                                     if (!dataVerifikasi.getIsTherePayment() || !dataVerifikasi.getVeirifikasiPayment()) {
-                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
+//                                        Intent intent = new Intent(SplashActivity.this, KonfirmasiMembership.class);
+                                        Intent intent = new Intent(SplashActivity.this, PembayaranMembership.class);
                                         startActivity(intent);
                                         finish();
                                     } else {
-                                        Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
-                                        startActivity(intent);
-                                        finish();
+
+                                        onNewIntent(getIntent());
+//                                        Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
+//                                        startActivity(intent);
+//                                        finish();
                                     }
 
                                 }
@@ -348,12 +289,100 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        // TODO Auto-generated method stub
-        super.onPause();
-        finish();
-    }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+
+        Bundle extras = null;
+        Intent goIntent;
+
+        if (intent != null && intent.getExtras() != null && intent.getExtras().size() > 0) {
+            extras = intent.getExtras();
+            Log.e(TAG, "MASUK EXTRA");
+
+            for (String key : extras.keySet()) {
+                Log.e("myApplication", key + " is a key in the bundle");
+            }
+
+            String type;
+            String context;
+            String id;
+            String codeContext;
+
+            DataNotifikasi dataNotifikasi = null;
+
+            if (extras.getBoolean("has_extra")) {
+                Log.e(TAG, "TRUE");
+                dataNotifikasi = extras.getParcelable("data_notifikasi");
+                type = dataNotifikasi.getTipe();
+                context = dataNotifikasi.getContext();
+                id = dataNotifikasi.getId();
+                codeContext = dataNotifikasi.getCode();
+            } else {
+                Log.e(TAG, "FALSE");
+                type = extras.getString("tipe");
+                context = extras.getString("context");
+                id = extras.getString("id_context");
+                codeContext = extras.getString("code");
+            }
+
+            Log.e(TAG, "CEK EXTRA CONTEXT : " + context);
+            Log.e(TAG, "CEK EXTRA TYPE : " + type);
+            Log.e(TAG, "CEK EXTRA ID : " + id);
+
+            if (type != null) {
+                if (type.equals("transaction")) {
+                    if (context.equals("update")) {
+                        goIntent = new Intent(this, PrintActivity.class);
+                        goIntent.putExtra("hasExtra", true);
+                        goIntent.putExtra("DATAPRINT", codeContext);
+                        goIntent.putExtra("isFromNotifikasi", true);
+                        finish();
+                        startActivity(goIntent);
+                    } else if (context.equals("shipment_dikirim") || context.equals("shipment_terkirim")) {
+                        goIntent = new Intent(this, PrintActivity.class);
+                        goIntent.putExtra("hasExtra", true);
+                        goIntent.putExtra("DATAPRINT", codeContext);
+                        goIntent.putExtra("isFromNotifikasi", true);
+                        finish();
+                        startActivity(goIntent);
+                    } else if (context.equals("payment")) {
+                        goIntent = new Intent(this, PrintFakturActivity.class);
+                        goIntent.putExtra("hasExtra", true);
+                        goIntent.putExtra("FAKTUR", true);
+                        goIntent.putExtra("DATAPRINT", codeContext);
+                        goIntent.putExtra("isFromNotifikasi", true);
+                        finish();
+                        startActivity(goIntent);
+                    } else {
+                        goIntent = new Intent(this, GudangActivity.class);
+                        finish();
+                        startActivity(goIntent);
+                    }
+                }
+            } else {
+                goIntent = new Intent(this, GudangActivity.class);
+                finish();
+                startActivity(goIntent);
+            }
+
+        } else {
+            Log.e(TAG, "TAK PUNYA EXTRA");
+
+            if (sessionManager.isLoggedIn()) {
+                goIntent = new Intent(SplashActivity.this, GudangActivity.class);
+                startActivity(goIntent);
+                finish();
+            } else {
+                goIntent = new Intent(SplashActivity.this, GudangActivity.class);
+                startActivity(goIntent);
+                finish();
+            }
+
+        }
+
+    }
 
 }

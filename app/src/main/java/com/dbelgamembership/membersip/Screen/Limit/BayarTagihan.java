@@ -2,8 +2,11 @@ package com.dbelgamembership.membersip.Screen.Limit;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
@@ -30,6 +33,7 @@ import android.widget.Toast;
 import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
+import com.dbelgamembership.membersip.Helper.Constant;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelDataLimit.DetailLimitUser;
@@ -51,6 +55,7 @@ import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.ModelPelunasan
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.Transaksi.PrintFakturActivity;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.Voucher.VoucherActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListDenda;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListTagihan;
@@ -66,6 +71,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
+import com.midtrans.sdk.corekit.core.MidtransSDK;
+import com.midtrans.sdk.corekit.core.TransactionRequest;
+import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
+import com.midtrans.sdk.corekit.models.CustomerDetails;
+import com.midtrans.sdk.corekit.models.snap.TransactionResult;
+import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -93,7 +105,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class BayarTagihan extends AppCompatActivity implements AdapterListTagihan.AdapterListTransactionCallback, AdapterListDenda.AdapterListTransactionCallback {
+public class BayarTagihan extends AppCompatActivity implements AdapterListTagihan.AdapterListTransactionCallback, AdapterListDenda.AdapterListTransactionCallback, TransactionFinishedCallback {
 
     private final String TAG = this.getClass().getSimpleName();
     private ActivityBayarTagihanBinding bayarTagihanBinding;
@@ -107,6 +119,8 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
     private boolean isUploadBuktiTransfer = false;
     ClipboardManager clipboardManager;
     private ImagePopup imagePopup;
+
+    private boolean isBayarTransferDenda = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +139,12 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
                 finish();
             }
         });
+
+        initMidTransSDK();
+
+        if (ContextCompat.checkSelfPermission(BayarTagihan.this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(BayarTagihan.this, new String[]{Manifest.permission.READ_PHONE_STATE}, 101);
+        }
 
         getDataTagihanPeriode();
         getDaftarBankTagihan();
@@ -594,13 +614,14 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         alertDialogFoto = dialogBuilderFoto.create();
         alertDialogFoto.setCanceledOnTouchOutside(false);
 
-        List<String> listSpinnerBank = new ArrayList<String>();
+        popupPilihPelunasanBinding.layoutSpinnerBank.setVisibility(View.GONE);
+        popupPilihPelunasanBinding.layoutUploadBukti.setVisibility(View.GONE);
 
+        List<String> listSpinnerBank = new ArrayList<String>();
 
         for (int i = 0; i < daftarBank.size(); i++) {
             listSpinnerBank.add(daftarBank.get(i).getName() + " [ " + daftarBank.get(i).getDescription() + " ]");
         }
-
 
         Log.e(TAG, "popUpPelunasanDenda SIZE BANK :: " + listSpinnerBank.size());
 
@@ -610,7 +631,6 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         adapterBankPelunasan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         popupPilihPelunasanBinding.spinnerBank.setAdapter(adapterBankPelunasan);
-
 
         popupPilihPelunasanBinding.spinnerBank.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -743,10 +763,15 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
                             @Override
                             public void onClick(KAlertDialog sDialog) {
                                 sDialog.dismissWithAnimation();
+
                                 if (popupPilihPelunasanBinding.radioCOD.isChecked()) {
                                     pelunasanTagihan("LANGSUNG", daftarTagihan);
                                 } else {
+
                                     pelunasanTagihan("TRANSFER", daftarTagihan);
+
+
+//                                    pelunasanTagihan("TRANSFER", daftarTagihan);
                                 }
                             }
                         })
@@ -758,10 +783,8 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
                             }
                         })
                         .show();
-
             }
         });
-
     }
 
 
@@ -784,6 +807,9 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         dialogBuilderFoto.setView(viewFoto);
         alertDialogFoto = dialogBuilderFoto.create();
         alertDialogFoto.setCanceledOnTouchOutside(false);
+
+        popupPilihPelunasanBinding.layoutSpinnerBank.setVisibility(View.GONE);
+        popupPilihPelunasanBinding.layoutUploadBukti.setVisibility(View.GONE);
 
 
         List<String> listSpinnerBank = new ArrayList<String>();
@@ -944,11 +970,8 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
                                 if (popupPilihPelunasanBinding.radioCOD.isChecked()) {
                                     pelunasanTagihanDenda("LANGSUNG", daftarTagihanDendas);
                                 } else {
-                                    if (isUploadBuktiTransfer) {
-                                        pelunasanTagihanDenda("TRANSFER", daftarTagihanDendas);
-                                    } else {
-                                        Toast.makeText(BayarTagihan.this, "Upload bukti transfer pelunasan terlebih dahulu !", Toast.LENGTH_SHORT).show();
-                                    }
+                                    pelunasanTagihanDenda("TRANSFER", daftarTagihanDendas);
+
                                 }
                             }
                         })
@@ -981,10 +1004,14 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
             modelPelunasanTagihan.setCoa_bank(null);
             modelPelunasanTagihan.setString_bukti(null);
         } else {
-            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
-            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
-            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
-            modelPelunasanTagihan.setString_bukti(buktiGambar);
+            modelPelunasanTagihan.setId_bank(null);
+            modelPelunasanTagihan.setNama_bank(null);
+            modelPelunasanTagihan.setCoa_bank(null);
+            modelPelunasanTagihan.setString_bukti(null);
+//            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
+//            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
+//            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
+//            modelPelunasanTagihan.setString_bukti(buktiGambar);
         }
 
 
@@ -1016,7 +1043,13 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         modelPelunasanTagihan.setTotal_denda(tagihanDenda);
         modelPelunasanTagihan.setGrand_total(totalTagihan);
 
-        sendDataPelunasanTagihan(modelPelunasanTagihan);
+
+        if (caraBayar.equals("LANGSUNG")) {
+            sendDataPelunasanTagihan(modelPelunasanTagihan);
+        } else {
+            String kodePembayaran = "PAY" + "_DBT_" + sessionManager.getPID() + "_" + System.currentTimeMillis();
+            setupPembayaran(kodePembayaran, totalTagihan, modelPelunasanTagihan);
+        }
 
 
     }
@@ -1037,10 +1070,14 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
             modelPelunasanTagihan.setCoa_bank(null);
             modelPelunasanTagihan.setString_bukti(null);
         } else {
-            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
-            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
-            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
-            modelPelunasanTagihan.setString_bukti(buktiGambar);
+            modelPelunasanTagihan.setId_bank(null);
+            modelPelunasanTagihan.setNama_bank(null);
+            modelPelunasanTagihan.setCoa_bank(null);
+            modelPelunasanTagihan.setString_bukti(null);
+//            modelPelunasanTagihan.setId_bank(String.valueOf(selectedBank.getId()));
+//            modelPelunasanTagihan.setNama_bank(selectedBank.getName());
+//            modelPelunasanTagihan.setCoa_bank(String.valueOf(selectedBank.getIdCoa()));
+//            modelPelunasanTagihan.setString_bukti(buktiGambar);
         }
 
 
@@ -1072,7 +1109,12 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         modelPelunasanTagihan.setTotal_denda(tagihanDenda);
         modelPelunasanTagihan.setGrand_total(totalTagihan);
 
-        sendDataPelunasanTagihan(modelPelunasanTagihan);
+        if (caraBayar.equals("LANGSUNG")) {
+            sendDataPelunasanTagihan(modelPelunasanTagihan);
+        } else {
+            String kodePembayaran = "PAY" + "_DBT_" + sessionManager.getPID() + "_" + System.currentTimeMillis();
+            setupPembayaran(kodePembayaran, totalTagihan, modelPelunasanTagihan);
+        }
 
     }
 
@@ -1234,5 +1276,80 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
                     }
                 })
                 .show();
+    }
+
+
+    //SDK PEMBAYARAN MIDTRANS
+
+    private void initMidTransSDK() {
+        String client_key = Constant.MERCHANT_CLIENT_KEY;
+        String base_url = Constant.MERCHANT_BASE_CHECKOUT_URL;
+        SdkUIFlowBuilder sdkUIFlowBuilder = SdkUIFlowBuilder.init()
+                .setClientKey(client_key) // client_key is mandatory
+                .setContext(this) // context is mandatory
+                .setTransactionFinishedCallback(this) // set transaction finish callback (sdk callback)
+                .setMerchantBaseUrl(base_url)//set merchant url
+                .setUIkitCustomSetting(uiKitCustomSetting())
+                .enableLog(true) // enable sdk log
+//                .setColorTheme(new CustomColorTheme("#FFE51255", "#B61548", "#FFE51255")) // will replace theme on snap theme on MAP
+                .setLanguage("id");
+        sdkUIFlowBuilder.buildSDK();
+    }
+
+    private UIKitCustomSetting uiKitCustomSetting() {
+        UIKitCustomSetting uIKitCustomSetting = new UIKitCustomSetting();
+        uIKitCustomSetting.setSkipCustomerDetailsPages(true);
+        uIKitCustomSetting.setShowPaymentStatus(true);
+        return uIKitCustomSetting;
+    }
+
+    private ModelPelunasan modelPelunasanSetelahTransfer;
+
+    private void setupPembayaran(String kodePembayaran, Double jumlahPembayaran, ModelPelunasan modelPelunasan) {
+
+        modelPelunasanSetelahTransfer = modelPelunasan;
+
+        CustomerDetails mCustomerDetails = new CustomerDetails();
+        mCustomerDetails.setPhone(sessionManager.getKeyTelefonMember());
+        mCustomerDetails.setFirstName(sessionManager.getName());
+        mCustomerDetails.setEmail(sessionManager.getEmail());
+        mCustomerDetails.setCustomerIdentifier(sessionManager.getPID());
+
+        TransactionRequest transactionRequestNew = new
+                TransactionRequest(kodePembayaran, jumlahPembayaran);
+        transactionRequestNew.setCustomerDetails(mCustomerDetails);
+
+        MidtransSDK.getInstance().setTransactionRequest(transactionRequestNew);
+        MidtransSDK.getInstance().startPaymentUiFlow(BayarTagihan.this);
+
+    }
+
+    @Override
+    public void onTransactionFinished(TransactionResult result) {
+        if (result.getResponse() != null) {
+            switch (result.getStatus()) {
+                case TransactionResult.STATUS_SUCCESS:
+                    Toast.makeText(this, "Transaction Finished. ID: " + result.getResponse().getTransactionId(), Toast.LENGTH_LONG).show();
+                    break;
+                case TransactionResult.STATUS_PENDING:
+                    Toast.makeText(this, "Transaction Pending. ID: " + result.getResponse().getTransactionId(), Toast.LENGTH_LONG).show();
+
+                    sendDataPelunasanTagihan(modelPelunasanSetelahTransfer);
+
+                    break;
+                case TransactionResult.STATUS_FAILED:
+                    Toast.makeText(this, "Transaction Failed. ID: " + result.getResponse().getTransactionId() + ". Message: " + result.getResponse().getStatusMessage(), Toast.LENGTH_LONG).show();
+                    break;
+            }
+            result.getResponse().getValidationMessages();
+        } else if (result.isTransactionCanceled()) {
+            Toast.makeText(this, "Transaction Canceled", Toast.LENGTH_LONG).show();
+        } else {
+            if (result.getStatus().equalsIgnoreCase(TransactionResult.STATUS_INVALID)) {
+                Toast.makeText(this, "Transaction Invalid", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Transaction Finished with failure.", Toast.LENGTH_LONG).show();
+            }
+        }
     }
 }

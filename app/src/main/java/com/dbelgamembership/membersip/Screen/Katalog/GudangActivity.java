@@ -317,7 +317,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
 
                 binding.rvGudang.setAdapter(null);
 
-
                 StringBuilder locDestinations = new StringBuilder();
 
                 modelGudangs.clear();
@@ -402,8 +401,12 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                     binding.txtAlamatPengiriman.setText(alamatPengirimanPengguna.getAlamatPengiriman());
                     sessionManager.setAlamatPengiriman(alamatPengirimanPengguna.getAlamatPengiriman());
                 } else {
-                    binding.txtAlamatPengiriman.setText(modelResponseDistance.getOriginAddresses().get(0));
-                    sessionManager.setAlamatPengiriman(modelResponseDistance.getOriginAddresses().get(0));
+                    binding.txtAlamatPengiriman.setText(alamatPertamaTetap);
+                    sessionManager.setAlamatPengiriman(alamatPertamaTetap);
+
+//
+//                    binding.txtAlamatPengiriman.setText(modelResponseDistance.getOriginAddresses().get(0));
+//                    sessionManager.setAlamatPengiriman(modelResponseDistance.getOriginAddresses().get(0));
                 }
 
                 if (sessionManager.isLoggedIn()) {
@@ -547,6 +550,8 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
         });
     }
 
+    private String alamatPertamaTetap = "";
+
     @SuppressLint("MissingPermission")
     private void getLastLocation() {
         progressDialog = ProgressDialog.show(GudangActivity.this, "Loading", "Please Wait...");
@@ -568,20 +573,21 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                             Geocoder geocoder = new Geocoder(GudangActivity.this, Locale.getDefault());
 
                             try {
-                                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-                                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                                String city = addresses.get(0).getLocality();
-                                String state = addresses.get(0).getAdminArea();
-                                String country = addresses.get(0).getCountryName();
-                                String postalCode = addresses.get(0).getPostalCode();
-                                String knownName = addresses.get(0).getFeatureName();
+                                List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 5); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                                Address selectedAddress = null;
+                                boolean alreadySelected = false;
 
-                                Log.e(TAG, "onClick ALAMAT : " + address);
-                                Log.e(TAG, "onClick KECAMATAN : " + city);
-                                Log.e(TAG, "onClick PROVINSI : " + state);
-                                Log.e(TAG, "onClick NEGARA : " + country);
-                                Log.e(TAG, "onClick KODEPOS : " + postalCode);
-                                Log.e(TAG, "onClick KNOWNNAME : " + knownName);
+                                for (int i = 0; i < addresses.size(); i++) {
+                                    if (!alreadySelected) {
+                                        if (addresses.get(i).getThoroughfare() != null) {
+                                            alreadySelected = true;
+                                            selectedAddress = addresses.get(i);
+                                        }
+                                    }
+                                }
+
+                                alamatPertamaTetap = selectedAddress.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
 
                                 setupDataUser();
 
