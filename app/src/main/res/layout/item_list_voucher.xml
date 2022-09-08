@@ -79,7 +79,6 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="12dp"
@@ -161,22 +160,26 @@
                             android:textSize="14sp"
                             android:textStyle="bold" />
 
+                        <com.google.android.material.button.MaterialButton
+                            android:layout_marginTop="8dp"
+                            android:id="@+id/btnRedeem"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/biruBelga"
+                            android:text="redeem ( 10 poin )"
+                            android:textSize="10sp"
+                            android:textAllCaps="false"
+                            android:textColor="@color/white" />
+
                     </LinearLayout>
+
+
+
+
+
 
                 </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnRedeem"
-                    android:layout_weight="0.8"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/button_round"
-                    android:backgroundTint="@color/biruBelga"
-                    android:paddingHorizontal="32dp"
-                    android:text="redeem\n( 10 poin )"
-                    android:textSize="10sp"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
 
 
             </LinearLayout>

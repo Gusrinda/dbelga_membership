@@ -75,13 +75,10 @@ public class VoucherActivity extends AppCompatActivity implements AdapterListVou
             }
         });
 
-
         sessionManager = new SessionManager(this);
 
         getDataUserMember();
-
         setupDaftarVoucher();
-
 
         binding.iconKeranjang.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +187,6 @@ public class VoucherActivity extends AppCompatActivity implements AdapterListVou
                             ModelRedeemVoucher modelRedeemVoucher = gson.fromJson(String.valueOf(response.body()), ModelRedeemVoucher.class);
                             com.dbelgamembership.membersip.Model.ModelRedeemVoucher.MsgServer voucherDiambil = modelRedeemVoucher.getMsgServer().get(0);
 
-
                             int sameVoucher = 0;
 
                             for (int i = 0; i < voucherMemberSemua.size(); i++) {
@@ -208,14 +204,12 @@ public class VoucherActivity extends AppCompatActivity implements AdapterListVou
                             } else {
                                 Toast.makeText(VoucherActivity.this, "Voucher sudah anda miliki / pernah anda claim !!!", Toast.LENGTH_SHORT).show();
                             }
-
-
                         }
-
 
                     } else {
                         Toast.makeText(VoucherActivity.this, "Response Null !", Toast.LENGTH_SHORT).show();
                     }
+
                 } catch (Exception e) {
                     Toast.makeText(VoucherActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "onResponse: Error " + e);
@@ -258,51 +252,79 @@ public class VoucherActivity extends AppCompatActivity implements AdapterListVou
 
         final ProgressDialog progressDialog = ProgressDialog.show(VoucherActivity.this, "Loading", "Getting voucher list ...");
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-        Call<ModelSearchVoucher> call = apiInterface.doGetListVoucher();
-        call.enqueue(new Callback<ModelSearchVoucher>() {
+
+        Call<JsonElement> call = apiInterface.doGetListVoucher(
+                sessionManager.getMembership(),
+                "aktif"
+        );
+
+        call.enqueue(new Callback<JsonElement>() {
             @Override
-            public void onResponse(Call<ModelSearchVoucher> call, Response<ModelSearchVoucher> response) {
+            public void onResponse(Call<JsonElement> call, Response<JsonElement> response) {
+
                 progressDialog.dismiss();
-                ModelSearchVoucher modelMember = response.body();
 
-                listVoucher.clear();
+                try {
+                    if (response != null) {
+                        Gson gson = new Gson();
+                        String responseX = String.valueOf(response.body());
+                        JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                        boolean success = root.get("success").getAsBoolean();
+                        Log.e("", "Test : " + success);
+                        if (!success) {
+                            Toast.makeText(VoucherActivity.this, root.get("msgServer").toString(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            ModelSearchVoucher modelMember = gson.fromJson(String.valueOf(response.body()), ModelSearchVoucher.class);
 
-                listVoucher = modelMember.getMsgServer();
+                            listVoucher.clear();
 
-                String statusMember = sessionManager.getMembership();
+                            listVoucher = modelMember.getMsgServer();
 
-                for (int i = listVoucher.size() - 1; i >= 0; i--) {
-                    if (statusMember.equals("SILVER")) {
-                        if (!listVoucher.get(i).getTipeMember().equals("SILVER")) {
-                            listVoucher.remove(i);
+                            String statusMember = sessionManager.getMembership();
+
+                            for (int i = listVoucher.size() - 1; i >= 0; i--) {
+                                if (statusMember.equals("SILVER")) {
+                                    if (!listVoucher.get(i).getTipeMember().equals("SILVER")) {
+                                        listVoucher.remove(i);
+                                    }
+                                } else if (statusMember.equals("GOLD")) {
+                                    if (!listVoucher.get(i).getTipeMember().equals("SILVER") && !listVoucher.get(i).getTipeMember().equals("GOLD")) {
+                                        listVoucher.remove(i);
+                                    }
+                                }
+                            }
+
+                            Log.e(TAG, "SIZE 2 : " + listVoucher.size());
+
+                            for (int i = listVoucher.size() - 1; i >= 0; i--) {
+                                if (listVoucher.get(i).getStatus().equals("tidak aktif")) {
+                                    listVoucher.remove(i);
+                                }
+                            }
+
+                            for (int i = listVoucher.size() - 1; i >= 0; i--) {
+                                if (listVoucher.get(i).getStok() < 1) {
+                                    listVoucher.remove(i);
+                                }
+                            }
+
+                            getDataVoucherMember();
+
                         }
-                    } else if (statusMember.equals("GOLD")) {
-                        if (!listVoucher.get(i).getTipeMember().equals("SILVER") && !listVoucher.get(i).getTipeMember().equals("GOLD")) {
-                            listVoucher.remove(i);
-                        }
+
+                    } else {
+                        Toast.makeText(VoucherActivity.this, "Response Null !", Toast.LENGTH_SHORT).show();
                     }
+                } catch (Exception e) {
+                    Toast.makeText(VoucherActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "onResponse: Error " + e);
                 }
 
-                Log.e(TAG, "SIZE 2 : " + listVoucher.size());
 
-                for (int i = listVoucher.size() - 1; i >= 0; i--) {
-                    if (listVoucher.get(i).getStok() < 1) {
-                        listVoucher.remove(i);
-                    }
-                }
-
-                getDataVoucherMember();
-//                if (listVoucher.size() > 0) {
-//                    binding.rvListVoucher.setAdapter(null);
-//                    adapterListSearchVoucher = new AdapterListVoucherAvailable(VoucherActivity.this, listVoucher, false, VoucherActivity.this);
-//                    binding.rvListVoucher.setAdapter(adapterListSearchVoucher);
-//                } else {
-//                    Snack("Voucher Kosong");
-//                }
             }
 
             @Override
-            public void onFailure(Call<ModelSearchVoucher> call, Throwable t) {
+            public void onFailure(Call<JsonElement> call, Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(VoucherActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onFailure: ERROR :: " + Arrays.toString(t.getStackTrace()));

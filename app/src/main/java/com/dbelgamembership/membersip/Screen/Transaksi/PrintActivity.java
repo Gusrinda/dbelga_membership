@@ -19,6 +19,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
@@ -78,6 +79,7 @@ import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.Screen.Limit.BayarTagihan;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.PembayaranTransfer.TransferPayment;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarang;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
@@ -269,6 +271,18 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
     private ActivityBuktibayarNewBinding binding;
     private boolean fromNotifikasi = false;
 
+    private boolean isOnCreate = true;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (!isOnCreate) {
+            accessWebService();
+        }
+
+    }
+
     @Override
     public void onCreate(Bundle mSavedInstanceState) {
         super.onCreate(mSavedInstanceState);
@@ -317,6 +331,7 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
         lvListView1.setVisibility(View.GONE);
         getSupportActionBar().setTitle("Detail Take Order");
         if (getIntent().hasExtra("DATAPRINT")) {
+            isOnCreate = false;
             takeorder = getIntent().getBooleanExtra("TAKEORDER", false);
             dataSO = getIntent().getStringExtra("DATAPRINT");
             isDoingPayment = getIntent().getBooleanExtra("isPayment", false);
@@ -349,16 +364,6 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
 
         mScan = findViewById(R.id.scanbutton);
 
-
-        binding.contentBuktiBayar.layoutPilihMetode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                popOutMetodePembayaran();
-//                Toast.makeText(PrintActivity.this, "Pilih metode pembayaran !", Toast.LENGTH_SHORT).show();
-                //OPEN WEBVIEW URL LARAVEL DOKU
-                setupOpenWebView();
-            }
-        });
 
         binding.contentBuktiBayar.layoutBtnPembatalan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -626,7 +631,7 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
 
         final ProgressDialog progressDialog = ProgressDialog.show(PrintActivity.this, "Loading", "Setting Up Payment ...");
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
-        Call<String> call = apiInterface.doSetPayment(new ModelPostSetPayment(dataSO, tipePayment, imageString, null));
+        Call<String> call = apiInterface.doSetPayment(new ModelPostSetPayment(dataSO, tipePayment, imageString, null, null));
 
         call.enqueue(new Callback<String>() {
             @Override
@@ -876,6 +881,42 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
 
                             if (b.getStatus().equals("payment")) {
                                 binding.contentBuktiBayar.layoutPilihMetode.setVisibility(View.VISIBLE);
+
+                                binding.contentBuktiBayar.layoutPilihMetode.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        String lastTwo = dataSO.substring(dataSO.length() - 6);
+                                        String customerCode = String.valueOf(b.getGudang()) + sessionManager.getPID() + lastTwo;
+
+                                        Intent intent = new Intent(PrintActivity.this, TransferPayment.class);
+                                        intent.putExtra("hasExtra", true);
+                                        intent.putExtra("banks", b.getBankPayment() == null ? "" : b.getBankPayment());
+                                        intent.putExtra("kode_payment", customerCode);
+                                        intent.putExtra("kode_so", dataSO);
+                                        intent.putExtra("kode_faktur", b.getPembayaranCode());
+                                        intent.putExtra("data_payment", (Parcelable) (b.getDetailPaymentBni() == null ? null : b.getDetailPaymentBni()));
+
+                                        startActivity(intent);
+                                    }
+                                });
+                            }
+
+                            if (isDoingPayment) {
+
+                                isDoingPayment = false;
+
+                                String lastTwo = dataSO.substring(dataSO.length() - 6);
+                                String customerCode = String.valueOf(b.getGudang()) + sessionManager.getPID() + lastTwo;
+
+                                Intent intent = new Intent(PrintActivity.this, TransferPayment.class);
+                                intent.putExtra("hasExtra", true);
+                                intent.putExtra("banks", b.getBankPayment() == null ? "" : b.getBankPayment());
+                                intent.putExtra("kode_payment", customerCode);
+                                intent.putExtra("kode_faktur", b.getPembayaranCode());
+                                intent.putExtra("kode_so", dataSO);
+                                intent.putExtra("data_payment", (Parcelable) (b.getDetailPaymentBni() == null ? null : b.getDetailPaymentBni()));
+
+                                startActivity(intent);
                             }
 
 

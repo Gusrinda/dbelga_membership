@@ -31,7 +31,7 @@ public class DaftarVoucher implements Serializable, Parcelable
     private String deskripsi;
     @SerializedName("nominal")
     @Expose
-    private Integer nominal;
+    private double nominal;
     @SerializedName("expired_date")
     @Expose
     private String expiredDate;
@@ -71,7 +71,7 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.tipe = ((String) in.readValue((String.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
-        this.nominal = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.nominal = ((double) in.readValue((Integer.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
         this.flagPakai = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.minimalBelanja = ((String) in.readValue((String.class.getClassLoader())));
@@ -122,11 +122,11 @@ public class DaftarVoucher implements Serializable, Parcelable
         this.deskripsi = deskripsi;
     }
 
-    public Integer getNominal() {
+    public double getNominal() {
         return nominal;
     }
 
-    public void setNominal(Integer nominal) {
+    public void setNominal(double nominal) {
         this.nominal = nominal;
     }
 

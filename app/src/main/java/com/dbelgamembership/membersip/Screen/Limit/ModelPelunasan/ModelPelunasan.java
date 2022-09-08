@@ -6,6 +6,7 @@ public class ModelPelunasan {
 
     private String id_customer;
     private String tipe_payment;
+    private String bank_payment;
     private String tipe_pelunasan;
     private String id_bank;
     private String nama_bank;
@@ -19,9 +20,10 @@ public class ModelPelunasan {
     public ModelPelunasan() {
     }
 
-    public ModelPelunasan(String id_customer, String tipe_payment, String tipe_pelunasan, String id_bank, String nama_bank, String coa_bank, String string_bukti, List<DetailTagihan> detail, double total_tagihan, double total_denda, double grand_total) {
+    public ModelPelunasan(String id_customer, String tipe_payment, String bank_payment, String tipe_pelunasan, String id_bank, String nama_bank, String coa_bank, String string_bukti, List<DetailTagihan> detail, double total_tagihan, double total_denda, double grand_total) {
         this.id_customer = id_customer;
         this.tipe_payment = tipe_payment;
+        this.bank_payment = bank_payment;
         this.tipe_pelunasan = tipe_pelunasan;
         this.id_bank = id_bank;
         this.nama_bank = nama_bank;
@@ -119,5 +121,13 @@ public class ModelPelunasan {
 
     public void setGrand_total(double grand_total) {
         this.grand_total = grand_total;
+    }
+
+    public String getBank_payment() {
+        return bank_payment;
+    }
+
+    public void setBank_payment(String bank_payment) {
+        this.bank_payment = bank_payment;
     }
 }

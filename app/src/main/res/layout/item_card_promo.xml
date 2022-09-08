@@ -12,7 +12,7 @@
         android:id="@+id/cardPromo"
         app:cardElevation="0dp"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         tools:ignore="MissingConstraints">
 
         <LinearLayout
@@ -22,12 +22,12 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="125dp">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:id="@+id/gambarBanner"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="125dp"
                     android:scaleType="fitXY"
                     android:src="@drawable/promo_2" />
 
@@ -55,16 +55,15 @@
 
             <LinearLayout
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="12dp"
                 android:layout_width="match_parent"
-                android:layout_height="75dp">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <ImageView
@@ -104,10 +103,10 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                     <ImageView
@@ -124,7 +123,7 @@
 
                         <TextView
                             android:textSize="10dp"
-                            android:text="Berlaku hingga"
+                            android:text="Exp date"
                             android:textStyle="bold"
                             android:fontFamily="@font/hammer_font"
                             android:layout_width="wrap_content"
@@ -144,6 +143,8 @@
                     </LinearLayout>
 
                 </LinearLayout>
+
+
 
 
             </LinearLayout>

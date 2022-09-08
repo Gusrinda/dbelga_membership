@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelDaftarTagihanDebet.DetailTransaksi;
 import com.dbelgamembership.membersip.Model.ModelRiwayatPelunasanTagihan.DaftarPelunasan;
 import com.dbelgamembership.membersip.Model.ModelRiwayatPelunasanTagihan.DaftarTransaksi;
@@ -49,6 +52,8 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
 
     private List<Boolean> daftarIsUp = new ArrayList<>();
 
+    private SessionManager sessionManager;
+
     public AdapterRiwayatPelunasanTagihan(Context context, List<DaftarPelunasan> list, AdapterRiwayatPelunasan mAdapterCallback) {
         this.context = context;
         this.list = list;
@@ -58,12 +63,16 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
             this.daftarIsUp.add(i, false);
         }
 
+        sessionManager = new SessionManager(context);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemRiwayatBinding itemBinding = ItemRiwayatBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+
+
+
         return new ViewHolder(itemBinding);
     }
 
@@ -103,8 +112,13 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
         TextView nominalTagihan;
         TextView kodeTagihan;
         TextView statusTagihan;
+        TextView tipePayment;
 
+        LinearLayout layoutBtnPembayaran;
         LinearLayout layoutBtnShow;
+        LinearLayout layoutTransfer;
+        ImageView imgIconBank;
+        TextView kodePembayaranBank;
         RecyclerView rvDaftarTransaksi;
 
         CardView lnContent;
@@ -117,8 +131,13 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
             kodeTagihan = itemView.textKodeTransaksi;
             statusTagihan = itemView.cardStatusTagihan;
             layoutBtnShow = itemView.btnShowDetail;
+            layoutBtnPembayaran = itemView.btnShowPembayaran;
+            tipePayment = itemView.txtTipePembayaran;
             rvDaftarTransaksi = itemView.rvRiwayatUtama;
             lnContent = itemView.lnContent;
+            layoutTransfer = itemView.layoutTransfer;
+            kodePembayaranBank = itemView.txtKodePembayaran;
+            imgIconBank = itemView.imgIconBank;
         }
     }
 
@@ -158,6 +177,56 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
             holder.statusTagihan.setText("Tagihan belum selesai");
         }
 
+        if (item.getTipePayment() != null && item.getTipePayment().equals("TRANSFER") ) {
+
+            holder.layoutTransfer.setVisibility(View.VISIBLE);
+
+
+            if (item.getBankPayment().equals("BNI")) {
+
+                @SuppressLint("UseCompatLoadingForDrawables") Drawable myDrawable = context.getResources().getDrawable(R.drawable.bni_icon);
+                holder.imgIconBank.setImageDrawable(myDrawable);
+
+                String trxID = item.getDetailPaymentBni().getTrxId();
+
+                holder.tipePayment.setText("Transfer");
+
+                holder.kodePembayaranBank.setText(trxID);
+
+                holder.layoutBtnPembayaran.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapterCallback.onPembayaranTransfer(item, trxID);
+                    }
+                });
+
+            } else {
+
+                @SuppressLint("UseCompatLoadingForDrawables") Drawable myDrawable = context.getResources().getDrawable(R.drawable.bri_icon);
+                holder.imgIconBank.setImageDrawable(myDrawable);
+                String lastTwo = item.getCodePelunasan().substring(item.getCodePelunasan().length() - 2);
+                String lastTwoDate = item.getPaymentDate().substring(item.getPaymentDate().length() - 2);
+
+                String customerCode = "09" + sessionManager.getPID() + lastTwoDate + lastTwo;
+
+                holder.tipePayment.setText("Transfer");
+
+                holder.kodePembayaranBank.setText(customerCode);
+
+                holder.layoutBtnPembayaran.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mAdapterCallback.onPembayaranTransfer(item, customerCode);
+                    }
+                });
+
+            }
+
+        } else {
+            holder.layoutTransfer.setVisibility(View.GONE);
+            holder.tipePayment.setText("Tunai");
+        }
+
         holder.layoutBtnShow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -182,8 +251,7 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
         holder.rvDaftarTransaksi.setAdapter(adapterDetailPelunasanTagihan);
 
     }
-
-
+    
     public void addItems(List<DaftarPelunasan> items) {
         this.list.addAll(this.list.size(), items);
         notifyDataSetChanged();
@@ -201,7 +269,7 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
     }
 
     public interface AdapterRiwayatPelunasan {
-        void onRowRiwayatPelunasan(DaftarPelunasan item);
+        void onPembayaranTransfer(DaftarPelunasan item, String kodePembayaran);
     }
 
 }

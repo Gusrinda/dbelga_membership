@@ -215,6 +215,14 @@ public class MsgServer implements Serializable, Parcelable
     @Expose
     private String flagDenda;
 
+    @SerializedName("jatuh_tempo")
+    @Expose
+    private String jatuhTempo;
+
+    @SerializedName("nominal_plafon")
+    @Expose
+    private String nominalPlafon;
+
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -300,6 +308,8 @@ public class MsgServer implements Serializable, Parcelable
         this.sisaCreditLimit = ((double) in.readValue((double.class.getClassLoader())));
         this.grandTotalDebet = ((String) in.readValue((String.class.getClassLoader())));
         this.flagDenda = ((String) in.readValue((String.class.getClassLoader())));
+        this.jatuhTempo = ((String) in.readValue((String.class.getClassLoader())));
+        this.nominalPlafon = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -833,6 +843,22 @@ public class MsgServer implements Serializable, Parcelable
         this.flagDenda = flagDenda;
     }
 
+    public String getJatuhTempo() {
+        return jatuhTempo;
+    }
+
+    public void setJatuhTempo(String jatuhTempo) {
+        this.jatuhTempo = jatuhTempo;
+    }
+
+    public String getNominalPlafon() {
+        return nominalPlafon;
+    }
+
+    public void setNominalPlafon(String nominalPlafon) {
+        this.nominalPlafon = nominalPlafon;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
@@ -900,6 +926,9 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(sisaCreditLimit);
         dest.writeValue(grandTotalDebet);
         dest.writeValue(flagDenda);
+        dest.writeValue(jatuhTempo);
+        dest.writeValue(nominalPlafon);
+
     }
 
     public int describeContents() {

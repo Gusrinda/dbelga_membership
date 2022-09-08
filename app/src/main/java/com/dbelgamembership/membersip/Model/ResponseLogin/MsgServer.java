@@ -202,6 +202,12 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("flag_member")
     @Expose
     private Boolean flagMember;
+
+    @SerializedName("jatuh_tempo")
+    @Expose
+    private String jatuhTempo;
+
+
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -284,6 +290,7 @@ public class MsgServer implements Serializable, Parcelable
         this.verifikasiFoto = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.identitas = ((String) in.readValue((String.class.getClassLoader())));
         this.flagMember = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
+        this.jatuhTempo = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -793,6 +800,14 @@ public class MsgServer implements Serializable, Parcelable
         this.flagMember = flagMember;
     }
 
+    public String getJatuhTempo() {
+        return jatuhTempo;
+    }
+
+    public void setJatuhTempo(String jatuhTempo) {
+        this.jatuhTempo = jatuhTempo;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
@@ -857,6 +872,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(verifikasiFoto);
         dest.writeValue(identitas);
         dest.writeValue(flagMember);
+        dest.writeValue(jatuhTempo);
     }
 
     public int describeContents() {

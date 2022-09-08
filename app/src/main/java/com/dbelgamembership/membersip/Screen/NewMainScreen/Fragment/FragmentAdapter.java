@@ -21,7 +21,7 @@ public class FragmentAdapter extends FragmentStateAdapter {
 
         switch (position) {
             case 1:
-                return new PromoFragment();
+                return new WishlistFragment();
             case 2:
                 return new TransaksiFragment();
             case 3:

@@ -7,6 +7,8 @@ import javax.annotation.Generated;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
 import android.os.Parcelable.Creator;
+
+import com.dbelgamembership.membersip.Model.modelListTransaksi.DetailPaymentBni;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -23,6 +25,9 @@ public class DaftarPelunasan implements Serializable, Parcelable
     @SerializedName("payment_date")
     @Expose
     private String paymentDate;
+    @SerializedName("tipe_payment")
+    @Expose
+    private String tipePayment;
     @SerializedName("status_pelunasan")
     @Expose
     private String statusPelunasan;
@@ -32,6 +37,16 @@ public class DaftarPelunasan implements Serializable, Parcelable
     @SerializedName("daftar_transaksi")
     @Expose
     private List<DaftarTransaksi> daftarTransaksi = null;
+
+    @SerializedName("bank_payment")
+    @Expose
+    private String bankPayment;
+    @SerializedName("detail_payment_bni")
+    @Expose
+    private DetailPaymentBni detailPaymentBni;
+
+
+
     public final static Creator<DaftarPelunasan> CREATOR = new Creator<DaftarPelunasan>() {
 
 
@@ -54,8 +69,11 @@ public class DaftarPelunasan implements Serializable, Parcelable
         this.idPelunasan = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.codePelunasan = ((String) in.readValue((String.class.getClassLoader())));
         this.paymentDate = ((String) in.readValue((String.class.getClassLoader())));
+        this.tipePayment = ((String) in.readValue((String.class.getClassLoader())));
         this.statusPelunasan = ((String) in.readValue((String.class.getClassLoader())));
         this.totalPelunasan = ((String) in.readValue((String.class.getClassLoader())));
+        this.bankPayment = ((String) in.readValue((String.class.getClassLoader())));
+        this.detailPaymentBni = ((DetailPaymentBni) in.readValue((String.class.getClassLoader())));
         in.readList(this.daftarTransaksi, (com.dbelgamembership.membersip.Model.ModelRiwayatPelunasanTagihan.DaftarTransaksi.class.getClassLoader()));
     }
 
@@ -110,12 +128,39 @@ public class DaftarPelunasan implements Serializable, Parcelable
         this.daftarTransaksi = daftarTransaksi;
     }
 
+    public String getTipePayment() {
+        return tipePayment;
+    }
+
+    public void setTipePayment(String tipePayment) {
+        this.tipePayment = tipePayment;
+    }
+
+    public String getBankPayment() {
+        return bankPayment;
+    }
+
+    public void setBankPayment(String bankPayment) {
+        this.bankPayment = bankPayment;
+    }
+
+    public DetailPaymentBni getDetailPaymentBni() {
+        return detailPaymentBni;
+    }
+
+    public void setDetailPaymentBni(DetailPaymentBni detailPaymentBni) {
+        this.detailPaymentBni = detailPaymentBni;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(idPelunasan);
         dest.writeValue(codePelunasan);
         dest.writeValue(paymentDate);
+        dest.writeValue(tipePayment);
         dest.writeValue(statusPelunasan);
         dest.writeValue(totalPelunasan);
+        dest.writeValue(bankPayment);
+        dest.writeValue(detailPaymentBni);
         dest.writeList(daftarTransaksi);
     }
 

@@ -32,7 +32,7 @@ import com.dbelgamembership.membersip.Screen.Katalog.WishlishActivity;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.AkunFragment;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.MainFragment;
-import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.PromoFragment;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.WishlistFragment;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.TransaksiFragment;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.Screen.Setting.EditAkun;
@@ -112,7 +112,7 @@ public class NewMainActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.spinnerGudang.setAdapter(adapter);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, new MainFragment()).commit();
+//        getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, new MainFragment()).commit();
 
         bottomNavigationView.setSelectedItemId(R.id.mainFragment);
         appBarLayout = findViewById(R.id.appBar);
@@ -223,10 +223,10 @@ public class NewMainActivity extends AppCompatActivity {
             }
         });
 
-
         menuAwal = binding.bottomNavView.getSelectedItemId();
 
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
@@ -234,7 +234,7 @@ public class NewMainActivity extends AppCompatActivity {
 
                 if (menuAwal != item.getItemId()) {
 
-                    Fragment fragment = null;
+                    Fragment fragment = new MainFragment();
 
                     switch (item.getItemId()) {
                         case R.id.mainFragment:
@@ -243,8 +243,8 @@ public class NewMainActivity extends AppCompatActivity {
                             binding.linearIsiAppBar.setVisibility(View.VISIBLE);
                             binding.linearIsiPengaturanAkun.setVisibility(View.GONE);
                             break;
-                        case R.id.promoFragment:
-                            fragment = new PromoFragment();
+                        case R.id.wishlistFragment:
+                            fragment = new WishlistFragment();
                             binding.appBar.setVisibility(View.VISIBLE);
                             binding.linearIsiAppBar.setVisibility(View.VISIBLE);
                             binding.linearIsiPengaturanAkun.setVisibility(View.GONE);
@@ -266,6 +266,7 @@ public class NewMainActivity extends AppCompatActivity {
 
                     Log.e(TAG, "onNavigationItemSelected: " + fragment);
 
+                    assert fragment != null;
                     getSupportFragmentManager().beginTransaction().replace(R.id.frameContainer, fragment).commit();
 
                     menuAwal = item.getItemId();
@@ -291,15 +292,12 @@ public class NewMainActivity extends AppCompatActivity {
         binding.iconKeranjang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (sessionManager.isLoggedIn()) {
                     Intent intent = new Intent(NewMainActivity.this, CartActivity.class);
                     startActivity(intent);
                 } else {
                     PeringatanBelumLogin("Keranjang");
                 }
-
-
             }
         });
 
@@ -312,10 +310,8 @@ public class NewMainActivity extends AppCompatActivity {
                 } else {
                     PeringatanBelumLogin("Wishlist");
                 }
-
             }
         });
-
     }
 
     private void settingUpSpinner() {
@@ -335,7 +331,6 @@ public class NewMainActivity extends AppCompatActivity {
                         bottomNavigationView.setSelectedItemId(R.id.mainFragment);
                     }
                 });
-
             }
         }
 
@@ -396,4 +391,5 @@ public class NewMainActivity extends AppCompatActivity {
         });
         alert.show();
     }
+
 }

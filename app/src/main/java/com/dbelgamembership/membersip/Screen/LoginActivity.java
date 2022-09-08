@@ -163,17 +163,20 @@ public class LoginActivity extends AppCompatActivity {
                                 String namaUser = modelUser.getMsgServer().getName();
                                 String emailUser = modelUser.getMsgServer().getMainEmail();
                                 String membershipUser = modelUser.getMsgServer().getStatusMember();
+                                String jatuhTempo = modelUser.getMsgServer().getJatuhTempo();
                                 Log.e("", "id User: " + idUser);
                                 Log.e("", "nama User: " + namaUser);
                                 Log.e("", "email User: " + emailUser);
                                 Log.e("", "membership: " + membershipUser);
                                 Log.e("", "membership: " + identitasPelanggan);
+                                Log.e("", "jatuh Tempo: " + jatuhTempo);
 
                                 boolean status_pay = Boolean.parseBoolean(modelUser.getMsgServer().getStatusPayment());
 
-                                sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser);
+                                sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser, jatuhTempo);
                                 sessionManager.setAccountUser(namaUser, emailUser, modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                 sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
+                                sessionManager.setKeyDeadlinePayment(modelUser.getMsgServer().getPayDate());
 
                                 if (modelUser.getMsgServer().getEmailVerification()) {
                                     finish();

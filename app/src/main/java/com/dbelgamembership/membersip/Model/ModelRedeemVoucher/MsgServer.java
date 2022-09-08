@@ -26,7 +26,7 @@ public class MsgServer implements Serializable, Parcelable
     private String tipe;
     @SerializedName("nominal")
     @Expose
-    private Integer nominal;
+    private double nominal;
     @SerializedName("klaim")
     @Expose
     private Integer klaim;
@@ -92,7 +92,7 @@ public class MsgServer implements Serializable, Parcelable
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.tipe = ((String) in.readValue((String.class.getClassLoader())));
-        this.nominal = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.nominal = ((double) in.readValue((Integer.class.getClassLoader())));
         this.klaim = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.expired = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
@@ -136,11 +136,11 @@ public class MsgServer implements Serializable, Parcelable
         this.tipe = tipe;
     }
 
-    public Integer getNominal() {
+    public double getNominal() {
         return nominal;
     }
 
-    public void setNominal(Integer nominal) {
+    public void setNominal(double nominal) {
         this.nominal = nominal;
     }
 

@@ -28,7 +28,7 @@ public class MsgServer implements Serializable, Parcelable
     private String deskripsi;
     @SerializedName("nominal")
     @Expose
-    private int nominal;
+    private double nominal;
     @SerializedName("expired_date")
     @Expose
     private String expiredDate;
@@ -56,7 +56,7 @@ public class MsgServer implements Serializable, Parcelable
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.tipe = ((String) in.readValue((String.class.getClassLoader())));
         this.deskripsi = ((String) in.readValue((String.class.getClassLoader())));
-        this.nominal = ((int) in.readValue((int.class.getClassLoader())));
+        this.nominal = ((double) in.readValue((int.class.getClassLoader())));
         this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
@@ -128,11 +128,11 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public int getNominal() {
+    public double getNominal() {
         return nominal;
     }
 
-    public void setNominal(int nominal) {
+    public void setNominal(double nominal) {
         this.nominal = nominal;
     }
 

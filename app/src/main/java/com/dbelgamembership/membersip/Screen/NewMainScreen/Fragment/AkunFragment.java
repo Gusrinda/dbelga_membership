@@ -445,22 +445,20 @@ public class AkunFragment extends Fragment {
                                 binding.textPiutangBelanja.setText("Rp. " + nf.format(Math.ceil(Double.parseDouble(piutangBelanja))));
                                 binding.txtTotalPoin.setText(poinMember + " Poin");
 
-
                                 if (dataUser.getFlagDenda().equals("true")) {
                                     isHavingDenda = true;
                                 } else {
                                     isHavingDenda = false;
                                 }
 
-
                                 long longHari = todayDate.getTime() - terakhirUpdate.getTime();
                                 int jumlahHari = (int) TimeUnit.DAYS.convert(longHari, TimeUnit.MILLISECONDS);
 
-                                if (jumlahHari < 30) {
-                                    binding.btnMembershipPlan.setVisibility(View.GONE);
-                                } else {
-                                    binding.btnMembershipPlan.setVisibility(View.VISIBLE);
-                                }
+//                                if (jumlahHari < 30 || Math.ceil(Double.parseDouble(piutangBelanja)) > 0 || isHavingDenda) {
+//                                    binding.btnMembershipPlan.setVisibility(View.GONE);
+//                                } else {
+//                                    binding.btnMembershipPlan.setVisibility(View.VISIBLE);
+//                                }
 
                                 cekMember();
 
@@ -491,14 +489,6 @@ public class AkunFragment extends Fragment {
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private void cekMember() {
-        Drawable image;
-
-        if (sessionManager.getImage() != "" && sessionManager.getImage() != null) {
-            Glide.with(this).asBitmap().load(sessionManager.getImage()).centerCrop().into(binding.imageView);
-        } else {
-            image = requireActivity().getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
-            binding.imageView.setImageDrawable(image);
-        }
 
         String nama = sessionManager.getName();
         binding.txtNomorMember.setText(sessionManager.getPID());
@@ -510,21 +500,24 @@ public class AkunFragment extends Fragment {
             namaPendek = nama;
         }
         binding.txtNamaMember.setText(namaPendek.toUpperCase());
+
+        Drawable imageKartu;
+
         if (sessionManager.getMembership().equals("SILVER")) {
-            image = getResources().getDrawable(R.drawable.card_member_silver);
-            binding.layoutCardMember.setBackground(image);
+            imageKartu = getResources().getDrawable(R.drawable.card_member_silver);
+            binding.layoutCardMember.setBackground(imageKartu);
             binding.layoutExpired.setVisibility(View.GONE);
             binding.plafonDebet.setVisibility(View.GONE);
             binding.plafonReguler.setVisibility(View.VISIBLE);
         } else if (sessionManager.getMembership().equals("GOLD")) {
-            image = getResources().getDrawable(R.drawable.card_member_gold);
-            binding.layoutCardMember.setBackground(image);
+            imageKartu = getResources().getDrawable(R.drawable.card_member_gold);
+            binding.layoutCardMember.setBackground(imageKartu);
             binding.layoutExpired.setVisibility(View.VISIBLE);
             binding.plafonDebet.setVisibility(View.VISIBLE);
             binding.plafonReguler.setVisibility(View.GONE);
         } else if (sessionManager.getMembership().equals("PLATINUM")) {
-            image = getResources().getDrawable(R.drawable.card_member_platinum);
-            binding.layoutCardMember.setBackground(image);
+            imageKartu = getResources().getDrawable(R.drawable.card_member_platinum);
+            binding.layoutCardMember.setBackground(imageKartu);
             binding.layoutExpired.setVisibility(View.VISIBLE);
             binding.plafonDebet.setVisibility(View.VISIBLE);
             binding.plafonReguler.setVisibility(View.GONE);
@@ -552,14 +545,12 @@ public class AkunFragment extends Fragment {
                                 ModelVoucherCustomer modelListItem = gson.fromJson(response, ModelVoucherCustomer.class);
                                 com.dbelgamembership.membersip.Model.ModelVoucherCustomer.MsgServer modelVoucher = modelListItem.getMsgServer().get(0);
 
-
                                 for (int i = 0; i < modelVoucher.getDaftarVoucher().size(); i++) {
 
                                     boolean isVoucherExpired = false;
 
                                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                                     final Calendar baru = Calendar.getInstance();
-
 
                                     Date tanggalNow = baru.getTime();
                                     Date tanggalAkhir = formatter.parse(modelVoucher.getDaftarVoucher().get(i).getExpiredDate());
@@ -577,13 +568,7 @@ public class AkunFragment extends Fragment {
                                         jumlahVoucher++;
                                     }
 
-
-//                                    if (!modelVoucher.getDaftarVoucher().get(i).getFlagPakai()) {
-//                                       jumlahVoucher++;
-//                                    }
-                                }
-
-//                                jumlahVoucher = modelVoucher.getDaftarVoucher().size();
+                               }
 
                             }
 
@@ -607,7 +592,6 @@ public class AkunFragment extends Fragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -657,11 +641,13 @@ public class AkunFragment extends Fragment {
                 return super.parseNetworkResponse(response);
             }
         };
+
         arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         mQueue.add(arrReq);
+
     }
 
     private void getdataVoucher() {
@@ -716,7 +702,6 @@ public class AkunFragment extends Fragment {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
-
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());
@@ -766,7 +751,9 @@ public class AkunFragment extends Fragment {
                 Log.e(TAG, "parseNetworkResponse: " + response.statusCode);
                 return super.parseNetworkResponse(response);
             }
+
         };
+
         arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

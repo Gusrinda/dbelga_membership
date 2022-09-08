@@ -28,13 +28,15 @@ android {
         }
     }
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
 }
 
 dependencies {
-
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -49,6 +51,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.3.5'
     implementation 'androidx.navigation:navigation-ui:2.3.5'
     implementation 'com.google.android.gms:play-services-maps:18.0.0'
+    implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
     testImplementation 'junit:junit:4.+'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
@@ -88,8 +91,8 @@ dependencies {
 
     implementation 'com.github.DantSu:ESCPOS-ThermalPrinter-Android:2.0.6'
 
-
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+
     implementation 'com.github.TutorialsAndroid:KAlertDialog:v14.0.19'
 
     implementation 'com.github.dhaval2404:imagepicker:2.1'

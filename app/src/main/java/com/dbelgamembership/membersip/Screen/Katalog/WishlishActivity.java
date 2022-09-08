@@ -45,7 +45,9 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Model.ResponseWishlist.ResponseWishlist;
+import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListWishlist;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
@@ -134,7 +136,13 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
         layoutManager = new GridLayoutManager(getApplicationContext(), 1, GridLayoutManager.VERTICAL, false);
         rvBarang.setLayoutManager(layoutManager);
 
-        getDataUser();
+
+        if (sessionManager.isLoggedIn()) {
+            getDataUser();
+        }  else {
+            PeringatanBelumLogin("Wishlist");
+        }
+
 
     }
 
@@ -888,5 +896,38 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         mQueue.add(jsonObjectRequest);
+    }
+
+    private void PeringatanBelumLogin(String from) {
+        Log.e(TAG, "PeringatanBelumLogin: FROM :: " + from);
+        AlertDialog.Builder alert = new AlertDialog.Builder(WishlishActivity.this);
+        alert.setIcon(R.drawable.dbelga);
+        alert.setTitle("Fitur Dikunci");
+        alert.setMessage("Anda harus mempunyai akun Membership terlebih dahulu untuk mengakses fitur ini !");
+        alert.setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+                Intent intent = new Intent(WishlishActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        alert.setNegativeButton("REGISTER", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+//                Intent intent = new Intent(NewMainActivity.this, RegisterActivity.class);
+//                startActivity(intent);
+//                finish();
+            }
+        });
+        alert.setNeutralButton("Tutup", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        alert.show();
     }
 }

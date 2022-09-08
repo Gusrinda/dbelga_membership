@@ -3,7 +3,9 @@ package com.dbelgamembership.membersip.Screen.Limit;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -17,6 +19,7 @@ import com.dbelgamembership.membersip.Model.ModelDaftarTagihanDebet.ModelDaftarT
 import com.dbelgamembership.membersip.Model.ModelRiwayatPelunasanTagihan.DaftarPelunasan;
 import com.dbelgamembership.membersip.Model.ModelRiwayatPelunasanTagihan.ModelRiwayatPelunasanTagihan;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.PembayaranTransfer.TransferTagihan;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDaftarSemuaTagihan;
 import com.dbelgamembership.membersip.app.Adapter.AdapterRiwayatPelunasanTagihan;
 import com.dbelgamembership.membersip.databinding.ActivityRiwayatTagihanBinding;
@@ -88,16 +91,22 @@ public class RiwayatTagihan extends AppCompatActivity implements AdapterRiwayatP
 
                         assert modelRiwayatPelunasanTagihan != null;
 
-                        if (modelRiwayatPelunasanTagihan.getMsgServer().getDaftarPelunasan().size() > 0) {
+                        if (modelRiwayatPelunasanTagihan.getMsgServer().getDaftarPelunasan() != null) {
+                            if (modelRiwayatPelunasanTagihan.getMsgServer().getDaftarPelunasan().size() > 0) {
 
-                            daftarPelunasan = modelRiwayatPelunasanTagihan.getMsgServer().getDaftarPelunasan();
+                                daftarPelunasan = modelRiwayatPelunasanTagihan.getMsgServer().getDaftarPelunasan();
 
-                            AdapterRiwayatPelunasanTagihan adapterRiwayatPelunasanTagihan = new AdapterRiwayatPelunasanTagihan(RiwayatTagihan.this, daftarPelunasan, RiwayatTagihan.this);
-                            binding.rvTagihan.setAdapter(adapterRiwayatPelunasanTagihan);
+                                AdapterRiwayatPelunasanTagihan adapterRiwayatPelunasanTagihan = new AdapterRiwayatPelunasanTagihan(RiwayatTagihan.this, daftarPelunasan, RiwayatTagihan.this);
+                                binding.rvTagihan.setAdapter(adapterRiwayatPelunasanTagihan);
 
-                        } else {
+                            } else {
+                                Toast.makeText(RiwayatTagihan.this, "Tidak ada daftar transaksi !", Toast.LENGTH_SHORT).show();
+                            }
+
+                        } else  {
                             Toast.makeText(RiwayatTagihan.this, "Tidak ada daftar transaksi !", Toast.LENGTH_SHORT).show();
                         }
+
 
                     } else {
                         Toast.makeText(RiwayatTagihan.this, msgServer, Toast.LENGTH_SHORT).show();
@@ -121,7 +130,30 @@ public class RiwayatTagihan extends AppCompatActivity implements AdapterRiwayatP
     }
 
     @Override
-    public void onRowRiwayatPelunasan(DaftarPelunasan item) {
+    public void onPembayaranTransfer(DaftarPelunasan item, String kodePembayaran) {
+
+
+        Intent intent = new Intent(RiwayatTagihan.this, TransferTagihan.class);
+
+        if (item.getBankPayment().equals("BNI")){
+            intent.putExtra("hasExtra", true);
+            intent.putExtra("banks", "BNI");
+            intent.putExtra("dataTagihan", String.valueOf((int) Double.parseDouble(item.getTotalPelunasan())));
+            intent.putExtra("kode_payment", kodePembayaran);
+            intent.putExtra("kode_tagihan", item.getCodePelunasan());
+            startActivity(intent);
+
+        } else {
+            intent.putExtra("hasExtra", true);
+            intent.putExtra("banks", "BRI");
+            intent.putExtra("kode_payment", kodePembayaran);
+            intent.putExtra("kode_tagihan", item.getCodePelunasan());
+
+            startActivity(intent);
+        }
+
+
+
 
     }
 }

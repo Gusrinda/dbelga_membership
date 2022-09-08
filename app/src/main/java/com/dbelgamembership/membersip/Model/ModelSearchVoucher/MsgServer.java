@@ -24,7 +24,7 @@ public class MsgServer implements Serializable, Parcelable
     private String tipe;
     @SerializedName("nominal")
     @Expose
-    private int nominal;
+    private double nominal;
     @SerializedName("klaim")
     @Expose
     private int klaim;
@@ -44,9 +44,20 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("minimal_belanja")
     @Expose
     private String minimalBelanja;
+
     @SerializedName("gudang")
     @Expose
     private List<Integer> gudang = null;
+
+
+    @SerializedName("status")
+    @Expose
+    private String status;
+
+
+    @SerializedName("expired_date")
+    @Expose
+    private String expiredDate;
 
 
     public final static Parcelable.Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
@@ -71,7 +82,7 @@ public class MsgServer implements Serializable, Parcelable
         this.name = ((String) in.readValue((String.class.getClassLoader())));
         this.code = ((String) in.readValue((String.class.getClassLoader())));
         this.tipe = ((String) in.readValue((String.class.getClassLoader())));
-        this.nominal = ((int) in.readValue((int.class.getClassLoader())));
+        this.nominal = ((double) in.readValue((int.class.getClassLoader())));
         this.klaim = ((int) in.readValue((int.class.getClassLoader())));
         this.expired = ((int) in.readValue((int.class.getClassLoader())));
         this.stok = ((int) in.readValue((int.class.getClassLoader())));
@@ -79,6 +90,8 @@ public class MsgServer implements Serializable, Parcelable
         this.tipeMember = ((String) in.readValue((String.class.getClassLoader())));
         this.minimalBelanja = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.gudang, (java.lang.Integer.class.getClassLoader()));
+        this.status = ((String) in.readValue((String.class.getClassLoader())));
+        this.expiredDate = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -123,11 +136,11 @@ public class MsgServer implements Serializable, Parcelable
         return this;
     }
 
-    public int getNominal() {
+    public double getNominal() {
         return nominal;
     }
 
-    public void setNominal(int nominal) {
+    public void setNominal(double nominal) {
         this.nominal = nominal;
     }
 
@@ -218,6 +231,21 @@ public class MsgServer implements Serializable, Parcelable
         this.gudang = gudang;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(String expiredDate) {
+        this.expiredDate = expiredDate;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeValue(name);
@@ -231,6 +259,8 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(tipeMember);
         dest.writeValue(minimalBelanja);
         dest.writeList(gudang);
+        dest.writeValue(status);
+        dest.writeValue(expiredDate);
     }
 
     public int describeContents() {

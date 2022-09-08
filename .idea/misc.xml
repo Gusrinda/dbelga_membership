@@ -5,6 +5,8 @@
       <map>
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/pick_out_line.xml" value="0.286" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/radius2.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/rounded_not_selected.xml" value="0.319" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/rounded_selected.xml" value="0.319" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/strike_through.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/toogle_widget_background.xml" value="0.286" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/background_number_otp.xml" value="0.231" />
@@ -15,7 +17,10 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_qr_code_24.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/member_gold.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/radius2.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/rounded_not_selected.xml" value="0.319" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/rounded_selected.xml" value="0.319" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/strike_through.xml" value="0.308" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout-v23/activity_transfer_payment.xml" value="0.34479166666666666" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_akun_saya.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_bayar_tagihan.xml" value="0.2824074074074074" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_buktibayar_new.xml" value="0.2942222222222222" />
@@ -48,6 +53,7 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_riwayat_tagihan.xml" value="0.2824074074074074" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_set_alamat_rumah.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_term_of_service.xml" value="0.12450592885375494" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_transfer_payment.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_verification.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_voucher.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_web_view_pembayaran.xml" value="0.2981981981981982" />
@@ -65,33 +71,40 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_riwayat_transaksi_qr.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_so.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_transaksi.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_wishlist.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/frame_foto.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_barang.xml" value="0.25" />
-        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_card_promo.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_card_promo.xml" value="0.33" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_cart.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_checkout.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_cs.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_gudang.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_invoice_trans.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_kategori.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_list_voucher.xml" value="0.35430157261794637" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_list_voucher_suplier.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_pembatalan.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_pilihan_menu.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_riwayat.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_riwayat_sub.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_tagihan.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/item_wishlist.xml" value="0.3063063063063063" />
-        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_barang.xml" value="0.75" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_barang.xml" value="0.33" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_barcode_member.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_checkout.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_daftar_voucher.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_get_alamat.xml" value="0.5" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_metode_pembayaran.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_pembatalan_transaksi.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_pembayaran_membership.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_pilih_pelunasan.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_pilih_pembayaran.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_redeem_code_voucher.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_redeem_referrak.xml" value="0.2945945945945946" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_redeem_referral.xml" value="0.2945945945945946" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_voucher_suplier.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/popup_wishlist_editing.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/spinner_va_bank.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/menu/bottom_navigation_menu.xml" value="0.2981981981981982" />
       </map>
     </option>

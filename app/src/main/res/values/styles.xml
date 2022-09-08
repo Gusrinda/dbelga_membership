@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/biruBelga</item>
         <item name="colorPrimaryDark">@color/darkBiruBelga</item>
@@ -35,17 +35,33 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.MaterialComponents.Dark.ActionBar">
         <item name="android:textColorSecondary">@color/darkBiruBelga</item>
 
     </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light">
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="android:textColorSecondary">@color/darkBiruBelga</item>
 
     </style>
-    <style name="AppTheme.PopupOverlayWhite" parent="ThemeOverlay.AppCompat.Light">
+
+    <style name="AppTheme.PopupOverlayWhite" parent="ThemeOverlay.MaterialComponents.Light">
         <item name="android:textColorSecondary">@color/white</item>
 
     </style>
+
+
+    <style name="dialog_blue_button" parent="android:Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingLeft">21dp</item>
+        <item name="android:paddingRight">21dp</item>
+        <item name="android:textColor">@color/button_text_color</item>
+        <item name="android:buttonStyle">@style/dialog_blue_button</item>
+        <item name="buttonStyle">@style/dialog_blue_button</item>
+    </style>
+
+
 </resources>

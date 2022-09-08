@@ -59,7 +59,8 @@ public class AdapterListVoucherAvailable extends RecyclerView.Adapter<AdapterLis
         MsgServer dataShareOmset = item.get(position);
 
         myViewHolder.tipeVoucher.setText(dataShareOmset.getTipe());
-        myViewHolder.expVoucher.setText(String.valueOf(dataShareOmset.getExpired()) + " hari");
+//        myViewHolder.expVoucher.setText(String.valueOf(dataShareOmset.getExpired()) + " hari");
+        myViewHolder.expVoucher.setText(dataShareOmset.getExpiredDate());
         myViewHolder.deskripsiVoucher.setText(dataShareOmset.getName());
 
         if (dataShareOmset.getTipe().equals("DISKON")) {
@@ -70,7 +71,7 @@ public class AdapterListVoucherAvailable extends RecyclerView.Adapter<AdapterLis
             myViewHolder.layoutTipeVoucher.setBackgroundColor(context.getResources().getColor(R.color.biruBelga));
         }
 
-        myViewHolder.btnRedeemVoucher.setText("redeem\n" + String.valueOf(dataShareOmset.getKlaim()) + " poin");
+        myViewHolder.btnRedeemVoucher.setText("redeem " + String.valueOf(dataShareOmset.getKlaim()) + " poin");
         myViewHolder.btnRedeemVoucher.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

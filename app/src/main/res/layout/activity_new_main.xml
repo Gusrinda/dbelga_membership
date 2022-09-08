@@ -24,15 +24,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:layout_marginLeft="8dp"
-                android:text="Toko\nDipilih"
-                android:textStyle="bold"
-                android:fontFamily="@font/hammer_font"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <ImageView
+                android:src="@drawable/ic_baseline_store_mall_directory_24"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                app:tint="@color/biruBelga" />
 
             <Spinner
+                android:layout_marginStart="4dp"
                 android:id="@+id/spinner_gudang"
                 android:layout_marginRight="24dp"
                 android:layout_weight="1"
@@ -40,6 +39,7 @@
                 android:layout_height="match_parent"/>
 
             <ru.nikartm.support.ImageBadgeView
+                android:visibility="gone"
                 android:id="@+id/icon_whislist"
                 android:layout_width="32dp"
                 android:layout_height="32dp"

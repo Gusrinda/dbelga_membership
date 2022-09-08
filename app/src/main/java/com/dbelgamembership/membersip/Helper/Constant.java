@@ -16,4 +16,7 @@ public class Constant {
 
     public static final String NOMOR_WA_DEFAULT = "081559584297";
 
+    public static final String BRI_CUNSOMER_KEY = "xGCV1HZjgIf2S2b7VJTc58ecrkI8Shfb";
+    public static final String BRI_CONSUMER_SECRET = "AP5Xp2BXEVJpAg2G";
+
 }

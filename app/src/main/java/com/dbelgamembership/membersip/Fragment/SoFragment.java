@@ -123,7 +123,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        dialog1.show();
+                        dialog1.dismiss();
                         try {
                             Gson gson = new Gson();
                             ModelListTransaksi modelListTransaction = gson.fromJson(String.valueOf(response), ModelListTransaksi.class);
@@ -181,7 +181,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                dialog1.show();
+                dialog1.dismiss();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);
@@ -284,7 +284,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        dialog1.show();
+                        dialog1.dismiss();
 //                        Log.e(TAG, "onResponse: "+response);
                         rvTransaksi.setVisibility(View.VISIBLE);
                         try {
@@ -300,7 +300,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                                 if (modelListTransaction.getData().getCurrentPage() <= modelListTransaction.getData().getLastPage()) {
                                     urlNextPage = (String.valueOf(modelListTransaction.getData().getNextPageUrl()));
                                     page = modelListTransaction.getData().getCurrentPage();
-                                    Log.e(TAG, "onResponse: " + urlNextPage);
+                                    Log.e(TAG, "onResponse Masuk sini : " + urlNextPage);
                                 }
 
                                 if (modelListTransaction.getData().getData().size() > 0) {
@@ -331,7 +331,7 @@ public class SoFragment extends Fragment implements AdapterListTransaksi.Adapter
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                dialog1.show();
+                dialog1.dismiss();
                 Log.e("onErrorResponse", error.getMessage(), error);
 //                swipe_search.setRefreshing(false);
                 rvTransaksi.setVisibility(View.GONE);

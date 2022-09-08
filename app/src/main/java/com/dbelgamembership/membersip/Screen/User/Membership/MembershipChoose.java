@@ -79,6 +79,8 @@ public class MembershipChoose extends AppCompatActivity {
 
     private ActivityMembershipChooseBinding binding;
 
+    MsgServer detailUserSekarang;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -240,15 +242,21 @@ public class MembershipChoose extends AppCompatActivity {
                                 expdate = "";
                             }
 
-                            final Calendar expiredMember = Calendar.getInstance();
-                            if (choosenMembership.equals("SILVER")) {
-                                expiredMember.add(Calendar.YEAR, 100);
-                            } else {
-                                expiredMember.add(Calendar.YEAR, 1);
-                            }
+                            String expDate = "";
 
-                            Date expiredDate = expiredMember.getTime();
-                            String expDate = formatExpDate.format(expiredDate);
+                            if (detailUserSekarang.getStatusMember().equals("SILVER")) {
+                                final Calendar expiredMember = Calendar.getInstance();
+                                if (choosenMembership.equals("SILVER")) {
+                                    expiredMember.add(Calendar.YEAR, 100);
+                                } else {
+                                    expiredMember.add(Calendar.YEAR, 1);
+                                }
+
+                                Date expiredDate = expiredMember.getTime();
+                                expDate = formatExpDate.format(expiredDate);
+                            } else {
+                                expDate = detailUserSekarang.getExpiredDate();
+                            }
 
 
                             String jatuhTempo = "";
@@ -261,13 +269,17 @@ public class MembershipChoose extends AppCompatActivity {
                                 jatuhTempo = "30";
                             }
 
-
                             try {
                                 postData.put("status_member", choosenMembership);
                                 postData.put("expired_date", expDate);
                                 postData.put("pay_date", paydate);
                                 postData.put("nominal_plafon", binding.edInputNominalPlafon.getText().toString());
                                 postData.put("jatuh_tempo", jatuhTempo);
+
+                                postData.put("is_data_lama", "true");
+                                postData.put("membership_lama", detailUserSekarang.getStatusMember());
+                                postData.put("jatuh_tempo_lama", detailUserSekarang.getJatuhTempo());
+                                postData.put("nominal_plafon_lama", detailUserSekarang.getNominalPlafon());
 
                             } catch (Exception e) {
                                 e.getMessage();
@@ -276,6 +288,10 @@ public class MembershipChoose extends AppCompatActivity {
                             if (isOnline()) {
                                 Log.e(TAG, "URL : " + url);
                                 Log.e(TAG, "onClick: " + postData);
+
+
+//                                simpan di lokal dulu
+
                                 SimpanPost(postData);
                             }
                         } else {
@@ -399,10 +415,10 @@ public class MembershipChoose extends AppCompatActivity {
                                     Gson gson = new Gson();
                                     ModelUser modelUser = gson.fromJson(String.valueOf(response), ModelUser.class);
 
-                                    MsgServer detailUser = modelUser.getMsgServer().get(0);
+                                    detailUserSekarang = modelUser.getMsgServer().get(0);
 
-                                    String status_member = detailUser.getStatusMember();
-                                    String updated_at = detailUser.getUpdatedAt();
+                                    String status_member = detailUserSekarang.getStatusMember();
+                                    String updated_at = detailUserSekarang.getUpdatedAt();
                                     SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
                                     Date created = formatter.parse(updated_at);
                                     Calendar cal = Calendar.getInstance();
@@ -418,8 +434,8 @@ public class MembershipChoose extends AppCompatActivity {
                                     sessionManager.setMembership(status_member);
                                     sessionManager.setExpiredDate(updated_at);
 
-                                    if (detailUser.getCreditLimit() != null) {
-                                        binding.edInputNominalPlafon.setText(detailUser.getCreditLimit());
+                                    if (detailUserSekarang.getCreditLimit() != null) {
+                                        binding.edInputNominalPlafon.setText(detailUserSekarang.getCreditLimit());
                                     }
 
 

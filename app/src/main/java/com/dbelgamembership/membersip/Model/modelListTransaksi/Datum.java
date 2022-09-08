@@ -81,6 +81,11 @@ public class Datum implements Serializable, Parcelable
     @SerializedName("bukti_payment")
     @Expose
     private String buktiPayment;
+
+    @SerializedName("bank_payment")
+    @Expose
+    private String bankPayment;
+
     @SerializedName("bukti_pengiriman")
     @Expose
     private String buktiPengiriman;
@@ -129,7 +134,13 @@ public class Datum implements Serializable, Parcelable
     @Expose
     private String voucherNominalSuplier;
 
+//    @SerializedName("detail_payment_bni")
+//    @Expose
+//    private List<DetailPaymentBni> detailPaymentBni = null;
 
+    @SerializedName("detail_payment_bni")
+    @Expose
+    private DetailPaymentBni detailPaymentBni;
 
     @SerializedName("detail")
     @Expose
@@ -181,6 +192,7 @@ public class Datum implements Serializable, Parcelable
         this.namaPenerima = ((String) in.readValue((String.class.getClassLoader())));
         this.tipePayment = ((String) in.readValue((String.class.getClassLoader())));
         this.buktiPayment = ((String) in.readValue((String.class.getClassLoader())));
+        this.bankPayment = ((String) in.readValue((String.class.getClassLoader())));
         this.buktiPengiriman = ((String) in.readValue((String.class.getClassLoader())));
         this.buktiCod = ((String) in.readValue((String.class.getClassLoader())));
         this.createdAt = ((String) in.readValue((String.class.getClassLoader())));
@@ -196,7 +208,9 @@ public class Datum implements Serializable, Parcelable
         this.isVoucherSuplier = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         this.voucherCodeSuplier = ((String) in.readValue((String.class.getClassLoader())));
         this.voucherNominalSuplier = ((String) in.readValue((String.class.getClassLoader())));
+        this.detailPaymentBni = ((DetailPaymentBni) in.readValue((String.class.getClassLoader())));
 
+//        in.readList(this.detailPaymentBni, (com.dbelgamembership.membersip.Model.modelListTransaksi.DetailPaymentBni.class.getClassLoader()));
         in.readList(this.detail, (com.dbelgamembership.membersip.Model.modelListTransaksi.Detail.class.getClassLoader()));
         this.isKekurangan = ((Boolean) in.readValue((Boolean.class.getClassLoader())));
         in.readList(this.detailKekurangan, (com.dbelgamembership.membersip.Model.modelListTransaksi.DetailKekurangan.class.getClassLoader()));
@@ -469,6 +483,22 @@ public class Datum implements Serializable, Parcelable
         this.detailKekurangan = detailKekurangan;
     }
 
+    public DetailPaymentBni getDetailPaymentBni() {
+        return detailPaymentBni;
+    }
+
+    public void setDetailPaymentBni(DetailPaymentBni detailPaymentBni) {
+        this.detailPaymentBni = detailPaymentBni;
+    }
+
+    //    public List<DetailPaymentBni> getDetailPaymentBni() {
+//        return detailPaymentBni;
+//    }
+//
+//    public void setDetailPaymentBni(List<DetailPaymentBni> detailPaymentBni) {
+//        this.detailPaymentBni = detailPaymentBni;
+//    }
+
     public Boolean getVoucher() {
         return isVoucher;
     }
@@ -533,6 +563,14 @@ public class Datum implements Serializable, Parcelable
         this.voucherNominalSuplier = voucherNominalSuplier;
     }
 
+    public String getBankPayment() {
+        return bankPayment;
+    }
+
+    public void setBankPayment(String bankPayment) {
+        this.bankPayment = bankPayment;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(code);
@@ -556,6 +594,7 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(namaPenerima);
         dest.writeValue(tipePayment);
         dest.writeValue(buktiPayment);
+        dest.writeValue(bankPayment);
         dest.writeValue(buktiPengiriman);
         dest.writeValue(buktiCod);
         dest.writeValue(createdAt);
@@ -564,6 +603,8 @@ public class Datum implements Serializable, Parcelable
         dest.writeValue(totalDiskonSo);
         dest.writeValue(pembayaranCode);
         dest.writeValue(catatanPayment);
+        dest.writeValue(detailPaymentBni);
+//        dest.writeList(detailPaymentBni);
         dest.writeList(detail);
         dest.writeValue(isVoucher);
         dest.writeValue(voucherCode);

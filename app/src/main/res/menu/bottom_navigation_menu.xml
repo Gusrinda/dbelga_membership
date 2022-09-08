@@ -7,9 +7,9 @@
         android:title="Belanja"/>
 
     <item
-        android:id="@+id/promoFragment"
-        android:icon="@drawable/ic_baseline_app_discount_24"
-        android:title="Promo"/>
+        android:id="@+id/wishlistFragment"
+        android:icon="@drawable/ic_like"
+        android:title="Wishlist"/>
 
     <item
         android:id="@+id/transaksiFragment"

@@ -186,7 +186,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="4dp"
                         android:fontFamily="@font/hammer_font"
-                        android:text="2. Tekan tombol lunasi tagihan, dan pilih metode transfer pembayaran pelunasan" />
+                        android:text="2. Tekan tombol lunasi tagihan, dan pilih bank transfer pembayaran pelunasan" />
 
 
                     <TextView
@@ -210,20 +210,12 @@
                             android:text="Transfer ke rekening : " />
 
                         <Spinner
-                            android:id="@+id/spinnerBank"
+                            android:visibility="visible"
+                            android:id="@+id/spinner_bank_va"
+                            android:layout_marginVertical="8dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"/>
 
-                        <TextView
-                            android:id="@+id/txtNomorRekeningDipilih"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginVertical="4dp"
-                            android:textSize="14sp"
-                            android:textColor="@color/black"
-                            android:textStyle="bold"
-                            android:fontFamily="@font/hammer_font"
-                            android:text="Nomor Rekening" />
 
                     </LinearLayout>
 
@@ -234,49 +226,6 @@
                         android:fontFamily="@font/hammer_font"
                         android:text="4. Selesaikan transfer dan tunggu admin approve pembayaran anda" />
 
-                    <LinearLayout
-                        android:id="@+id/layoutUploadBukti"
-                        android:gravity="center_vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:id="@+id/btnUploadBuktiTransfer"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal"
-                            android:padding="4dp">
-
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:src="@drawable/ic_baseline_drive_folder_upload_24"
-                                app:tint="@color/material_orange_400" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="4dp"
-                                android:text="upload bukti"
-                                android:textColor="@color/material_orange_400" />
-
-                        </LinearLayout>
-
-
-                        <TextView
-                            android:visibility="gone"
-                            android:textAlignment="textEnd"
-                            android:id="@+id/txtLihatFoto"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="4dp"
-                            android:text="lihat bukti"
-                            android:textColor="@color/material_blue_500" />
-
-
-                    </LinearLayout>
 
 
                 </LinearLayout>

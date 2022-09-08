@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/popup_round"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical"
+    android:layout_margin="20dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:id="@+id/produk_close"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_above="@id/layoutTotalBelanja"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/produk_kategori"
+            android:layout_centerHorizontal="true"
+            android:text="PEMBAYARAN BIAYA MEMBERSHIP"
+            android:fontFamily="@font/hammer_font"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/produk_image"
+            android:src="@drawable/bg_payment"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_width="match_parent"
+            android:layout_height="64dp" />
+
+        <TextView
+            android:layout_marginTop="4dp"
+            android:gravity="center"
+            android:text="Pilih bank yang ingin anda gunakan untuk pembayaran !"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:visibility="visible"
+            android:layout_marginTop="8dp"
+            android:id="@+id/layoutTransfer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <Spinner
+                android:visibility="visible"
+                android:id="@+id/spinner_bank_va"
+                android:layout_marginVertical="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:fontFamily="@font/hammer_font"
+                android:text="Pembayaran Transfer : "
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ScrollView
+                android:fillViewport="true"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="1. Pilih bank yang anda ingin gunakan"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="2. Tekan tombol dibawah maka anda akan diarahkan pada halaman nomor pembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <LinearLayout
+                        android:visibility="gone"
+                        android:id="@+id/layoutNoRekening"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:layout_marginVertical="4dp"
+                            android:fontFamily="@font/hammer_font"
+                            android:text="Transfer ke rekening : "
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginVertical="4dp"
+                            android:fontFamily="@font/hammer_font"
+                            android:textSize="16sp"
+                            android:textColor="@color/black"
+                            android:text="BCA\n048 977 6768 "
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginVertical="4dp"
+                            android:fontFamily="@font/hammer_font"
+                            android:textColor="@color/black"
+                            android:text="an PT DUNIA BELANJA INDONESIA "
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="3. Lakukan pembayaran sesuai dengan nomor pembayaran"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginVertical="4dp"
+                        android:fontFamily="@font/hammer_font"
+                        android:text="4. Tunggu konfirmasi admin atas pembayaran anda"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+
+            </ScrollView>
+
+
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_marginVertical="8dp"
+        android:id="@+id/layoutBottom"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="56dp">
+
+        <LinearLayout
+            android:id="@+id/layout_btnBayar"
+            android:paddingVertical="12sp"
+            android:gravity="center"
+            android:background="@drawable/button_round_theme"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_baseline_credit_card_24"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                app:tint="@color/white" />
+
+            <TextView
+                android:textColor="@color/white"
+                android:layout_marginLeft="4dp"
+                android:textStyle="bold"
+                android:text="BAYAR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

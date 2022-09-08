@@ -1,6 +1,7 @@
 package com.dbelgamembership.membersip.Screen.Katalog;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -26,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -42,17 +45,23 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Helper.ApiBanks;
 import com.dbelgamembership.membersip.Model.ModelResponseDistance.ModelResponseDistance;
 import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.DaftarVoucher;
 import com.dbelgamembership.membersip.Model.ModelVoucherCustomer.ModelVoucherCustomer;
+import com.dbelgamembership.membersip.Screen.Katalog.Adapter.SpinnerBankAdapter;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPayments;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBNI;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBRI;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayBarangSuplier;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayVoucherSuplierBelanja;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.Voucher.Dummy.AdapterListVoucherMember;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCart;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListCheckout;
@@ -94,10 +103,17 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -106,6 +122,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -114,6 +131,10 @@ import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.alama
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.daftarGudang;
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.jarak;
 import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 
 public class CartActivity extends AppCompatActivity implements AdapterListCart.AdapterListGudangCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AdapterListVoucherMember.AdapterListVoucherDummyCallback, AdapterVoucherSuplier.AdapterVoucherSuplierCallback {
 
@@ -289,7 +310,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         final Calendar baru = Calendar.getInstance();
 
-
                         Date tanggalNow = baru.getTime();
                         Date tanggalAkhir = formatter.parse(mVoucher.getDaftarVoucher().get(i).getExpiredDate());
 
@@ -366,7 +386,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         }
 
-
         if (isVoucherToko) {
             if (((Double.parseDouble(item.getMinimalBelanja())) > pengecekanTotalUntukVoucher)) {
                 Toast.makeText(CartActivity.this, "Voucher bisa digunakan minimal belanja : Rp. " + nf.format(Double.parseDouble(item.getMinimalBelanja())), Toast.LENGTH_SHORT).show();
@@ -428,9 +447,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
                     if (dataUser.getFlagDenda().equals("true")) {
                         isPunyaTagihanDenda = true;
-
                         Toast.makeText(CartActivity.this, "ANDA PUNYA DENDA TAGIHAN, DEBIT SEMENTARA TIDAK BISA DIGUNAKAN", Toast.LENGTH_SHORT).show();
-
                     } else {
                         isPunyaTagihanDenda = false;
                     }
@@ -438,7 +455,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 }
 
                 getDataVoucherMember();
-
 
             }
 
@@ -558,10 +574,35 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
     private PopupCheckoutBinding checkoutBinding;
     private boolean isUploadBuktiTransfer = false;
+    private String selectedBank = "";
 
     private void checkoutPop() {
         checkoutBinding = PopupCheckoutBinding.inflate(getLayoutInflater());
         final View view = checkoutBinding.getRoot();
+
+        selectedBank = "";
+
+
+        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
+        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+
+
+        SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
+        checkoutBinding.spinnerBankVa.setAdapter(customAdapter);
+
+        checkoutBinding.spinnerBankVa.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedBank = namaBanks[checkoutBinding.spinnerBankVa.getSelectedItemPosition()];
+                Log.e(TAG, "onItemSelected BANK SELECTED :: " + selectedBank);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
 
         SimpleDateFormat af = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar cal = Calendar.getInstance(); // creates calendar
@@ -598,6 +639,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 isUploadBuktiTransfer = true;
             } else {
 //                checkoutBinding.txtMetodePembayaran.setText("TRANSFER\nBCA - 048 977 6768");
+                checkoutBinding.spinnerBankVa.setVisibility(View.VISIBLE);
                 checkoutBinding.txtMetodePembayaran.setText("TRANSFER BANK");
                 checkoutBinding.txtMetodePembayaran.setTextSize(14);
                 isUploadBuktiTransfer = true;
@@ -790,8 +832,8 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 String tipeDiskon = "";
                                                 if (item.getProdukPromo() && item.getStokPromo() > 0 && cekTanggal) {
                                                     Log.e(TAG, "MASUK PROMO");
-                                                     hargaNormal = Double.parseDouble(item.getHarga().getHarga());
-                                                     hargaPromo = Double.parseDouble(item.getPricePromo());
+                                                    hargaNormal = Double.parseDouble(item.getHarga().getHarga());
+                                                    hargaPromo = Double.parseDouble(item.getPricePromo());
 
                                                     diskon = hargaNormal - hargaPromo;
 
@@ -864,8 +906,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 double persentaseDiskonMembership = 0;
 
                                                 if (item.getProdukPromoMember()) {
-
-
 
 
                                                     if (sessionManager.getMembership().equals("SILVER")) {
@@ -941,14 +981,11 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                     }
 
 
-
-
-                                                } else  {
+                                                } else {
                                                     map_order.put("is_diskon_membership", "false");
                                                     map_order.put("persentase_diskon_membership", "0");
                                                     map_order.put("total_diskon_membership", "0");
                                                 }
-
 
 
                                                 map_order.put("total_setelah_diskon", String.valueOf(totalNormal - totalDiskon - totalDiskonMember));
@@ -1003,10 +1040,10 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                                 jsonObject.put("voucher_nominal_supplier", null);
                                             }
 
-                                            Log.e(TAG, "onResponse: GRANDTOTAL :: " + grandTotal );
-                                            Log.e(TAG, "onResponse: hitungJarak :: " + hitungJarak );
-                                            Log.e(TAG, "onResponse: realNominalVoucher :: " + realNominalVoucher );
-                                            Log.e(TAG, "onResponse: realNominalVoucherSuplier :: " + realNominalVoucherSuplier );
+                                            Log.e(TAG, "onResponse: GRANDTOTAL :: " + grandTotal);
+                                            Log.e(TAG, "onResponse: hitungJarak :: " + hitungJarak);
+                                            Log.e(TAG, "onResponse: realNominalVoucher :: " + realNominalVoucher);
+                                            Log.e(TAG, "onResponse: realNominalVoucherSuplier :: " + realNominalVoucherSuplier);
 
                                             jsonObject.put("subtotal", String.valueOf(grandTotal - hitungJarak + realNominalVoucher + realNominalVoucherSuplier));
                                             jsonObject.put("total_diskon_so", String.valueOf(totalDiskonSO));
@@ -1269,6 +1306,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 kodeSo,
                 tipePayment,
                 imageString,
+                tipePayment.equals("TRANSFER") ? selectedBank.substring(0, selectedBank.length() - 3) : "",
                 (tipePayment.equals("DEBIT") ? daftarPayment : null)
         );
 
@@ -1288,6 +1326,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                         Call<String> callUpdate = apiInterface.doUpdateSO(kodeSo, tipePayment.equals("TRANSFER") ? "payment" : "confirmation");
 
                         callUpdate.enqueue(new Callback<String>() {
+                            @SuppressLint("NewApi")
                             @Override
                             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
                                 progressDialog.dismiss();
@@ -1295,13 +1334,26 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                 alertDialog.dismiss();
 
                                 if (tipePayment.equals("TRANSFER")) {
-                                    Toast.makeText(CartActivity.this, "Order berhasil, Lakukan Pelunasan Transfer !", Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(CartActivity.this, PrintActivity.class);
-                                    Log.e(TAG, "onRowAdapterListTransactionClicked: " + kodeSo);
-                                    intent.putExtra("DATAPRINT", kodeSo);
-                                    intent.putExtra("isPayment", true);
-                                    startActivity(intent);
-                                    finish();
+
+                                    if (!selectedBank.isEmpty()) {
+
+                                        if (selectedBank.equals("BRI VA")) {
+
+                                            //BRI
+                                            setupPembuatanVATransfer(kodeSo);
+                                        } else if (selectedBank.equals("BNI VA")) {
+
+                                            //BRI
+                                            setupPembuatanVABNI(kodeSo);
+                                        } else if (selectedBank.equals("BCA VA")) {
+
+                                        } else if (selectedBank.equals("MANDIRI VA")) {
+
+                                        }
+
+                                    }
+
+
                                 } else {
                                     Toast.makeText(CartActivity.this, "Order berhasil, tunggu konfirmasi dari admin dan barang segera dikirim !", Toast.LENGTH_LONG).show();
                                     finish();
@@ -1338,6 +1390,203 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
 
+    }
+
+    @SuppressLint("NewApi")
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setupPembuatanVATransfer(String kodeSO) {
+
+        String lastTwo = kodeSO.substring(kodeSO.length() - 6);
+
+        String customerCode = idGudang + sessionManager.getPID() + lastTwo;
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final Calendar cal = Calendar.getInstance();
+
+        cal.add(Calendar.DATE, 1);
+
+        String dateExpired = formatter.format(cal.getTime());
+
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
+
+        String formattedDate = now.toString();
+
+        Log.e(TAG, "onCreate: FORMATTED DATE :: " + formattedDate);
+
+        try {
+
+            StringBuilder stringPayload = new StringBuilder();
+
+            JSONObject jsonObject = new JSONObject();
+
+            jsonObject.put("amount", String.valueOf(Math.round(grandTotal)));
+            jsonObject.put("brivaNo", "77777");
+            jsonObject.put("custCode", customerCode);
+            jsonObject.put("expiredDate", dateExpired);
+            jsonObject.put("institutionCode", "J104408");
+            jsonObject.put("keterangan", "Pembayaran transaksi :: " + kodeSO);
+            jsonObject.put("nama", sessionManager.getName());
+
+            Log.e(TAG, "setupPembuatanVATransfer :: " + jsonObject.toString());
+
+            stringPayload.append("path=/v1/briva")
+                    .append("&verb=POST")
+                    .append("&token=Bearer ")
+                    .append(ApiBanks.BRI_TOKEN.getAccessToken()).append("&timestamp=").append(formattedDate).append("&body=")
+                    .append(jsonObject.toString());
+
+            PostBRI postBRI = new PostBRI(
+                    "J104408",
+                    "77777",
+                    customerCode,
+                    sessionManager.getName(),
+                    String.valueOf(Math.round(grandTotal)),
+                    "Pembayaran transaksi :: " + kodeSO,
+                    dateExpired
+            );
+
+            Log.e(TAG, "setupPembuatanVATransfer STRING PAYLOAD :: " + stringPayload);
+
+            String sign = hash_hmac(stringPayload.toString(), ApiBanks.BRI_CONSUMER_SECRET);
+            String bearerToken = "Bearer " + ApiBanks.BRI_TOKEN.getAccessToken();
+
+            final ProgressDialog progressDialog = ProgressDialog.show(CartActivity.this, "Loading", "Pembuatan VA ...");
+            APIInterface apiInterface = APIClient.getClient(ApiBanks.urlBRI).create(APIInterface.class);
+            Call<JsonElement> call = apiInterface.bri_createEndPointVA(
+                    bearerToken,
+                    formattedDate,
+                    sign,
+                    "application/json",
+                    postBRI
+            );
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                    try {
+                        progressDialog.dismiss();
+                        if (response != null) {
+                            Toast.makeText(CartActivity.this, "Order berhasil, Lakukan Pelunasan Transfer !", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(CartActivity.this, PrintActivity.class);
+                            Log.e(TAG, "onRowAdapterListTransactionClicked: " + kodeSO);
+                            intent.putExtra("DATAPRINT", kodeSO);
+                            intent.putExtra("isPayment", true);
+                            startActivity(intent);
+                            finish();
+
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "onResponse: " + e.getMessage());
+                        Toast.makeText(CartActivity.this, "Error Transfer", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonElement> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onResponse: " + t.getMessage());
+                    Toast.makeText(CartActivity.this, "Error Transfer", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @SuppressLint("NewApi")
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void setupPembuatanVABNI(String kodeSO) {
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 2);
+        Date expiredLocalTime = calendar.getTime();
+
+        String offset = "+07:00";
+        LocalDateTime ldt = LocalDateTime.ofInstant(expiredLocalTime.toInstant(), ZoneId.systemDefault());
+        ZoneOffset zoneOffset = ZoneOffset.of(offset);
+        OffsetDateTime odt = OffsetDateTime.of(ldt, zoneOffset);
+
+        String timeStamp = String.valueOf(System.currentTimeMillis());
+        String formattedDate = odt.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
+        try {
+
+            String lastFoutStamp = timeStamp.substring(timeStamp.length() - 4);
+            int idCustomer = Integer.parseInt(sessionManager.getPID());
+
+            String with4digits = String.format("%04d", idCustomer);
+
+            String templateVANumber = "98816055" + with4digits.substring(0,4) + lastFoutStamp;
+
+            PostBNI postBNI = new PostBNI(
+                    "BELANJA",
+                    kodeSO,
+                    "createbilling",
+                    "16055",
+                    kodeSO + "-" + timeStamp,
+                    String.valueOf(Math.round(grandTotal)),
+                    "c",
+                    sessionManager.getName(),
+                    sessionManager.getEmail(),
+                    sessionManager.getKeyTelefonMember(),
+                    templateVANumber,
+                    formattedDate,
+                    "TRANSAKSI PEMBAYARAN BELANJA KODE : " + kodeSO
+            );
+
+
+            final ProgressDialog progressDialog = ProgressDialog.show(CartActivity.this, "Loading", "Pembuatan VA ...");
+            APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+            Call<JsonElement> call = apiInterface.bni_createEndPointVA(
+                   postBNI
+            );
+
+            call.enqueue(new Callback<JsonElement>() {
+                @Override
+                public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                    try {
+                        progressDialog.dismiss();
+                        if (response != null) {
+                            Toast.makeText(CartActivity.this, "Order berhasil, Lakukan Pelunasan Transfer !", Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(CartActivity.this, PrintActivity.class);
+                            Log.e(TAG, "onRowAdapterListTransactionClicked: " + kodeSO);
+                            intent.putExtra("DATAPRINT", kodeSO);
+                            intent.putExtra("isPayment", true);
+                            startActivity(intent);
+                            finish();
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "onResponse: " + e.getMessage());
+                        Toast.makeText(CartActivity.this, "Error Transfer", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JsonElement> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Log.e(TAG, "onResponse: " + t.getMessage());
+                    Toast.makeText(CartActivity.this, "Error Transfer", Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private String hash_hmac(String str, String secret) throws Exception {
+        Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+
+        SecretKeySpec secretKey = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+        sha256_HMAC.init(secretKey);
+        String hash = Base64.encodeToString(sha256_HMAC.doFinal(str.getBytes()), Base64.NO_WRAP);
+
+        return hash;
     }
 
     private void searchingCart() {
@@ -2581,6 +2830,5 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
     }
-
 
 }

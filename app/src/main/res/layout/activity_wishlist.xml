@@ -267,18 +267,6 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             tools:listitem="@layout/item_wishlist" />
 
-<!--        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout-->
-<!--            android:layout_marginTop="16dp"-->
-<!--            android:id="@+id/swipeBarangOrder"-->
-<!--            android:visibility="visible"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_marginHorizontal="21dp">-->
-
-
-
-<!--        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>-->
-
         <RelativeLayout
             android:id="@+id/layoutWishlistKosong"
             android:padding="16dp"

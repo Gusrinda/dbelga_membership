@@ -537,13 +537,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (statusMember.equals("REGULER")) {
-            image = getResources().getDrawable(R.drawable.card_reguler);
+            image = getResources().getDrawable(R.drawable.card_member_silver);
             bintangPremium.setVisibility(View.VISIBLE);
             bintangGold.setVisibility(View.GONE);
             layoutCardMember.setBackground(image);
             layoutExpired.setVisibility(View.GONE);
         } else if (statusMember.equals("DEBET")) {
-            image = getResources().getDrawable(R.drawable.card_debet);
+            image = getResources().getDrawable(R.drawable.card_member_gold);
             bintangPremium.setVisibility(View.GONE);
             bintangGold.setVisibility(View.VISIBLE);
             layoutCardMember.setBackground(image);

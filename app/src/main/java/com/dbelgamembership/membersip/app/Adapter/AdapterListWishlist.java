@@ -43,11 +43,11 @@ public class AdapterListWishlist extends
 
     private Context context;
     private List<com.dbelgamembership.membersip.Model.ModelSearchWish.MsgServer> list;
-    private WishlishActivity mAdapterCallback;
+    private AdapterListWishlistCallback mAdapterCallback;
     private int result = -1;
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
 
-    public AdapterListWishlist(Context context, List<MsgServer> list, WishlishActivity adapterCallback) {
+    public AdapterListWishlist(Context context, List<MsgServer> list, AdapterListWishlistCallback adapterCallback) {
         this.context = context;
         this.list = list;
         this.mAdapterCallback = adapterCallback;

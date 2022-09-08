@@ -108,6 +108,15 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
 
     com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum dataPromo;
 
+
+    @Override
+    protected void onRestart() {
+
+        Log.e(TAG, "onRestart: ACTIVITY ON RESTART !!!" );
+        setupKatalogPromo();
+        super.onRestart();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -157,8 +166,11 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
                     page = 0;
                     urlNextPage = "";
                     arrayBarangPromo.clear();
-                    String cari = binding.cariBarang.getText().toString();
-                    searchKatalogPromo(cari);
+
+                    setupKatalogPromo();
+
+//                    String cari = binding.cariBarang.getText().toString();
+//                    searchKatalogPromo(cari);
                 } else {
                     Snack("Tidak ada koneksi internet");
                     binding.swipeBarangOrder.setRefreshing(false);
@@ -322,7 +334,9 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
                     boolean success = root.get("success").getAsBoolean();
                     Log.e("", "Test : " + success);
                     if (!success) {
-                        Toast.makeText(KatalogPromo.this, "Error" + root.get("msgServer"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(KatalogPromo.this, "Error :: Promo Kosong ! " , Toast.LENGTH_SHORT).show();
+                        arrayBarangPromo.clear();
+                        binding.gridview.setAdapter(null);
                     } else {
                         ModelBarang modelListItem = gson.fromJson(String.valueOf(response.body()), ModelBarang.class);
                         List<Datum> modelItem = modelListItem.getMsgServer().getData();
@@ -538,6 +552,8 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
+
+
                 } else if (error instanceof NetworkError) {
                     Log.e(TAG, "onErrorResponse: " + error.getMessage());
                     VolleyLog.d(TAG, "Error: " + error.getMessage());

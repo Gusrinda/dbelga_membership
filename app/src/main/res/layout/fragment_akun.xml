@@ -24,7 +24,7 @@
             app:cardMaxElevation="0dp">
 
             <RelativeLayout
-                android:background="@drawable/card_reguler"
+                android:background="@drawable/card_member_silver"
                 android:padding="16dp"
                 android:id="@+id/layoutCardMember"
                 android:layout_width="match_parent"
@@ -785,7 +785,9 @@
 
     </LinearLayout>
 
+
     <LinearLayout
+        android:visibility="visible"
         android:id="@+id/btnKeluar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

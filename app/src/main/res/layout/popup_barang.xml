@@ -192,11 +192,11 @@
         <Button
             android:id="@+id/order_btnMinQty"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/prangeBelha"
+            android:backgroundTint="@color/prangeBelha"
             android:text="-"
-            android:textColor="#FFF"
+            android:textColor="@color/white"
             android:textSize="17dp"
             android:textStyle="bold" />
 
@@ -216,11 +216,11 @@
         <Button
             android:id="@+id/order_btnPlusQty"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/prangeBelha"
+            android:backgroundTint="@color/prangeBelha"
             android:text="+"
-            android:textColor="#FFF"
+            android:textColor="@color/white"
             android:textSize="17dp"
             android:textStyle="bold" />
 

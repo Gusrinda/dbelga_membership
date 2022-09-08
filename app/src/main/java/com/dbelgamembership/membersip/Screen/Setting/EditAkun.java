@@ -482,12 +482,14 @@ public class EditAkun extends AppCompatActivity {
                                     String email = modelUser.getMsgServer().getMainEmail();
                                     String membership = modelUser.getMsgServer().getStatusMember();
                                     String identitasPelanggan = modelUser.getMsgServer().getIdentitas();
+                                    String jatuhTempo = modelUser.getMsgServer().getJatuhTempo();
                                     Log.e("", "id User: " + id);
                                     Log.e("", "nama User: " + name);
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
                                     Log.e("", "identitasPelanggan: " + identitasPelanggan);
-                                    sessionManager.setLogin(true, id, identitasPelanggan, name, email, membership);
+                                    Log.e("", "jatuhTempo: " + jatuhTempo);
+                                    sessionManager.setLogin(true, id, identitasPelanggan, name, email, membership, jatuhTempo);
                                     sessionManager.setAccountUser(modelUser.getMsgServer().getName(), modelUser.getMsgServer().getMainEmail(), modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                     if (dataPengguna.getString("image_customer") != null) {
                                         sessionManager.setImage( Http.serverNotApi + "upload/customer-photo/" + dataPengguna.getString("image_customer"));

@@ -22,6 +22,7 @@ public class SessionManager {
     public static final String KEY_TOTALTRANSAKSI = "transaksiBelanja";
     public static final String KEY_IMAGE = "urlImage";
     public static final String KEY_MEMBERSHIP = "membership";
+    public static final String KEY_JATUH_TEMPO = "jatuh_tempo";
     public static final String KEY_EXPDATE = "expired";
     public static final String KEY_DEADLINE_PAYMENT = "expired";
     public static final String KEY_EXPOTP = "expOTP";
@@ -40,13 +41,12 @@ public class SessionManager {
     private static final String KEY_LONG = "alamatLong";
     private static final String KEY_SET_GUDANG_PENCARIAN = "idGudang";
     private static final String KEY_SISA_PLAFON = "0";
-
+    private static final String KEY_TOKEN_BRI_API = "Bearer";
 
     private static String TAG = com.dbelgamembership.membersip.Helper.SessionManager.class.getSimpleName();
     SharedPreferences pref;
     Editor editor;
     Context _context;
-
 
     public SessionManager(Context context) {
         this._context = context;
@@ -55,13 +55,14 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership) {
+    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String jatuhTempo) {
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
         editor.putString(KEY_USERIDENTITAS, identitasPelanggan);
         editor.putString(KEY_NAME, name);
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
+        editor.putString(KEY_JATUH_TEMPO, jatuhTempo);
         // commit changes
         editor.apply();
 
@@ -78,6 +79,11 @@ public class SessionManager {
 
     public void setAlamatPengiriman(String alamatPengiriman) {
         editor.putString(KEY_ALAMAT_PENGIRIMAN, alamatPengiriman);
+        editor.apply();
+    }
+
+    public void setKeyTokenBriApi(String token) {
+        editor.putString(KEY_TOKEN_BRI_API, token);
         editor.apply();
     }
 
@@ -108,6 +114,11 @@ public class SessionManager {
 
     public void setMembership(String membership) {
         editor.putString(KEY_MEMBERSHIP, membership);
+        editor.commit();
+    }
+
+    public void setKeyJatuhTempo(String jatuhTempo) {
+        editor.putString(KEY_JATUH_TEMPO, jatuhTempo);
         editor.commit();
     }
 
@@ -199,6 +210,10 @@ public class SessionManager {
         return pref.getString(KEY_MEMBERSHIP, "null");
     }
 
+    public String getKeyJatuhTempo() {
+        return pref.getString(KEY_JATUH_TEMPO, "null");
+    }
+
     public String getExpiredDate() {
         return pref.getString(KEY_EXPDATE, "null");
     }
@@ -235,6 +250,9 @@ public class SessionManager {
         return pref.getString(KEY_DEADLINE_PAYMENT, "null");
     }
 
+    public String getKeyTokenBriApi() {
+        return pref.getString(KEY_TOKEN_BRI_API, "null");
+    }
 
     public void destroySession() {
         editor.putString(KEY_PID, "");
@@ -260,6 +278,8 @@ public class SessionManager {
         editor.putString(KEY_LONG, "");
         editor.putString(KEY_SET_GUDANG_PENCARIAN, "");
         editor.putString(KEY_SISA_PLAFON, "");
+        editor.putString(KEY_TOKEN_BRI_API, "");
+        editor.putString(KEY_JATUH_TEMPO, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");

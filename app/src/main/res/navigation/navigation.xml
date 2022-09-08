@@ -11,10 +11,10 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" />
     <fragment
-        android:id="@+id/promoFragment"
-        android:name="com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.PromoFragment"
-        android:label="fragment_promo"
-        tools:layout="@layout/fragment_promo" />
+        android:id="@+id/wishlistFragment"
+        android:name="com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.WishlistFragment"
+        android:label="fragment_wishlist"
+        tools:layout="@layout/fragment_wishlist" />
     <fragment
         android:id="@+id/transaksiFragment"
         android:name="com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.TransaksiFragment"

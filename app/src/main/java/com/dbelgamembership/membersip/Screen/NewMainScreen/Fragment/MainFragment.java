@@ -17,9 +17,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -54,6 +56,7 @@ import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelBannerPromo.ModelBannerPromo;
 import com.dbelgamembership.membersip.Model.ModelBarangTerlaris.ModelBarangTerlaris;
 import com.dbelgamembership.membersip.Model.ModelKatalog;
 import com.dbelgamembership.membersip.Model.ModelResponseCart.DetailItemCart;
@@ -65,9 +68,11 @@ import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.NewMainScreen.adapter.AdapterListMenu;
 import com.dbelgamembership.membersip.Screen.Promo.KatalogPromo;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListBarang;
+import com.dbelgamembership.membersip.app.Adapter.AdapterListPromo;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListTerlaris;
 import com.dbelgamembership.membersip.databinding.FragmentMainBinding;
 import com.dbelgamembership.membersip.databinding.PopupBarangBinding;
@@ -97,13 +102,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 
-public class MainFragment extends Fragment implements AdapterListBarang.AdapterListBarangCallback, AdapterListTerlaris.AdapterListTerlarisCallback {
+public class MainFragment extends Fragment implements AdapterListBarang.AdapterListBarangCallback, AdapterListTerlaris.AdapterListTerlarisCallback, AdapterListMenu.AdapterListMenuCallback, AdapterListPromo.AdapterListPromoCallback {
 
     private final String TAG = this.getClass().getSimpleName();
     private static boolean isAlreadyLoad = false;
@@ -159,6 +165,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
 
     public static String filterString = "";
     private static boolean isFilter = false;
+
+    private List<com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum> daftarPromo = new ArrayList<>();
+
+    ArrayList<HashMap<String, Object>> daftarMenu = new ArrayList<HashMap<String, Object>>();
 
     public MainFragment() {
         // Required empty public constructor
@@ -258,8 +268,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                     jumlahWishlistAwal = jumlahWish;
                                     Log.e(TAG, "on GET WISH : JumlahWishlist : " + jumlahWishlistAwal);
                                     NewMainActivity.binding.iconWhislist.setBadgeValue(jumlahWish);
+                                    NewMainActivity.binding.bottomNavView.getOrCreateBadge(R.id.wishlistFragment).setNumber(jumlahWish);
                                 } else {
                                     NewMainActivity.binding.iconWhislist.setBadgeValue(0);
+                                    NewMainActivity.binding.bottomNavView.getOrCreateBadge(R.id.wishlistFragment).setNumber(0);
                                 }
                             }
 
@@ -371,6 +383,8 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
 
     }
 
+    AdapterListMenu adapterListMenu;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -390,6 +404,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             Log.e(TAG, "onCreate ID GUDANG : " + idGudang);
             SearchingBarang(cariBarang);
             SearchKatalogTerlaris();
+            getDaftarPromo();
         } else {
             Log.e(TAG, "onCreate: Doesnt have extra");
             getActivity().finish();
@@ -534,16 +549,53 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
-        binding.toggle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        binding.swipeBarangPromo.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                if (i == binding.radioTerlaris.getId()) {
-                    binding.linearTerlaris.setVisibility(View.VISIBLE);
-                    binding.linearKatalog.setVisibility(View.GONE);
-                } else if (i == binding.radioKatalog.getId()) {
-                    binding.linearTerlaris.setVisibility(View.GONE);
-                    binding.linearKatalog.setVisibility(View.VISIBLE);
-                }
+            public void onRefresh() {
+                getDaftarPromo();
+            }
+        });
+
+        HashMap<String, Object> menu1 = new HashMap<String, Object>() {{
+            put("id", 1);
+            put("nama", "Katalog");
+            put("img", R.drawable.icon_katalog);
+            put("isSelected", true);
+        }};
+
+        HashMap<String, Object> menu2 = new HashMap<String, Object>() {{
+            put("id", 2);
+            put("nama", "Terlaris");
+            put("img", R.drawable.icon_terlaris);
+            put("isSelected", false);
+        }};
+
+        HashMap<String, Object> menu3 = new HashMap<String, Object>() {{
+            put("id", 3);
+            put("nama", "Promo");
+            put("img", R.drawable.icon_promo);
+            put("isSelected", false);
+        }};
+
+        daftarMenu.add(menu1);
+        daftarMenu.add(menu2);
+        daftarMenu.add(menu3);
+
+        adapterListMenu = new AdapterListMenu(requireContext(), daftarMenu, MainFragment.this);
+        binding.rvMenuPilihan.setAdapter(adapterListMenu);
+
+        binding.rvMenuPilihan.setLayoutManager(new LinearLayoutManager(requireContext()) {
+
+            @Override
+            public void setOrientation(int orientation) {
+                super.setOrientation(RecyclerView.HORIZONTAL);
+            }
+
+            @Override
+            public boolean checkLayoutParams(RecyclerView.LayoutParams lp) {
+                // force height of viewHolder here, this will override layout_height from xml
+                lp.width = (int) (getWidth() * 0.7);
+                return true;
             }
         });
 
@@ -553,7 +605,6 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
     private void SearchKatalogTerlaris() {
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
         Call<JsonElement> call = apiInterface.doSearchBarangTerlaris(idGudang);
-
 
         call.enqueue(new Callback<JsonElement>() {
             @Override
@@ -581,7 +632,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 pm.setId(String.valueOf(itemData.getId()));
                                 pm.setNama_barang(itemData.getName());
 
-                                String deskripsi  = "Deskripsi Kosong";
+                                String deskripsi = "Deskripsi Kosong";
 
                                 pm.setDeskripsi(deskripsi);
                                 pm.setMerk_barang(itemData.getNamaKategori());
@@ -624,23 +675,36 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                             binding.gridViewTerlaris.setAdapter(null);
                             binding.gridViewTerlaris.setAdapter(adapterListBarangTerlaris);
 
+                            binding.gridViewTerlaris.setVisibility(View.VISIBLE);
+                            binding.rvTerlarisKosong.setVisibility(View.GONE);
+
+
                         } else {
                             Snack("Data barang terlaris tidak ada !");
+                            binding.gridViewTerlaris.setVisibility(View.GONE);
+                            binding.rvTerlarisKosong.setVisibility(View.VISIBLE);
                         }
 
                     } else {
+
                         Toast.makeText(requireContext(), msgServer, Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "onResponse: " + msgServer);
+                        binding.gridViewTerlaris.setVisibility(View.GONE);
+                        binding.rvTerlarisKosong.setVisibility(View.VISIBLE);
                     }
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    binding.gridViewTerlaris.setVisibility(View.GONE);
+                    binding.rvTerlarisKosong.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onFailure(Call<JsonElement> call, Throwable t) {
                 binding.swipeBarangOrderTerlaris.setRefreshing(false);
+                binding.gridViewTerlaris.setVisibility(View.GONE);
+                binding.rvTerlarisKosong.setVisibility(View.VISIBLE);
                 Toast.makeText(requireContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
@@ -675,6 +739,154 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
         closeKeyboard();
 
         Log.e("url", url);
+
+    }
+
+    private void getDaftarPromo() {
+
+
+        Log.e(TAG, "MASUK KE DAFTAR PROMO");
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelBannerPromo> call = apiInterface.doGetBannerPromo();
+        call.enqueue(new Callback<ModelBannerPromo>() {
+            @Override
+            public void onResponse(Call<ModelBannerPromo> call, retrofit2.Response<ModelBannerPromo> response) {
+                binding.swipeBarangPromo.setRefreshing(false);
+
+                if (response.code() == 200) {
+
+                    ModelBannerPromo bannerPromo = response.body();
+                    assert bannerPromo != null;
+                    daftarPromo = Objects.requireNonNull(bannerPromo).getData();
+
+                    Log.e(TAG, "SIZE DAFTAR PROMO :: " + daftarPromo.size());
+
+
+                    if (daftarPromo.size() > 0) {
+                        List<com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum> dataPromoTokoIni = new ArrayList<>();
+
+                        for (int i = 0; i < daftarPromo.size(); i++) {
+                            if (String.valueOf(daftarPromo.get(i).getGudang()).equals(sessionManager.getKeySetGudangPencarian())) {
+                                dataPromoTokoIni.add(daftarPromo.get(i));
+                            }
+                        }
+
+                        Log.e(TAG, "DATA PROMO TOKO INI :: " + dataPromoTokoIni.size());
+
+                        List<com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum> dataPromoTokoFix = new ArrayList<>();
+
+                        SimpleDateFormat af = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Calendar cal = Calendar.getInstance(); // creates calendar
+
+                        Date sekarang = cal.getTime();
+
+                        for (int i = 0; i < dataPromoTokoIni.size(); i++) {
+                            try {
+                                Date tanggalBatas = af.parse(dataPromoTokoIni.get(i).getDateEnd());
+
+                                if (sekarang.getTime() < tanggalBatas.getTime()) {
+                                    dataPromoTokoFix.add(dataPromoTokoIni.get(i));
+                                }
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        if (dataPromoTokoFix.size() > 0) {
+
+                            for (int i = 0; i < dataPromoTokoFix.size(); i++) {
+                                Log.e(TAG, "PROMO FIX :: " + i + " :: " + dataPromoTokoFix.get(i).getPromoCode());
+                            }
+
+                            AdapterListPromo adapterListPromo = new AdapterListPromo(requireContext(), dataPromoTokoFix, MainFragment.this);
+                            binding.rvPromo.setAdapter(adapterListPromo);
+
+                            binding.rvPromo.setVisibility(View.VISIBLE);
+                            binding.rvPromoKosong.setVisibility(View.GONE);
+
+                        } else {
+
+                            binding.rvPromo.setVisibility(View.GONE);
+                            binding.rvPromoKosong.setVisibility(View.VISIBLE);
+
+                        }
+
+                    } else {
+                        binding.rvPromo.setVisibility(View.GONE);
+                        binding.rvPromoKosong.setVisibility(View.VISIBLE);
+//                        Toast.makeText(requireContext(), "PROMO KOSONG !!!", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(requireContext(), "ERROR :: " + response.code(), Toast.LENGTH_SHORT).show();
+                    binding.rvPromo.setVisibility(View.GONE);
+                    binding.rvPromoKosong.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelBannerPromo> call, Throwable t) {
+                binding.swipeBarangPromo.setRefreshing(false);
+                binding.rvPromo.setVisibility(View.GONE);
+                binding.rvPromoKosong.setVisibility(View.VISIBLE);
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                Toast.makeText(requireContext(), "ERROR :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void AdapterListPromoClicked(com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum position) {
+
+        if (sessionManager.isLoggedIn()) {
+
+            com.dbelgamembership.membersip.Model.ModelBannerPromo.Datum dataPromo = position;
+            Log.e(TAG, "AdapterListPromoClicked: " + dataPromo.getKeterangan());
+            Log.e(TAG, "AdapterListPromoClicked: " + dataPromo.getDateEnd());
+            Log.e(TAG, "AdapterListPromoClicked: " + dataPromo.getGudang());
+
+            if (dataPromo.getGudang() == Integer.parseInt(sessionManager.getKeySetGudangPencarian())) {
+                Intent intent = new Intent(requireContext(), KatalogPromo.class);
+                intent.putExtra("hasExtra", true);
+                intent.putExtra("dataPromo", (Parcelable) dataPromo);
+                startActivity(intent);
+            } else {
+                Toast.makeText(requireContext(), "Promo tidak berlaku di toko ini !", Toast.LENGTH_SHORT).show();
+            }
+
+        } else {
+            AlertDialog.Builder alert = new AlertDialog.Builder(requireContext());
+            alert.setIcon(R.drawable.dbelga);
+            alert.setTitle("Attention!");
+            alert.setMessage("Anda harus mempunyai akun Membership terlebih dahulu untuk melihat detail promo dbelga !");
+            alert.setPositiveButton("LOGIN", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                    Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            alert.setNegativeButton("REGISTER", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    Intent intent = new Intent(requireActivity(), RegisterActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            alert.setNeutralButton("Tutup", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.dismiss();
+                }
+            });
+            alert.show();
+        }
 
     }
 
@@ -886,6 +1098,8 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 boolean success = root.get("success").getAsBoolean();
                                 if (!success) {
                                     Snack("Barang tidak ada !");
+                                    binding.rvBarangKosong.setVisibility(View.VISIBLE);
+                                    binding.gridview.setVisibility(View.GONE);
                                 } else {
 
                                     ModelBarang modelListItem = gson.fromJson(response, ModelBarang.class);
@@ -975,22 +1189,33 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                         binding.gridview.setAdapter(null);
                                         binding.gridview.setAdapter(adapterListSearchBarang);
 
+                                        binding.rvBarangKosong.setVisibility(View.GONE);
+                                        binding.gridview.setVisibility(View.VISIBLE);
                                     }
 
                                 }
                             } else {
                                 Snack("Item Kosong");
+                                binding.rvBarangKosong.setVisibility(View.VISIBLE);
+                                binding.gridview.setVisibility(View.GONE);
                             }
 //                            Snack("Barang sudah tampil semua !");
                         } catch (Exception e) {
-                            Log.e(TAG, "onResponse: Error haha " + e + "\n" + Arrays.toString(e.getStackTrace()));
-                        }
 
+                            binding.rvBarangKosong.setVisibility(View.VISIBLE);
+                            binding.gridview.setVisibility(View.GONE);
+                            Log.e(TAG, "onResponse: Error haha " + e + "\n" + Arrays.toString(e.getStackTrace()));
+
+                        }
                     }
                 }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
+
+                binding.rvBarangKosong.setVisibility(View.VISIBLE);
+                binding.gridview.setVisibility(View.GONE);
+
                 //mSwipeRefreshLayout.setRefreshing(false);
                 Log.e(TAG, "onErrorResponse: " + error.getMessage());
                 if (error instanceof AuthFailureError) {
@@ -1101,9 +1326,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
     }
 
     public void sortBarang(String urutkanData) {
-
         Log.e(TAG, "sortBarang: Masuk SORT");
-
         if (urutkanData.equals("priceDown")) {
             Collections.sort(arrayBarang, new Comparator<ModelKatalog>() {
                 @Override
@@ -1338,6 +1561,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             Glide.with(this)
                     .asBitmap()
                     .load(position.getImages())
+                    .error(R.drawable.not_found)
                     .into(popupBarangBinding.produkImage);
         } else {
             image = this.getResources().getDrawable(R.drawable.not_found);
@@ -1773,6 +1997,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                             jumlahWishlistAwal = listBarang.size();
                             Log.e(TAG, "on Tambah : JumlahWishlist : " + jumlahWishlistAwal);
                             NewMainActivity.binding.iconWhislist.setBadgeValue(listBarang.size());
+                            NewMainActivity.binding.bottomNavView.getOrCreateBadge(R.id.wishlistFragment).setNumber(listBarang.size());
 
                         } catch (Exception e) {
                             Log.e(TAG, "onResponse: " + e.getMessage());
@@ -2356,5 +2581,45 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
+    }
+
+    @SuppressLint("NewApi")
+    @Override
+    public void AdapterListMenu(int id) {
+
+        for (int i = 0; i < daftarMenu.size(); i++) {
+
+            int idMenu = (int) daftarMenu.get(i).get("id");
+
+            if (idMenu == id) {
+                daftarMenu.get(i).replace("isSelected", true);
+            } else {
+                daftarMenu.get(i).replace("isSelected", false);
+            }
+        }
+
+        adapterListMenu.notifyDataSetChanged();
+
+        switch (id) {
+            case 1:
+                binding.linearKatalog.setVisibility(View.VISIBLE);
+                binding.linearTerlaris.setVisibility(View.GONE);
+                binding.linearPromo.setVisibility(View.GONE);
+                break;
+            case 2:
+                binding.linearKatalog.setVisibility(View.GONE);
+                binding.linearTerlaris.setVisibility(View.VISIBLE);
+                binding.linearPromo.setVisibility(View.GONE);
+                break;
+            case 3:
+                binding.linearKatalog.setVisibility(View.GONE);
+                binding.linearTerlaris.setVisibility(View.GONE);
+                binding.linearPromo.setVisibility(View.VISIBLE);
+                break;
+        }
+
+
+//        adapterListMenu = new AdapterListMenu(requireContext(), daftarMenu, MainFragment.this);
+//        binding.rvMenuPilihan.setAdapter(adapterListMenu);
     }
 }

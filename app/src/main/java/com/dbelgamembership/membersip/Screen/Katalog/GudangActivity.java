@@ -1,8 +1,10 @@
 package com.dbelgamembership.membersip.Screen.Katalog;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -14,6 +16,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -22,6 +25,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.ApiBanks;
+import com.dbelgamembership.membersip.Model.Api_Banks.BriToken.BriToken;
 import com.dbelgamembership.membersip.Screen.HomeActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.AlamatPengiriman;
 import com.dbelgamembership.membersip.Screen.MainActivity;
@@ -30,6 +35,7 @@ import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.Transaksi.ListTransaksi;
 import com.dbelgamembership.membersip.Screen.User.AkunSaya;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.app.Adapter.AdapterListGudang;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
@@ -55,8 +61,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.type.DateTime;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -70,11 +78,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -106,6 +124,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
     private int cartSize = 0;
     private String idGudangCart = "";
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -178,9 +197,66 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
             }
         });
 
+        setupTokenApiBanks();
+
+        binding.swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                permissionRequest();
+            }
+        });
+
+
+
+
+    }
+
+    private void setupTokenApiBanks() {
+
+        //Setup BRI
+        setupTokenBRI();
+
+        //Setup BCA
+        //Setup BNI
+        //Setup Mandiri
+
+
+    }
+
+    private void setupTokenBRI() {
+        APIInterface apiInterface = APIClient.getClient(ApiBanks.urlBRI).create(APIInterface.class);
+        Call<BriToken> call = apiInterface.getTokenBRI(ApiBanks.BRI_CUNSOMER_KEY, ApiBanks.BRI_CONSUMER_SECRET);
+
+        call.enqueue(new Callback<BriToken>() {
+            @Override
+            public void onResponse(Call<BriToken> call, Response<BriToken> response) {
+                try {
+                    if (response != null) {
+                        ApiBanks.BRI_TOKEN = response.body();
+                        Log.e(TAG, "BRI RESPONSE :: BERHASIL !!");
+
+                        assert response.body() != null;
+                        ApiBanks.BRI_TOKEN_STRING = response.body().getAccessToken();
+                        sessionManager.setKeyTokenBriApi(response.body().getAccessToken());
+                        Log.e(TAG, "TOKEN BRI :: "  + ApiBanks.BRI_TOKEN.getAccessToken() );
+
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "onResponse: " + e.getMessage());
+                    Toast.makeText(GudangActivity.this, "Error Get Token BRI !", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BriToken> call, Throwable t) {
+                Toast.makeText(GudangActivity.this, "Error Get Token BRI !", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
     }
 
     private void permissionRequest() {
+        binding.swipeRefresh.setRefreshing(false);
         Dexter.withActivity(this)
                 .withPermissions(
                         Manifest.permission.INTERNET,
@@ -344,7 +420,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                                 dataGudang.getGeoLat(),
                                 dataGudang.getGeoLng(),
                                 "", 0));
-
                     }
 
                 }
@@ -370,6 +445,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                 progressDialog.dismiss();
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
+
         });
     }
 
@@ -385,35 +461,75 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
 
                 ModelResponseDistance modelResponseDistance = response.body();
 
+                boolean isThereFalseAddress = false;
+
                 for (int i = 0; i < modelResponseDistance.getRows().get(0).getElements().size(); i++) {
                     ModelGudang baru = modelGudangs.get(i);
-                    baru.setTextJarak(modelResponseDistance.getRows().get(0).getElements().get(i).getDistance().getText());
-                    baru.setValueJarak(modelResponseDistance.getRows().get(0).getElements().get(i).getDistance().getValue());
-                    modelGudangs.set(i, baru);
+
+                    if (modelResponseDistance.getRows().get(0).getElements().get(i).getStatus().equals("ZERO_RESULTS")) {
+                        isThereFalseAddress = true;
+                    } else {
+                        baru.setTextJarak(modelResponseDistance.getRows().get(0).getElements().get(i).getDistance().getText());
+                        baru.setValueJarak(modelResponseDistance.getRows().get(0).getElements().get(i).getDistance().getValue());
+                        modelGudangs.set(i, baru);
+                    }
                 }
 
-                Log.e(TAG, "onResponse SIZE : " + modelGudangs.size());
-
-                AdapterListGudang adapterListGudang = new AdapterListGudang(GudangActivity.this, modelGudangs, GudangActivity.this);
-                binding.rvGudang.setAdapter(adapterListGudang);
-
-                if (isSetAlamat) {
-                    binding.txtAlamatPengiriman.setText(alamatPengirimanPengguna.getAlamatPengiriman());
-                    sessionManager.setAlamatPengiriman(alamatPengirimanPengguna.getAlamatPengiriman());
-                } else {
-                    binding.txtAlamatPengiriman.setText(alamatPertamaTetap);
-                    sessionManager.setAlamatPengiriman(alamatPertamaTetap);
-
-//
-//                    binding.txtAlamatPengiriman.setText(modelResponseDistance.getOriginAddresses().get(0));
-//                    sessionManager.setAlamatPengiriman(modelResponseDistance.getOriginAddresses().get(0));
-                }
-
-                if (sessionManager.isLoggedIn()) {
-                    SearchingCart();
-                } else {
+                if (isThereFalseAddress) {
                     progressDialog.dismiss();
+
+//                    Toast.makeText(GudangActivity.this, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                    AlertDialog alertDialog = new AlertDialog.Builder(GudangActivity.this).create();
+                    alertDialog.setTitle("Error GOOGLE MAPS : ");
+                    alertDialog.setMessage("Pastikan aplikasi maps sudah terinstall dan dapat dijalankan ! Check Maps ?");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    Intent mapIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("google.navigation:q="));
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                                        startActivity(mapIntent);
+                                    } else {
+                                        Snackbar.make(binding.lnContent, "Google apps is not installed", Snackbar.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    finish();
+                                }
+                            });
+                    alertDialog.show();
+
+
+                } else {
+                    Log.e(TAG, "onResponse SIZE : " + modelGudangs.size());
+
+                    AdapterListGudang adapterListGudang = new AdapterListGudang(GudangActivity.this, modelGudangs, GudangActivity.this);
+                    binding.rvGudang.setAdapter(adapterListGudang);
+
+                    if (isSetAlamat) {
+                        binding.txtAlamatPengiriman.setText(alamatPengirimanPengguna.getAlamatPengiriman());
+                        sessionManager.setAlamatPengiriman(alamatPengirimanPengguna.getAlamatPengiriman());
+                    } else {
+                        binding.txtAlamatPengiriman.setText(alamatPertamaTetap);
+                        sessionManager.setAlamatPengiriman(alamatPertamaTetap);
+
+                    }
+
+
+                    if (sessionManager.isLoggedIn()) {
+                        SearchingCart();
+                    } else {
+                        progressDialog.dismiss();
+                    }
                 }
+
+
+
 
             }
 

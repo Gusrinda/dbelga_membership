@@ -280,7 +280,7 @@ public class AdapterListCart extends
             holder.stokItem.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ]");
         }
 
-        Glide.with(context).load(detailItemCart.getImages()).into(holder.gambarItem);
+        Glide.with(context).load(detailItemCart.getImages()).error(R.drawable.not_found).into(holder.gambarItem);
 
         holder.btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
