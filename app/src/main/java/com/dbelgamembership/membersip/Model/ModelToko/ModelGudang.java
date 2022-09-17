@@ -9,8 +9,9 @@ public class ModelGudang {
     String longGudang;
     String textJarak;
     double valueJarak;
+    String nomorTelfonGudang;
 
-    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, double valueJarak) {
+    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, double valueJarak,     String nomorTelfonGudang) {
         this.namaGudang = namaGudang;
         this.alamatGudang = alamatGudang;
         this.idGudang = idGudang;
@@ -18,6 +19,7 @@ public class ModelGudang {
         this.longGudang = longGudang;
         this.textJarak = textJarak;
         this.valueJarak = valueJarak;
+        this.nomorTelfonGudang = nomorTelfonGudang;
     }
 
 
@@ -76,5 +78,13 @@ public class ModelGudang {
 
     public void setValueJarak(int valueJarak) {
         this.valueJarak = valueJarak;
+    }
+
+    public String getNomorTelfonGudang() {
+        return nomorTelfonGudang;
+    }
+
+    public void setNomorTelfonGudang(String nomorTelfonGudang) {
+        this.nomorTelfonGudang = nomorTelfonGudang;
     }
 }

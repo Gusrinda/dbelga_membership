@@ -307,8 +307,8 @@ public class TransferMembership extends AppCompatActivity {
                                 binding.txtStatusPembayaran.setTextColor(Color.GREEN);
 
                                 Toast.makeText(TransferMembership.this, "Anda sudah melakukan pembayaran ! Silahkan tunggu konfirmasi pembayaran oleh admin ", Toast.LENGTH_SHORT).show();
-                                Thread.sleep(5000);
-                                finish();
+//                                Thread.sleep(5000);
+//                                finish();
 
                             } else {
                                 binding.txtStatusPembayaran.setText("BELUM DIBAYAR");

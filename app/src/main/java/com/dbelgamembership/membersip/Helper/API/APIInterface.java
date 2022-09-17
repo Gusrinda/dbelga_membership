@@ -31,13 +31,19 @@ import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBNI;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBRI;
 import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.ModelPelunasan;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.PostBodyMessage;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.ResponseSendOTP.ResponseSendOTP;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.ResponseUploadFile.ResponseUploadFile;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.model.PostCreateMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.model.ResponseCreatePembayaranMembership.ResponseCreatePembayaranMembership;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
+import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
@@ -45,7 +51,9 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.Url;
@@ -70,7 +78,6 @@ public interface APIInterface {
     @Headers("Content-Type: application/json")
     @GET("search-kategori")
     Call<ModelGetKategori> doGetDataKategori();
-
 
 
     @GET("gudang-list")
@@ -120,7 +127,7 @@ public interface APIInterface {
 
     @GET
     Call<ModelUser> doLoopCustomer(
-           @Url String url
+            @Url String url
     );
 
     @GET
@@ -338,7 +345,7 @@ public interface APIInterface {
     @FormUrlEncoded
     @POST("oauth/client_credential/accesstoken?grant_type=client_credentials")
     Call<BriToken> getTokenBRI(
-            @Field("client_id") String clientID ,
+            @Field("client_id") String clientID,
             @Field("client_secret") String clientSecret
     );
 
@@ -349,7 +356,7 @@ public interface APIInterface {
             @Header("BRI-Signature") String briSignature,
             @Header("Content-Type") String briContent,
             @Body PostBRI postBRI
-            );
+    );
 
 //    http://8.215.31.212/api/create-payment-bni
 
@@ -369,7 +376,7 @@ public interface APIInterface {
     @FormUrlEncoded
     @POST("inquiry-payment-bni")
     Call<BniDetailPayment> getPaymentBNI(
-            @Field("client_id") String clientID ,
+            @Field("client_id") String clientID,
             @Field("type") String type,
             @Field("trx_id") String trxId
     );
@@ -377,6 +384,38 @@ public interface APIInterface {
     @GET("transaction/list")
     Call<ModelListTransaksi> doGetListTransaction(
             @Query("code") String kodeTransaksi
+    );
+
+//    @POST("v1/messages/")
+//    Call<ResponseSendOTP> doSendOTP(
+//            @Header("Content-Type") String contentType,
+//            @Header("Authorization") String token,
+//            @Body PostBodyOTP bodyOTP
+//    );
+//
+//    @Multipart
+//    @POST("v1/files")
+//    Call<List<ResponseUploadFile>> doSendFile(
+////            @Header("Content-Type") String contentType,
+//            @Header("Authorization") String token,
+//            @Part("file") RequestBody file,
+//            @Part MultipartBody.Part filePdf
+//    );
+
+    //WABLAS API
+    @POST("api/send-message")
+    Call<ResponseSendOTP> doSendOTP(
+            @Header("Authorization") String token,
+            @Body PostBodyMessage bodyOTP
+    );
+
+    @Multipart
+    @POST("api/upload/document")
+    Call<ResponseUploadFile> doSendFile(
+//            @Header("Content-Type") String contentType,
+            @Header("Authorization") String token,
+            @Part("file") RequestBody file,
+            @Part MultipartBody.Part filePdf
     );
 
 }

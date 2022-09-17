@@ -407,7 +407,8 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                             dataGudang.getId().toString(),
                             dataGudang.getGeoLat(),
                             dataGudang.getGeoLng(),
-                            "", 0));
+                            "", 0,
+                            dataGudang.getNoTelp()));
 
                     if (dataGudang.getId() == 8 || dataGudang.getId() == 9) {
                         String desti = dataGudang.getGeoLat() + "," + dataGudang.getGeoLng() + "|";
@@ -419,7 +420,8 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                                 dataGudang.getId().toString(),
                                 dataGudang.getGeoLat(),
                                 dataGudang.getGeoLng(),
-                                "", 0));
+                                "", 0,
+                                dataGudang.getNoTelp()));
                     }
 
                 }

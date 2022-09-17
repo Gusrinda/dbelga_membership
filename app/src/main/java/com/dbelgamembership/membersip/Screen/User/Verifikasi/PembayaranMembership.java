@@ -773,7 +773,6 @@ public class PembayaranMembership extends AppCompatActivity {
 
     }
 
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void searchPaymentBRI(String kodePembayaran) {
 
@@ -829,9 +828,9 @@ public class PembayaranMembership extends AppCompatActivity {
                                 Gson gson = new Gson();
                                 String json = gson.toJson(detailPayment);
 
-//                                if (detailPayment.getData().getStatusBayar().equals("Y")) {
-//                                    uploadPembayaran();
-//                                }
+                                if (detailPayment.getData().getStatusBayar().equals("Y") && dataMember.getImagePay() == null) {
+                                    uploadPembayaran();
+                                }
 
                                 binding.btnLakukanPembayaran.setOnClickListener(new View.OnClickListener() {
                                     @Override
@@ -879,7 +878,6 @@ public class PembayaranMembership extends AppCompatActivity {
     String kodePembayaran = "0000000";
     MsgServer dataMember;
     ModelSearchPembayaranMembership modelSearchPembayaran;
-
 
     ModelUser object;
 

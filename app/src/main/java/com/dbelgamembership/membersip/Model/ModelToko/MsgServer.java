@@ -46,6 +46,9 @@ public class MsgServer implements Serializable, Parcelable
     @SerializedName("warna")
     @Expose
     private String warna;
+    @SerializedName("no_telp")
+    @Expose
+    private String noTelp;
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -76,6 +79,7 @@ public class MsgServer implements Serializable, Parcelable
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.deletedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.warna = ((String) in.readValue((String.class.getClassLoader())));
+        this.noTelp = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -169,6 +173,15 @@ public class MsgServer implements Serializable, Parcelable
         this.warna = warna;
     }
 
+
+    public String getNoTelp() {
+        return noTelp;
+    }
+
+    public void setNoTelp(String noTelp) {
+        this.noTelp = noTelp;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
@@ -181,6 +194,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(updatedAt);
         dest.writeValue(deletedAt);
         dest.writeValue(warna);
+        dest.writeValue(noTelp);
     }
 
     public int describeContents() {
