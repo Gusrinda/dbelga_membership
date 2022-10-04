@@ -87,8 +87,29 @@ public class NewMainActivity extends AppCompatActivity {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
                 binding.ppUser.setImageDrawable(image);
             }
+
+            if (!sessionManager.getKeyGudangPilihan().isEmpty()) {
+
+                Log.e(TAG, "setupUser: MASUK SINIIII" );
+                Log.e(TAG, "setupUser: KEY GUDANG :: " + sessionManager.getKeyGudangPilihan() );
+
+                for (int i = 0; i < daftarGudang.length; i++) {
+
+                    Log.e(TAG, "setupUser: MODEL GUDANG ID :: " + modelGudangs.get(i).getIdGudang() );
+
+                    if (sessionManager.getKeyGudangPilihan().equals(modelGudangs.get(i).getIdGudang())) {
+
+                        Log.e(TAG, "setupUser: SELECTION " + i );
+
+                        binding.spinnerGudang.setSelection(i);
+                    }
+                }
+            }
+
         }
     }
+
+    String[] daftarGudang = new String[modelGudangs.size()];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +120,6 @@ public class NewMainActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         iconKeranjang = findViewById(R.id.icon_Keranjang);
-
-        String[] daftarGudang = new String[modelGudangs.size()];
 
         for (int i = 0; i < modelGudangs.size(); i++) {
             daftarGudang[i] = modelGudangs.get(i).getNamaGudang();
@@ -138,6 +157,9 @@ public class NewMainActivity extends AppCompatActivity {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
                 binding.ppUser.setImageDrawable(image);
             }
+
+
+
         }
 
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {

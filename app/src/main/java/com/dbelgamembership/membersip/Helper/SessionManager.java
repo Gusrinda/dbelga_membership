@@ -29,6 +29,7 @@ public class SessionManager {
     public static final String KEY_ROLE = "role";
     public static final String KEY_TOKEN_GCM = "token_gcm";
     private static final String KEY_ID_USER = "key";
+    private static final String KEY_GUDANG_PILIHAN = "gudang_pilihan";
     private static final String KEY_PID = "pid";
     private static final String KEY_USERIDENTITAS = "id_user";
     private static final String KEY_BANNER = "false";
@@ -55,7 +56,7 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String jatuhTempo) {
+    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String jatuhTempo, String gudangPilihan) {
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
         editor.putString(KEY_USERIDENTITAS, identitasPelanggan);
@@ -63,6 +64,7 @@ public class SessionManager {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
         editor.putString(KEY_JATUH_TEMPO, jatuhTempo);
+        editor.putString(KEY_GUDANG_PILIHAN, gudangPilihan);
         // commit changes
         editor.apply();
 
@@ -136,6 +138,11 @@ public class SessionManager {
 
     public void setImage(String image) {
         editor.putString(KEY_IMAGE, image);
+        editor.commit();
+    }
+
+    public void setKeyGudangPilihan(String gudangPencarian) {
+        editor.putString(KEY_GUDANG_PILIHAN, gudangPencarian);
         editor.commit();
     }
 
@@ -254,6 +261,11 @@ public class SessionManager {
         return pref.getString(KEY_TOKEN_BRI_API, "null");
     }
 
+
+    public String getKeyGudangPilihan() {
+        return pref.getString(KEY_GUDANG_PILIHAN, "null");
+    }
+
     public void destroySession() {
         editor.putString(KEY_PID, "");
         editor.putString(KEY_NAME, "");
@@ -280,6 +292,7 @@ public class SessionManager {
         editor.putString(KEY_SISA_PLAFON, "");
         editor.putString(KEY_TOKEN_BRI_API, "");
         editor.putString(KEY_JATUH_TEMPO, "");
+        editor.putString(KEY_GUDANG_PILIHAN, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");

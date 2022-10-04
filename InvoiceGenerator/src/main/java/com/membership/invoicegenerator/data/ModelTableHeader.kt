@@ -1,4 +1,4 @@
-package com.gusrinda.invoicegenerator.data
+package com.membership.invoicegenerator.data
 
 class ModelTableHeader(
     val firstColoumn : String = "C1",

@@ -16,7 +16,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "0.9.30.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -27,6 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
         coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -117,7 +118,7 @@ dependencies {
     implementation "com.airbnb.android:lottie:5.0.3"
 
     //API MIDTRANS
-    implementation 'com.midtrans:uikit:1.28.0-SANDBOX'
+//    implementation 'com.midtrans:uikit:1.28.0-SANDBOX'
 
 //    implementation files('libs/httpclient-4.5.jar')
 //    implementation files('libs/httpcore-4.4.1.jar')

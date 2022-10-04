@@ -1,4 +1,4 @@
-package com.gusrinda.invoicegenerator.data
+package com.membership.invoicegenerator.data
 
 data class ModelInvoicePaymentInfo(
     val tipePayment :String = "",

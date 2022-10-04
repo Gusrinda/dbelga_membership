@@ -11,6 +11,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -132,6 +134,16 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
         View view = binding.getRoot();
         setContentView(view);
 
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            String version = pInfo.versionName;
+            binding.txtVersi.setText("Version. " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
         alamatPengirimanPengguna = new AlamatPengiriman(null, null, null);
 
         sessionManager = new SessionManager(this);
@@ -205,9 +217,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                 permissionRequest();
             }
         });
-
-
-
 
     }
 
@@ -582,6 +591,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
 //                                        Intent intent = new Intent(GudangActivity.this, KatalogActivity.class);
                                         Intent intent = new Intent(GudangActivity.this, NewMainActivity.class);
                                         sessionManager.setKeySetGudangPencarian(String.valueOf(modelResponseCart.getMsgServer().getIdGudang()));
+                                        sessionManager.setKeyGudangPilihan(String.valueOf(modelResponseCart.getMsgServer().getIdGudang()));
                                         intent.putExtra("hasExtra", true);
                                         intent.putExtra("idGudang", String.valueOf(modelResponseCart.getMsgServer().getIdGudang()));
                                         intent.putExtra("namaGudang", modelResponseCart.getMsgServer().getNamaGudang());
@@ -623,10 +633,34 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                         alertDialogAwal.show();
 
                     } else {
+
                         Log.e(TAG, "onResponse: " + msgServer);
                         cartSize = 0;
                         idGudangCart = "";
-//                        setupWishlist();
+
+                        if (!sessionManager.getKeyGudangPilihan().isEmpty()) {
+
+                            String idGudang = sessionManager.getKeyGudangPilihan();
+                            Log.e(TAG, "onResponse PUNYA ID GUDANG: : " + idGudang );
+
+                            String namaGudang = "";
+
+                            for (int i = 0; i < daftarGudangToko.size(); i++) {
+                                if (daftarGudangToko.get(i).getIdGudang().equals(idGudang)) {
+                                    namaGudang = daftarGudangToko.get(i).getNamaGudang();
+                                }
+                            }
+
+                            Intent intent = new Intent(GudangActivity.this, NewMainActivity.class);
+                            sessionManager.setKeySetGudangPencarian(idGudang);
+                            intent.putExtra("hasExtra", true);
+                            intent.putExtra("idGudang", idGudang);
+                            intent.putExtra("namaGudang", namaGudang);
+                            startActivity(intent);
+                            finish();
+
+                        }
+
                     }
 
 
@@ -706,9 +740,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
 
                                 alamatPertamaTetap = selectedAddress.getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
-
                                 setupDataUser();
-
 
                             } catch (IOException e) {
                                 progressDialog.dismiss();

@@ -1,4 +1,4 @@
-package com.gusrinda.invoicegenerator;
+package com.membership.invoicegenerator;
 
 import org.junit.Test;
 

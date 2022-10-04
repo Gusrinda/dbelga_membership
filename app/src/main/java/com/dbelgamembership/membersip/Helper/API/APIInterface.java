@@ -236,6 +236,17 @@ public interface APIInterface {
             @Field("exp_otp") String expOTP
     );
 
+    @FormUrlEncoded
+    @POST("update-pelanggan")
+    Call<JsonElement> doUpdatePelanggan(
+            @Field("id_member") String idMember,
+            @Field("status_member") String statusMember,
+            @Field("expired_date") String expiredDateMember,
+            @Field("pay_date") String expiredPaymentDate,
+            @Field("otp") String OTP,
+            @Field("exp_otp") String expOTP
+    );
+
     @GET("check-verifikasi-user")
     Call<ResponseCekVerifikasi> doCekVerifikasiUser(
             @Query("id_user") String idMember);
@@ -311,6 +322,8 @@ public interface APIInterface {
             @Path("id") String id
     );
 
+
+
     @FormUrlEncoded
     @POST("update-tagihan-transfer")
     Call<String> doUpdateTagihanTransfer(
@@ -328,6 +341,15 @@ public interface APIInterface {
             @Field("nominal_plafon") String nominalPlafon,
             @Field("is_data_cancel") String isDataCancel
     );
+
+
+    @FormUrlEncoded
+    @POST("update-gudang-customer/{id}")
+    Call<JsonElement> doUpdateGudangCustomer(
+            @Path("id") String id,
+            @Field("id_gudang") String idGudang
+    );
+
 
     @FormUrlEncoded
     @POST("upload-payment/{id}")

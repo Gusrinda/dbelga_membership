@@ -3,6 +3,7 @@ package com.dbelgamembership.membersip.Screen;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -24,26 +25,36 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ResponseLogin.ResponseLogin;
+import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
+import com.dbelgamembership.membersip.Screen.Registrasi.RegistrasiNext;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class LoginActivity extends AppCompatActivity {
     public static boolean cekPreAccess;
@@ -164,6 +175,7 @@ public class LoginActivity extends AppCompatActivity {
                                 String emailUser = modelUser.getMsgServer().getMainEmail();
                                 String membershipUser = modelUser.getMsgServer().getStatusMember();
                                 String jatuhTempo = modelUser.getMsgServer().getJatuhTempo();
+                                String idGudang = modelUser.getMsgServer().getMainGudang() == null ? "" : modelUser.getMsgServer().getMainGudang();
                                 Log.e("", "id User: " + idUser);
                                 Log.e("", "nama User: " + namaUser);
                                 Log.e("", "email User: " + emailUser);
@@ -173,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 boolean status_pay = Boolean.parseBoolean(modelUser.getMsgServer().getStatusPayment());
 
-                                sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser, jatuhTempo);
+                                sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser, jatuhTempo, idGudang);
                                 sessionManager.setAccountUser(namaUser, emailUser, modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                 sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
                                 sessionManager.setKeyDeadlinePayment(modelUser.getMsgServer().getPayDate());
@@ -186,9 +198,114 @@ public class LoginActivity extends AppCompatActivity {
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     startActivity(intent);
                                 } else {
+
+                                    String tipeNMember = modelUser.getMsgServer().getType();
+
+                                    if (tipeNMember.equals("Pelanggan")) {
+                                        Toast.makeText(LoginActivity.this, "Ini pelanggan dari sales !!!", Toast.LENGTH_SHORT).show();
+
+                                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                                        SimpleDateFormat formatExpDate = new SimpleDateFormat("yyyy-MM-dd");
+                                        SimpleDateFormat formatExp = new SimpleDateFormat("MM/yyyy");
+
+                                        int randomPin = (int) (Math.random() * 9000) + 1000;
+                                        String otp = String.valueOf(randomPin);
+
+                                        final Calendar baru = Calendar.getInstance();
+                                        final Calendar expOTP = Calendar.getInstance();
+                                        expOTP.add(Calendar.MINUTE, 15);
+                                        baru.add(Calendar.DATE, 1);
+                                        Date deadlineBayar = baru.getTime();
+                                        Date deadlineOTP = expOTP.getTime();
+                                        String deadlenPembayaran = formatter.format(deadlineBayar);
+                                        String deadlenOTP = formatter.format(deadlineOTP);
+
+                                        final Calendar expired = Calendar.getInstance();
+                                        expired.add(Calendar.YEAR, 100);
+
+                                        Date expiredDate = expired.getTime();
+                                        String expDate = formatExpDate.format(expiredDate);
+
+                                        String statusMember = "SILVER";
+
+                                        final ProgressDialog progressDialog = ProgressDialog.show(LoginActivity.this, "Loading", "Updating status . . .");
+                                        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+
+                                        Call<JsonElement> call = apiInterface.doUpdatePelanggan(
+                                                String.valueOf(modelUser.getMsgServer().getId()),
+                                                statusMember,
+                                                expDate,
+                                                deadlenPembayaran,
+                                                otp,
+                                                deadlenOTP
+                                        );
+
+                                        call.enqueue(new Callback<JsonElement>() {
+                                            @Override
+                                            public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+
+                                                progressDialog.dismiss();
+                                                if (response != null) {
+                                                    String responseX = String.valueOf(response.body());
+                                                    JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
+                                                    boolean success = root.get("success").getAsBoolean();
+                                                    Log.e("", "Test : " + success);
+                                                    if (!success) {
+                                                        Toast.makeText(LoginActivity.this, "Error : " + root.get("msgServer").getAsString(), Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        try {
+                                                            Gson gson = new Gson();
+                                                            ResponseUser modelUser = gson.fromJson(String.valueOf(responseX), ResponseUser.class);
+                                                            String id = String.valueOf(modelUser.getMsgServer().getId());
+                                                            //sementara pakai ID
+                                                            String identitasPelanggan = String.valueOf(modelUser.getMsgServer().getId());
+                                                            String name = modelUser.getMsgServer().getName();
+                                                            String email = modelUser.getMsgServer().getMainEmail();
+                                                            String membership = modelUser.getMsgServer().getStatusMember();
+                                                            String deadlinePay = modelUser.getMsgServer().getPayDate();
+                                                            String dateExpired = modelUser.getMsgServer().getExpiredDate();
+
+                                                            String count = modelUser.getMsgServer().getExpOtp();
+
+                                                            Date created = null;
+
+                                                            created = formatExpDate.parse(dateExpired);
+
+                                                            Calendar cal = Calendar.getInstance();
+                                                            cal.setTime(created);
+                                                            Log.e(TAG, "Expired member : " + cal.getTime());
+                                                            Date expiredMember = cal.getTime();
+                                                            String expDate = formatExp.format(expiredMember);
+
+                                                            sessionManager.setRegister(true, id, identitasPelanggan, name, email, membership, expDate);
+                                                            sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
+
+                                                            Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
+                                                            intent.putExtra("EXPIRED_OTP", count);
+                                                            startActivity(intent);
+                                                        } catch (ParseException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<JsonElement> call, Throwable t) {
+                                                progressDialog.dismiss();
+                                                Log.e(TAG, "onFailure: ERROR UPDATING STATUS :: " + Arrays.toString(t.getStackTrace()));
+                                            }
+                                        });
+
+
+                                    } else {
 //                                    sessionManager.setLogin(true, idUser, namaUser, emailUser, membershipUser);
-                                    Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
-                                    startActivity(intent);
+                                        Intent intent = new Intent(LoginActivity.this, VerificationActivity.class);
+                                        startActivity(intent);
+                                    }
+
+
                                 }
 
                             }
@@ -215,7 +332,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean isOnline() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        @SuppressLint("MissingPermission") NetworkInfo netInfo = cm.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnectedOrConnecting()) {
             return true;
         }
@@ -225,14 +342,12 @@ public class LoginActivity extends AppCompatActivity {
     public void getSession() {
         Log.e("", "sessionCondition: Username Login? " + sessionManager.isLoggedIn());
         if (sessionManager.isLoggedIn()) {
-//            Intent intent = new Intent(LoginActivity.this, NewMainActivity.class);
             Intent intent = new Intent(LoginActivity.this, GudangActivity.class);
             startActivity(intent);
             cekPreAccess = true;
         } else {
             cekPreAccess = false;
         }
-
     }
 
     private void Snack(String string) {

@@ -1,5 +1,9 @@
 package com.dbelgamembership.membersip.Screen.Setting;
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.daftarGudang;
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.daftarGudangToko;
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -24,6 +28,8 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -41,18 +47,26 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
 import com.dbelgamembership.membersip.Model.ResponseLogin.ResponseLogin;
+import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.R;
+import com.dbelgamembership.membersip.Screen.PembayaranTransfer.TransferTagihan;
+import com.dbelgamembership.membersip.Screen.SplashActivity;
+import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
 import com.dbelgamembership.membersip.databinding.ActivityEditAkunBinding;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -68,6 +82,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class EditAkun extends AppCompatActivity {
 
@@ -87,9 +103,11 @@ public class EditAkun extends AppCompatActivity {
     ImageView btnGantiFoto;
     LinearLayout layoutUbahAkun, layoutSimpanAkun, layoutGantiPassword, layoutBatalAkun;
     private String TAG = "";
-    String name, address, phone, mail, urlImage, password, dateBirth;
+    String name, address, phone, mail, urlImage, password, dateBirth, namaGudang;
 
     private ActivityEditAkunBinding binding;
+
+    String[] daftarGudang = new String[modelGudangs.size()];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +120,7 @@ public class EditAkun extends AppCompatActivity {
         sessionManager = new SessionManager(this);
         urlImage = "";
         findID();
-        getDataUser();
+
 
         binding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24);
         binding.toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -111,6 +129,20 @@ public class EditAkun extends AppCompatActivity {
                 finish();
             }
         });
+
+
+
+
+        for (int i = 0; i < modelGudangs.size(); i++) {
+            daftarGudang[i] = modelGudangs.get(i).getNamaGudang();
+        }
+
+        Log.e(TAG, "onCreate: " + daftarGudang.toString());
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, daftarGudang);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.spinnerGudang.setAdapter(adapter);
+
 
         layoutUbahAkun.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +274,86 @@ public class EditAkun extends AppCompatActivity {
 
             }
         });
+
+
+        binding.spinnerGudang.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if (i != selectedIndexGudang) {
+                    androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(EditAkun.this).create();
+                    alertDialog.setTitle("Peringatan");
+                    alertDialog.setMessage("Anda akan mengubah gudang pilihan anda ?");
+                    alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE, "YA",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    updateGudangUser(i);
+
+                                }
+                            });
+                    alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE, "TIDAK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    binding.spinnerGudang.setSelection(selectedIndexGudang);
+                                }
+                            });
+                    alertDialog.show();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+        getDataUser();
+
+    }
+
+    private void updateGudangUser(int i) {
+
+        selectedIndexGudang = i;
+        String namaGudang = daftarGudang[i];
+        String idGudang = "";
+
+        for (int j = 0; j < daftarGudangToko.size(); j++) {
+            if (namaGudang.equals(daftarGudangToko.get(j).getNamaGudang())){
+                idGudang = daftarGudangToko.get(j).getIdGudang();
+            }
+        }
+
+        final ProgressDialog progressDialog = ProgressDialog.show(EditAkun.this, "Loading", "Updating gudang ...");
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<JsonElement> callUpdate = apiInterface.doUpdateGudangCustomer(sessionManager.getPID(), idGudang);
+
+        String finalIdGudang = idGudang;
+        callUpdate.enqueue(new Callback<JsonElement>() {
+            @Override
+            public void onResponse(Call<JsonElement> call, retrofit2.Response<JsonElement> response) {
+                progressDialog.dismiss();
+                try {
+                    if (response != null) {
+                        sessionManager.setKeyGudangPilihan(finalIdGudang);
+                        Toast.makeText(EditAkun.this, "Berhasil update gudang . . .", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "onResponse: " + e.getMessage());
+                    Toast.makeText(EditAkun.this, "Error Update", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonElement> call, Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(EditAkun.this, "Error Update", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+        });
+
     }
 
     private void OpenGallery() {
@@ -250,6 +362,10 @@ public class EditAkun extends AppCompatActivity {
         galleryIntent.setType("image/*");
         startActivityForResult(galleryIntent, GalleryPick);
     }
+
+    ModelGudang selectedGudang = new ModelGudang();
+
+    int selectedIndexGudang = 0;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -307,6 +423,36 @@ public class EditAkun extends AppCompatActivity {
                             Log.e(TAG, "onResponse: " + dataUser.getImageCustomer() );
                             Log.e(TAG, "onResponse: " + dataUser.getImageCustomer() );
 
+
+                            namaGudang = "Belum dipilih";
+
+                            if (dataUser.getMainGudang() != null) {
+
+
+                                for (int i = 0; i < daftarGudangToko.size(); i++) {
+
+                                    if (daftarGudangToko.get(i).getIdGudang().equals(dataUser.getMainGudang())) {
+                                        selectedGudang = daftarGudangToko.get(i);
+                                    }
+                                }
+
+
+
+                                for (int i = 0; i < daftarGudang.length; i++) {
+
+                                    if (daftarGudang[i].equals(selectedGudang.getNamaGudang())) {
+                                        selectedIndexGudang = i;
+                                    }
+
+                                }
+
+
+                                namaGudang = selectedGudang.getNamaGudang();
+                                binding.spinnerGudang.setSelection(selectedIndexGudang);
+
+                            }
+
+
                             Log.e(TAG, "checkUbah: " + checkUbah);
                             if (!checkUbah) {
                                 if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
@@ -345,6 +491,7 @@ public class EditAkun extends AppCompatActivity {
         alamatPengguna.setText(address);
         nomorPengguna.setText(phone);
         emailPengguna.setText(mail);
+
         Drawable image;
         if (!urlImage.equals("")) {
             Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
@@ -483,13 +630,14 @@ public class EditAkun extends AppCompatActivity {
                                     String membership = modelUser.getMsgServer().getStatusMember();
                                     String identitasPelanggan = modelUser.getMsgServer().getIdentitas();
                                     String jatuhTempo = modelUser.getMsgServer().getJatuhTempo();
+                                    String mainGudang = modelUser.getMsgServer().getMainGudang() == null ? "" : modelUser.getMsgServer().getMainGudang();
                                     Log.e("", "id User: " + id);
                                     Log.e("", "nama User: " + name);
                                     Log.e("", "email User: " + email);
                                     Log.e("", "membership: " + membership);
                                     Log.e("", "identitasPelanggan: " + identitasPelanggan);
                                     Log.e("", "jatuhTempo: " + jatuhTempo);
-                                    sessionManager.setLogin(true, id, identitasPelanggan, name, email, membership, jatuhTempo);
+                                    sessionManager.setLogin(true, id, identitasPelanggan, name, email, membership, jatuhTempo, mainGudang);
                                     sessionManager.setAccountUser(modelUser.getMsgServer().getName(), modelUser.getMsgServer().getMainEmail(), modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                     if (dataPengguna.getString("image_customer") != null) {
                                         sessionManager.setImage( Http.serverNotApi + "upload/customer-photo/" + dataPengguna.getString("image_customer"));

@@ -11,7 +11,10 @@ public class ModelGudang {
     double valueJarak;
     String nomorTelfonGudang;
 
-    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, double valueJarak,     String nomorTelfonGudang) {
+    public ModelGudang() {
+    }
+
+    public ModelGudang(String namaGudang, String alamatGudang, String idGudang, String latGudang, String longGudang, String textJarak, double valueJarak, String nomorTelfonGudang) {
         this.namaGudang = namaGudang;
         this.alamatGudang = alamatGudang;
         this.idGudang = idGudang;

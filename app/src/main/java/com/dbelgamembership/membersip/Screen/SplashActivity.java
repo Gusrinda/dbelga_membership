@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -36,6 +38,7 @@ import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiFoto;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
+import com.dbelgamembership.membersip.databinding.ActivitySplashBinding;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -77,12 +80,24 @@ public class SplashActivity extends AppCompatActivity {
 
     public static List<com.dbelgamembership.membersip.Model.ModelResponseCS.MsgServer> daftarCS = new ArrayList<>();
 
+    private ActivitySplashBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         cekPreAccess = false;
         sessionManager = new SessionManager(this);
+
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            String version = pInfo.versionName;
+            binding.txtVersi.setText("Version. " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         getDataSlider();
         getDataKategori();
@@ -100,6 +115,8 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
         timerThread.start();
+
+
 
     }
 

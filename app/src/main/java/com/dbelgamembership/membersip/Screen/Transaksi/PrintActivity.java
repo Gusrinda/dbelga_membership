@@ -98,13 +98,13 @@ import com.dbelgamembership.membersip.databinding.PopupPembatalanTransaksiBindin
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.gson.Gson;
-import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
-import com.midtrans.sdk.corekit.core.MidtransSDK;
-import com.midtrans.sdk.corekit.core.TransactionRequest;
-import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
-import com.midtrans.sdk.corekit.models.CustomerDetails;
-import com.midtrans.sdk.corekit.models.snap.TransactionResult;
-import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
+//import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
+//import com.midtrans.sdk.corekit.core.MidtransSDK;
+//import com.midtrans.sdk.corekit.core.TransactionRequest;
+//import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
+//import com.midtrans.sdk.corekit.models.CustomerDetails;
+//import com.midtrans.sdk.corekit.models.snap.TransactionResult;
+//import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
 
 import org.json.JSONObject;
 
