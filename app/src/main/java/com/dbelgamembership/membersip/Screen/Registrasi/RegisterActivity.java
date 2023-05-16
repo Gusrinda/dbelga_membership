@@ -134,9 +134,11 @@ public class RegisterActivity extends AppCompatActivity {
                         int month = monthOfYear + 1;
                         String formattedMonth = "" + month;
                         String formattedDayOfMonth = "" + dayOfMonth;
+
                         if (month < 10) {
                             formattedMonth = "0" + month;
                         }
+
                         if (dayOfMonth < 10) {
                             formattedDayOfMonth = "0" + dayOfMonth;
                         }
@@ -156,6 +158,7 @@ public class RegisterActivity extends AppCompatActivity {
                         } else {
                             binding.txtTanggalLahir.setText(year + "-" + formattedMonth + "-" + formattedDayOfMonth);
                         }
+
                     }
                 }, mYear, mMonth, mDay);
                 datePickerDialog.show();
@@ -196,7 +199,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         NamaPelanggan = binding.txtNamaPelanggan.getText().toString();
         TanggalLahir = binding.txtTanggalLahir.getText().toString();
-        NomorPelanggan = binding.txtNomorHandphonePelanggan.getText().toString();
+        NomorPelanggan = "62" + binding.txtNomorHandphonePelanggan.getText().toString();
         EmailPelanggan = binding.txtEmailPelanggan.getText().toString();
         PasswordPelanggan = binding.txtPasswordPelanggan.getText().toString();
         PasswordUlangPelanggan = binding.txtPasswordUlangPelanggan.getText().toString();

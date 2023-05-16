@@ -377,13 +377,21 @@ public class EditAkun extends AppCompatActivity {
             Uri uri = data.getData();
             ImageUri = uri;
 
+            Log.e(TAG, "onActivityResult: INI IMAGE URI : " + ImageUri.toString() );
+
             try {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageUri);
                 Log.e(TAG, "onActivityResult: " + bitmap);
+
+//                imagePengguna.setImageBitmap(bitmap);
+
+                Glide.with(EditAkun.this).asBitmap().load(bitmap).error(R.drawable.user_kosong).centerCrop().into(imagePengguna);
+
             } catch (IOException e) {
+                Log.d(TAG, "onActivityResult: MASUK ERROR " + e.getMessage());
                 e.printStackTrace();
             }
-            imagePengguna.setImageURI(ImageUri);
+//            imagePengguna.setImageURI(ImageUri);
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(this, ImagePicker.Companion.getError(data), Toast.LENGTH_SHORT).show();
         } else {
@@ -455,7 +463,7 @@ public class EditAkun extends AppCompatActivity {
 
                             Log.e(TAG, "checkUbah: " + checkUbah);
                             if (!checkUbah) {
-                                if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
+                                if (urlImage.equals("http://149.129.235.50/upload/customer-photo/")) {
                                     urlImage = "";
                                 } else {
                                     urlImage = dataUser.getImageCustomer();
@@ -478,7 +486,7 @@ public class EditAkun extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -494,7 +502,7 @@ public class EditAkun extends AppCompatActivity {
 
         Drawable image;
         if (!urlImage.equals("")) {
-            Glide.with(EditAkun.this).asBitmap().load(urlImage).centerCrop().into(imagePengguna);
+            Glide.with(EditAkun.this).asBitmap().load(urlImage).error(R.drawable.user_kosong).centerCrop().into(imagePengguna);
         } else {
             image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
             imagePengguna.setImageDrawable(image);
@@ -692,7 +700,7 @@ public class EditAkun extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -717,7 +725,6 @@ public class EditAkun extends AppCompatActivity {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream);
         return Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.NO_WRAP);
-
     }
 
     private void Snack(String string) {

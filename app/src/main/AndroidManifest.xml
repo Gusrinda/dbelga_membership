@@ -7,7 +7,18 @@
 
     <queries>
         <package android:name="com.google.android.apps.maps" />
+
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
     </queries>
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <uses-feature android:name="android.hardware.camera2.full" />
+
+    <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -15,11 +26,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.front" />
-    <uses-feature android:name="android.hardware.camera2.full" />
-    <uses-feature android:name="android.hardware.camera.autofocus" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -28,7 +34,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
@@ -39,8 +44,8 @@
         android:icon="@drawable/icon_membership"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@drawable/icon_membership"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
@@ -63,10 +68,9 @@
             android:exported="false" />
         <activity
             android:name=".Screen.Promo.KatalogPromo"
-            android:exported="true" />
-<!--        <activity-->
-<!--            android:name=".Screen.Promo.KatalogPromo.KatalogPromo"-->
-<!--            android:exported="true" />-->
+            android:exported="true" /> <!-- <activity -->
+        <!-- android:name=".Screen.Promo.KatalogPromo.KatalogPromo" -->
+        <!-- android:exported="true" /> -->
         <activity
             android:name=".Screen.User.Verifikasi.KonfirmasiFoto"
             android:exported="true" />
@@ -132,8 +136,7 @@
             android:name=".Screen.User.Verifikasi.KonfirmasiMembership"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
-<!--        <activity android:name=".Sales" />-->
+            android:windowSoftInputMode="stateHidden" /> <!-- <activity android:name=".Sales" /> -->
         <activity android:name=".Screen.Katalog.WishlishActivity" />
         <activity
             android:name=".Screen.Katalog.KatalogActivity"
@@ -162,11 +165,13 @@
         <activity
             android:name=".Screen.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.DEFAULT" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".Screen.HomeActivity"
@@ -191,6 +196,7 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".Screen.PembayaranTransfer.TransferMembership" />
         <activity android:name=".Screen.PembayaranTransfer.TransferTagihan" />
+        <activity android:name=".Screen.User.NewCameraGuideline" />
 
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
@@ -214,8 +220,7 @@
             android:value="@string/default_notification_channel_id" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        <!-- [END fcm_default_icon] -->
+            android:resource="@color/colorAccent" /> <!-- [END fcm_default_icon] -->
         <!-- [START firebase_service] -->
         <service
             android:name=".Screen.Notifikasi.MyFirebaseInstanceIDService"
@@ -223,18 +228,24 @@
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-<!--        <provider-->
-<!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.fileprovider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/external_paths" />-->
-<!--        </provider>-->
-
+        </service> <!-- <provider -->
+        <!-- android:name="androidx.core.content.FileProvider" -->
+        <!-- android:authorities="${applicationId}.fileprovider" -->
+        <!-- android:exported="false" -->
+        <!-- android:grantUriPermissions="true"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
+        <!-- android:resource="@xml/external_paths" /> -->
+        <!-- </provider> -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.dbelgamembership.membersip.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.membership.invoicegenerator.provider"
@@ -244,8 +255,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/external_paths" />
         </provider>
-
-
     </application>
 
 </manifest>

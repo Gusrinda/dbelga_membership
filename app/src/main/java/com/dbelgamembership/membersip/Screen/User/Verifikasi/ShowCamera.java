@@ -1,8 +1,12 @@
 package com.dbelgamembership.membersip.Screen.User.Verifikasi;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.SurfaceTexture;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -26,6 +30,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback {
         Camera.Parameters parameters = camera.getParameters();
 
         //Change orientation optic camera
+//        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
         if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE){
             parameters.set("orientation", "potrait");
@@ -39,8 +44,13 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback {
 
         camera.setParameters(parameters);
         try {
+            SurfaceTexture st = new SurfaceTexture(MODE_PRIVATE);
+            camera.setPreviewTexture(st);
+
             camera.setPreviewDisplay(holder);
+            camera.getParameters().getSupportedPreviewSizes();
             camera.startPreview();
+            Log.d("TAG", "Camera preview started.");
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -51,7 +61,6 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
-
     }
 
     @Override

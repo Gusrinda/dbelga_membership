@@ -74,7 +74,7 @@ public class AdapterListTerlaris extends
                     .error(R.drawable.not_found)
                     .into(holder.imageBarang);
 
-            holder.layoutTerjual.setVisibility(View.VISIBLE);
+//            holder.layoutTerjual.setVisibility(View.VISIBLE);
 
             double jumlahTerjual = item.getJumlahTerjual();
 
@@ -119,7 +119,7 @@ public class AdapterListTerlaris extends
             } else if (cekStok >= 50) {
                 holder.tvStokOutlet.setText(" > 50 " + item.getSatuan_kemasan());
             } else if (cekStok == 0 || cekStok < 0) {
-                holder.tvStokOutlet.setText("KOSONG");
+                holder.tvStokOutlet.setText("HABIS");
                 isClickable = false;
             }
 
@@ -128,7 +128,7 @@ public class AdapterListTerlaris extends
 
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
-            if (holder.tvStokOutlet.getText().toString().equals("KOSONG") || item.getHarga_barang() == null) {
+            if (holder.tvStokOutlet.getText().toString().equals("HABIS") || item.getHarga_barang() == null) {
                 isClickable = false;
                 Double hargaBarang = Double.parseDouble(item.getHarga_barang() == null ? "0" : item.getHarga_barang());
                 Log.e(TAG, "onBindViewHolder: " + hargaBarang );
@@ -137,7 +137,7 @@ public class AdapterListTerlaris extends
 
                 holder.hargaBarang2.setVisibility(View.GONE);
                 holder.hargaBarang3.setVisibility(View.GONE);
-                holder.tvStokOutlet.setText("KOSONG");
+                holder.tvStokOutlet.setText("HABIS");
             } else {
 
                 Log.e(TAG, "MASUK 6");
@@ -215,6 +215,10 @@ public class AdapterListTerlaris extends
                     holder.tvDiskonMembership.setText(txtDiskonMembership);
                 }
 
+
+                //set VIEW HARGA 2 3 DISABLE
+                holder.hargaBarang2.setVisibility(View.GONE);
+                holder.hargaBarang3.setVisibility(View.GONE);
 
             }
 

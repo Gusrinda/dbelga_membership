@@ -126,6 +126,13 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
     private int cartSize = 0;
     private String idGudangCart = "";
 
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        Log.e(TAG, "onBackPressed: BACK PRESSED !!!" );
+        finishAffinity();
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +149,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-
 
         alamatPengirimanPengguna = new AlamatPengiriman(null, null, null);
 
@@ -195,6 +201,9 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                                 finish();
                                 sessionManager.destroySession();
                                 Intent intent = new Intent(GudangActivity.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
@@ -317,9 +326,11 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
             binding.btnKeluar.setVisibility(View.VISIBLE);
             Log.e(TAG, "setupDataUser: " + sessionManager.getImage());
 
-            if (!sessionManager.getImage().equals("")) {
-                Glide.with(GudangActivity.this).asBitmap().load(sessionManager.getImage()).centerCrop().into(binding.imgCustomer);
+            if (!sessionManager.getImage().equals("") && !sessionManager.getImage().equals("null")) {
+                Log.d(TAG, "setupDataUser: MASUK SINI");
+                Glide.with(GudangActivity.this).asBitmap().load(sessionManager.getImage()).centerCrop().error(R.drawable.user_kosong).into(binding.imgCustomer);
             } else {
+                Log.d(TAG, "setupDataUser: MASUK SITU");
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
                 binding.imgCustomer.setImageDrawable(image);
             }
@@ -330,6 +341,8 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
 
 
         } else {
+            @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+            binding.imgCustomer.setImageDrawable(image);
             binding.btnKeluar.setVisibility(View.GONE);
             binding.btnLoginRegister.setVisibility(View.VISIBLE);
         }
@@ -538,8 +551,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                         progressDialog.dismiss();
                     }
                 }
-
-
 
 
             }
@@ -925,7 +936,6 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                             isSetAlamat = true;
                             getLastLocation();
                         }
-
                     } else {
                         Log.e(TAG, "onActivityResult: data " + data);
                     }

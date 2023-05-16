@@ -331,6 +331,9 @@ public class MembershipChoose extends AppCompatActivity {
                                 sessionManager.setMembership(choosenMembership);
                                 sessionManager.setKeyDeadlinePayment(paydate);
                                 Intent intent = new Intent(MembershipChoose.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         } catch (Exception e) {
@@ -379,7 +382,7 @@ public class MembershipChoose extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -466,7 +469,7 @@ public class MembershipChoose extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

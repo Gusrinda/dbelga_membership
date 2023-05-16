@@ -67,6 +67,8 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/adapter_list_voucher.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktibayar_new.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktifaktur_new.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/dialog_birth_pelanggan.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/foto_identitas_layout.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_akun.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_bottom_sheet_filter.xml" value="0.22" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_bottom_sheet_sort.xml" value="0.2981981981981982" />
@@ -114,7 +116,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

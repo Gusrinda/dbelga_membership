@@ -264,6 +264,9 @@ public class PembayaranMembership extends AppCompatActivity {
                                 finish();
                                 sessionManager.destroySession();
                                 Intent intent = new Intent(PembayaranMembership.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
@@ -366,8 +369,11 @@ public class PembayaranMembership extends AppCompatActivity {
 
         selectedBank = "";
 
-        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "MANDIRI VA"};
-        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+//        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "MANDIRI VA"};
+//        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+
+        String[] namaBanks = {"BNI VA"};
+        int iconBanks[] = { R.drawable.bni_icon};
 
         SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
         popupPembayaranMembershipBinding.spinnerBankVa.setAdapter(customAdapter);
@@ -465,7 +471,7 @@ public class PembayaranMembership extends AppCompatActivity {
 
                     }
 
-                    Toast.makeText(PembayaranMembership.this, "ERROR !", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(PembayaranMembership.this, "ERROR !", Toast.LENGTH_SHORT).show();
 
                 } catch (Exception e) {
                     progressDialog.dismiss();
@@ -899,6 +905,9 @@ public class PembayaranMembership extends AppCompatActivity {
 
                     if (status_pay) {
                         Intent intent = new Intent(PembayaranMembership.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     } else {
@@ -908,6 +917,9 @@ public class PembayaranMembership extends AppCompatActivity {
                 } else {
                     if (status_pay) {
                         Intent intent = new Intent(PembayaranMembership.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     } else {
@@ -1003,7 +1015,6 @@ public class PembayaranMembership extends AppCompatActivity {
                                                     popUpPembayaran();
                                                 }
                                             });
-
 
                                         }
 
@@ -1126,6 +1137,9 @@ public class PembayaranMembership extends AppCompatActivity {
 
                         sessionManager.setKeyDeadlinePayment("");
                         Intent intent = new Intent(PembayaranMembership.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     }

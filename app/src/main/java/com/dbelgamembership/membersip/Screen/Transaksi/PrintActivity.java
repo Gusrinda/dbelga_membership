@@ -694,6 +694,11 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
 
     //batas awal api access
     private void accessWebService() {
+
+        ongkosKirim = 0;
+        totalDiskonan = 0;
+        totalBelanja = 0;
+
         String url = Http.server + "transaction/list?code=" + dataSO;
         Log.e(TAG, "URL" + url);
         RequestQueue mQueue = Volley.newRequestQueue(getApplicationContext());
@@ -988,7 +993,7 @@ PrintActivity extends AppCompatActivity implements AdapterDetailbarang.AdapterDe
                 return super.parseNetworkResponse(response);
             }
         };
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);

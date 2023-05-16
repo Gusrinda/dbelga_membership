@@ -280,7 +280,13 @@ public class AdapterListCart extends
             holder.stokItem.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ]");
         }
 
-        Glide.with(context).load(detailItemCart.getImages()).error(R.drawable.not_found).into(holder.gambarItem);
+//        Glide.with(context).load(detailItemCart.getImages()).error(R.drawable.not_found).into(holder.gambarItem);
+
+        Glide.with(context)
+                .asBitmap()
+                .load(detailItemCart.getImages())
+                .error(R.drawable.not_found)
+                .into(holder.gambarItem);
 
         holder.btnTambah.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -329,6 +335,13 @@ public class AdapterListCart extends
             public void onClick(View view) {
 
                 mAdapterCallback.deleteBarang(detailItemCart);
+            }
+        });
+
+        holder.layoutButtonEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    mAdapterCallback.editBarang(detailItemCart);
             }
         });
 
@@ -403,6 +416,8 @@ public class AdapterListCart extends
         void deleteBarang(DetailItemCart detailItemCart);
 
         void updateQtyBarang(DetailItemCart detailItemCart, double qtyItem);
+
+        void editBarang(DetailItemCart detailItemCart);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -428,6 +443,8 @@ public class AdapterListCart extends
         TextView textDiskonMembership;
         TextView textTotalDiskonMembership;
 
+        LinearLayout layoutButtonEdit;
+
 
         public ViewHolder(ItemCartBinding binding) {
             super(binding.getRoot());
@@ -451,6 +468,9 @@ public class AdapterListCart extends
             layoutDiskonMembership = binding.layoutDiskonMembership;
             textDiskonMembership = binding.txtPotonganDiskonMembership;
             textTotalDiskonMembership = binding.txtTotalDiskonMembership;
+
+            layoutButtonEdit = binding.layoutEditBarang;
+
 //            edtQty.addTextChangedListener(this);
         }
     }

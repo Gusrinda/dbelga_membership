@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:background="#EDEDED"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EDEDED"
     tools:context=".Screen.User.Verifikasi.KonfirmasiFoto">
 
     <RelativeLayout
@@ -13,26 +13,26 @@
 
         <LinearLayout
 
-            android:gravity="center"
             android:id="@+id/layout_hubungiKonfirmasi"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="32dp"
+            android:layout_marginHorizontal="20dp"
+            android:gravity="center"
 
             android:orientation="vertical"
             android:visibility="visible">
 
 
             <ImageView
-                android:layout_marginBottom="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
                 android:src="@drawable/verification" />
 
             <TextView
-                android:fontFamily="@font/hammer_font"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/hammer_font"
                 android:gravity="center_horizontal"
                 android:text="Foto anda sedang di verifikasi oleh Admin !"
                 android:textAlignment="center"
@@ -41,55 +41,112 @@
 
 
             <LinearLayout
-                android:gravity="center"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-
-                <ImageView
-                    android:layout_marginVertical="16dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/whatsapp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:fontFamily="@font/hammer_font"
-                        android:id="@+id/text_NomorWA"
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginVertical="4dp"
+                        android:src="@drawable/whatsapp" />
+
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:text="+6281559584297"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="16dp"
-                        android:textStyle="bold" />
 
-                    <TextView
-                        android:fontFamily="@font/hammer_font"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:gravity="center_horizontal"
-                        android:text="a/n dBelga Mart Tulungagung"
-                        android:textAlignment="center"
-                        android:textColor="@color/black"
-                        android:textSize="12dp" />
+                        android:orientation="vertical">
 
+                        <TextView
+                            android:id="@+id/text_NomorWA"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:gravity="center_horizontal"
+                            android:text="+6282290203050"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:gravity="center_horizontal"
+                            android:text="a/n AFAADA Grosera"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginVertical="4dp"
+                        android:src="@drawable/whatsapp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/text_NomorWAApollo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:gravity="center_horizontal"
+                            android:text="+6282290203080"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="16dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/hammer_font"
+                            android:gravity="center_horizontal"
+                            android:text="a/n dBelga Apollo"
+                            android:textAlignment="center"
+                            android:textColor="@color/black"
+                            android:textSize="12dp" />
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
             <TextView
-                android:fontFamily="@font/hammer_font"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginVertical="4dp"
+                android:fontFamily="@font/hammer_font"
                 android:gravity="center_horizontal"
                 android:text="anda dapat menghubungi admin whatsapp kami apabila ada pertanyaan"
                 android:textAlignment="center"
@@ -105,17 +162,29 @@
             android:id="@+id/btn_Hubungi"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/btn_Logout"
+            android:layout_above="@id/btn_HubungiApollo"
             android:layout_marginHorizontal="48dp"
             android:layout_marginBottom="8sp"
             android:background="@drawable/button_round_confirm"
-            android:text="Hubungi Admin DBELGA"
+            android:text="Hubungi CS AFAADA"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="12sp" />
 
         <Button
+            android:id="@+id/btn_HubungiApollo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btn_Logout"
+            android:layout_marginHorizontal="48dp"
+            android:layout_marginBottom="8sp"
+            android:background="@drawable/button_round_confirm"
+            android:text="Hubungi CS DBELGA APOLLO"
             android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="12sp" />
+
+        <Button
             android:id="@+id/btn_Logout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -124,6 +193,7 @@
             android:layout_marginBottom="32dp"
             android:background="@drawable/button_round_cancel"
             android:text="Logout"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="12sp" />
 

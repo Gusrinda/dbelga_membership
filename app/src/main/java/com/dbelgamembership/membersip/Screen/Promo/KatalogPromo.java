@@ -605,7 +605,7 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -655,10 +655,10 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
         } else if (cekStok >= 50) {
             popupBarangBinding.produkStok.setText(" > 50 Stok");
         } else {
-            popupBarangBinding.produkStok.setText("KOSONG");
+            popupBarangBinding.produkStok.setText("HABIS");
         }
 
-        if (popupBarangBinding.produkStok.getText().toString().equals("KOSONG")) {
+        if (popupBarangBinding.produkStok.getText().toString().equals("HABIS")) {
             popupBarangBinding.produkPrice1.setVisibility(View.GONE);
             popupBarangBinding.produkPrice2.setText("? (Harga Belum Diketahui)");
         } else {
@@ -1055,6 +1055,8 @@ public class KatalogPromo extends AppCompatActivity implements AdapterListBarang
 
             }
         });
+
+        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
     }
 
 }

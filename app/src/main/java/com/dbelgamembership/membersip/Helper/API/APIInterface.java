@@ -25,6 +25,7 @@ import com.dbelgamembership.membersip.Model.ResponseBayarTagihan.ResponseBayarTa
 import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
 import com.dbelgamembership.membersip.Model.ResponseLogMembership.ResponseLogMembership;
 import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
+import com.dbelgamembership.membersip.Model.ResponseVersi.ResponseVersi;
 import com.dbelgamembership.membersip.Model.modelListTransaksi.ModelListTransaksi;
 import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
@@ -239,6 +240,7 @@ public interface APIInterface {
     @FormUrlEncoded
     @POST("update-pelanggan")
     Call<JsonElement> doUpdatePelanggan(
+            @Field("pelanggan_tanggalLahir") String tanggalLahir,
             @Field("id_member") String idMember,
             @Field("status_member") String statusMember,
             @Field("expired_date") String expiredDateMember,
@@ -439,5 +441,10 @@ public interface APIInterface {
             @Part("file") RequestBody file,
             @Part MultipartBody.Part filePdf
     );
+
+
+    @GET("apps-version/version-active")
+    Call<ResponseVersi> doVersionApps(
+            @Query("type") String tipeAplikasi);
 
 }

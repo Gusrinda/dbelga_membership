@@ -63,6 +63,10 @@ public class DaftarTagihanPeriode implements Serializable, Parcelable
     @Expose
     private String statusPayment;
 
+    @SerializedName("batas_hari")
+    @Expose
+    private String batasHari;
+
     public final static Creator<DaftarTagihanPeriode> CREATOR = new Creator<DaftarTagihanPeriode>() {
 
 
@@ -98,6 +102,8 @@ public class DaftarTagihanPeriode implements Serializable, Parcelable
         this.updatedAt = ((String) in.readValue((String.class.getClassLoader())));
         this.paymentType = ((String) in.readValue((String.class.getClassLoader())));
         this.statusPayment = ((String) in.readValue((String.class.getClassLoader())));
+        this.batasHari = ((String) in.readValue((String.class.getClassLoader())));
+
     }
 
     public DaftarTagihanPeriode() {
@@ -231,6 +237,14 @@ public class DaftarTagihanPeriode implements Serializable, Parcelable
         this.statusPayment = statusPayment;
     }
 
+    public String getBatasHari() {
+        return batasHari;
+    }
+
+    public void setBatasHari(String batasHari) {
+        this.batasHari = batasHari;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
@@ -248,6 +262,7 @@ public class DaftarTagihanPeriode implements Serializable, Parcelable
         dest.writeValue(updatedAt);
         dest.writeValue(paymentType);
         dest.writeValue(statusPayment);
+        dest.writeValue(batasHari);
     }
 
     public int describeContents() {

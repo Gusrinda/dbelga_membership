@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.exifinterface.media.ExifInterface;
 
 import android.Manifest;
@@ -24,20 +26,34 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
+import com.dbelgamembership.membersip.Helper.FileDownloader;
+import com.dbelgamembership.membersip.Helper.GlideApp;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
@@ -45,6 +61,7 @@ import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
+import com.dbelgamembership.membersip.Screen.User.NewCameraGuideline;
 import com.dbelgamembership.membersip.databinding.ActivityMembershipFotoBinding;
 import com.developer.kalert.KAlertDialog;
 import com.github.dhaval2404.imagepicker.ImagePicker;
@@ -85,6 +102,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -216,10 +234,16 @@ public class MembershipFoto extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isHaveCamera) {
-                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+//                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+//                    selfie = false;
+//                    intent.putExtra("kode_guide", 1);
+//                    startActivityForResult(intent, 101);
+
+                    Intent intent = new Intent(MembershipFoto.this, NewCameraGuideline.class);
                     selfie = false;
                     intent.putExtra("kode_guide", 1);
                     startActivityForResult(intent, 101);
+
                 } else {
                     ImagePicker.Companion.with(MembershipFoto.this)
                             .galleryOnly()
@@ -238,7 +262,8 @@ public class MembershipFoto extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isHaveCamera) {
-                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+//                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    Intent intent = new Intent(MembershipFoto.this, NewCameraGuideline.class);
                     selfie = true;
                     intent.putExtra("kode_guide", 2);
 //                startActivity(intent);
@@ -261,7 +286,8 @@ public class MembershipFoto extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isHaveCamera) {
-                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+//                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    Intent intent = new Intent(MembershipFoto.this, NewCameraGuideline.class);
                     selfie = true;
                     intent.putExtra("kode_guide", 3);
 //                startActivity(intent);
@@ -284,7 +310,8 @@ public class MembershipFoto extends AppCompatActivity {
             public void onClick(View view) {
 
                 if (isHaveCamera) {
-                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+//                    Intent intent = new Intent(MembershipFoto.this, CameraGuideline.class);
+                    Intent intent = new Intent(MembershipFoto.this, NewCameraGuideline.class);
                     selfie = false;
                     intent.putExtra("kode_guide", 4);
 //                startActivity(intent);
@@ -390,7 +417,151 @@ public class MembershipFoto extends AppCompatActivity {
         });
 
         checkAllData();
+
+        getDataMembership();
+
     }
+
+    private void getDataMembership() {
+        String url = Http.server + "search-customer/" + sessionManager.getPID();
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelUser> callUser = apiInterface.doLoopCustomer(url);
+
+        callUser.enqueue(new Callback<ModelUser>() {
+            @SuppressLint("CheckResult")
+            @Override
+            public void onResponse(Call<ModelUser> call, retrofit2.Response<ModelUser> response) {
+                ModelUser object = response.body();
+                com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = object.getMsgServer().get(0);
+
+//                http://8.215.31.212/upload/customer-verifikasi/22100709203871811178.jpg
+
+                if (dataUser.getImgRumah() != null) {
+                    String urlImageRumah = Http.serverNotApi + "upload/customer-verifikasi/" + dataUser.getImgRumah();
+
+                    Log.e(TAG, "onResponse:: URL IMAGE RUMAH :: " + urlImageRumah);
+
+                    GlideApp.with(MembershipFoto.this)
+                            .asBitmap()
+                            .load(urlImageRumah)
+                            .into(new SimpleTarget<Bitmap>() {
+                                @Override
+                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+
+                                    Log.e(TAG, "onResourceReady: BERHASIL AMBIL BITMAP");
+
+                                    fotoRumah = imageToString(resource);
+
+                                    Log.e(TAG, "onResourceReady: STRING RUMAH :: \n" + fotoRumah);
+
+
+                                }
+                            });
+
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<ModelUser> call, Throwable t) {
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+            }
+        });
+
+    }
+
+    private static final String[] PERMISSIONS = {android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private void DownloadMethod(String url) {
+        Log.v(TAG, "download() Method invoked ");
+
+        if (!hasPermissions(MembershipFoto.this, PERMISSIONS)) {
+
+            Log.v(TAG, "download() Method DON'T HAVE PERMISSIONS ");
+
+            Toast t = Toast.makeText(getApplicationContext(), "You don't have write access !", Toast.LENGTH_LONG);
+            t.show();
+
+        } else {
+
+            Log.v(TAG, "download() Method HAVE PERMISSIONS ");
+
+            new DownloadFile().execute(url, "FileFotoRumah" + "_" + sessionManager.getPID() + ".jpg");
+
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+//                if (Environment.isExternalStorageManager()) {
+//                    new DownloadFile().execute(url, "FileFotoRumah" + "_" + sessionManager.getPID() + ".jpg");
+//                } else {
+//                    //request for the permission
+//                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+//                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+//                    intent.setData(uri);
+//                    startActivity(intent);
+//                }
+//            } else {
+//                new DownloadFile().execute(url, "FileFotoRumah" + "_" + sessionManager.getPID() + ".jpg");
+//            }
+
+        }
+        Log.v(TAG, "download() Method completed ");
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class DownloadFile extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            try {
+                Log.v(TAG, "doInBackground() Method invoked ");
+
+                String fileUrl = strings[0];   // -> http://maven.apache.org/maven-1.x/maven.pdf
+                String fileName = strings[1];  // -> maven.pdf
+                String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+                File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+
+                File jpgFile = new File(folder, fileName);
+                Log.v(TAG, "doInBackground() pdfFile invoked " + jpgFile.getAbsolutePath());
+                Log.v(TAG, "doInBackground() pdfFile invoked " + jpgFile.getAbsoluteFile());
+
+                try {
+                    jpgFile.createNewFile();
+                    Log.v(TAG, "doInBackground() file created" + jpgFile);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "doInBackground() error" + e.getMessage());
+                    Log.e(TAG, "doInBackground() error" + e.getStackTrace());
+                }
+                FileDownloader.downloadFile(fileUrl, jpgFile);
+                Log.v(TAG, "doInBackground() file download completed");
+
+                Uri path = FileProvider.getUriForFile(MembershipFoto.this, "com.dbelgamembership.membersip.fileprovider", jpgFile);
+
+
+                Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(MembershipFoto.this, path, 104);
+                fotoRumah = imageToString(thisFotoBitmap);
+            } catch (Exception e) {
+                Log.e(TAG, "doInBackground: ERRROR" + e.getMessage() + "\n " + Arrays.toString(e.getStackTrace()));
+            }
+
+
+            return null;
+        }
+    }
+
 
     @SuppressLint("NewApi")
     private void checkAllData() {
@@ -598,6 +769,10 @@ public class MembershipFoto extends AppCompatActivity {
 //                        if (sessionManager.getMembership().equals("SILVER")) {
                         finish();
                         Intent intent = new Intent(MembershipFoto.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 //                        } else {
 //                            Intent intent = new Intent(MembershipFoto.this, KonfirmasiMembership.class);
@@ -664,7 +839,7 @@ public class MembershipFoto extends AppCompatActivity {
                 try {
 
                     if (isThereOk) {
-                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoIdentitas);
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoIdentitas, 101);
                         fotoIdentitas = imageToString(thisFotoBitmap);
                         save(fotoIdentitas, "fotoIdentitas");
                         setView(101, thisFotoBitmap);
@@ -703,7 +878,7 @@ public class MembershipFoto extends AppCompatActivity {
 
                     if (isThereOk) {
 
-                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoWajah);
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoWajah, 102);
                         fotoWajah = imageToString(thisFotoBitmap);
                         save(fotoWajah, "fotoWajah");
                         setView(102, thisFotoBitmap);
@@ -741,7 +916,7 @@ public class MembershipFoto extends AppCompatActivity {
                 try {
 
                     if (isThereOk) {
-                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoSelfie);
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoSelfie, 103);
                         fotoSelfie = imageToString(thisFotoBitmap);
                         save(fotoSelfie, "fotoSelfie");
                         setView(103, thisFotoBitmap);
@@ -780,9 +955,9 @@ public class MembershipFoto extends AppCompatActivity {
                 try {
 
                     if (isThereOk) {
-                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoRumah);
+                        Bitmap thisFotoBitmap = handleSamplingAndRotationBitmap(this, uriFotoRumah, 104);
                         fotoRumah = imageToString(thisFotoBitmap);
-                        save(fotoRumah, "fotoSelfie");
+                        save(fotoRumah, "fotoRumah");
                         setView(104, thisFotoBitmap);
                         flagFotoRumah = true;
                     } else {
@@ -848,7 +1023,7 @@ public class MembershipFoto extends AppCompatActivity {
     }
 
 
-    public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage)
+    public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage, int requestCode)
             throws IOException {
         int MAX_HEIGHT = 1024;
         int MAX_WIDTH = 1024;
@@ -868,7 +1043,7 @@ public class MembershipFoto extends AppCompatActivity {
         imageStream = context.getContentResolver().openInputStream(selectedImage);
         Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
 
-        img = rotateImageIfRequired(img, selectedImage);
+        img = rotateImageIfRequired(img, selectedImage, requestCode);
         return img;
     }
 
@@ -906,7 +1081,7 @@ public class MembershipFoto extends AppCompatActivity {
      * @param selectedImage Image URI
      * @return The resulted Bitmap after manipulation
      */
-    private static Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
+    private static Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage, int reqCode) throws IOException {
 
         ExifInterface ei = new ExifInterface(selectedImage.getPath());
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
@@ -923,13 +1098,22 @@ public class MembershipFoto extends AppCompatActivity {
             default:
                 return img;
         }
+//
+//        if (reqCode == 101 || reqCode == 104) {
+//
+//        } else {
+//            return rotateImage(img, 90);
+//        }
+
     }
 
     private static Bitmap rotateImage(Bitmap img, int degree) {
         Matrix matrix = new Matrix();
         if (selfie) {
-            matrix.postRotate(degree + 180);
-            matrix.postScale(-1, 1);
+            matrix.postRotate(90);
+            matrix.preScale(-1.0f, 1.0f);
+//            matrix.postScale(-1, 1);
+
         } else {
             matrix.postRotate(degree);
         }

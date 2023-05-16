@@ -34,12 +34,14 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.databinding.ActivityUbahPasswordBinding;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -76,10 +78,8 @@ public class UbahPassword extends AppCompatActivity {
             }
         });
 
-
         findID();
         getDataUser();
-
 
         btnKembali.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,17 +138,11 @@ public class UbahPassword extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         dialog1.dismiss();
                         if (response != null) {
-                            Log.e("", "onResponse: " + response);
-                            try {
-                                String responseX = String.valueOf(response);
-                                JsonObject root = new JsonParser().parse(responseX).getAsJsonObject();
-                                boolean success = root.get("success").getAsBoolean();
-                                Log.e("", "Test : " + success);
-                                JSONObject jsonObject = response.getJSONObject("msgServer");
-                                password = jsonObject.getString("password");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            Gson gson = new Gson();
+                            ModelUser modelListTransaction = gson.fromJson(String.valueOf(response), ModelUser.class);
+                            com.dbelgamembership.membersip.Model.ModelUser.MsgServer dataUser = modelListTransaction.getMsgServer().get(0);
+
+                            password = dataUser.getPassword();
 
                         } else {
                             Toast.makeText(UbahPassword.this, "Tidak ada response", Toast.LENGTH_LONG).show();
@@ -163,7 +157,7 @@ public class UbahPassword extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -294,7 +288,7 @@ public class UbahPassword extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -307,7 +301,6 @@ public class UbahPassword extends AppCompatActivity {
         passwordBaru2 = findViewById(R.id.passwordBaru2);
         btnSimpanPassword = findViewById(R.id.btnSimpanPassword);
         btnKembali = findViewById(R.id.btnKembali);
-
     }
 
     private void Snack(String string) {

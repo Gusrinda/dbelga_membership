@@ -57,6 +57,7 @@
                 app:ibv_maxBadgeValue="99" />
 
             <ru.nikartm.support.ImageBadgeView
+                android:visibility="gone"
                 android:id="@+id/icon_Keranjang"
                 android:layout_width="32dp"
                 android:layout_height="32dp"

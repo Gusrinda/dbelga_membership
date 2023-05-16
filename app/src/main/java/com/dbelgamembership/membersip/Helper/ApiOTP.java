@@ -8,7 +8,8 @@ public class ApiOTP {
 //    public static String urlOTP = "https://api.wali.chat/";
 
     //WABLAS
-    public static final String OTP_SECRET_KEY = "ecrhJ4t6Rc5vKEFfBoUoRBYwfkA70WYXmsPY5DOvaglRdTPbN4uDzhQ4h7lzsPFW";
+//    public static final String OTP_SECRET_KEY = "ecrhJ4t6Rc5vKEFfBoUoRBYwfkA70WYXmsPY5DOvaglRdTPbN4uDzhQ4h7lzsPFW";
+    public static final String OTP_SECRET_KEY = "fIjyyssSaXrgUp2s7xkmniTTy48ZqYaAAHZpsEwZomqD8i28d6E2H7KVHXgEhPk1";
     public static String urlOTP = "https://jogja.wablas.com/";
 
 }

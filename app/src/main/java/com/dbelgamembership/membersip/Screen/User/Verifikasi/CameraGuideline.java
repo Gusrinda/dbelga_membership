@@ -37,6 +37,8 @@ public class CameraGuideline extends AppCompatActivity {
     private Camera camera;
     private CameraPreview mPreview;
 
+    public static boolean safeToTakePicture = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +65,6 @@ public class CameraGuideline extends AppCompatActivity {
 
         Log.e(TAG, "KODE KAMERA: " + kode_Camera);
 
-
         if (kode_Camera == 1) {
             binding.incLayoutFotoIdentitas.getRoot().setVisibility(View.VISIBLE);
             binding.textPetunjuk.setText("Lakukan foto kartu identitas anda seperti petunjuk !");
@@ -81,6 +82,7 @@ public class CameraGuideline extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (camera != null) {
+                    camera.startPreview();
                     camera.takePicture(null, null, mPictureCallback);
                 }
             }
@@ -159,6 +161,12 @@ public class CameraGuideline extends AppCompatActivity {
         }
 
         return mediaFile;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        releaseCamera();
     }
 
     @Override

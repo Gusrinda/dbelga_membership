@@ -211,7 +211,7 @@ public class DaftarTransaksi extends AppCompatActivity implements AdapterListTra
                 return super.parseNetworkResponse(response);
             }
         };
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);

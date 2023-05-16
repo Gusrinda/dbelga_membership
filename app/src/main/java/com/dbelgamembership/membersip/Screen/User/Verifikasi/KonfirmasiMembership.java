@@ -131,6 +131,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
                 boolean status_pay = Boolean.parseBoolean(object.getMsgServer().get(0).getStatusPayment());
                 if (status_pay) {
                     Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(intent);
                     finish();
                 }
@@ -261,6 +264,8 @@ public class KonfirmasiMembership extends AppCompatActivity {
             }
         });
 
+
+
         btnBatal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -323,7 +328,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -403,6 +408,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                 sessionManager.setMembership(choosenMembership);
                                 sessionManager.setKeyDeadlinePayment("");
                                 Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
                             }
@@ -452,7 +460,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -719,6 +727,9 @@ public class KonfirmasiMembership extends AppCompatActivity {
                                     Log.e(TAG, "status payment: " + statusPAY);
                                     if (statusPAY.equals("TRUE")) {
                                         Intent intent = new Intent(KonfirmasiMembership.this, SplashActivity.class);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                         startActivity(intent);
                                         finish();
                                     } else {
@@ -779,7 +790,7 @@ public class KonfirmasiMembership extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

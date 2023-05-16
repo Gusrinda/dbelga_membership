@@ -65,7 +65,7 @@ public class Datum implements Serializable, Parcelable
 
     @SerializedName("stok")
     @Expose
-    private Integer stok;
+    private Double stok;
 
     @SerializedName("price")
     @Expose
@@ -105,7 +105,7 @@ public class Datum implements Serializable, Parcelable
         this.namaKategori = ((String) in.readValue((String.class.getClassLoader())));
         this.namaSubKategori = ((String) in.readValue((String.class.getClassLoader())));
         this.satuanKemasan = ((String) in.readValue((String.class.getClassLoader())));
-        this.stok = ((Integer) in.readValue((Integer.class.getClassLoader())));
+        this.stok = ((Double) in.readValue((Double.class.getClassLoader())));
         this.price = ((Price) in.readValue((Price.class.getClassLoader())));
     }
 
@@ -248,11 +248,11 @@ public class Datum implements Serializable, Parcelable
         this.price = price;
     }
 
-    public Integer getStok() {
+    public Double getStok() {
         return stok;
     }
 
-    public void setStok(Integer stok) {
+    public void setStok(Double stok) {
         this.stok = stok;
     }
 

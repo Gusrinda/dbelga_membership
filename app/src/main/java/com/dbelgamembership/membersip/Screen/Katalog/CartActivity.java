@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -23,6 +24,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -75,8 +79,10 @@ import com.dbelgamembership.membersip.Model.modelTransaksiStore.ModelTransaksiSt
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.app.Adapter.AdapterVoucherSuplier;
 import com.dbelgamembership.membersip.databinding.ActivityCartBinding;
+import com.dbelgamembership.membersip.databinding.PopupBarangBinding;
 import com.dbelgamembership.membersip.databinding.PopupCheckoutBinding;
 import com.dbelgamembership.membersip.databinding.PopupDaftarVoucherBinding;
+import com.dbelgamembership.membersip.databinding.PopupEditBarangBinding;
 import com.dbelgamembership.membersip.databinding.PopupPilihPembayaranBinding;
 import com.dbelgamembership.membersip.databinding.PopupVoucherSuplierBinding;
 import com.developer.kalert.KAlertDialog;
@@ -123,6 +129,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -136,7 +144,10 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 
-public class CartActivity extends AppCompatActivity implements AdapterListCart.AdapterListGudangCallback, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, AdapterListVoucherMember.AdapterListVoucherDummyCallback, AdapterVoucherSuplier.AdapterVoucherSuplierCallback {
+public class CartActivity extends AppCompatActivity implements AdapterListCart.AdapterListGudangCallback,
+        DatePickerDialog.OnDateSetListener,
+        TimePickerDialog.OnTimeSetListener,
+        AdapterListVoucherMember.AdapterListVoucherDummyCallback, AdapterVoucherSuplier.AdapterVoucherSuplierCallback {
 
     private static final String TAG = "CartActivity";
     private ActivityCartBinding binding;
@@ -445,7 +456,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                     Log.e(TAG, "onResponse SP: " + sisaPlafon);
                     Log.e(TAG, "onResponse PB: " + piutangBelanja);
 
-                    if (dataUser.getFlagDenda().equals("true")) {
+                    if (dataUser.getFlagDenda().equals("true") || sisaPlafon <= 0) {
                         isPunyaTagihanDenda = true;
                         Toast.makeText(CartActivity.this, "ANDA PUNYA DENDA TAGIHAN, DEBIT SEMENTARA TIDAK BISA DIGUNAKAN", Toast.LENGTH_SHORT).show();
                     } else {
@@ -583,8 +594,10 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         selectedBank = "";
 
 
-        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
-        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+//        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
+//        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+        String[] namaBanks = {"BNI VA"};
+        int iconBanks[] = { R.drawable.bni_icon};
 
 
         SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
@@ -1226,7 +1239,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                     }
                                 };
 
-                                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+                                jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                                         DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                                         DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1275,7 +1288,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             }
         });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -2443,6 +2456,9 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         binding.btnCheckout.hasFocus();
         binding.btnCheckout.requestFocus();
 
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "Loading", "Please Wait...");
+
+
         APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
         Call<String> call = apiInterface.doAddCart(sessionManager.getPID(),
                 idGudang,
@@ -2452,7 +2468,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, retrofit2.Response<String> response) {
-//                progressDialog.dismiss();
+
 
                 try {
                     JSONObject obj = new JSONObject(response.body());
@@ -2462,10 +2478,11 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                     listItem.clear();
 
                     if (success) {
-
+                        progressDialog.dismiss();
                         updateCart();
 
                     } else {
+                        progressDialog.dismiss();
                         Toast.makeText(CartActivity.this, msgServer, Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "onResponse: " + msgServer);
 
@@ -2478,6 +2495,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                     }
 
                 } catch (JSONException e) {
+                    progressDialog.dismiss();
                     e.printStackTrace();
                 }
 
@@ -2485,11 +2503,189 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-//                progressDialog.dismiss();
+                progressDialog.dismiss();
                 Toast.makeText(CartActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onFailure: " + t.getMessage());
             }
         });
+    }
+
+
+    private AlertDialog.Builder dialogBuilderEditBarang;
+    private AlertDialog alertDialogEditBarang;
+    private PopupEditBarangBinding popupEditBarangBinding;
+
+    @Override
+    public void editBarang(DetailItemCart detailItemCart) {
+        NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+        dialogBuilderEditBarang = new AlertDialog.Builder(this);
+
+        popupEditBarangBinding = PopupEditBarangBinding.inflate(getLayoutInflater());
+
+        final View kostumerPopUp = popupEditBarangBinding.getRoot();
+        dialogBuilderEditBarang.setView(kostumerPopUp);
+        alertDialogEditBarang = dialogBuilderEditBarang.create();
+        alertDialogEditBarang.setCanceledOnTouchOutside(false);
+        alertDialogEditBarang.show();
+
+
+        double qty = Double.parseDouble(detailItemCart.getQty());
+
+        popupEditBarangBinding.produkClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialogEditBarang.dismiss();
+            }
+        });
+
+        if (detailItemCart.getProdukPromo()) {
+            popupEditBarangBinding.produkStok.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ( " + nf.format(detailItemCart.getStokPromo()) + " promo )]");
+        } else {
+            popupEditBarangBinding.produkStok.setText(" [ " + nf.format(detailItemCart.getStok()) + " stok ]");
+        }
+
+
+        popupEditBarangBinding.orderQtyOrder.setText(String.valueOf(qty));
+
+        popupEditBarangBinding.orderBtnPlusQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (popupEditBarangBinding.orderQtyOrder.getText().toString().equals("")) {
+                    popupEditBarangBinding.orderQtyOrder.setText("0");
+                }
+                popupEditBarangBinding.orderBtnMinQty.setClickable(true);
+                popupEditBarangBinding.layoutButtonSimpan.setClickable(true);
+                String qtyawal = popupEditBarangBinding.orderQtyOrder.getText().toString();
+                double qty = Double.parseDouble(qtyawal);
+                double plusQty = qty + 1;
+                String hasil = String.valueOf(plusQty);
+                popupEditBarangBinding.orderQtyOrder.setText(hasil);
+            }
+        });
+
+        popupEditBarangBinding.orderBtnMinQty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (popupEditBarangBinding.orderQtyOrder.getText().toString().equals("")) {
+                    popupEditBarangBinding.orderQtyOrder.setText("0");
+                }
+                double stokInput = Double.parseDouble(popupEditBarangBinding.orderQtyOrder.getText().toString());
+                if (stokInput == 0 || stokInput < 0) {
+                    popupEditBarangBinding.orderBtnMinQty.setClickable(false);
+                    popupEditBarangBinding.orderBtnPlusQty.setClickable(true);
+                } else {
+                    popupEditBarangBinding.orderBtnPlusQty.setClickable(true);
+                    popupEditBarangBinding.orderBtnMinQty.setClickable(true);
+                    String qtyawal = popupEditBarangBinding.orderQtyOrder.getText().toString();
+                    double qty = Double.parseDouble(qtyawal);
+                    double plusQty = qty - 1;
+                    if (plusQty < 0) {
+                        plusQty = 0;
+                    }
+                    String hasil = String.valueOf(plusQty);
+                    popupEditBarangBinding.orderQtyOrder.setText(hasil);
+                }
+            }
+
+        });
+
+        double stokMax = detailItemCart.getStok();
+
+        if (qty == stokMax) {
+            popupEditBarangBinding.orderBtnPlusQty.setEnabled(false);
+            popupEditBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+        } else if (qty == 0 ) {
+            popupEditBarangBinding.orderBtnMinQty.setEnabled(false);
+            popupEditBarangBinding.orderBtnMinQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+        }
+
+
+        popupEditBarangBinding.orderQtyOrder.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            private Timer timer = new Timer();
+            private final long DELAY = 500; // milliseconds
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                double check = 0;
+
+                if (editable.length() > 0) {
+                    check = Double.parseDouble(editable.toString());
+                } else {
+                    check = 0;
+                }
+
+
+                if (check > stokMax) {
+                    check = stokMax;
+                    popupEditBarangBinding.orderQtyOrder.setText(String.valueOf(stokMax));
+                    popupEditBarangBinding.orderBtnPlusQty.setEnabled(false);
+                    popupEditBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+                } else if (check <= 0) {
+                    popupEditBarangBinding.orderBtnMinQty.setEnabled(false);
+                    popupEditBarangBinding.orderBtnMinQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+                }else {
+                    popupEditBarangBinding.orderBtnPlusQty.setEnabled(true);
+                    popupEditBarangBinding.orderBtnMinQty.setEnabled(true);
+                    popupEditBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
+                    popupEditBarangBinding.orderBtnMinQty.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
+                }
+
+
+            }
+        });
+
+        popupEditBarangBinding.layoutButtonSimpan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                double qtyFinal = 0;
+
+                if (TextUtils.isEmpty(popupEditBarangBinding.orderQtyOrder.getText().toString())) {
+                    qtyFinal = 0;
+                } else {
+                    qtyFinal  = Double.parseDouble(popupEditBarangBinding.orderQtyOrder.getText().toString());;
+                }
+
+
+                AlertDialog alertDialog = new AlertDialog.Builder(CartActivity.this).create();
+                alertDialog.setTitle("Peringatan");
+                alertDialog.setMessage(qtyFinal == 0 ? "Anda akan menghapus produk ?" : "Anda akan mengubah qty produk menjadi " + qtyFinal + " ?");
+                double finalQtyFinal = qtyFinal;
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                    if (finalQtyFinal == 0) {
+                                        deleteBarang(detailItemCart);
+                                    } else {
+                                        updateQtyBarang(detailItemCart, finalQtyFinal);
+                                    }
+                                    dialog.dismiss();
+                                    alertDialogEditBarang.dismiss();
+                            }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
+            }
+        });
+
+
+
     }
 
     private void emptyCart() {
