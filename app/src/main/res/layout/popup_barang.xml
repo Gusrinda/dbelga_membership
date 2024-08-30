@@ -265,7 +265,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:clickable="false"
+                android:clickable="true"
+
                 android:backgroundTint="@color/grey_font"
                 android:layout_marginStart="4dp"
                 android:id="@+id/layout_button_Keranjang"

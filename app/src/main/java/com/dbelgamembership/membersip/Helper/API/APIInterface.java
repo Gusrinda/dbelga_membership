@@ -31,6 +31,7 @@ import com.dbelgamembership.membersip.Model.responseCancel.ResponseCancel;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.ModelPostSetPayment;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBNI;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBRI;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.modelPostLocation;
 import com.dbelgamembership.membersip.Screen.Limit.ModelPelunasan.ModelPelunasan;
 import com.dbelgamembership.membersip.Screen.SetupOTP.Model.PostBodyMessage;
 import com.dbelgamembership.membersip.Screen.SetupOTP.Model.ResponseSendOTP.ResponseSendOTP;
@@ -303,6 +304,13 @@ public interface APIInterface {
     Call<String> doSetPayment(
             @Body ModelPostSetPayment json
     );
+
+    @POST("post-location")
+    Call<String> doPostLocation(
+            @Body modelPostLocation json
+    );
+
+
 
     @POST("pelunasan-debet/store")
     Call<ResponseBayarTagihan> doPelunasanTagihan(

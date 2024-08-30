@@ -247,6 +247,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnMarkerClickListener(this::onMarkerClick);
 
+
+
         LatLng lokasiSaatIni = new LatLng(lokasi.latitude, lokasi.longitude);
 
         Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());

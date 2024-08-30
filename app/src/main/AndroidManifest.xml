@@ -17,7 +17,6 @@
         android:name="android.hardware.camera"
         android:required="false" />
     <uses-feature android:name="android.hardware.camera2.full" />
-
     <uses-feature android:name="android.hardware.camera.any" />
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -53,24 +52,22 @@
         tools:replace="android:allowBackup,android:usesCleartextTraffic">
         <activity
             android:name=".Screen.PembayaranTransfer.TransferPayment"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.Transaksi.WebViewPembayaranActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.Voucher.DaftarVoucherMember"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.Voucher.VoucherActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.Limit.DetailTagihan"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.Promo.KatalogPromo"
-            android:exported="true" /> <!-- <activity -->
-        <!-- android:name=".Screen.Promo.KatalogPromo.KatalogPromo" -->
-        <!-- android:exported="true" /> -->
+            android:exported="true" />
         <activity
             android:name=".Screen.User.Verifikasi.KonfirmasiFoto"
             android:exported="true" />
@@ -97,88 +94,113 @@
             android:name=".Screen.Katalog.CartActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Screen.Katalog.GudangActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Screen.Setting.SupportActivity" />
+        <activity android:name=".Screen.Setting.SupportActivity"
+            android:exported="true"/>
         <activity
             android:name=".Screen.User.Verifikasi.CameraGuideline"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Screen.User.Verifikasi.MembershipFoto"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Screen.NewMainScreen.NewMainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Screen.User.BoardingMemberDebet" />
-        <activity android:name=".Screen.User.Verifikasi.VerificationActivity" />
-        <activity android:name=".Screen.Limit.BayarTagihan" />
-        <activity android:name=".Screen.Limit.RiwayatTagihan" />
-        <activity android:name=".Screen.Limit.DaftarTagihan" />
-        <activity android:name=".Screen.Limit.LimitPlafon" />
-        <activity android:name=".Screen.User.ResetPassword" />
-        <activity android:name=".Screen.Setting.ForgotPassword" />
-        <activity android:name=".Screen.User.VoucherMember" />
-        <activity android:name=".Screen.User.ListVoucher" />
-        <activity android:name=".Screen.Transaksi.ListTransaksi" />
-        <activity android:name=".Screen.Setting.UbahPassword" />
-        <activity android:name=".Screen.Setting.EditAkun" />
+        <activity android:name=".Screen.User.BoardingMemberDebet"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.Verifikasi.VerificationActivity"
+             android:exported="true"/>
+        <activity android:name=".Screen.Limit.BayarTagihan"
+             android:exported="true"/>
+        <activity android:name=".Screen.Limit.RiwayatTagihan"
+             android:exported="true"/>
+        <activity android:name=".Screen.Limit.DaftarTagihan"
+             android:exported="true"/>
+        <activity android:name=".Screen.Limit.LimitPlafon"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.ResetPassword"
+             android:exported="true"/>
+        <activity android:name=".Screen.Setting.ForgotPassword"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.VoucherMember"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.ListVoucher"
+             android:exported="true"/>
+        <activity android:name=".Screen.Transaksi.ListTransaksi"
+             android:exported="true"/>
+        <activity android:name=".Screen.Setting.UbahPassword"
+             android:exported="true"/>
+        <activity android:name=".Screen.Setting.EditAkun"
+             android:exported="true"/>
         <activity
             android:name=".Screen.User.Verifikasi.KonfirmasiMembership"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" /> <!-- <activity android:name=".Sales" /> -->
         <activity android:name=".Screen.Katalog.WishlishActivity" />
         <activity
             android:name=".Screen.Katalog.KatalogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Screen.User.Membership.MembershipChoose"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:windowSoftInputMode="stateHidden" />
-        <activity android:name=".Screen.Transaksi.DaftarTransaksi" />
-        <activity android:name=".Screen.User.Membership.MembershipPilih" />
-        <activity android:name=".Screen.Registrasi.RegisterActivity" />
-        <activity android:name=".Screen.User.AkunSaya" />
+        <activity android:name=".Screen.Transaksi.DaftarTransaksi"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.Membership.MembershipPilih"
+             android:exported="true"/>
+        <activity android:name=".Screen.Registrasi.RegisterActivity"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.AkunSaya"
+             android:exported="true"/>
         <activity
             android:name=".Screen.Transaksi.PrintActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+             android:exported="true"/>
         <activity
             android:name=".Screen.Transaksi.PrintFakturActivity"
             android:configChanges="keyboard|keyboardHidden"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+             android:exported="true"/>
         <activity
             android:name=".Screen.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
 
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.DEFAULT" /> -->
-            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".Screen.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+             android:exported="true"/>
         <activity
             android:name=".Screen.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -187,16 +209,23 @@
         </activity>
         <activity
             android:name=".Screen.User.Verifikasi.PembayaranMembership"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".Screen.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+             android:exported="true"/>
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Screen.PembayaranTransfer.TransferMembership" />
-        <activity android:name=".Screen.PembayaranTransfer.TransferTagihan" />
-        <activity android:name=".Screen.User.NewCameraGuideline" />
+            android:theme="@style/Base.Theme.AppCompat"
+             android:exported="true"/>
+        <activity android:name=".Screen.PembayaranTransfer.TransferMembership"
+             android:exported="true"/>
+        <activity android:name=".Screen.PembayaranTransfer.TransferTagihan"
+             android:exported="true"/>
+        <activity android:name=".Screen.User.NewCameraGuideline"
+             android:exported="true"/>
+        <activity android:name=".Screen.Log.LogHistoryActivity"
+             android:exported="true"/>
 
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
@@ -204,39 +233,26 @@
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
-        <!--
- Set custom default icon. This is used when no icon is set for incoming notification messages.
-     See README(https://goo.gl/l4GJaQ) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/dbelga" />
-        <!--
- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more.
-        -->
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" /> <!-- [END fcm_default_icon] -->
-        <!-- [START firebase_service] -->
+
         <service
             android:name=".Screen.Notifikasi.MyFirebaseInstanceIDService"
-            android:exported="false">
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service> <!-- <provider -->
-        <!-- android:name="androidx.core.content.FileProvider" -->
-        <!-- android:authorities="${applicationId}.fileprovider" -->
-        <!-- android:exported="false" -->
-        <!-- android:grantUriPermissions="true"> -->
-        <!-- <meta-data -->
-        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
-        <!-- android:resource="@xml/external_paths" /> -->
-        <!-- </provider> -->
+        </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.dbelgamembership.membersip.fileprovider"
@@ -249,7 +265,7 @@
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.membership.invoicegenerator.provider"
-            android:exported="false"
+            android:exported="true"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"

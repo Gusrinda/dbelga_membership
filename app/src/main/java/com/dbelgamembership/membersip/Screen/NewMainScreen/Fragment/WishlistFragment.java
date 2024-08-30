@@ -49,6 +49,7 @@ import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.WishlishActivity;
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.Promo.KatalogPromo;
@@ -273,6 +274,11 @@ public class WishlistFragment extends Fragment implements AdapterListWishlist.Ad
                                 if (!fromAdapter) {
                                     alertDialog.dismiss();
                                 }
+                                sessionManager.addLogHistory(new LogModel(
+                                        "WISHLIST",
+                                        Calendar.getInstance().getTime(),
+                                        "Menghapus barang " + position.getName() + " dari wishlist anda !"
+                                ));
                                 SimpanPost(postData);
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -585,12 +591,12 @@ public class WishlistFragment extends Fragment implements AdapterListWishlist.Ad
         popupWishlistEditingBinding.btnUpdateWishlist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                updateItemWishilist(String.valueOf(position.getIdProduk()), popupWishlistEditingBinding.qty.getText().toString(), position.getIdGudang());
+                updateItemWishilist(String.valueOf(position.getIdProduk()), popupWishlistEditingBinding.qty.getText().toString(), position.getIdGudang(), position.getName());
             }
         });
     }
 
-    private void updateItemWishilist(String code, String stokBarang, int idGudang) {
+    private void updateItemWishilist(String code, String stokBarang, int idGudang, String namaBarang) {
         Log.e(TAG, "ID Member : " + sessionManager.getPID());
         Log.e(TAG, "ID Barang : " + code);
         url = Http.server + "wishlist-update/" + sessionManager.getPID();
@@ -615,6 +621,11 @@ public class WishlistFragment extends Fragment implements AdapterListWishlist.Ad
                         }
                         Log.e(TAG, "URL : " + url);
                         Log.e(TAG, "onClickSubmit: " + postData);
+                        sessionManager.addLogHistory(new LogModel(
+                                "WISHLIST",
+                                Calendar.getInstance().getTime(),
+                                "Update jumlah barang " + namaBarang + " di wishlist anda !"
+                        ));
                         SimpanPostUpdate(postData);
                         alertDialog.dismiss();
                     }

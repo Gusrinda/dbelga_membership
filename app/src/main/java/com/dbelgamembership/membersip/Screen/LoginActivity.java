@@ -38,6 +38,7 @@ import com.dbelgamembership.membersip.Model.ResponseLogin.ResponseLogin;
 import com.dbelgamembership.membersip.Model.ResponseUser.ResponseUser;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.Screen.Registrasi.RegistrasiNext;
 import com.dbelgamembership.membersip.Screen.User.Membership.MembershipPilih;
@@ -52,6 +53,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.type.DateTime;
 
 import org.json.JSONObject;
 
@@ -213,10 +215,15 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if (modelUser.getMsgServer().getEmailVerification()) {
 
+                                    sessionManager.setAwalListLogHistory();
                                     sessionManager.setLogin(true, idUser, identitasPelanggan, namaUser, emailUser, membershipUser, jatuhTempo, idGudang);
                                     sessionManager.setAccountUser(namaUser, emailUser, modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                                     sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
                                     sessionManager.setKeyDeadlinePayment(modelUser.getMsgServer().getPayDate());
+
+                                    sessionManager.addLogHistory(new LogModel(
+                                            "AKUN", Calendar.getInstance().getTime(), "Akun anda LOGIN pada saat ini"
+                                    ));
 
                                     finish();
                                     Intent intent = new Intent(LoginActivity.this, SplashActivity.class);

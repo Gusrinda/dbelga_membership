@@ -29,8 +29,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.dbelgamembership.membersip.Helper.ApiBanks;
 import com.dbelgamembership.membersip.Model.Api_Banks.BriToken.BriToken;
+import com.dbelgamembership.membersip.Model.ModelCompetitor;
 import com.dbelgamembership.membersip.Screen.HomeActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.AlamatPengiriman;
+import com.dbelgamembership.membersip.Screen.Katalog.Model.modelPostLocation;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
@@ -66,6 +68,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.maps.android.SphericalUtil;
 import com.google.type.DateTime;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -129,7 +132,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
     @Override
     public void onBackPressed() {
 //        super.onBackPressed();
-        Log.e(TAG, "onBackPressed: BACK PRESSED !!!" );
+        Log.e(TAG, "onBackPressed: BACK PRESSED !!!");
         finishAffinity();
     }
 
@@ -256,7 +259,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                         assert response.body() != null;
                         ApiBanks.BRI_TOKEN_STRING = response.body().getAccessToken();
                         sessionManager.setKeyTokenBriApi(response.body().getAccessToken());
-                        Log.e(TAG, "TOKEN BRI :: "  + ApiBanks.BRI_TOKEN.getAccessToken() );
+                        Log.e(TAG, "TOKEN BRI :: " + ApiBanks.BRI_TOKEN.getAccessToken());
 
                     }
                 } catch (Exception e) {
@@ -318,6 +321,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                 })
                 .onSameThread()
                 .check();
+
     }
 
     private void setupDataUser() {
@@ -452,15 +456,92 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                     daftarGudang.put(String.valueOf(modelGudangs.get(i).getIdGudang()), modelGudangs.get(i).getNamaGudang());
                 }
 
-                if (isSetAlamat) {
-                    String locSetAlamat = alamatPengirimanPengguna.getLatLng().latitude + "," + alamatPengirimanPengguna.getLatLng().longitude;
-                    sessionManager.setLatLong(String.valueOf(alamatPengirimanPengguna.getLatLng().latitude), String.valueOf(alamatPengirimanPengguna.getLatLng().longitude));
-                    gettingDistance(locSetAlamat, locDestinations.toString());
-                } else {
-                    String locOrigins = locationPublic.getLatitude() + "," + locationPublic.getLongitude();
-                    sessionManager.setLatLong(String.valueOf(locationPublic.getLatitude()), String.valueOf(locationPublic.getLongitude()));
-                    gettingDistance(locOrigins, locDestinations.toString());
+                List<ModelCompetitor> daftarLokasiCompetitor = new ArrayList<>();
+
+                LatLng latlngSahabat = new LatLng(
+                        -8.053179, 111.887217
+                );
+
+                LatLng latlngNikisae = new LatLng(
+                        -8.055057, 111.898706
+                );
+
+                LatLng latlngGolden = new LatLng(
+                        -8.065288, 111.904139
+                );
+
+                LatLng latlngBravo = new LatLng(
+                        -8.076315, 111.916993
+                );
+
+                daftarLokasiCompetitor.add(new ModelCompetitor(
+                        "Sahabat",
+                        latlngSahabat
+                ));
+                daftarLokasiCompetitor.add(new ModelCompetitor(
+                        "Nikisae",
+                        latlngNikisae
+                ));
+                daftarLokasiCompetitor.add(new ModelCompetitor(
+                        "Bravo",
+                        latlngBravo
+                ));
+                daftarLokasiCompetitor.add(new ModelCompetitor(
+                        "Golden",
+                        latlngGolden
+                ));
+
+                modelPostLocation postData = new modelPostLocation();
+
+                boolean isOnArea = false;
+
+                for (int i = 0; i < daftarLokasiCompetitor.size(); i++) {
+                    HashMap<String, String> mapLog = new HashMap<String, String>();
+                    Double distance = SphericalUtil.computeDistanceBetween(
+                            new LatLng(locationPublic.getLatitude(), locationPublic.getLongitude())
+                            , daftarLokasiCompetitor.get(i).getLokasi());
+
+                    Log.e(TAG, "JARAK LOKASI KE " + daftarLokasiCompetitor.get(i).getName() + " = " + distance + " m");
+
+                    if (distance < 100) {
+                        postData.setCompetitor(daftarLokasiCompetitor.get(i).getName());
+                        isOnArea = true;
+                        Log.e(TAG, "IN SCOPE");
+                    } else {
+                        Log.e(TAG, "OUT OF SCOPE");
+                    }
                 }
+
+                postData.setIdCustomer(sessionManager.getPID().equals("") ? "0" : sessionManager.getPID());
+                postData.setNameCustomer(sessionManager.getName().equals("") ? "Guest" : sessionManager.getName());
+                postData.setLattitude(String.valueOf(locationPublic.getLatitude()));
+                postData.setLongitude(String.valueOf(locationPublic.getLongitude()));
+                postData.setAddress(alamatPertamaTetap);
+                postData.setOn_area(isOnArea ? true : false);
+
+                Call<String> postLocation = apiInterface.doPostLocation(postData);
+
+                postLocation.enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.e(TAG, "Response : \n" + response.body());
+                        if (isSetAlamat) {
+                            String locSetAlamat = alamatPengirimanPengguna.getLatLng().latitude + "," + alamatPengirimanPengguna.getLatLng().longitude;
+                            sessionManager.setLatLong(String.valueOf(alamatPengirimanPengguna.getLatLng().latitude), String.valueOf(alamatPengirimanPengguna.getLatLng().longitude));
+                            gettingDistance(locSetAlamat, locDestinations.toString());
+                        } else {
+                            String locOrigins = locationPublic.getLatitude() + "," + locationPublic.getLongitude();
+                            sessionManager.setLatLong(String.valueOf(locationPublic.getLatitude()), String.valueOf(locationPublic.getLongitude()));
+                            gettingDistance(locOrigins, locDestinations.toString());
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.e(TAG, "onFailure: " + t.getMessage());
+                    }
+                });
 
             }
 
@@ -497,6 +578,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                         baru.setValueJarak(modelResponseDistance.getRows().get(0).getElements().get(i).getDistance().getValue());
                         modelGudangs.set(i, baru);
                     }
+
                 }
 
                 if (isThereFalseAddress) {
@@ -652,7 +734,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
                         if (!sessionManager.getKeyGudangPilihan().isEmpty()) {
 
                             String idGudang = sessionManager.getKeyGudangPilihan();
-                            Log.e(TAG, "onResponse PUNYA ID GUDANG: : " + idGudang );
+                            Log.e(TAG, "onResponse PUNYA ID GUDANG: : " + idGudang);
 
                             String namaGudang = "";
 

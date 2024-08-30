@@ -29,7 +29,7 @@
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_print_black_24dp" />
+                android:src="@drawable/ic_baseline_print_24" />
 
         </RelativeLayout>
 
@@ -610,7 +610,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:background="@color/background"
+                        android:background="@color/backgroud_white"
                         app:cardCornerRadius="15dp">
 
                         <RelativeLayout
@@ -704,7 +704,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/background"
+                    android:background="@color/backgroud_white"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -712,7 +712,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:background="@color/background"
+                        android:background="@color/backgroud_white"
                         app:cardCornerRadius="15dp">
 
                         <RelativeLayout

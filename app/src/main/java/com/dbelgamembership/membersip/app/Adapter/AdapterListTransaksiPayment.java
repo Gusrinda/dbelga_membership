@@ -106,7 +106,7 @@ public class AdapterListTransaksiPayment extends RecyclerView.Adapter<AdapterLis
         holder.totalBelanja.setText("Rp. " + nf.format(grandCOK));
 
         int totalBelanja = grandCOK;
-        int totalPoin = totalBelanja / 10000;
+        int totalPoin = totalBelanja / 100000;
 
         poinBelanja += totalPoin;
 

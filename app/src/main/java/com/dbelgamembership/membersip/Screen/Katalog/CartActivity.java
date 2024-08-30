@@ -62,6 +62,7 @@ import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBNI;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.PostBRI;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayBarangSuplier;
 import com.dbelgamembership.membersip.Screen.Katalog.Model.modelArrayVoucherSuplierBelanja;
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.dbelgamembership.membersip.Screen.Maps.MapsActivity;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
@@ -597,7 +598,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 //        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
 //        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
         String[] namaBanks = {"BNI VA"};
-        int iconBanks[] = { R.drawable.bni_icon};
+        int iconBanks[] = {R.drawable.bni_icon};
 
 
         SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
@@ -1155,6 +1156,11 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                         if (!object.getStatus().getDescription().equals("Order success.")) {
                             Toast.makeText(CartActivity.this, object.getStatus().getDescription(), Toast.LENGTH_SHORT).show();
                         } else {
+
+                            sessionManager.addLogHistory(new LogModel("TRANSACTION", Calendar.getInstance().getTime(),
+                                    "Membuat orderan dengan kode order " + object.getData().getSoCode()
+                                            + " dengan total transaksi Rp. " + nf.format(Double.parseDouble(object.getData().getGrandtotal()))));
+
                             Toast.makeText(CartActivity.this, "Order Berhasil !", Toast.LENGTH_SHORT).show();
 
                             JSONObject postData = new JSONObject();
@@ -1532,7 +1538,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
             String with4digits = String.format("%04d", idCustomer);
 
-            String templateVANumber = "98816055" + with4digits.substring(0,4) + lastFoutStamp;
+            String templateVANumber = "98816055" + with4digits.substring(0, 4) + lastFoutStamp;
 
             PostBNI postBNI = new PostBNI(
                     "BELANJA",
@@ -1554,7 +1560,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
             final ProgressDialog progressDialog = ProgressDialog.show(CartActivity.this, "Loading", "Pembuatan VA ...");
             APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
             Call<JsonElement> call = apiInterface.bni_createEndPointVA(
-                   postBNI
+                    postBNI
             );
 
             call.enqueue(new Callback<JsonElement>() {
@@ -2395,7 +2401,8 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                     listItem.clear();
 
                                     if (success) {
-
+                                        sessionManager.addLogHistory(new LogModel("CART", Calendar.getInstance().getTime(),
+                                                "Menghapus barang " + detailItemCart.getNamaProduk() + " dari daftar keranjang anda."));
                                         updateCart();
 
                                     } else {
@@ -2479,6 +2486,9 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
 
                     if (success) {
                         progressDialog.dismiss();
+                        sessionManager.addLogHistory(new LogModel("CART", Calendar.getInstance().getTime(),
+                                "Merubah jumlah barang " + detailItemCart.getNamaProduk() + " di daftar keranjang anda menjadi " + qtyItem));
+
                         updateCart();
 
                     } else {
@@ -2594,7 +2604,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
         if (qty == stokMax) {
             popupEditBarangBinding.orderBtnPlusQty.setEnabled(false);
             popupEditBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
-        } else if (qty == 0 ) {
+        } else if (qty == 0) {
             popupEditBarangBinding.orderBtnMinQty.setEnabled(false);
             popupEditBarangBinding.orderBtnMinQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
         }
@@ -2634,7 +2644,7 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 } else if (check <= 0) {
                     popupEditBarangBinding.orderBtnMinQty.setEnabled(false);
                     popupEditBarangBinding.orderBtnMinQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
-                }else {
+                } else {
                     popupEditBarangBinding.orderBtnPlusQty.setEnabled(true);
                     popupEditBarangBinding.orderBtnMinQty.setEnabled(true);
                     popupEditBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
@@ -2654,7 +2664,8 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 if (TextUtils.isEmpty(popupEditBarangBinding.orderQtyOrder.getText().toString())) {
                     qtyFinal = 0;
                 } else {
-                    qtyFinal  = Double.parseDouble(popupEditBarangBinding.orderQtyOrder.getText().toString());;
+                    qtyFinal = Double.parseDouble(popupEditBarangBinding.orderQtyOrder.getText().toString());
+                    ;
                 }
 
 
@@ -2665,13 +2676,13 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                    if (finalQtyFinal == 0) {
-                                        deleteBarang(detailItemCart);
-                                    } else {
-                                        updateQtyBarang(detailItemCart, finalQtyFinal);
-                                    }
-                                    dialog.dismiss();
-                                    alertDialogEditBarang.dismiss();
+                                if (finalQtyFinal == 0) {
+                                    deleteBarang(detailItemCart);
+                                } else {
+                                    updateQtyBarang(detailItemCart, finalQtyFinal);
+                                }
+                                dialog.dismiss();
+                                alertDialogEditBarang.dismiss();
                             }
                         });
                 alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK",
@@ -2683,7 +2694,6 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                 alertDialog.show();
             }
         });
-
 
 
     }
@@ -2710,6 +2720,9 @@ public class CartActivity extends AppCompatActivity implements AdapterListCart.A
                                     String msgServer = obj.get("msgServer").toString();
 
                                     if (success) {
+                                        sessionManager.addLogHistory(new LogModel("CART", Calendar.getInstance().getTime(),
+                                                "Menghapus semua barang yang ada di keranjang anda"));
+
                                         updateCart();
                                     } else {
                                         Toast.makeText(CartActivity.this, msgServer, Toast.LENGTH_SHORT).show();

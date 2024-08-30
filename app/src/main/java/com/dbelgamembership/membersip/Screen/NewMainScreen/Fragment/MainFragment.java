@@ -66,6 +66,7 @@ import com.dbelgamembership.membersip.Model.modelBarang.Datum;
 import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.adapter.AdapterListMenu;
@@ -1773,10 +1774,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     jumlah = Double.parseDouble(popupBarangBinding.orderQtyOrder.getText().toString());
                 }
 
-                tambahItemWishlist(position.getId(), jumlah);
+                tambahItemWishlist(position.getId(), jumlah, position.getNama_barang());
             }
 
-            private void tambahItemWishlist(String kode_barang, double stokBarang) {
+            private void tambahItemWishlist(String kode_barang, double stokBarang, String namaBarang) {
                 Log.e(TAG, "Size awal : " + listBarang.size());
                 Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang);
                 String code = kode_barang;
@@ -1804,7 +1805,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 }
                                 Log.e(TAG, "URL : " + url);
                                 Log.e(TAG, "onClickSubmit: " + postData);
-                                SimpanPost(postData);
+                                SimpanPost(postData, namaBarang);
                                 alertDialog.dismiss();
                             }
                         });
@@ -1883,6 +1884,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                                         NewMainActivity.iconKeranjang.setBadgeValue(modelResponseCart.getMsgServer().getDetailItemCart().size());
                                                         alertDialog.dismiss();
 
+                                                        sessionManager.addLogHistory(new LogModel(
+                                                                "CART", Calendar.getInstance().getTime(), "Menambahkan barang " + position.getNama_barang() + " sejumlah " + jumlahAkhir + " ke keranjang anda"
+                                                        ));
+
                                                         itemCartList.addAll(modelResponseCart.getMsgServer().getDetailItemCart());
 
                                                     } else {
@@ -1960,10 +1965,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
-        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
+        popupBarangBinding.layoutButtonKeranjang.setEnabled(true);
     }
 
-    private void SimpanPost(JSONObject postData) {
+    private void SimpanPost(JSONObject postData, String namaBarang) {
         final ProgressDialog dialog1 = new ProgressDialog(requireContext());
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -1987,6 +1992,9 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                             if (responseWishlist.getSuccess()) {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 Snack("Berhasil menambahkan barang di Wishlist");
+                                sessionManager.addLogHistory(new LogModel(
+                                        "WISHLIST", Calendar.getInstance().getTime(), "Anda menambahkan barang " + namaBarang+ " ke wishlist."
+                                ));
                             } else {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 String string = "error : " + responseWishlist.getDescription();
@@ -2398,10 +2406,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     jumlah = Double.parseDouble(popupBarangBinding.orderQtyOrder.getText().toString());
                 }
 
-                tambahItemWishlist(position.getId(), jumlah);
+                tambahItemWishlist(position.getId(), jumlah, position.getNama_barang());
             }
 
-            private void tambahItemWishlist(String kode_barang, double stokBarang) {
+            private void tambahItemWishlist(String kode_barang, double stokBarang, String namaBarang) {
                 Log.e(TAG, "Size awal : " + listBarang.size());
                 Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang);
                 String code = kode_barang;
@@ -2429,7 +2437,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 }
                                 Log.e(TAG, "URL : " + url);
                                 Log.e(TAG, "onClickSubmit: " + postData);
-                                SimpanPost(postData);
+                                SimpanPost(postData, namaBarang);
                                 alertDialog.dismiss();
                             }
                         });
@@ -2508,6 +2516,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                                         NewMainActivity.iconKeranjang.setBadgeValue(modelResponseCart.getMsgServer().getDetailItemCart().size());
                                                         alertDialog.dismiss();
 
+                                                        sessionManager.addLogHistory(new LogModel(
+                                                                "CART", Calendar.getInstance().getTime(), "Menambahkan barang " + position.getNama_barang() + " sejumlah " + jumlahAkhir + " ke keranjang anda"
+                                                        ));
+
                                                         itemCartList.addAll(modelResponseCart.getMsgServer().getDetailItemCart());
 
                                                     } else {
@@ -2585,7 +2597,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
-        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
+//        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
 
     }
 

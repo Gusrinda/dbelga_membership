@@ -40,6 +40,7 @@ import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.WishlishActivity;
+import com.dbelgamembership.membersip.Screen.Log.LogHistoryActivity;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.AkunFragment;
@@ -197,6 +198,14 @@ public class NewMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(NewMainActivity.this, SupportActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.iconLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewMainActivity.this, LogHistoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -443,32 +452,6 @@ public class NewMainActivity extends AppCompatActivity {
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
-
-
-//                            Log.e(TAG, "getNotifikasiTagihanUser: TANGGAL SEKARANG " + tanggalSekarang);
-//
-//                            c.set(Calendar.DAY_OF_MONTH, Integer.parseInt(sessionManager.getKeyJatuhTempo() == "" ? "15" : sessionManager.getKeyJatuhTempo()));
-//
-//                            String tanggalJatuhTempo = tanggalPeriode.format(c.getTime());
-//
-//                            Log.e(TAG, "getNotifikasiTagihanUser: TANGGAL JATUH TEMPO " + tanggalJatuhTempo);
-//
-//                            try {
-//                                Date a = tanggalPeriode.parse(tanggalSekarang);
-//                                Date b = tanggalPeriode.parse(tanggalJatuhTempo);
-//
-//                                long timeDiff = b.getTime() - a.getTime();
-//
-//                                long numberOfDays = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
-//
-//                                if (numberOfDays <= 7 && totalTagihan > 0) {
-//                                    createNotifikasiTagihan(numberOfDays, modelDaftarTagihan.getMsgServer());
-//                                }
-//
-//                            } catch (ParseException e) {
-//                                e.printStackTrace();
-//                            }
-
 
 
 
