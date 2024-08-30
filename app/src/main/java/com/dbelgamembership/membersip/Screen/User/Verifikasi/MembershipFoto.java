@@ -6,7 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
-import androidx.exifinterface.media.ExifInterface;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -25,6 +24,7 @@ import android.hardware.Camera;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -50,7 +50,6 @@ import com.ceylonlabs.imageviewpopup.ImagePopup;
 import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.FileDownloader;
-import com.dbelgamembership.membersip.Helper.GlideApp;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
@@ -441,7 +440,7 @@ public class MembershipFoto extends AppCompatActivity {
 
                     Log.e(TAG, "onResponse:: URL IMAGE RUMAH :: " + urlImageRumah);
 
-                    GlideApp.with(MembershipFoto.this)
+                    Glide.with(MembershipFoto.this)
                             .asBitmap()
                             .load(urlImageRumah)
                             .into(new SimpleTarget<Bitmap>() {

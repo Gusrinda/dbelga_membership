@@ -265,7 +265,7 @@
                             android:id="@+id/layoutEditBarang"
                             android:layout_marginEnd="16dp"
                             android:padding="4dp"
-                            android:background="@color/material_grey_200"
+                            android:background="@color/material_gray_200"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
@@ -282,7 +282,7 @@
 
                         <LinearLayout
                             android:padding="4dp"
-                            android:background="@color/material_grey_200"
+                            android:background="@color/material_gray_200"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content">
 
