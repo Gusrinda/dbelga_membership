@@ -267,6 +267,7 @@ public class RegistrasiNext extends AppCompatActivity {
                             String expDate = formatExp.format(expiredMember);
 
                             sessionManager.setRegister(true, id, identitasPelanggan,name, email, membership, expDate);
+                            sessionManager.setAccountUser(name, email, modelUser.getMsgServer().getMainAddress(), modelUser.getMsgServer().getMainPhone1());
                             sessionManager.setKeyExpotp(modelUser.getMsgServer().getExpOtp());
 
                             Intent intent = new Intent(RegistrasiNext.this, VerificationActivity.class);

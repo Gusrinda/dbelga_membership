@@ -39,6 +39,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+<!--            <TextureView-->
+<!--                android:id="@+id/frame_camera"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"/>-->
+
             <include
                 android:id="@+id/inc_layout_foto_identitas"
                 android:visibility="invisible"

@@ -81,13 +81,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
-import com.midtrans.sdk.corekit.core.MidtransSDK;
-import com.midtrans.sdk.corekit.core.TransactionRequest;
-import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
-import com.midtrans.sdk.corekit.models.CustomerDetails;
-import com.midtrans.sdk.corekit.models.snap.TransactionResult;
-import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
+//import com.midtrans.sdk.corekit.callback.TransactionFinishedCallback;
+//import com.midtrans.sdk.corekit.core.MidtransSDK;
+//import com.midtrans.sdk.corekit.core.TransactionRequest;
+//import com.midtrans.sdk.corekit.core.UIKitCustomSetting;
+//import com.midtrans.sdk.corekit.models.CustomerDetails;
+//import com.midtrans.sdk.corekit.models.snap.TransactionResult;
+//import com.midtrans.sdk.uikit.SdkUIFlowBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -328,7 +328,7 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
             @Override
             public void onClick(View view) {
                 String mobileNumber = getResources().getString(R.string.nomor_wa_admin_1);
-                String message = "Halo saya adalah Member Belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName();
+                String message = "Halo saya adalah Member Belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName() + " . . .";
                 boolean installed = appInstalledOrNot("com.whatsapp");
                 if (installed) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -633,8 +633,11 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
 
         selectedBank = "";
 
-        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "MANDIRI VA"};
-        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+//        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "MANDIRI VA"};
+//        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+        String[] namaBanks = {"BNI VA"};
+        int iconBanks[] = { R.drawable.bni_icon};
+
 
         SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
         popupPilihPelunasanBinding.spinnerBankVa.setAdapter(customAdapter);
@@ -770,8 +773,11 @@ public class BayarTagihan extends AppCompatActivity implements AdapterListTagiha
         alertDialogFoto = dialogBuilderFoto.create();
         alertDialogFoto.setCanceledOnTouchOutside(false);
 
-        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
-        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+//        String[] namaBanks = {"BRI VA", "BCA VA", "BNI VA", "Mandiri VA"};
+//        int iconBanks[] = {R.drawable.bri_icon, R.drawable.bca_icon, R.drawable.bni_icon, R.drawable.mandiri_icon};
+
+        String[] namaBanks = {"BNI VA"};
+        int iconBanks[] = { R.drawable.bni_icon};
 
         SpinnerBankAdapter customAdapter = new SpinnerBankAdapter(getApplicationContext(), iconBanks, namaBanks);
         popupPilihPelunasanBinding.spinnerBankVa.setAdapter(customAdapter);

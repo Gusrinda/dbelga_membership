@@ -67,6 +67,9 @@ public class VerificationActivity extends AppCompatActivity {
                         finish();
                         sessionManager.destroySession();
                         Intent intent = new Intent(VerificationActivity.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 })
@@ -93,7 +96,7 @@ public class VerificationActivity extends AppCompatActivity {
 
         getCountDown();
 
-        verifBinding.txtAlamatEmail.setText(sessionManager.getEmail());
+        verifBinding.txtAlamatEmail.setText(sessionManager.getKeyTelefonMember());
 
         verifBinding.toolbar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_black_24);
 //        verifBinding.toolbar.setNavigationIcon
@@ -113,6 +116,9 @@ public class VerificationActivity extends AppCompatActivity {
                                 finish();
                                 sessionManager.destroySession();
                                 Intent intent = new Intent(VerificationActivity.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
@@ -203,6 +209,8 @@ public class VerificationActivity extends AppCompatActivity {
             }
         });
 
+        verifBinding.btnKirimUlang.setVisibility(View.VISIBLE);
+
         verifBinding.btnKirimUlang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -254,6 +262,7 @@ public class VerificationActivity extends AppCompatActivity {
                 otp,
                 deadlineOTP
         );
+
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {

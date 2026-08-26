@@ -27,6 +27,25 @@
         android:queryHint="Search . . ." />
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/getPosisiSekarang"
+        map:cardCornerRadius="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_above="@id/cardAlamat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:padding="8dp"
+            android:src="@drawable/ic_baseline_pin_drop_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            map:tint="@color/colorPrimary" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardAlamat"
         map:cardBackgroundColor="@android:color/white"
         android:layout_margin="16dp"
         map:contentPadding="8dp"

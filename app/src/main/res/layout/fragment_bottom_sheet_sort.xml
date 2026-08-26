@@ -12,7 +12,7 @@
     android:paddingTop="8dp">
 
     <View
-        android:layout_marginTop="@dimen/material_layout_vertical_spacing_between_content_areas"
+        android:layout_marginTop="16dp"
         android:layout_width="48dp"
         android:layout_height="4dp"
         android:background="#7F606060"/>
@@ -42,7 +42,7 @@
     <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinnerUrut"
         android:entries="@array/stringUrutkan"
-        android:layout_marginVertical="@dimen/material_layout_vertical_spacing_between_content_areas"
+        android:layout_marginVertical="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

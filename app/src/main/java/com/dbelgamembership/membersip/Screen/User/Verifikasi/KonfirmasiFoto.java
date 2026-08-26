@@ -55,7 +55,23 @@ public class KonfirmasiFoto extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String mobileNumber = binding.textNomorWA.getText().toString();
-                String message = "Halo saya adalah calon member belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName();
+                String message = "Halo saya adalah calon member belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName() + " . . . ";
+                boolean installed = appInstalledOrNot("com.whatsapp");
+                if (installed) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse("http://api.whatsapp.com/send?phone=" + mobileNumber + "&text=" + message));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(KonfirmasiFoto.this, "Whatsapp not installed on your device", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        binding.btnHubungiApollo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String mobileNumber = binding.textNomorWAApollo.getText().toString();
+                String message = "Halo saya adalah calon member belga dengan ID : " + sessionManager.getPID() + " bernama " + sessionManager.getName() + " . . .";
                 boolean installed = appInstalledOrNot("com.whatsapp");
                 if (installed) {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -83,6 +99,9 @@ public class KonfirmasiFoto extends AppCompatActivity {
                                 finish();
                                 sessionManager.destroySession();
                                 Intent intent = new Intent(KonfirmasiFoto.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
@@ -130,6 +149,9 @@ public class KonfirmasiFoto extends AppCompatActivity {
                                 finish();
                             } else {
                                 Intent intent = new Intent(KonfirmasiFoto.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                                 finish();
                             }

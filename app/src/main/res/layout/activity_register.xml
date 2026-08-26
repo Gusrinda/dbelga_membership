@@ -135,19 +135,20 @@
                     android:layout_marginVertical="8sp"
                     android:id="@+id/nomorHandphonePelanggan"
                     android:layout_width="match_parent"
+                    app:prefixText="( +62 )"
                     android:layout_height="wrap_content"
                     app:hintTextColor="@color/darkBiruBelga">
 
                     <com.google.android.material.textfield.TextInputEditText
-                        android:maxLength="14"
-                        android:textSize="14dp"
                         android:id="@+id/txt_nomorHandphonePelanggan"
-                        android:layout_marginTop="12dp"
-                        android:inputType="number"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:hint="Nomor Handphone Pelanggan"
-                        android:textColor="@color/darkBiruBelga" />
+                        android:inputType="number"
+                        android:maxLength="14"
+                        android:textColor="@color/darkBiruBelga"
+                        android:textSize="14dp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

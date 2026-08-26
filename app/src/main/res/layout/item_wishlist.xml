@@ -351,6 +351,7 @@
                 android:background="@drawable/outline_border"
                 android:orientation="horizontal"
                 android:id="@+id/btn_tambahKeranjang"
+                android:backgroundTint="@color/grey_font"
                 android:layout_weight="1"
                 android:layout_marginLeft="8dp"
                 android:padding="8dp"
@@ -361,10 +362,11 @@
 
                 <TextView
                     android:fontFamily="@font/hammer_font"
-                    android:textColor="@color/black"
+                    android:textColor="@color/white"
                     android:textStyle="bold"
                     android:id="@+id/text_Button"
                     android:text="+ Tambah Keranjang"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

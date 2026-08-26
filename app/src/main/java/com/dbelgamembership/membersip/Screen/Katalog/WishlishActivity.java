@@ -295,7 +295,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -803,7 +803,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -891,7 +891,7 @@ public class WishlishActivity extends AppCompatActivity implements AdapterListWi
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

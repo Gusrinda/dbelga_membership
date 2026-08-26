@@ -69,7 +69,10 @@ public class AdapterListBarang extends
         try {
             final ModelKatalog item = list.get(position);
             boolean isClickable = true;
-            Log.e(TAG, "onBindViewHolder ADAPTER IMAGE : " + item.getImages());
+//            Log.e(TAG, "onBindViewHolder ADAPTER IMAGE : " + item.getImages());
+
+
+
 
             Glide.with(context)
                     .asBitmap()
@@ -81,14 +84,31 @@ public class AdapterListBarang extends
                 holder.namaBarang.setText(item.getNama_barang());
             }
 
-            if (item.getKategori_barang().length() > 0) {
-                holder.kategoriBarang.setText(item.getKategori_barang());
+            Log.e(TAG, "onBindViewHolder: ITEM KATEGORI BARANG :: " + item.getKategori_barang());
+
+
+            if (item.getKategori_barang() != null) {
+
+                if (item.getKategori_barang().length() > 0) {
+                    holder.kategoriBarang.setText(item.getKategori_barang());
+                } else {
+                    holder.kategoriBarang.setVisibility(View.GONE);
+                }
             } else {
                 holder.kategoriBarang.setVisibility(View.GONE);
             }
 
+
             if (item.getMerk_barang().length() > 0) {
+
+                if (item.getMerk_barang().equals("0") || item.getMerk_barang().equals("null")) {
+
+                holder.merkBarang.setText("OTHER");
+                } else {
                 holder.merkBarang.setText(item.getMerk_barang());
+
+                }
+
             } else {
                 holder.merkBarang.setVisibility(View.GONE);
             }
@@ -108,7 +128,7 @@ public class AdapterListBarang extends
             } else if (cekStok >= 50) {
                 holder.tvStokOutlet.setText(" > 50 " + item.getSatuan_kemasan());
             } else if (cekStok == 0 || cekStok < 0) {
-                holder.tvStokOutlet.setText("KOSONG");
+                holder.tvStokOutlet.setText("HABIS");
                 isClickable = false;
             }
 
@@ -117,16 +137,17 @@ public class AdapterListBarang extends
 
             holder.hargaDiskonBarang.setVisibility(View.GONE);
 
-            if (holder.tvStokOutlet.getText().toString().equals("KOSONG") || item.getHarga_barang() == null) {
+            if (holder.tvStokOutlet.getText().toString().equals("HABIS") || item.getHarga_barang() == null) {
                 isClickable = false;
                 Double hargaBarang = Double.parseDouble(item.getHarga_barang() == null ? "0" : item.getHarga_barang());
-                Log.e(TAG, "onBindViewHolder: " + hargaBarang );
+                Log.e(TAG, "onBindViewHolder: " + hargaBarang);
                 holder.hargaBarang.setText("?\n(Harga Akhir : " + nf.format(hargaBarang) + " )");
                 holder.hargaBarang.setTextColor(ContextCompat.getColor(context, R.color.grey_font));
 
+                holder.hargaBarang.setVisibility(View.GONE);
                 holder.hargaBarang2.setVisibility(View.GONE);
                 holder.hargaBarang3.setVisibility(View.GONE);
-                holder.tvStokOutlet.setText("KOSONG");
+                holder.tvStokOutlet.setText("HABIS");
             } else {
 
                 Log.e(TAG, "MASUK 6");
@@ -175,23 +196,36 @@ public class AdapterListBarang extends
                     holder.tvStokPromo.setText(nf.format(item.getStokPromo()));
 
                 } else {
+
                     Log.e(TAG, "MASUK NON PROMO");
                     double hargaBarang = Double.parseDouble(item.getHarga_barang());
                     double hargaBarang2 = Double.parseDouble(item.getHarga_2());
                     double hargaBarang3 = Double.parseDouble(item.getHarga_3());
 
-                    String testHarga = "Rp. " + nf.format(hargaBarang) + " [1]";
-                    String testHarga2 = "Rp. " + nf.format(hargaBarang2) + " [" + item.getBatasan2() + "]";
-                    String testHarga3 = "Rp. " + nf.format(hargaBarang3) + " [" + item.getBatasan3() + "]";
-                    holder.hargaBarang.setText(testHarga);
-                    holder.hargaBarang2.setText(testHarga2);
-                    holder.hargaBarang3.setText(testHarga3);
-                    holder.hargaDiskonBarang.setText(testHarga2);
+                    if (hargaBarang2 == 0 || hargaBarang3 == 0 ) {
 
-                    if (item.getBatasan1().equals(item.getBatasan2())) {
+                        String testHarga = "Rp. " + nf.format(hargaBarang);
+                        holder.hargaBarang.setText(testHarga);
                         holder.hargaBarang2.setVisibility(View.GONE);
                         holder.hargaBarang3.setVisibility(View.GONE);
+
+                    } else {
+                        String testHarga = "Rp. " + nf.format(hargaBarang) + " [1]";
+                        String testHarga2 = "Rp. " + nf.format(hargaBarang2) + " [" + item.getBatasan2() + "]";
+                        String testHarga3 = "Rp. " + nf.format(hargaBarang3) + " [" + item.getBatasan3() + "]";
+                        holder.hargaBarang.setText(testHarga);
+                        holder.hargaBarang2.setText(testHarga2);
+                        holder.hargaBarang3.setText(testHarga3);
+                        holder.hargaDiskonBarang.setText(testHarga2);
+
+                        if (item.getBatasan1().equals(item.getBatasan2())) {
+                            holder.hargaBarang2.setVisibility(View.GONE);
+                            holder.hargaBarang3.setVisibility(View.GONE);
+                        }
                     }
+
+
+
                 }
 
                 if (item.getPromoMember() == 1) {
@@ -206,6 +240,15 @@ public class AdapterListBarang extends
 
 
             }
+
+            holder.titikDUa.setVisibility(View.GONE);
+            holder.tvKodeBarang.setVisibility(View.GONE);
+            holder.kategoriBarang.setVisibility(View.GONE);
+
+
+            //set VIEW HARGA 2 3 DISABLE
+            holder.hargaBarang2.setVisibility(View.GONE);
+            holder.hargaBarang3.setVisibility(View.GONE);
 
             boolean finalIsClickable = isClickable;
             holder.barangItem.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +307,10 @@ public class AdapterListBarang extends
 
         @BindView(R.id.hargaBarang2)
         TextView hargaBarang2;
+
+
+        @BindView(R.id.titikDua)
+        TextView titikDUa;
 
         @BindView(R.id.hargaBarang3)
         TextView hargaBarang3;

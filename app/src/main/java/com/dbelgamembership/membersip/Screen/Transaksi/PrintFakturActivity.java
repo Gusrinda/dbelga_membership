@@ -15,6 +15,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -52,11 +53,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
+import com.dbelgamembership.membersip.Helper.ApiOTP;
+import com.dbelgamembership.membersip.Helper.FileUtil;
 import com.dbelgamembership.membersip.Model.ModelPayment.Datum;
 import com.dbelgamembership.membersip.Model.ModelPayment.DetailBarangTebu;
 import com.dbelgamembership.membersip.Model.ModelPayment.Item;
+import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
 import com.dbelgamembership.membersip.Model.modelArrayDetailBarangOrder;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.PostBodyMessage;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.ResponseSendOTP.ResponseSendOTP;
+import com.dbelgamembership.membersip.Screen.SetupOTP.Model.ResponseUploadFile.ResponseUploadFile;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
 import com.dbelgamembership.membersip.app.Adapter.AdapterDetailbarangFak;
 import com.dbelgamembership.membersip.DialogFragment.RiwayatTransaksiQrFragment;
@@ -68,7 +77,6 @@ import com.dbelgamembership.membersip.Model.ModelPayment.ModelPayment;
 import com.dbelgamembership.membersip.Model.ModelPayment.OrderDetail;
 import com.dbelgamembership.membersip.Model.ModelPayment.PaymentDetail;
 import com.dbelgamembership.membersip.R;
-import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.databinding.ActivityBuktifakturNewBinding;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
@@ -77,6 +85,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,6 +100,20 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+
+import com.membership.invoicegenerator.data.ModelInvoiceFooter;
+import com.membership.invoicegenerator.data.ModelInvoiceHeader;
+import com.membership.invoicegenerator.data.ModelInvoiceInfo;
+import com.membership.invoicegenerator.data.ModelInvoiceItem;
+import com.membership.invoicegenerator.data.ModelInvoicePaymentInfo;
+import com.membership.invoicegenerator.data.ModelInvoicePriceInfo;
+import com.membership.invoicegenerator.data.ModelTableHeader;
+import com.membership.invoicegenerator.utils.InvoiceGenerator;
 
 public class PrintFakturActivity extends AppCompatActivity implements Runnable, AdapterDetailbarangFak.AdapterDetailbarangCallback {
 
@@ -323,8 +347,335 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
             finish();
         }
 
+        binding.btnKirimInvoice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog alertDialogAwal = new AlertDialog.Builder(PrintFakturActivity.this).create();
+                alertDialogAwal.setCanceledOnTouchOutside(false);
+                alertDialogAwal.setTitle("Hi, " + (sessionManager.isLoggedIn() ? sessionManager.getName() : "Customer"));
+                alertDialogAwal.setMessage("Kirim invoice belanja ke nomor Whatsapp anda ?");
+                alertDialogAwal.setButton(AlertDialog.BUTTON_POSITIVE, "YA",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                setupSendWA();
+                            }
+                        });
+                alertDialogAwal.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialogAwal.show();
+            }
+        });
+
 
     }
+
+    ModelGudang gudangTerpilih;
+
+    private void setupSendWA() {
+
+        final ProgressDialog progressDialog = ProgressDialog.show(PrintFakturActivity.this, "Loading", "Creating Invoice ...");
+
+        ModelInvoiceHeader.ModelAddress address = new ModelInvoiceHeader.ModelAddress(
+                gudangTerpilih.getAlamatGudang(), "", ""
+        );
+
+        ModelInvoiceHeader invoiceHeader = new ModelInvoiceHeader(
+                gudangTerpilih.getNomorTelfonGudang(),
+                "dbelga@gmail.com",
+                "dbelga.com",
+                address
+        );
+
+        ModelInvoiceInfo.ModelCustomerInfo dataCustomer = new ModelInvoiceInfo.ModelCustomerInfo(
+                NAMA_CUSTOMER,
+                ALAMAT_KIRIM,
+                "",
+                ""
+        );
+
+        ModelInvoiceInfo invoiceInfo = new ModelInvoiceInfo(
+                dataCustomer,
+                soCode,
+                tvdate.getText().toString(),
+                nf.format(GTCOKCOKCOKCOCKCOK)
+        );
+
+        ModelTableHeader tableHeader = new ModelTableHeader(
+                "Nama Barang",
+                "Harga",
+                "Diskon",
+                "Qty",
+                "Total"
+        );
+
+        List<ModelInvoiceItem> daftarItem = new ArrayList<>();
+
+
+        double subTotalBarang = 0;
+        double totalDiskonBarang = 0;
+
+        for (int i = 0; i < arrayDetail.size(); i++) {
+
+            String namaBarang;
+            String deskripsiBarang;
+            String hargaBarang;
+            String qtyBarang;
+            String diskonBarang;
+            String totalBarang;
+
+            modelArrayDetailBarangOrder item = arrayDetail.get(i);
+
+            if (!item.isBarangTebus()) {
+                namaBarang = item.getNamaBrg();
+
+                hargaBarang = "Rp " + nf.format(Double.parseDouble(item.getHarga()));
+
+                qtyBarang = String.valueOf(item.getQty());
+
+                double totalDiskon = Double.parseDouble(item.getNominal_diskon() == null ? "0" : item.getNominal_diskon()) + item.getTotalDiskonMembership();
+                totalDiskonBarang += totalDiskon;
+
+                diskonBarang = "Rp " + nf.format((totalDiskon));
+
+                if (totalDiskon > 0) {
+                    deskripsiBarang = item.getCode() + " ( BARANG DISKON )";
+                } else {
+                    deskripsiBarang = item.getCode();
+                }
+
+                subTotalBarang += Double.parseDouble(item.getTotal());
+                totalBarang = "Rp " + nf.format(Double.parseDouble(item.getTotal()) - totalDiskon);
+
+            } else {
+                namaBarang = item.getNamaBrg();
+
+                hargaBarang = "Rp " + nf.format(Double.parseDouble(item.getHarga()));
+
+                qtyBarang = String.valueOf(item.getQty());
+
+                double totalDiskon = Double.parseDouble(item.getNominal_diskon() == null ? "0" : item.getNominal_diskon()) + item.getTotalDiskonMembership();
+                totalDiskonBarang += totalDiskon;
+
+                diskonBarang = "Rp " + nf.format((totalDiskon));
+
+                if (totalDiskon > 0) {
+                    deskripsiBarang = item.getCode() + " ( BARANG TEBUS & DISKON )";
+                } else {
+                    deskripsiBarang = item.getCode() + " ( BARANG TEBUS )";
+                }
+                subTotalBarang += Double.parseDouble(item.getTotal());
+                totalBarang = "Rp " + nf.format(Double.parseDouble(item.getTotal()) - totalDiskon);
+            }
+
+
+            ModelInvoiceItem dataItem = new ModelInvoiceItem(
+                    namaBarang,
+                    deskripsiBarang,
+                    hargaBarang,
+                    diskonBarang,
+                    qtyBarang,
+                    totalBarang
+            );
+
+            Gson gson = new Gson();
+
+            Log.e(TAG, "setupSendWA:  ADD BARANG :: " + gson.toJson(dataItem));
+
+            daftarItem.add(dataItem);
+
+        }
+
+
+        List<ModelInvoicePaymentInfo> modelInvoicePaymentInfos = new ArrayList<>();
+
+        double amountPayment = 0;
+
+        for (PaymentDetail paymentDetail : b.getPaymentDetail()) {
+
+            String tipePayment = "";
+
+            double paymentAmount = Double.parseDouble(paymentDetail.getTotal());
+            double paymentCharge = Double.parseDouble(paymentDetail.getChargeAmount());
+
+            amountPayment += (paymentAmount + paymentCharge);
+
+            if (paymentDetail.getPaymentType().equals("PAY_TYPE_TUNAI")) {
+                tipePayment = "CASH";
+            } else if (paymentDetail.getPaymentType().equals("PAY_TYPE_PLAFON")) {
+                tipePayment = "MEMBER";
+            } else if (paymentDetail.getPaymentType().equals("PAY_TYPE_CREDIT")) {
+                tipePayment = "CREDIT";
+            } else if (paymentDetail.getPaymentType().equals("PAY_TYPE_DEBET")) {
+                tipePayment = "DEBIT";
+            } else if (paymentDetail.getPaymentType().equals("PAY_TYPE_TRANSFER")) {
+                tipePayment = "TRANSFER";
+            }
+
+
+            ModelInvoicePaymentInfo modelInvoicePaymentInfo = new ModelInvoicePaymentInfo(
+                    tipePayment,
+                    nf.format(paymentAmount + paymentCharge)
+            );
+
+            modelInvoicePaymentInfos.add(modelInvoicePaymentInfo);
+
+        }
+
+        boolean isUsingVoucer = false;
+        boolean isUsingVoucherSuplier = false;
+
+        if (b.getVoucher() != null) {
+            if (b.getVoucher()) {
+                isUsingVoucer = true;
+            }
+        }
+
+        if (b.getVoucherSuplier() != null) {
+            if (b.getVoucherSuplier()) {
+                isUsingVoucherSuplier = true;
+            }
+        }
+
+        ModelInvoicePriceInfo priceInfo = new ModelInvoicePriceInfo(
+                nf.format(subTotalBarang),
+                nf.format(totalDiskonBarang),
+                nf.format(ONGKIR_COK),
+                isUsingVoucer,
+                (isUsingVoucer ? b.getVoucherCode() : ""),
+                (isUsingVoucer ? nf.format(Double.parseDouble(b.getVoucherNominal())) : ""),
+                isUsingVoucherSuplier,
+                (isUsingVoucherSuplier ? b.getVoucherCodeSuplier() : ""),
+                (isUsingVoucherSuplier ? nf.format(Double.parseDouble(b.getVoucherNominalSuplier())) : ""),
+                nf.format(GTCOKCOKCOKCOCKCOK),
+                nf.format(Double.parseDouble(b.getTotalPaymentPaid())),
+                nf.format(Double.parseDouble(b.getChange()))
+        );
+
+        ModelInvoiceFooter footer = new ModelInvoiceFooter(
+                "Terimakasih sudah belanja di Dbelga"
+        );
+
+        InvoiceGenerator invoiceGenerator = new InvoiceGenerator(this);
+
+        invoiceGenerator.setInvoiceLogo(R.drawable.dbelga);
+        invoiceGenerator.setInvoiceHeaderData(invoiceHeader);
+        invoiceGenerator.setCurrency("Rp");
+        invoiceGenerator.setInvoiceInfo(invoiceInfo);
+        invoiceGenerator.setInvoiceTableHeaderDataSource(tableHeader);
+        invoiceGenerator.setInvoiceTableData(daftarItem);
+        invoiceGenerator.setPriceInfoData(priceInfo);
+        invoiceGenerator.setInvoicePaymentInfo(modelInvoicePaymentInfos);
+        invoiceGenerator.setInvoiceFooterData(footer);
+
+        Uri uriFilePdf = invoiceGenerator.generatePDF("Invoice_" + soCode + ".pdf");
+
+
+        progressDialog.dismiss();
+        sendingInvoice(uriFilePdf);
+
+
+    }
+
+    private void sendingInvoice(Uri uriFilePdf) {
+
+        final ProgressDialog progressDialog = ProgressDialog.show(PrintFakturActivity.this, "Loading", "Sending Invoice ...");
+
+        try {
+            File file = FileUtil.from(PrintFakturActivity.this, uriFilePdf);
+
+
+            RequestBody requestFile =
+                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+            // MultipartBody.Part is used to send also the actual file name
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+
+            RequestBody filePdf = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+
+            APIInterface apiInterface = APIClient.getClient(ApiOTP.urlOTP).create(APIInterface.class);
+            Call<ResponseUploadFile> call = apiInterface.doSendFile(
+//                    "multipart/form-data",
+                    ApiOTP.OTP_SECRET_KEY,
+                    filePdf,
+                    body
+//                file
+            );
+
+            call.enqueue(new Callback<ResponseUploadFile>() {
+                @Override
+                public void onResponse(Call<ResponseUploadFile> call, retrofit2.Response<ResponseUploadFile> response) {
+
+                    if (response.code() == 200) {
+
+                        //Send WA MULTIMEDIA
+
+                        assert response.body() != null;
+                        String urlFile = response.body().getData().getUrl();
+
+                        PostBodyMessage postBodyMessage = new PostBodyMessage(
+                                "+62" + b.getNomorCustomer().substring(1),
+                                "Terimakasih telah berbelanja di dBelga, berikut adalah  invoice pesanan anda\n" + urlFile,
+                                "true"
+                        );
+
+                        APIInterface apiInterface = APIClient.getClient(ApiOTP.urlOTP).create(APIInterface.class);
+                        Call<ResponseSendOTP> callSendMessage = apiInterface.doSendOTP(
+                                ApiOTP.OTP_SECRET_KEY,
+                                postBodyMessage
+                        );
+
+                        callSendMessage.enqueue(new Callback<ResponseSendOTP>() {
+                            @Override
+                            public void onResponse(Call<ResponseSendOTP> call, retrofit2.Response<ResponseSendOTP> response) {
+                                progressDialog.dismiss();
+                                if (response.isSuccessful()) {
+                                    Toast.makeText(PrintFakturActivity.this, "Invoice Berhasil dikirim ke nomor : " + "+62" + b.getNomorCustomer().substring(1), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(PrintFakturActivity.this, "Error sending invoice :: " + String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseSendOTP> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Toast.makeText(PrintFakturActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                                Log.e("Sending error:", t.getMessage() + " :: " + Arrays.toString(t.getStackTrace()));
+                            }
+                        });
+
+
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(PrintFakturActivity.this, "Error upload file :: " + String.valueOf(response.code()), Toast.LENGTH_SHORT).show();
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<ResponseUploadFile> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Toast.makeText(PrintFakturActivity.this, t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.e("Upload error:", t.getMessage() + " :: " + Arrays.toString(t.getStackTrace()));
+                }
+            });
+
+        } catch (IOException e) {
+            Toast.makeText(mContext, "Error :: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
+
+    }
+
+    Datum b;
 
     private void setupFaktur(String dataprint) {
         Log.e(TAG, "setupFaktur: " + dataprint);
@@ -346,7 +697,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
 
                             Gson gson = new Gson();
                             ModelPayment modelListFaktur = gson.fromJson(String.valueOf(response), ModelPayment.class);
-                            Datum b = modelListFaktur.getData().getData().get(0);
+                            b = modelListFaktur.getData().getData().get(0);
                             idTransaksi = String.valueOf(b.getId());
                             grandTotal = (long) (Double.parseDouble(b.getTotalPaymentPaid()) - Double.parseDouble(b.getChange()));
                             String cok1 = String.valueOf(b.getTotalPaymentPaid());
@@ -357,6 +708,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             for (int i = 0; i < modelGudangs.size(); i++) {
                                 if (idGudang == modelGudangs.get(i).getIdGudang()) {
                                     binding.contentBuktiFaktur.txtNamaToko.setText(" : Toko " + modelGudangs.get(i).getNamaGudang());
+                                    gudangTerpilih = modelGudangs.get(i);
                                 }
                             }
 
@@ -634,16 +986,22 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                             }
 
                             double besaranPotonganVoucher = 0;
+
                             if (b.getVoucher() != null) {
                                 if (b.getVoucher()) {
-//                                    isUsingVoucher = b.getVoucher();
-//                                    dataVoucherDipilih = new DaftarVoucher();
-//                                    dataVoucherDipilih.setCode(b.getVoucherCode());
-//                                    dataVoucherDipilih.setNominal((int) Double.parseDouble(b.getVoucherNominal()));
                                     binding.contentBuktiFaktur.layoutVoucher.setVisibility(View.VISIBLE);
                                     binding.contentBuktiFaktur.txtKodeVoucher.setText("VOC : " + b.getVoucherCode());
                                     binding.contentBuktiFaktur.txtNominalVoucher.setText("- Rp. " + nf.format(Double.parseDouble(b.getVoucherNominal())));
-                                    besaranPotonganVoucher = Double.parseDouble(b.getVoucherNominal());
+                                    besaranPotonganVoucher += Double.parseDouble(b.getVoucherNominal());
+                                }
+                            }
+
+                            if (b.getVoucherSuplier() != null) {
+                                if (b.getVoucherSuplier()) {
+                                    binding.contentBuktiFaktur.linearVoucherSuplier.setVisibility(View.VISIBLE);
+                                    binding.contentBuktiFaktur.txtKodeVoucherSuplier.setText("VOC SP : " + b.getVoucherCodeSuplier());
+                                    binding.contentBuktiFaktur.txtNominalVoucherSuplier.setText("- Rp. " + nf.format(Double.parseDouble(b.getVoucherNominalSuplier())));
+                                    besaranPotonganVoucher += Double.parseDouble(b.getVoucherNominalSuplier());
                                 }
                             }
 
@@ -710,7 +1068,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                                     finish();
                                 }
                             });
- 
+
                 } else if (error.networkResponse == null) {
                     dialog1.dismiss();
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(PrintFakturActivity.this);
@@ -759,7 +1117,7 @@ public class PrintFakturActivity extends AppCompatActivity implements Runnable, 
                 return super.parseNetworkResponse(response);
             }
         };
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mQueue.add(jsonObjectRequest);

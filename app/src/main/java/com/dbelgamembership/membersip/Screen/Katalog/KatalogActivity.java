@@ -345,8 +345,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
                         previous_totals = totalItemsCount;
                     }
                 }
-                if (!isLoading && (totalItemsCount - visibleItemsCount)
-                        <= (pastVisisbleItems + view_threshold)) {
+                if (!isLoading && (totalItemsCount - visibleItemsCount) <= (pastVisisbleItems + view_threshold)) {
                     // End has been reached
 
                     Log.i("Yaeye!", "end called");
@@ -562,7 +561,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -776,7 +775,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -883,7 +882,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
                                 }
                             } else {
-                                Snack("Item Kosong");
+                                Snack("Item Habis");
                             }
 //                            Snack("Barang sudah tampil semua !");
                         } catch (Exception e) {
@@ -986,7 +985,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1120,10 +1119,10 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
         } else if (cekStok >= 50) {
             stokProduk.setText(" > 50 Stok");
         } else {
-            stokProduk.setText("KOSONG");
+            stokProduk.setText("HABIS");
         }
 
-        if (stokProduk.getText().toString().equals("KOSONG")) {
+        if (stokProduk.getText().toString().equals("HABIS")) {
             harga1Produk.setVisibility(View.GONE);
             harga2Produk.setText("? (Harga Belum Diketahui)");
         } else {
@@ -1559,6 +1558,16 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
 
                             boolean responseBool = responseWishlist.getSuccess();
 
+                            boolean tidakGudang = false;
+
+                            if (tidakGudang) {
+                                Log.e(TAG, "onResponse: TIDAK GUNA INI BANG");
+                            } else {
+
+                                Log.e(TAG, "onResponse: IYA INI JUGA TIDAK BERGUNA" );
+
+                            }
+
                             if (responseWishlist.getSuccess()) {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 Snack("Berhasil menambahkan barang di Wishlist");
@@ -1622,7 +1631,7 @@ public class KatalogActivity extends AppCompatActivity implements AdapterListBar
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -10,10 +9,13 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/strike_through.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable-v24/toogle_widget_background.xml" value="0.286" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/background_number_otp.xml" value="0.231" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/background_support.xml" value="0.3145" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/bg_gambar.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_cancel_24.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_money.xml" value="0.31216216216216214" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_navigate_next_24.xml" value="0.3145" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_pin_drop_24.xml" value="0.3145" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/ic_baseline_qr_code_24.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/member_gold.xml" value="0.31216216216216214" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/drawable/radius2.xml" value="0.31216216216216214" />
@@ -30,6 +32,7 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_daftar_tagihan.xml" value="0.2824074074074074" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_daftar_transaksi.xml" value="0.3063063063063063" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_daftar_voucher_member.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_edit_akun.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_gudang.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_home.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_katalog.xml" value="0.2942222222222222" />
@@ -52,6 +55,7 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_reset_password.xml" value="0.3063063063063063" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_riwayat_tagihan.xml" value="0.2824074074074074" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_set_alamat_rumah.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_splash.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_term_of_service.xml" value="0.12450592885375494" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_transfer_payment.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/activity_verification.xml" value="0.2981981981981982" />
@@ -62,6 +66,8 @@
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/adapter_list_voucher.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktibayar_new.xml" value="0.2942222222222222" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/content_buktifaktur_new.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/dialog_birth_pelanggan.xml" value="0.2981981981981982" />
+        <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/foto_identitas_layout.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_akun.xml" value="0.2981981981981982" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_bottom_sheet_filter.xml" value="0.22" />
         <entry key="..\:/Projek/DBelgaKasir/dbelga-membership/app/src/main/res/layout/fragment_bottom_sheet_sort.xml" value="0.2981981981981982" />
@@ -109,7 +115,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

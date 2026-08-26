@@ -7,11 +7,11 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="E:\Projek\AndroidStudio\Avd\Emu_1.avd" />
+            <value value="E:\Projek\AndroidStudio\Avd\avd\iMin_API_25.avd" />
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2022-09-02T09:54:23.024320100Z" />
+    <timeTargetWasSelectedWithDropDown value="2024-09-02T04:16:14.485331300Z" />
   </component>
 </project>

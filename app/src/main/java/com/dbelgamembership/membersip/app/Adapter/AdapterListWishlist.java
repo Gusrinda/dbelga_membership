@@ -57,7 +57,7 @@ public class AdapterListWishlist extends
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         sessionManager = new SessionManager(context);
         member = sessionManager.getMembership();
-        Log.e(TAG, "Status member : " + member );
+        Log.e(TAG, "Status member : " + member);
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_wishlist,
                 parent, false);
         return new ViewHolder(view);
@@ -69,7 +69,7 @@ public class AdapterListWishlist extends
         try {
             final MsgServer item = list.get(position);
             Drawable image;
-            if (!item.getGambar().equals( Http.serverNotApi + "upload/barang/")) {
+            if (!item.getGambar().equals(Http.serverNotApi + "upload/barang/")) {
                 Glide.with(context)
                         .asBitmap()
                         .load(item.getGambar())
@@ -96,7 +96,7 @@ public class AdapterListWishlist extends
 
             Log.e(TAG, "MASUK 2");
             double cekStok = item.getQtyStok();
-            Log.e(TAG, "onBindViewHolder: " + cekStok );
+            Log.e(TAG, "onBindViewHolder: " + cekStok);
             Log.e(TAG, "MASUK 3");
 
             holder.btnTambahKeranjang.setEnabled(true);
@@ -113,9 +113,9 @@ public class AdapterListWishlist extends
             } else if (cekStok >= 50) {
                 holder.stokOutlet.setText(" > 50");
             } else {
-                holder.stokOutlet.setText("KOSONG");
+                holder.stokOutlet.setText("HABIS");
                 holder.btnTambahKeranjang.setEnabled(false);
-                holder.txtButton.setText("Stok Kosong");
+                holder.txtButton.setText("Stok Habis");
                 holder.btnTambahKeranjang.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.greyTerang)));
             }
 
@@ -123,7 +123,7 @@ public class AdapterListWishlist extends
 
             holder.txtStokWishlist.setText(String.valueOf(item.getQty()));
 
-            if (holder.stokOutlet.getText().toString().equals("KOSONG")) {
+            if (holder.stokOutlet.getText().toString().equals("HABIS")) {
                 holder.hargaBarang.setText("? (Harga Belum Diketahui)");
             } else {
                 int batasan1 = item.getPrice().getQtyHarga1();
@@ -155,17 +155,23 @@ public class AdapterListWishlist extends
 
                 int diskon = (int) (Double.parseDouble(harga1) - Double.parseDouble(hargaFix));
 
-                if (diskon > 0) {
-                    holder.hargaRealBarang.setVisibility(View.VISIBLE);
-                    holder.hargaRealBarang.setText("Rp. "+ nf.format(Double.parseDouble(harga1)));
-                    holder.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
-                } else {
-                    holder.hargaRealBarang.setVisibility(View.GONE);
-                    holder.hargaRealBarang.setText("0");
-                    holder.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
-                }
+                //ini disable dulu
+//                if (diskon > 0) {
+//                    holder.hargaRealBarang.setVisibility(View.VISIBLE);
+//                    holder.hargaRealBarang.setText("Rp. "+ nf.format(Double.parseDouble(harga1)));
+//                    holder.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+//                } else {
+//                    holder.hargaRealBarang.setVisibility(View.GONE);
+//                    holder.hargaRealBarang.setText("0");
+//                    holder.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+//                }
+
+                holder.hargaRealBarang.setVisibility(View.GONE);
+                holder.hargaRealBarang.setText("0");
+                holder.hargaBarang.setText("Rp. " + nf.format(Double.parseDouble(harga1)));
 
             }
+
 
             Log.e(TAG, "MASUK 6");
 
@@ -192,14 +198,18 @@ public class AdapterListWishlist extends
 
             for (int i = 0; i < GudangActivity.modelGudangs.size(); i++) {
                 if (GudangActivity.modelGudangs.get(i).getIdGudang().equals(String.valueOf(item.getIdGudang()))) {
-                        holder.txtNamaToko.setText(GudangActivity.modelGudangs.get(i).getNamaGudang());
+                    holder.txtNamaToko.setText(GudangActivity.modelGudangs.get(i).getNamaGudang());
                 }
             }
+
+            holder.btnTambahKeranjang.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.grey_font)));
+            holder.btnTambahKeranjang.setEnabled(false);
 
         } catch (Exception e) {
             Log.e(TAG, "onBindViewHolder: error" + e.getMessage());
         }
     }
+
     @Override
     public int getItemCount() {
         if (list.size() == 0) {

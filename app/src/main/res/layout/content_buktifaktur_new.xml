@@ -29,7 +29,7 @@
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/ic_print_black_24dp" />
+                android:src="@drawable/ic_baseline_print_24" />
 
         </RelativeLayout>
 
@@ -211,6 +211,49 @@
                     </RelativeLayout>
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:visibility="gone"
+                    android:id="@+id/linearVoucherSuplier"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/colorPrimary" />
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp">
+
+                        <TextView
+                            android:id="@+id/txtKodeVoucherSuplier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Voucher kirim"
+                            android:textColor="@color/black" />
+
+                        <TextView
+                            android:id="@+id/txtNominalVoucherSuplier"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:text="Rp. 0"
+                            android:textColor="@color/black"
+                            android:textStyle="bold" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
 
                 <View
                     android:layout_width="match_parent"
@@ -567,7 +610,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:background="@color/background"
+                        android:background="@color/backgroud_white"
                         app:cardCornerRadius="15dp">
 
                         <RelativeLayout
@@ -661,7 +704,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/background"
+                    android:background="@color/backgroud_white"
                     android:orientation="vertical"
                     android:visibility="gone">
 
@@ -669,7 +712,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:background="@color/background"
+                        android:background="@color/backgroud_white"
                         app:cardCornerRadius="15dp">
 
                         <RelativeLayout

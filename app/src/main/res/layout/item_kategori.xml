@@ -9,7 +9,7 @@
     android:layout_margin="8dp"
     app:cardElevation="4dp"
     app:cardCornerRadius="20dp"
-    app:contentPadding="@dimen/material_component_cards_action_button_row_padding">
+    app:contentPadding="16dp">
 
     <TextView
         android:textSize="12sp"

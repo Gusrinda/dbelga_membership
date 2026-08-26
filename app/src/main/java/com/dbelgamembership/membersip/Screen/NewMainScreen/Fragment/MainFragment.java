@@ -66,6 +66,7 @@ import com.dbelgamembership.membersip.Model.modelBarang.Datum;
 import com.dbelgamembership.membersip.Model.modelBarang.ModelBarang;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.KatalogActivity;
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.adapter.AdapterListMenu;
@@ -375,7 +376,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1066,7 +1067,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1309,7 +1310,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -1463,10 +1464,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
         } else if (cekStok >= 50) {
             popupBarangBinding.produkStok.setText(" > 50 Stok");
         } else {
-            popupBarangBinding.produkStok.setText("KOSONG");
+            popupBarangBinding.produkStok.setText("HABIS");
         }
 
-        if (popupBarangBinding.produkStok.getText().toString().equals("KOSONG")) {
+        if (popupBarangBinding.produkStok.getText().toString().equals("HABIS")) {
             popupBarangBinding.produkPrice1.setVisibility(View.GONE);
             popupBarangBinding.produkPrice2.setText("? (Harga Belum Diketahui)");
         } else {
@@ -1619,124 +1620,126 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
 
         double stokMax = Double.parseDouble(position.getStok());
 
-        popupBarangBinding.orderQtyOrder.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            private Timer timer = new Timer();
-            private final long DELAY = 500; // milliseconds
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-
-                double check = 0;
-
-                if (editable.length() > 0) {
-                    check = Double.parseDouble(editable.toString());
-                } else {
-                    check = 0;
-                }
-
-
-                if (check > stokMax) {
-                    check = stokMax;
-                    popupBarangBinding.orderQtyOrder.setText(String.valueOf(stokMax));
-                    popupBarangBinding.orderBtnPlusQty.setEnabled(false);
-                    popupBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
-                } else {
-                    popupBarangBinding.orderBtnPlusQty.setEnabled(true);
-                    popupBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
-                }
-
-                double jumlahBarangDibeli = check;
-
-                timer.cancel();
-                timer = new Timer();
-                timer.schedule(
-                        new TimerTask() {
-                            @Override
-                            public void run() {
-                                ((Activity) requireContext()).runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-
-                                        Log.e(TAG, "run: " + jumlahBarangDibeli);
-
-                                        String hargaFix = "0";
-                                        double diskon = 0;
-
-                                        if (position.getIsPromo() == 1 && position.getStokPromo() > 0 && cekTanggal) {
-                                            Log.e(TAG, "MASUK PROMO");
-
-                                            double hargaNormal = Double.parseDouble(position.getHarga_barang());
-                                            double hargaPromo = Double.parseDouble(position.getHarga_promo());
-
-                                            diskon = hargaNormal - hargaPromo;
-                                            hargaFix = String.valueOf(hargaPromo);
-
-                                            popupBarangBinding.keteranganDiskon.setVisibility(View.VISIBLE);
-                                            popupBarangBinding.keteranganDiskon.setText(" ( Disc. -" + nf.format(diskon) + " )");
-                                            popupBarangBinding.produkPrice2.setVisibility(View.VISIBLE);
-                                            popupBarangBinding.produkPrice2.setText("Rp. " + nf.format(hargaPromo));
-                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.strike_through));
-
-                                        } else {
-
-                                            int batasan1 = (int) Double.parseDouble(position.getBatasan1());
-                                            int batasan2 = (int) Double.parseDouble(position.getBatasan2());
-                                            int batasan3 = (int) Double.parseDouble(position.getBatasan3());
-
-                                            if (batasan1 == batasan2) {
-                                                hargaFix = position.getHarga_barang();
-                                                Log.e(TAG, "run: HARGA 1");
-                                            } else {
-                                                if (jumlahBarangDibeli < batasan2) {
-                                                    hargaFix = position.getHarga_barang();
-                                                    Log.e(TAG, "run: HARGA 1");
-                                                } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
-                                                    hargaFix = position.getHarga_2();
-                                                    Log.e(TAG, "run: HARGA 2");
-                                                } else if (jumlahBarangDibeli >= batasan3) {
-                                                    hargaFix = position.getHarga_3();
-                                                    Log.e(TAG, "run: HARGA 3");
-                                                }
-                                            }
-
-                                            diskon = (int) (Double.parseDouble(position.getHarga_barang()) - Double.parseDouble(hargaFix));
-
-                                        }
-
-
-                                        if (diskon > 0) {
-                                            popupBarangBinding.keteranganDiskon.setVisibility(View.VISIBLE);
-                                            popupBarangBinding.keteranganDiskon.setText(" ( Disc. -" + nf.format(diskon) + " )");
-                                            popupBarangBinding.produkPrice2.setVisibility(View.VISIBLE);
-                                            popupBarangBinding.produkPrice2.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
-                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.strike_through));
-                                        } else {
-                                            popupBarangBinding.keteranganDiskon.setVisibility(View.GONE);
-                                            popupBarangBinding.produkPrice2.setVisibility(View.GONE);
-                                            popupBarangBinding.produkPrice2.setText("0");
-                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(null);
-                                        }
-                                    }
-                                });
-
-                            }
-                        },
-                        DELAY
-                );
-
-
-            }
-        });
+        //INI DISABLE
+//        popupBarangBinding.orderQtyOrder.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            private Timer timer = new Timer();
+//            private final long DELAY = 500; // milliseconds
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//
+//                double check = 0;
+//
+//                if (editable.length() > 0) {
+//                    check = Double.parseDouble(editable.toString());
+//                } else {
+//                    check = 0;
+//                }
+//
+//
+//                if (check > stokMax) {
+//                    check = stokMax;
+//                    popupBarangBinding.orderQtyOrder.setText(String.valueOf(stokMax));
+//                    popupBarangBinding.orderBtnPlusQty.setEnabled(false);
+//                    popupBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.greyBelha));
+//                } else {
+//                    popupBarangBinding.orderBtnPlusQty.setEnabled(true);
+//                    popupBarangBinding.orderBtnPlusQty.setBackgroundColor(getResources().getColor(R.color.prangeBelha));
+//                }
+//
+//                double jumlahBarangDibeli = check;
+//
+//                timer.cancel();
+//                timer = new Timer();
+//                timer.schedule(
+//                        new TimerTask() {
+//                            @Override
+//                            public void run() {
+//                                ((Activity) requireContext()).runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//
+//                                        Log.e(TAG, "run: " + jumlahBarangDibeli);
+//
+//                                        String hargaFix = "0";
+//                                        double diskon = 0;
+//
+//                                        if (position.getIsPromo() == 1 && position.getStokPromo() > 0 && cekTanggal) {
+//                                            Log.e(TAG, "MASUK PROMO");
+//
+//                                            double hargaNormal = Double.parseDouble(position.getHarga_barang());
+//                                            double hargaPromo = Double.parseDouble(position.getHarga_promo());
+//
+//                                            diskon = hargaNormal - hargaPromo;
+//                                            hargaFix = String.valueOf(hargaPromo);
+//
+//                                            popupBarangBinding.keteranganDiskon.setVisibility(View.VISIBLE);
+//                                            popupBarangBinding.keteranganDiskon.setText(" ( Disc. -" + nf.format(diskon) + " )");
+//                                            popupBarangBinding.produkPrice2.setVisibility(View.VISIBLE);
+//                                            popupBarangBinding.produkPrice2.setText("Rp. " + nf.format(hargaPromo));
+//                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.strike_through));
+//
+//                                        } else {
+//
+//                                            int batasan1 = (int) Double.parseDouble(position.getBatasan1());
+//                                            int batasan2 = (int) Double.parseDouble(position.getBatasan2());
+//                                            int batasan3 = (int) Double.parseDouble(position.getBatasan3());
+//
+//                                            if (batasan1 == batasan2) {
+//                                                hargaFix = position.getHarga_barang();
+//                                                Log.e(TAG, "run: HARGA 1");
+//                                            } else {
+//                                                if (jumlahBarangDibeli < batasan2) {
+//                                                    hargaFix = position.getHarga_barang();
+//                                                    Log.e(TAG, "run: HARGA 1");
+//                                                } else if (jumlahBarangDibeli >= batasan2 && jumlahBarangDibeli < batasan3) {
+//                                                    hargaFix = position.getHarga_2();
+//                                                    Log.e(TAG, "run: HARGA 2");
+//                                                } else if (jumlahBarangDibeli >= batasan3) {
+//                                                    hargaFix = position.getHarga_3();
+//                                                    Log.e(TAG, "run: HARGA 3");
+//                                                }
+//                                            }
+//
+//                                            diskon = (int) (Double.parseDouble(position.getHarga_barang()) - Double.parseDouble(hargaFix));
+//
+//                                        }
+//
+//
+//                                        if (diskon > 0) {
+//                                            popupBarangBinding.keteranganDiskon.setVisibility(View.VISIBLE);
+//                                            popupBarangBinding.keteranganDiskon.setText(" ( Disc. -" + nf.format(diskon) + " )");
+//                                            popupBarangBinding.produkPrice2.setVisibility(View.VISIBLE);
+//                                            popupBarangBinding.produkPrice2.setText("Rp. " + nf.format(Double.parseDouble(hargaFix)));
+//                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.strike_through));
+//                                        } else {
+//                                            popupBarangBinding.keteranganDiskon.setVisibility(View.GONE);
+//                                            popupBarangBinding.produkPrice2.setVisibility(View.GONE);
+//                                            popupBarangBinding.produkPrice2.setText("0");
+//                                            popupBarangBinding.produkPrice1.setBackgroundDrawable(null);
+//                                        }
+//                                    }
+//                                });
+//
+//                            }
+//                        },
+//                        DELAY
+//                );
+//
+//
+//            }
+//        });
 
         Log.e(TAG, "AdapterListBarangClicked: " + itemCartList.size());
 
@@ -1771,10 +1774,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     jumlah = Double.parseDouble(popupBarangBinding.orderQtyOrder.getText().toString());
                 }
 
-                tambahItemWishlist(position.getId(), jumlah);
+                tambahItemWishlist(position.getId(), jumlah, position.getNama_barang());
             }
 
-            private void tambahItemWishlist(String kode_barang, double stokBarang) {
+            private void tambahItemWishlist(String kode_barang, double stokBarang, String namaBarang) {
                 Log.e(TAG, "Size awal : " + listBarang.size());
                 Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang);
                 String code = kode_barang;
@@ -1802,7 +1805,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 }
                                 Log.e(TAG, "URL : " + url);
                                 Log.e(TAG, "onClickSubmit: " + postData);
-                                SimpanPost(postData);
+                                SimpanPost(postData, namaBarang);
                                 alertDialog.dismiss();
                             }
                         });
@@ -1881,6 +1884,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                                         NewMainActivity.iconKeranjang.setBadgeValue(modelResponseCart.getMsgServer().getDetailItemCart().size());
                                                         alertDialog.dismiss();
 
+                                                        sessionManager.addLogHistory(new LogModel(
+                                                                "CART", Calendar.getInstance().getTime(), "Menambahkan barang " + position.getNama_barang() + " sejumlah " + jumlahAkhir + " ke keranjang anda"
+                                                        ));
+
                                                         itemCartList.addAll(modelResponseCart.getMsgServer().getDetailItemCart());
 
                                                     } else {
@@ -1957,9 +1964,12 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
 
             }
         });
+
+//        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
+        popupBarangBinding.layoutButtonKeranjang.setEnabled(true);
     }
 
-    private void SimpanPost(JSONObject postData) {
+    private void SimpanPost(JSONObject postData, String namaBarang) {
         final ProgressDialog dialog1 = new ProgressDialog(requireContext());
         dialog1.setCancelable(false);
         dialog1.setCanceledOnTouchOutside(false);
@@ -1983,6 +1993,9 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                             if (responseWishlist.getSuccess()) {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 Snack("Berhasil menambahkan barang di Wishlist");
+                                sessionManager.addLogHistory(new LogModel(
+                                        "WISHLIST", Calendar.getInstance().getTime(), "Anda menambahkan barang " + namaBarang+ " ke wishlist."
+                                ));
                             } else {
                                 Log.e(TAG, "onResponse: " + responseBool);
                                 String string = "error : " + responseWishlist.getDescription();
@@ -2044,7 +2057,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -2087,10 +2100,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
         } else if (cekStok >= 50) {
             popupBarangBinding.produkStok.setText(" > 50 Stok");
         } else {
-            popupBarangBinding.produkStok.setText("KOSONG");
+            popupBarangBinding.produkStok.setText("HABIS");
         }
 
-        if (popupBarangBinding.produkStok.getText().toString().equals("KOSONG")) {
+        if (popupBarangBinding.produkStok.getText().toString().equals("HABIS")) {
             popupBarangBinding.produkPrice1.setVisibility(View.GONE);
             popupBarangBinding.produkPrice2.setText("? (Harga Belum Diketahui)");
         } else {
@@ -2205,6 +2218,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     popupBarangBinding.orderQtyOrder.setText("0");
                 }
                 popupBarangBinding.orderBtnMinQty.setClickable(true);
+//                popupBarangBinding.layoutButtonKeranjang.setClickable(false);
                 popupBarangBinding.layoutButtonKeranjang.setClickable(true);
                 String qtyawal = popupBarangBinding.orderQtyOrder.getText().toString();
                 double qty = Double.parseDouble(qtyawal);
@@ -2394,10 +2408,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     jumlah = Double.parseDouble(popupBarangBinding.orderQtyOrder.getText().toString());
                 }
 
-                tambahItemWishlist(position.getId(), jumlah);
+                tambahItemWishlist(position.getId(), jumlah, position.getNama_barang());
             }
 
-            private void tambahItemWishlist(String kode_barang, double stokBarang) {
+            private void tambahItemWishlist(String kode_barang, double stokBarang, String namaBarang) {
                 Log.e(TAG, "Size awal : " + listBarang.size());
                 Log.e(TAG, "tambahItemWishlist: Stok ingin " + stokBarang);
                 String code = kode_barang;
@@ -2425,7 +2439,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                 }
                                 Log.e(TAG, "URL : " + url);
                                 Log.e(TAG, "onClickSubmit: " + postData);
-                                SimpanPost(postData);
+                                SimpanPost(postData, namaBarang);
                                 alertDialog.dismiss();
                             }
                         });
@@ -2504,6 +2518,10 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                                                         NewMainActivity.iconKeranjang.setBadgeValue(modelResponseCart.getMsgServer().getDetailItemCart().size());
                                                         alertDialog.dismiss();
 
+                                                        sessionManager.addLogHistory(new LogModel(
+                                                                "CART", Calendar.getInstance().getTime(), "Menambahkan barang " + position.getNama_barang() + " sejumlah " + jumlahAkhir + " ke keranjang anda"
+                                                        ));
+
                                                         itemCartList.addAll(modelResponseCart.getMsgServer().getDetailItemCart());
 
                                                     } else {
@@ -2580,6 +2598,8 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
 
             }
         });
+
+        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
 
     }
 

@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/popup_round"
+    android:layout_width="350dp"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:layout_gravity="center">
+
+
+
+    <ImageView
+        android:layout_gravity="end"
+        android:id="@+id/produk_close"
+        android:src="@drawable/ic_baseline_close_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+    <LinearLayout
+        android:layout_below="@id/layoutDiskonMembership"
+        android:id="@+id/layoutStok"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/layout_Stok"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="16sp"
+                android:text="Stok Produk :"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/produk_stok"
+                android:layout_marginLeft="4dp"
+                android:text="0 Produk"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="gone"
+            android:layout_marginLeft="4dp"
+            android:id="@+id/layout_Stok_Promo"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_marginTop="4dp"
+                android:id="@+id/stokPromo"
+                android:layout_marginLeft="4dp"
+                android:text="[ 0 Promo ]"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/layoutStok"
+        android:paddingVertical="12sp"
+        android:gravity="center"
+        android:id="@+id/layout_pesanStok"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/order_btnMinQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/prangeBelha"
+            android:text="-"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/order_qtyOrder"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:hint="0"
+            android:inputType="numberDecimal"
+            android:maxLength="5"
+            android:text="" />
+
+        <Button
+            android:id="@+id/order_btnPlusQty"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/prangeBelha"
+            android:text="+"
+            android:textColor="@color/white"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/layout_pesanStok"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+
+                android:layout_marginStart="4dp"
+                android:id="@+id/layoutButtonSimpan"
+                android:paddingVertical="12sp"
+                android:gravity="center"
+                android:background="@drawable/button_round_theme"
+                android:backgroundTint="@color/material_green_500"
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@drawable/ic_baseline_check_24"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:textColor="@color/white"
+                    android:layout_marginLeft="4dp"
+                    android:textStyle="bold"
+                    android:text="Simpan Barang"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:textColor="@color/merahBelga"
+            android:textSize="12sp"
+            android:textAlignment="center"
+            android:layout_marginTop="8dp"
+            android:id="@+id/peringatanText"
+            android:text="Barang sudah ada dalam keranjang !"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

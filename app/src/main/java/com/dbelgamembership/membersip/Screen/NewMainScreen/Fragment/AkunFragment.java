@@ -340,7 +340,7 @@ public class AkunFragment extends Fragment {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -407,7 +407,7 @@ public class AkunFragment extends Fragment {
                                 Log.e("", "expired date: " + expDate);
                                 String urlImage = dataUser.getImageCustomer();
 
-                                if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
+                                if (urlImage.equals("http://149.129.235.50/upload/customer-photo/")) {
                                     urlImage = "";
                                 } else {
                                     urlImage = dataUser.getImageCustomer();
@@ -479,7 +479,7 @@ public class AkunFragment extends Fragment {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -642,7 +642,7 @@ public class AkunFragment extends Fragment {
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -754,7 +754,7 @@ public class AkunFragment extends Fragment {
 
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -776,6 +776,9 @@ public class AkunFragment extends Fragment {
                         getActivity().finish();
                         sessionManager.destroySession();
                         Intent intent = new Intent(requireContext(), SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 })

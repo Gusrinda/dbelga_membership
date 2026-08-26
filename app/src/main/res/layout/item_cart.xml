@@ -205,6 +205,7 @@
                     android:layout_height="wrap_content">
 
                     <LinearLayout
+                        android:gravity="center_vertical"
                         xmlns:android="http://schemas.android.com/apk/res/android"
                         android:layout_width="130dp"
                         android:layout_height="40dp"
@@ -212,6 +213,7 @@
                         android:background="@android:color/white">
 
                         <Button
+                            android:visibility="gone"
                             android:layout_width="30dp"
                             android:layout_height="match_parent"
                             android:padding="0dp"
@@ -221,7 +223,9 @@
                             android:textStyle="bold"
                             android:text="—"/>
 
+
                         <EditText
+                            android:clickable="false"
                             android:layout_width="70dp"
                             android:background="@android:color/white"
                             android:layout_height="match_parent"
@@ -233,7 +237,10 @@
                             android:gravity="center"
                             />
 
+
+
                         <Button
+                            android:visibility="gone"
                             android:layout_width="30dp"
                             android:layout_height="match_parent"
                             android:padding="0dp"
@@ -245,20 +252,52 @@
 
                     </LinearLayout>
 
-                    <RelativeLayout
+                    <LinearLayout
+                        android:gravity="end"
+                        android:orientation="horizontal"
                         android:layout_weight="4"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
 
-                        <ImageView
-                            android:id="@+id/btn_deleteBarang"
-                            android:padding="4dp"
-                            android:layout_alignParentEnd="true"
-                            android:src="@drawable/ic_baseline_delete_24"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"/>
 
-                    </RelativeLayout>
+
+                        <LinearLayout
+                            android:id="@+id/layoutEditBarang"
+                            android:layout_marginEnd="16dp"
+                            android:padding="4dp"
+                            android:background="@color/material_gray_200"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/btnEditBarang"
+                                android:padding="4dp"
+                                android:layout_alignParentEnd="true"
+                                android:src="@drawable/ic_baseline_edit_24"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                app:tint="@color/material_green_500" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:padding="4dp"
+                            android:background="@color/material_gray_200"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ImageView
+                                android:id="@+id/btn_deleteBarang"
+                                android:padding="4dp"
+                                android:layout_alignParentEnd="true"
+                                android:src="@drawable/ic_baseline_delete_24"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"/>
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
 
                 </LinearLayout>
 

@@ -159,9 +159,22 @@
             android:id="@+id/logoBawawh"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="32dp"
+            android:layout_above="@id/txt_versi"
+            android:layout_marginBottom="24dp"
             android:src="@drawable/dbelga" />
+
+        <TextView
+            android:layout_marginBottom="16dp"
+            android:id="@+id/txt_versi"
+            android:fontFamily="@font/hammer"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="Version. xxx"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
 
     </RelativeLayout>
 

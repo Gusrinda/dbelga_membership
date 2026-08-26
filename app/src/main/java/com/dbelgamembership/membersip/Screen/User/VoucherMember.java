@@ -205,7 +205,7 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -308,7 +308,7 @@ public class VoucherMember extends AppCompatActivity implements AdapterVoucherMe
                 return super.parseNetworkResponse(response);
             }
         };
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

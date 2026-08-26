@@ -223,6 +223,10 @@ public class MsgServer implements Serializable, Parcelable
     @Expose
     private String nominalPlafon;
 
+    @SerializedName("main_gudang")
+    @Expose
+    private String mainGudang;
+
     public final static Creator<MsgServer> CREATOR = new Creator<MsgServer>() {
 
 
@@ -310,6 +314,7 @@ public class MsgServer implements Serializable, Parcelable
         this.flagDenda = ((String) in.readValue((String.class.getClassLoader())));
         this.jatuhTempo = ((String) in.readValue((String.class.getClassLoader())));
         this.nominalPlafon = ((String) in.readValue((String.class.getClassLoader())));
+        this.mainGudang = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public MsgServer() {
@@ -859,6 +864,14 @@ public class MsgServer implements Serializable, Parcelable
         this.nominalPlafon = nominalPlafon;
     }
 
+    public String getMainGudang() {
+        return mainGudang;
+    }
+
+    public void setMainGudang(String mainGudang) {
+        this.mainGudang = mainGudang;
+    }
+
     public void writeToParcel(android.os.Parcel dest, int flags) {
         dest.writeValue(id);
         dest.writeValue(companyCode);
@@ -928,6 +941,7 @@ public class MsgServer implements Serializable, Parcelable
         dest.writeValue(flagDenda);
         dest.writeValue(jatuhTempo);
         dest.writeValue(nominalPlafon);
+        dest.writeValue(mainGudang);
 
     }
 

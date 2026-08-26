@@ -247,6 +247,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap.setOnMarkerClickListener(this::onMarkerClick);
 
+
+
         LatLng lokasiSaatIni = new LatLng(lokasi.latitude, lokasi.longitude);
 
         Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
@@ -351,10 +353,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 public boolean onQueryTextSubmit(String s) {
                     progressDialog = ProgressDialog.show(MapsActivity.this, "Loading", "Please Wait...");
                     String location = searchView.getQuery().toString();
+
+                    Log.e(TAG, "onQueryTextSubmit: LOCATION :: " + location );
+
                     List<Address> addressList = null;
 
                     if (location != null || !location.equals("")) {
                         Geocoder geocoder = new Geocoder(MapsActivity.this);
+
 
                         try {
                             addressList = geocoder.getFromLocationName(location, 1);

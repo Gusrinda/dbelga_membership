@@ -46,7 +46,7 @@
             <TextView
                 android:id="@+id/txtKontakCS"
                 android:layout_marginVertical="2dp"
-                android:text="+6281559584297"
+                android:text="+6282290203050"
                 android:textColor="@color/darkBiruBelga"
                 android:fontFamily="@font/hammer_font"
                 android:textSize="12sp"

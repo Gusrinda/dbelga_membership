@@ -11,4 +11,16 @@
         android:layout_height="wrap_content"
         android:src="@drawable/dbelga"/>
 
+    <TextView
+        android:layout_marginBottom="16dp"
+        android:id="@+id/txt_versi"
+        android:fontFamily="@font/hammer"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Version. xxx"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </RelativeLayout>

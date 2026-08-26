@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.e("", "expired date: " + expDate);
                                     urlImage = dataMember.getImageCustomer();
 
-                                    if (urlImage.equals("http://8.215.31.212/upload/customer-photo/")) {
+                                    if (urlImage.equals("http://149.129.235.50/upload/customer-photo/")) {
                                         urlImage = "";
                                     } else {
                                         urlImage = dataMember.getImageCustomer();
@@ -340,7 +340,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -454,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        arrReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        arrReq.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
@@ -482,6 +482,9 @@ public class MainActivity extends AppCompatActivity {
                         finish();
                         sessionManager.destroySession();
                         Intent intent = new Intent(MainActivity.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                     }
                 })
@@ -910,7 +913,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

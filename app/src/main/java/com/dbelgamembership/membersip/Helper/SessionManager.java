@@ -10,7 +10,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.util.Log;
 
+import com.dbelgamembership.membersip.Screen.Log.model.LogModel;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SessionManager {
     public static final String IS_LOGGEDIN = "isLoggedIn";
@@ -29,6 +36,7 @@ public class SessionManager {
     public static final String KEY_ROLE = "role";
     public static final String KEY_TOKEN_GCM = "token_gcm";
     private static final String KEY_ID_USER = "key";
+    private static final String KEY_GUDANG_PILIHAN = "gudang_pilihan";
     private static final String KEY_PID = "pid";
     private static final String KEY_USERIDENTITAS = "id_user";
     private static final String KEY_BANNER = "false";
@@ -43,6 +51,9 @@ public class SessionManager {
     private static final String KEY_SISA_PLAFON = "0";
     private static final String KEY_TOKEN_BRI_API = "Bearer";
 
+
+    private static final String KEY_LIST_LOG = "KEY_LIST_LOG";
+
     private static String TAG = com.dbelgamembership.membersip.Helper.SessionManager.class.getSimpleName();
     SharedPreferences pref;
     Editor editor;
@@ -55,7 +66,57 @@ public class SessionManager {
         editor.apply();
     }
 
-    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String jatuhTempo) {
+    public void setAwalListLogHistory() {
+        editor.putString(KEY_LIST_LOG, "");
+        editor.apply();
+    }
+
+    public void addLogHistory(LogModel logModel) {
+        String serializedObject = pref.getString(KEY_LIST_LOG, null);
+        Type listOfMyClassObject = new TypeToken<ArrayList<LogModel>>() {
+        }.getType();
+        Gson gson = new Gson();
+
+        ArrayList<LogModel> daftarLog = new ArrayList<>();
+        daftarLog = gson.fromJson(serializedObject, listOfMyClassObject);
+
+        if (daftarLog != null) {
+
+            Log.e(TAG, "addListUniqueKey: DAFTAR LOG SEKARANG : \n" + Arrays.toString(daftarLog.toArray()));
+        } else {
+            Log.e(TAG, "addListUniqueKey: DAFTAR LOG SEKARANG KOSONG ! : \n");
+
+        }
+
+        if (daftarLog == null) {
+            daftarLog = new ArrayList<LogModel>();
+            daftarLog.add(logModel);
+        } else {
+            daftarLog.add(logModel);
+        }
+
+
+        String json = gson.toJson(daftarLog);
+        editor.putString(KEY_LIST_LOG, json);
+        editor.apply();
+        editor.commit();
+    }
+
+
+    public List<LogModel> getDaftarLogHistory() {
+
+        String serializedObject = pref.getString(KEY_LIST_LOG, null);
+        Log.e(TAG, "getDaftarLog :: " + serializedObject);
+
+        Type listOfMyClassObject = new TypeToken<ArrayList<LogModel>>() {
+        }.getType();
+        Gson gson = new Gson();
+        return gson.fromJson(serializedObject, listOfMyClassObject);
+
+    }
+
+
+    public void setLogin(boolean isLoggedIn, String pid, String identitasPelanggan, String name, String email, String membership, String jatuhTempo, String gudangPilihan) {
         editor.putBoolean(IS_LOGGEDIN, isLoggedIn);
         editor.putString(KEY_PID, pid);
         editor.putString(KEY_USERIDENTITAS, identitasPelanggan);
@@ -63,6 +124,7 @@ public class SessionManager {
         editor.putString(KEY_EMAIL, email);
         editor.putString(KEY_MEMBERSHIP, membership);
         editor.putString(KEY_JATUH_TEMPO, jatuhTempo);
+        editor.putString(KEY_GUDANG_PILIHAN, gudangPilihan);
         // commit changes
         editor.apply();
 
@@ -136,6 +198,11 @@ public class SessionManager {
 
     public void setImage(String image) {
         editor.putString(KEY_IMAGE, image);
+        editor.commit();
+    }
+
+    public void setKeyGudangPilihan(String gudangPencarian) {
+        editor.putString(KEY_GUDANG_PILIHAN, gudangPencarian);
         editor.commit();
     }
 
@@ -254,6 +321,11 @@ public class SessionManager {
         return pref.getString(KEY_TOKEN_BRI_API, "null");
     }
 
+
+    public String getKeyGudangPilihan() {
+        return pref.getString(KEY_GUDANG_PILIHAN, "null");
+    }
+
     public void destroySession() {
         editor.putString(KEY_PID, "");
         editor.putString(KEY_NAME, "");
@@ -280,6 +352,7 @@ public class SessionManager {
         editor.putString(KEY_SISA_PLAFON, "");
         editor.putString(KEY_TOKEN_BRI_API, "");
         editor.putString(KEY_JATUH_TEMPO, "");
+        editor.putString(KEY_GUDANG_PILIHAN, "");
         editor.clear();
         editor.apply();
         Log.d(TAG, "User login session destroyed!");

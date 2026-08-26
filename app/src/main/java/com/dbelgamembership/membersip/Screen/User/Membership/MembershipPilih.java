@@ -1,5 +1,7 @@
 package com.dbelgamembership.membersip.Screen.User.Membership;
 
+import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.modelGudangs;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
@@ -15,6 +17,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,10 +38,16 @@ import com.android.volley.ServerError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.dbelgamembership.membersip.Helper.API.APIClient;
+import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelToko.ModelGudang;
+import com.dbelgamembership.membersip.Model.ModelToko.ModelToko;
+import com.dbelgamembership.membersip.Model.ModelToko.MsgServer;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.MainActivity;
+import com.dbelgamembership.membersip.Screen.Transaksi.PrintActivity;
 import com.dbelgamembership.membersip.Screen.User.BoardingMemberDebet;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.SplashActivity;
@@ -53,13 +62,18 @@ import org.json.JSONObject;
 
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
 
 public class MembershipPilih extends AppCompatActivity {
 
@@ -119,6 +133,9 @@ public class MembershipPilih extends AppCompatActivity {
                                 finish();
                                 sessionManager.destroySession();
                                 Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }
                         })
@@ -246,7 +263,6 @@ public class MembershipPilih extends AppCompatActivity {
             }
         });
 
-
         if (getIntent().getStringExtra("pilihan_membership") != null) {
             pilihan = getIntent().getStringExtra("pilihan_membership");
         }
@@ -261,6 +277,106 @@ public class MembershipPilih extends AppCompatActivity {
             binding.spinnerMembership.setSelection(0);
         }
 
+        getDaftarToko();
+
+    }
+
+
+    private List<ModelGudang> modelGudangs = new ArrayList<>();
+    private List<ModelGudang> daftarGudangToko = new ArrayList<>();
+    private HashMap<String, String> daftarGudang = new HashMap<String, String>();
+
+    private ModelGudang selectedGudang;
+
+    String[] daftarGudangNama ;
+
+
+    private void getDaftarToko() {
+        final ProgressDialog progressDialog = ProgressDialog.show(MembershipPilih.this, "Tunggu Sebentar", "Loading Gudang ...");
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelToko> call = apiInterface.doGetToko();
+        call.enqueue(new Callback<ModelToko>() {
+            @Override
+            public void onResponse(Call<ModelToko> call, retrofit2.Response<ModelToko> response) {
+
+                binding.spinnerTokoGudang.setAdapter(null);
+
+                StringBuilder locDestinations = new StringBuilder();
+
+                modelGudangs.clear();
+                daftarGudangToko.clear();
+
+                for (int i = 0; i < response.body().getMsgServer().size(); i++) {
+                    MsgServer dataGudang = response.body().getMsgServer().get(i);
+
+                    daftarGudangToko.add(new ModelGudang(
+                            dataGudang.getName(),
+                            dataGudang.getAddress(),
+                            dataGudang.getId().toString(),
+                            dataGudang.getGeoLat(),
+                            dataGudang.getGeoLng(),
+                            "", 0,
+                            dataGudang.getNoTelp()));
+
+                    if (dataGudang.getId() == 8 || dataGudang.getId() == 9) {
+                        String desti = dataGudang.getGeoLat() + "," + dataGudang.getGeoLng() + "|";
+
+                        locDestinations.append(desti);
+                        modelGudangs.add(new ModelGudang(
+                                dataGudang.getName(),
+                                dataGudang.getAddress(),
+                                dataGudang.getId().toString(),
+                                dataGudang.getGeoLat(),
+                                dataGudang.getGeoLng(),
+                                "", 0,
+                                dataGudang.getNoTelp()));
+                    }
+
+                }
+
+                daftarGudangNama = new String[modelGudangs.size()];
+
+                for (int i = 0; i < modelGudangs.size(); i++) {
+                    daftarGudang.put(String.valueOf(modelGudangs.get(i).getIdGudang()), modelGudangs.get(i).getNamaGudang());
+
+                    daftarGudangNama[i] = modelGudangs.get(i).getNamaGudang() + " ( " + modelGudangs.get(i).getAlamatGudang() + " )";
+
+                }
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, daftarGudangNama);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                binding.spinnerTokoGudang.setAdapter(adapter);
+
+                progressDialog.dismiss();
+
+                binding.spinnerTokoGudang.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        Log.e(TAG, "onItemSelected: " + i );
+
+                        Log.e(TAG, "NAMA Gudang selected :: " + modelGudangs.get(i).getNamaGudang() );
+                        Log.e(TAG, "ID Gudang selected :: " + modelGudangs.get(i).getIdGudang() );
+
+                        selectedGudang = modelGudangs.get(i);
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onFailure(Call<ModelToko> call, Throwable t) {
+                progressDialog.dismiss();
+                Log.e(TAG, "onFailure: " + t.getMessage());
+            }
+
+        });
     }
 
     @Override
@@ -280,6 +396,9 @@ public class MembershipPilih extends AppCompatActivity {
                         finish();
                         sessionManager.destroySession();
                         Intent intent = new Intent(MembershipPilih.this, SplashActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
 
                     }
@@ -349,6 +468,7 @@ public class MembershipPilih extends AppCompatActivity {
                                     jatuhTempo = "30";
                                 }
 
+                                postData.put("main_gudang", selectedGudang.getIdGudang());
                                 postData.put("status_member", choosenMembership);
                                 postData.put("nominal_plafon", binding.edInputNominalPlafon.getText().toString());
                                 postData.put("jatuh_tempo", jatuhTempo);
@@ -446,7 +566,7 @@ public class MembershipPilih extends AppCompatActivity {
             }
         };
 
-        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(5000,
+        jsonObjectRequest.setRetryPolicy(new DefaultRetryPolicy(15000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

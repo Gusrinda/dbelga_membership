@@ -42,7 +42,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<AdapterRiwayatPelunasanTagihan.ViewHolder> implements AdapterDetailPelunasanTagihan.AdapterListTransactionCallback {
+public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<AdapterRiwayatPelunasanTagihan.ViewHolder>
+        implements AdapterDetailPelunasanTagihan.AdapterListTransactionCallback {
 
     private final String TAG = this.getClass().getSimpleName();
     NumberFormat nf = NumberFormat.getInstance(Locale.GERMAN);
@@ -70,9 +71,6 @@ public class AdapterRiwayatPelunasanTagihan extends RecyclerView.Adapter<Adapter
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         ItemRiwayatBinding itemBinding = ItemRiwayatBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
-
-
-
         return new ViewHolder(itemBinding);
     }
 

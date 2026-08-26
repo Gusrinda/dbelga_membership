@@ -69,6 +69,7 @@ public class AdapterDetailPelunasanTagihan extends RecyclerView.Adapter<AdapterD
             cardDetailTransaksi = itemView.cardInformasi;
 
         }
+
     }
 
     @SuppressLint({"NewApi", "ResourceAsColor"})

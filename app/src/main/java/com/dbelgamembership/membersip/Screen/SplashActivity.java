@@ -1,10 +1,18 @@
 package com.dbelgamembership.membersip.Screen;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -25,6 +33,7 @@ import com.dbelgamembership.membersip.Model.ModelGetSlider.ModelGetSlider;
 import com.dbelgamembership.membersip.Model.ModelResponseCS.ModelResponseCS;
 import com.dbelgamembership.membersip.Model.ModelUser.ModelUser;
 import com.dbelgamembership.membersip.Model.ResponseCekVerifikasi.ResponseCekVerifikasi;
+import com.dbelgamembership.membersip.Model.ResponseVersi.ResponseVersi;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.NewMainActivity;
@@ -36,6 +45,7 @@ import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiFoto;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.KonfirmasiMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.PembayaranMembership;
 import com.dbelgamembership.membersip.Screen.User.Verifikasi.VerificationActivity;
+import com.dbelgamembership.membersip.databinding.ActivitySplashBinding;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -77,29 +87,113 @@ public class SplashActivity extends AppCompatActivity {
 
     public static List<com.dbelgamembership.membersip.Model.ModelResponseCS.MsgServer> daftarCS = new ArrayList<>();
 
+    private ActivitySplashBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        binding = ActivitySplashBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         cekPreAccess = false;
         sessionManager = new SessionManager(this);
 
-        getDataSlider();
-        getDataKategori();
-        getDataCS();
+
+        try {
+            PackageInfo pInfo = this.getPackageManager().getPackageInfo(this.getPackageName(), 0);
+            version = pInfo.versionName;
+            binding.txtVersi.setText("Version. " + version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
 
         Thread timerThread = new Thread() {
             public void run() {
                 try {
+                    getDataSlider();
+                    getDataKategori();
+                    getDataCS();
                     sleep(1500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                } finally {
-                    getSession();
                 }
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        getSession();
+                        checkingVersionApps();
+                    }
+                });
+
+
             }
         };
         timerThread.start();
+
+    }
+
+    String version = "";
+
+    private void checkingVersionApps() {
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ResponseVersi> call = apiInterface.doVersionApps("app_membership");
+
+        call.enqueue(new Callback<ResponseVersi>() {
+            @Override
+            public void onResponse(Call<ResponseVersi> call, Response<ResponseVersi> response) {
+                if (response.code() == 200) {
+                    com.dbelgamembership.membersip.Model.ResponseVersi.MsgServer versiAplikasi = response.body().getMsgServer().get(0);
+                    if (!version.equals(versiAplikasi.getVersion())) {
+                        AlertDialog alertDialog = new AlertDialog.Builder(SplashActivity.this).create();
+                        alertDialog.setTitle("UPDATE APLIKASI");
+                        alertDialog.setMessage("Anda menggunakan aplikasi versi " + version + "\nDownload apk terbaru versi " + versiAplikasi.getVersion() + " dengan menekan tombol 'ok' !");
+                        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        Uri uri = Uri.parse(versiAplikasi.getLink());
+                                                               Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                                        startActivity(intent);
+                                    }
+                                });
+                        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TIDAK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                finishAffinity();
+                            }
+                        });
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                    } else {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Intent intent = new Intent();
+                            String packageName = getPackageName();
+                            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+                            if (!pm.isIgnoringBatteryOptimizations(packageName)) {
+                                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                                intent.setData(Uri.parse("package:" + packageName));
+                                startActivity(intent);
+                            }
+                        }
+
+                        getSession();
+
+                    }
+                } else {
+                    Toast.makeText(SplashActivity.this, "Error !", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseVersi> call, Throwable t) {
+                Toast.makeText(SplashActivity.this, "Error !", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + "\n" + Arrays.toString(t.getStackTrace()));
+                finish();
+            }
+        });
 
     }
 
@@ -223,6 +317,7 @@ public class SplashActivity extends AppCompatActivity {
         } else {
             Intent intent = new Intent(SplashActivity.this, GudangActivity.class);
             startActivity(intent);
+            finish();
         }
 
     }
@@ -265,7 +360,6 @@ public class SplashActivity extends AppCompatActivity {
 //                                        startActivity(intent);
 //                                        finish();
                                     }
-
                                 }
                             }
                         }

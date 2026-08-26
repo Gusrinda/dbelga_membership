@@ -5,13 +5,22 @@ import static com.dbelgamembership.membersip.Screen.Katalog.GudangActivity.model
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 
 import android.annotation.SuppressLint;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -25,11 +34,15 @@ import com.dbelgamembership.membersip.Helper.API.APIClient;
 import com.dbelgamembership.membersip.Helper.API.APIInterface;
 import com.dbelgamembership.membersip.Helper.Http;
 import com.dbelgamembership.membersip.Helper.SessionManager;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.ModelListTagihan;
+import com.dbelgamembership.membersip.Model.ModelListTagihan.MsgServer;
 import com.dbelgamembership.membersip.R;
 import com.dbelgamembership.membersip.Screen.Katalog.CartActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.GudangActivity;
 import com.dbelgamembership.membersip.Screen.Katalog.WishlishActivity;
+import com.dbelgamembership.membersip.Screen.Log.LogHistoryActivity;
 import com.dbelgamembership.membersip.Screen.LoginActivity;
+import com.dbelgamembership.membersip.Screen.MainActivity;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.AkunFragment;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.MainFragment;
 import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.WishlistFragment;
@@ -37,15 +50,26 @@ import com.dbelgamembership.membersip.Screen.NewMainScreen.Fragment.TransaksiFra
 import com.dbelgamembership.membersip.Screen.Registrasi.RegisterActivity;
 import com.dbelgamembership.membersip.Screen.Setting.EditAkun;
 import com.dbelgamembership.membersip.Screen.Setting.SupportActivity;
+import com.dbelgamembership.membersip.Screen.User.AkunSaya;
 import com.dbelgamembership.membersip.databinding.ActivityNewMainBinding;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import ru.nikartm.support.ImageBadgeView;
 
 
@@ -78,17 +102,41 @@ public class NewMainActivity extends AppCompatActivity {
         Log.e(TAG, "setupUser: " + sessionManager.getImage());
 
         if (sessionManager.isLoggedIn()) {
-            if (!sessionManager.getImage().equals("")) {
+            if (!sessionManager.getImage().equals("") && !sessionManager.getImage().equals("null")) {
 
                 Log.d(TAG, "setupUser: IMAGE USER :: " + sessionManager.getImage());
 
-                Glide.with(NewMainActivity.this).asBitmap().load(sessionManager.getImage()).centerCrop().into(binding.ppUser);
+                Glide.with(NewMainActivity.this).asBitmap().load(sessionManager.getImage()).error(R.drawable.user_kosong).centerCrop().into(binding.ppUser);
             } else {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
                 binding.ppUser.setImageDrawable(image);
             }
+
+            if (!sessionManager.getKeyGudangPilihan().isEmpty()) {
+
+                Log.e(TAG, "setupUser: MASUK SINIIII");
+                Log.e(TAG, "setupUser: KEY GUDANG :: " + sessionManager.getKeyGudangPilihan());
+
+                for (int i = 0; i < daftarGudang.length; i++) {
+
+                    Log.e(TAG, "setupUser: MODEL GUDANG ID :: " + modelGudangs.get(i).getIdGudang());
+
+                    if (sessionManager.getKeyGudangPilihan().equals(modelGudangs.get(i).getIdGudang())) {
+
+                        Log.e(TAG, "setupUser: SELECTION " + i);
+
+                        binding.spinnerGudang.setSelection(i);
+                    }
+                }
+            }
+
+        } else {
+            @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
+            binding.ppUser.setImageDrawable(image);
         }
     }
+
+    String[] daftarGudang = new String[modelGudangs.size()];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,8 +147,6 @@ public class NewMainActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         iconKeranjang = findViewById(R.id.icon_Keranjang);
-
-        String[] daftarGudang = new String[modelGudangs.size()];
 
         for (int i = 0; i < modelGudangs.size(); i++) {
             daftarGudang[i] = modelGudangs.get(i).getNamaGudang();
@@ -138,12 +184,28 @@ public class NewMainActivity extends AppCompatActivity {
                 @SuppressLint("UseCompatLoadingForDrawables") Drawable image = getApplicationContext().getResources().getDrawable(R.drawable.user_kosong);
                 binding.ppUser.setImageDrawable(image);
             }
+
+
+            Log.e(TAG, "onCreate: SESSION USER ? " + sessionManager.getPID());
+            Log.e(TAG, "onCreate: SESSION USER ? " + sessionManager.getName());
+
+            getNotifikasiTagihanUser();
+
+
         }
 
         binding.btnHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(NewMainActivity.this, SupportActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        binding.iconLog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NewMainActivity.this, LogHistoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -271,6 +333,8 @@ public class NewMainActivity extends AppCompatActivity {
 
                     menuAwal = item.getItemId();
 
+                    binding.iconKeranjang.setVisibility(View.GONE);
+
                 }
 
                 return true;
@@ -312,6 +376,174 @@ public class NewMainActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getNotifikasiTagihanUser() {
+        Calendar c = Calendar.getInstance();
+
+        Log.e(TAG, "getListTagihan JATUH TEMPO KAMU : " + sessionManager.getKeyJatuhTempo());
+
+        SimpleDateFormat tanggalPeriode = new SimpleDateFormat("yyyy-MM-dd");
+
+//        c.add(Calendar.DAY_OF_MONTH, 30);
+
+        String tanggalSekarang = tanggalPeriode.format(c.getTime());
+
+
+        APIInterface apiInterface = APIClient.getClient(Http.server).create(APIInterface.class);
+        Call<ModelListTagihan> callListTagihan = apiInterface.doGetListTagihanUser(sessionManager.getPID(), tanggalSekarang);
+
+        callListTagihan.enqueue(new Callback<ModelListTagihan>() {
+            @Override
+            public void onResponse(Call<ModelListTagihan> call, Response<ModelListTagihan> response) {
+                if (response.code() == 200) {
+
+                    ModelListTagihan modelDaftarTagihan = response.body();
+
+                    if (modelDaftarTagihan.getSuccess()) {
+                        double totalTagihan = modelDaftarTagihan.getMsgServer().getLimitPenggunaan() + modelDaftarTagihan.getMsgServer().getTagihanDenda();
+
+                        Log.e(TAG, "onResponse: DAFTAR TOTAL TAGIHAN : " + totalTagihan);
+
+                        String batasHari = "";
+
+                        if (totalTagihan > 0) {
+
+                            if (modelDaftarTagihan.getMsgServer().getTagihanDenda() > 0) {
+
+                                for (int i = 0; i < modelDaftarTagihan.getMsgServer().getDaftarTagihanDenda().size(); i++) {
+                                    batasHari = modelDaftarTagihan.getMsgServer().getDaftarTagihanDenda().get(i).getBatasHari();
+                                }
+
+                            } else {
+                                for (int i = 0; i < modelDaftarTagihan.getMsgServer().getDaftarTagihanPeriode().size(); i++) {
+                                    batasHari = modelDaftarTagihan.getMsgServer().getDaftarTagihanPeriode().get(i).getBatasHari();
+                                }
+                            }
+
+
+                            Log.e(TAG, "onResponse: BATAS HARINYA ! " + batasHari);
+
+                            try {
+
+                                Date tglBatasHari = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(batasHari);
+
+                                Calendar tglJatuhTempoCal = Calendar.getInstance();
+
+                                tglJatuhTempoCal.setTime(tglBatasHari);
+
+                                tglJatuhTempoCal.add(Calendar.DAY_OF_MONTH, 1);
+
+                                Date a = tanggalPeriode.parse(tanggalSekarang);
+                                Date b = tglJatuhTempoCal.getTime();
+
+                                Log.e(TAG, "onResponse: TGL PERIODE SEKARANG = " + a);
+                                Log.e(TAG, "onResponse: TGL JTH TEMPO  = " + b);
+
+                                long timeDiff = b.getTime() - a.getTime();
+
+                                long numberOfDays = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
+
+                                if (numberOfDays <= 7 && totalTagihan > 0) {
+                                    createNotifikasiTagihan(numberOfDays, modelDaftarTagihan.getMsgServer());
+                                }
+
+
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+
+
+                        }
+
+
+                    } else {
+                        Toast.makeText(NewMainActivity.this, "Error :: TIDAK SUKSES DEBIT", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(NewMainActivity.this, "Error :: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ModelListTagihan> call, Throwable t) {
+                Toast.makeText(NewMainActivity.this, "ERROR :: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "onFailure: " + t.getMessage() + Arrays.toString(t.getStackTrace()));
+                finish();
+            }
+        });
+
+
+    }
+
+    NumberFormat nf = NumberFormat.getInstance(Locale.GERMANY);
+
+    private void createNotifikasiTagihan(long numberOfDays, MsgServer msgServer) {
+
+        Log.e(TAG, "createNotifikasiTagihan: MASUK NOTIFIKASI !");
+
+        double totalTagihan = msgServer.getLimitPenggunaan() + msgServer.getTagihanDenda();
+        NotificationManager mNotificationManager;
+        String pesanExpired = "";
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(NewMainActivity.this, "notify_001");
+
+
+////        numberOfDays = 7;
+////        numberOfDays = 4;
+////        numberOfDays = 3;
+////        numberOfDays = 1;
+////        numberOfDays = 0;
+//        numberOfDays = -1;
+////        numberOfDays = -5;
+
+        if (numberOfDays <= 7 && numberOfDays > 3) {
+            mBuilder.setContentTitle("dBelga Plafon");
+            pesanExpired = numberOfDays + " hari sebelum jatuh tempo, cek tagihanmu dan segera lunasi untuk tetap dapat menggunakan plafon dBelga.";
+        } else if (numberOfDays <= 3 && numberOfDays >= 0) {
+            mBuilder.setContentTitle("dBelga Jatuh Tempo");
+            if (numberOfDays == 0) {
+                pesanExpired = "Jatuh tempo pembayaran sisa hari ini, segera lakukan pelunasan tagihan total Rp. " + nf.format(totalTagihan) + " sebelum jatuh tempo.";
+            } else {
+                pesanExpired = "Jatuh tempo pembayaran sisa " + numberOfDays + " hari, segera lakukan pelunasan tagihan total Rp. " + nf.format(totalTagihan) + " sebelum jatuh tempo.";
+            }
+        } else if (numberOfDays < 0) {
+            mBuilder.setContentTitle("dBelga Tagihan !");
+            pesanExpired = "Tagihan plafon dBelga anda sudah jatuh tempo, total tagihan dan denda anda Rp. " + nf.format(totalTagihan) + " . Segera lakukan pelunasan sebelum terkena denda lebih besar !";
+        } else {
+            pesanExpired = numberOfDays + " hari sebelum jatuh tempo, cek tagihanmu dan segera lunasi untuk tetap dapat menggunakan plafon dBelga.";
+        }
+
+
+        mBuilder.setSmallIcon(R.drawable.dbelga);
+
+        mBuilder.setContentText(pesanExpired);
+        mBuilder.setPriority(Notification.PRIORITY_MAX);
+        mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(pesanExpired));
+
+        mNotificationManager =
+                (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // === Removed some obsoletes
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String channelId = "Your_channel_id";
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Channel human readable title",
+                    NotificationManager.IMPORTANCE_HIGH);
+            mNotificationManager.createNotificationChannel(channel);
+            mBuilder.setChannelId(channelId);
+        }
+
+
+        mNotificationManager.notify(0, mBuilder.build());
+
+        Log.e(TAG, "createNotifikasiTagihan: NOTIFIKASI KELUAR !");
+
+
     }
 
     private void settingUpSpinner() {
