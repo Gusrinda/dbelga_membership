@@ -14,10 +14,12 @@ android {
     defaultConfig {
         applicationId "com.dbelgamembership.membersip"
         minSdkVersion 24
-        targetSdkVersion 33
+        targetSdkVersion 31
         versionCode 1
-        versionName "24.08.30.1"
+        versionName "2.11.01.1"
+//        versionName "25.01.14.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
         multiDexEnabled true
     }
 
@@ -48,7 +50,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.6.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.1'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.github.iwgang:CountdownView:1.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -60,7 +62,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.4+'
     implementation 'com.google.firebase:protolite-well-known-types:18.0.0'
-    testImplementation 'junit:junit:4.+'
+//    testImplementation 'junit:junit:'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
@@ -124,8 +126,8 @@ dependencies {
 
     implementation "com.airbnb.android:lottie:5.0.3"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 
     implementation 'pub.devrel:easypermissions:3.0.0'
 

@@ -154,7 +154,7 @@
             android:screenOrientation="portrait"
             android:exported="true"
             android:windowSoftInputMode="stateHidden" /> <!-- <activity android:name=".Sales" /> -->
-        <activity android:name=".Screen.Katalog.WishlishActivity" />
+        <activity android:name=".Screen.Katalog.WishlishActivity"    android:exported="true"/>
         <activity
             android:name=".Screen.Katalog.KatalogActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -213,10 +213,6 @@
         <activity
             android:name=".Screen.LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-             android:exported="true"/>
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat"
              android:exported="true"/>
         <activity android:name=".Screen.PembayaranTransfer.TransferMembership"
              android:exported="true"/>

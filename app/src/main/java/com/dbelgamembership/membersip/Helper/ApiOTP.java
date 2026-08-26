@@ -9,7 +9,7 @@ public class ApiOTP {
 
     //WABLAS
 //    public static final String OTP_SECRET_KEY = "ecrhJ4t6Rc5vKEFfBoUoRBYwfkA70WYXmsPY5DOvaglRdTPbN4uDzhQ4h7lzsPFW";
-    public static final String OTP_SECRET_KEY = "fIjyyssSaXrgUp2s7xkmniTTy48ZqYaAAHZpsEwZomqD8i28d6E2H7KVHXgEhPk1";
+    public static final String OTP_SECRET_KEY = "CjDOwimTYHSMj7K6N2Q0F4yyskYZMfSN89MfB5dxnOMbZDMZfr6lRIxaudn2xCH2.SziqbFJR";
     public static String urlOTP = "https://jogja.wablas.com/";
 
 }

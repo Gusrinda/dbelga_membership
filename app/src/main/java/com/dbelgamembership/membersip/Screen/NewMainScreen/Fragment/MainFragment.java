@@ -1965,6 +1965,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
+//        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
         popupBarangBinding.layoutButtonKeranjang.setEnabled(true);
     }
 
@@ -2217,6 +2218,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
                     popupBarangBinding.orderQtyOrder.setText("0");
                 }
                 popupBarangBinding.orderBtnMinQty.setClickable(true);
+//                popupBarangBinding.layoutButtonKeranjang.setClickable(false);
                 popupBarangBinding.layoutButtonKeranjang.setClickable(true);
                 String qtyawal = popupBarangBinding.orderQtyOrder.getText().toString();
                 double qty = Double.parseDouble(qtyawal);
@@ -2597,7 +2599,7 @@ public class MainFragment extends Fragment implements AdapterListBarang.AdapterL
             }
         });
 
-//        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
+        popupBarangBinding.layoutButtonKeranjang.setEnabled(false);
 
     }
 

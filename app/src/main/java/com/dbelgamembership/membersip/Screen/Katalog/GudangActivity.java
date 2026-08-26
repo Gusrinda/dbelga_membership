@@ -235,7 +235,7 @@ public class GudangActivity extends AppCompatActivity implements AdapterListGuda
     private void setupTokenApiBanks() {
 
         //Setup BRI
-        setupTokenBRI();
+//        setupTokenBRI();
 
         //Setup BCA
         //Setup BNI
